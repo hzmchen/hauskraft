@@ -14,6 +14,7 @@ from fastapi.routing import APIRoute
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 
 from hearthos_core.errors import install_error_handlers
+from hearthos_core.health import install_core_checks
 from hearthos_core.logging import RequestContextMiddleware, configure_logging
 from hearthos_core.settings import Settings, get_settings
 
@@ -42,8 +43,12 @@ async def _lifespan(app: FastAPI) -> AsyncIterator[None]:
 
 
 def build_api_router() -> APIRouter:
-    """Core routers; later stories add health, auth, users, plugins, themes, activity and dashboards."""
-    return APIRouter()
+    """Core routers; later stories add auth, users, plugins, themes, activity and dashboards."""
+    from hearthos_core import health
+
+    router = APIRouter()
+    router.include_router(health.router)
+    return router
 
 
 def create_app(settings: Settings | None = None) -> FastAPI:
@@ -63,6 +68,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.state.engine = None
     app.state.sessionmaker = None
     install_error_handlers(app)
+    install_core_checks(app)
     app.add_middleware(RequestContextMiddleware)
     app.include_router(build_api_router(), prefix=API_PREFIX)
     return app
