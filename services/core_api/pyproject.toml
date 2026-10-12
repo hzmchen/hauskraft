@@ -17,6 +17,10 @@ dependencies = [
     "alembic~=1.20",
 ]
 
+[project.entry-points.pytest11]
+# Database fixtures for integration tests in core and plugins (M0S-E04-04).
+hearthos = "hearthos_core.testing"
+
 [tool.uv.sources]
 hearthos-sdk = { workspace = true }
 
