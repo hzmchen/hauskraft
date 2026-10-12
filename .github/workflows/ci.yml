@@ -77,3 +77,47 @@ jobs:
         with:
           args: --offline --no-progress --exclude-path node_modules './**/*.md'
           fail: true
+
+  # M0S-E02-04: every commit in a PR carries a DCO sign-off.
+  dco:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          fetch-depth: 0
+      - name: Check Signed-off-by on every commit
+        env:
+          BASE: ${{ github.event.pull_request.base.sha }}
+          HEAD: ${{ github.event.pull_request.head.sha }}
+        run: |
+          missing=0
+          for sha in $(git rev-list --no-merges "$BASE..$HEAD"); do
+            if ! git log -1 --format=%B "$sha" | grep -qE '^Signed-off-by: .+ <.+>$'; then
+              echo "::error::Commit $(git log -1 --format='%h %s' "$sha") has no Signed-off-by line."
+              missing=1
+            fi
+          done
+          if [ "$missing" -ne 0 ]; then
+            echo "Sign off your commits (DCO, see CONTRIBUTING.md):"
+            echo "  last commit only:  git commit -s --amend --no-edit && git push --force-with-lease"
+            echo "  all commits:       git rebase --signoff $BASE && git push --force-with-lease"
+            exit 1
+          fi
+
+  # M0S-E02-04: REUSE compliance and the licence map (spec §4.2).
+  licences:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: ./.github/actions/setup
+      - run: uvx reuse==6.2.0 lint
+      - run: uv run python scripts/check-licence-map.py
+      - name: Dependency licences (report only in M0*)
+        continue-on-error: true
+        run: |
+          uv run --with pip-licenses==5.5.5 pip-licenses --partial-match \
+            --allow-only "MIT;BSD;Apache;ISC;PSF;Python Software Foundation;MPL-2.0;Unlicense;CC0;LGPL;AGPL;Mozilla Public License 2.0"
+          pnpm licenses list --prod
