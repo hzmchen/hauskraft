@@ -16,12 +16,13 @@ jobs:
   acceptance:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v7
+      # The uv workspace provides the suite's pins plus the tools green stories rely on (ruff, mypy).
+      - uses: astral-sh/setup-uv@v10
         with:
-          python-version: "3.13"
-      - run: python -m pip install -r tests/requirements.txt
+          enable-cache: true
+      - run: uv sync --all-packages --locked
       - name: Validate spec, backlog, story status and coverage
-        run: python scripts/backlog_tools.py check
+        run: uv run python scripts/backlog_tools.py check
       - name: Static acceptance suite (red stories report as xfail)
-        run: python -m pytest tests --strict-status -ra
+        run: uv run pytest tests --strict-status -ra
