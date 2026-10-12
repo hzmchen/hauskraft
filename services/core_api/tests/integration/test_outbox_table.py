@@ -55,21 +55,21 @@ async def test_publishing_columns_may_change(db_session: AsyncSession) -> None:
 async def test_other_columns_are_immutable(db_session: AsyncSession, column: str) -> None:
     event = await _event(db_session)
     value = {"envelope": {"tampered": True}, "time": NOW + dt.timedelta(days=1)}.get(column, "tampered")
-    async with db_session.begin_nested():
-        with pytest.raises(DBAPIError, match="append-only"):
+    with pytest.raises(DBAPIError, match="append-only"):
+        async with db_session.begin_nested():  # the savepoint rolls back the failed statement
             await db_session.execute(update(OutboxEvent).where(OutboxEvent.id == event.id).values({column: value}))
 
 
 async def test_delete_is_rejected(db_session: AsyncSession) -> None:
     event = await _event(db_session)
-    async with db_session.begin_nested():
-        with pytest.raises(DBAPIError, match="append-only"):
+    with pytest.raises(DBAPIError, match="append-only"):
+        async with db_session.begin_nested():  # the savepoint rolls back the failed statement
             await db_session.execute(delete(OutboxEvent).where(OutboxEvent.id == event.id))
 
 
 async def test_truncate_is_rejected(db_session: AsyncSession) -> None:
-    async with db_session.begin_nested():
-        with pytest.raises(DBAPIError, match="append-only"):
+    with pytest.raises(DBAPIError, match="append-only"):
+        async with db_session.begin_nested():  # the savepoint rolls back the failed statement
             await db_session.execute(text("TRUNCATE outbox_events"))
 
 
