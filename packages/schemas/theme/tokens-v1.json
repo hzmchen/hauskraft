@@ -1,0 +1,239 @@
+{
+  "$comment": "SPDX-License-Identifier: MIT",
+  "description": "Theme API 1.0 semantic token contract (spec §10.2.5). Every token must exist in tokens.light.json and tokens.dark.json with this DTCG $type. Thresholds and limits are fixed in ADR-0013 (docs/adr/0013-theming.md).",
+  "theme_api": "1.0",
+  "tokens": {
+    "color.background": {
+      "type": "color"
+    },
+    "color.foreground": {
+      "type": "color"
+    },
+    "color.surface": {
+      "type": "color"
+    },
+    "color.surface-foreground": {
+      "type": "color"
+    },
+    "color.muted": {
+      "type": "color"
+    },
+    "color.muted-foreground": {
+      "type": "color"
+    },
+    "color.border": {
+      "type": "color"
+    },
+    "color.input": {
+      "type": "color"
+    },
+    "color.ring": {
+      "type": "color"
+    },
+    "color.overlay": {
+      "type": "color"
+    },
+    "color.primary": {
+      "type": "color"
+    },
+    "color.primary-foreground": {
+      "type": "color"
+    },
+    "color.secondary": {
+      "type": "color"
+    },
+    "color.secondary-foreground": {
+      "type": "color"
+    },
+    "color.accent": {
+      "type": "color"
+    },
+    "color.accent-foreground": {
+      "type": "color"
+    },
+    "color.destructive": {
+      "type": "color"
+    },
+    "color.destructive-foreground": {
+      "type": "color"
+    },
+    "color.success": {
+      "type": "color"
+    },
+    "color.success-foreground": {
+      "type": "color"
+    },
+    "color.warning": {
+      "type": "color"
+    },
+    "color.warning-foreground": {
+      "type": "color"
+    },
+    "color.info": {
+      "type": "color"
+    },
+    "color.info-foreground": {
+      "type": "color"
+    },
+    "color.nav-background": {
+      "type": "color"
+    },
+    "color.nav-foreground": {
+      "type": "color"
+    },
+    "color.nav-active": {
+      "type": "color"
+    },
+    "color.nav-active-foreground": {
+      "type": "color"
+    },
+    "color.widget-background": {
+      "type": "color"
+    },
+    "color.widget-foreground": {
+      "type": "color"
+    },
+    "color.widget-border": {
+      "type": "color"
+    },
+    "color.chart-1": {
+      "type": "color"
+    },
+    "color.chart-2": {
+      "type": "color"
+    },
+    "color.chart-3": {
+      "type": "color"
+    },
+    "color.chart-4": {
+      "type": "color"
+    },
+    "color.chart-5": {
+      "type": "color"
+    },
+    "color.chart-6": {
+      "type": "color"
+    },
+    "font.sans": {
+      "type": "fontFamily"
+    },
+    "font.heading": {
+      "type": "fontFamily"
+    },
+    "font.mono": {
+      "type": "fontFamily"
+    },
+    "font-size.xs": {
+      "type": "dimension"
+    },
+    "font-size.sm": {
+      "type": "dimension"
+    },
+    "font-size.base": {
+      "type": "dimension"
+    },
+    "font-size.lg": {
+      "type": "dimension"
+    },
+    "font-size.xl": {
+      "type": "dimension"
+    },
+    "font-size.2xl": {
+      "type": "dimension"
+    },
+    "font-size.3xl": {
+      "type": "dimension"
+    },
+    "font-weight.regular": {
+      "type": "fontWeight"
+    },
+    "font-weight.medium": {
+      "type": "fontWeight"
+    },
+    "font-weight.bold": {
+      "type": "fontWeight"
+    },
+    "line-height.tight": {
+      "type": "number"
+    },
+    "line-height.normal": {
+      "type": "number"
+    },
+    "radius.sm": {
+      "type": "dimension"
+    },
+    "radius.md": {
+      "type": "dimension"
+    },
+    "radius.lg": {
+      "type": "dimension"
+    },
+    "radius.xl": {
+      "type": "dimension"
+    },
+    "radius.full": {
+      "type": "dimension"
+    },
+    "space.unit": {
+      "type": "dimension"
+    },
+    "shadow.sm": {
+      "type": "shadow"
+    },
+    "shadow.md": {
+      "type": "shadow"
+    },
+    "shadow.lg": {
+      "type": "shadow"
+    },
+    "duration.fast": {
+      "type": "duration"
+    },
+    "duration.normal": {
+      "type": "duration"
+    },
+    "easing.standard": {
+      "type": "cubicBezier"
+    }
+  },
+  "contrast": {
+    "text": {
+      "min": 4.5,
+      "pairs": [
+        ["color.foreground", "color.background"],
+        ["color.surface-foreground", "color.surface"],
+        ["color.muted-foreground", "color.background"],
+        ["color.primary-foreground", "color.primary"],
+        ["color.secondary-foreground", "color.secondary"],
+        ["color.accent-foreground", "color.accent"],
+        ["color.destructive-foreground", "color.destructive"],
+        ["color.success-foreground", "color.success"],
+        ["color.warning-foreground", "color.warning"],
+        ["color.info-foreground", "color.info"],
+        ["color.nav-foreground", "color.nav-background"],
+        ["color.nav-active-foreground", "color.nav-active"],
+        ["color.widget-foreground", "color.widget-background"]
+      ]
+    },
+    "non_text": {
+      "min": 3.0,
+      "pairs": [
+        ["color.border", "color.background"],
+        ["color.border", "color.surface"],
+        ["color.input", "color.background"],
+        ["color.input", "color.surface"],
+        ["color.ring", "color.background"],
+        ["color.ring", "color.surface"]
+      ]
+    }
+  },
+  "distinct": {
+    "destructive_primary_min_oklab": 0.15
+  },
+  "limits": {
+    "asset_max_bytes": 2097152,
+    "assets_total_max_bytes": 10485760,
+    "max_fonts": 8,
+    "max_sprite_symbols": 500
+  }
+}

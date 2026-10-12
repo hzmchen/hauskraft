@@ -28,3 +28,7 @@ Schemas are contracts. Change them only together with an ADR (ADR-0001), add val
 ## Events
 
 `events/cloudevent.schema.json` is the CloudEvents 1.0.2 envelope with the HearthOS extensions `dataclass` and `actorid` (attribute names may not contain underscores). Each event type has a data schema `events/<type without "hearthos.">.data.schema.json` whose `$id` is the envelope's `dataschema` URL. The Python models in `hearthos_sdk.events` mirror these schemas and are tested against them.
+
+## Generated types
+
+`just gen` (or `just gen-theme-types`) turns the theme contract into `packages/ui/src/theme/contract.gen.ts` (`IconName`, `TokenName`, layout unions) and `packages/sdk-py/src/hearthos_sdk/theme_contract.py` (`Literal` types). Never edit those files; a contract test fails when they are stale. Numbers and limits are fixed in ADR-0013.

@@ -210,7 +210,7 @@
       "acceptance": "suite"
     },
     "M0S-E13-01": {
-      "status": "red",
+      "status": "green",
       "acceptance": "suite"
     },
     "M0S-E13-02": {

@@ -1,0 +1,23 @@
+{
+  "$comment": "SPDX-License-Identifier: MIT",
+  "description": "Core semantic icon names, set v1 (spec §10.2.6), in spec order. Themes may cover any subset in their sprite; missing names fall back to the default pack (Lucide). See ADR-0013.",
+  "icons": [
+    "nav.today",
+    "nav.tasks",
+    "nav.activity",
+    "nav.settings",
+    "action.add",
+    "action.edit",
+    "action.delete",
+    "action.confirm",
+    "action.cancel",
+    "status.done",
+    "status.due",
+    "status.overdue",
+    "user.menu",
+    "mode.system",
+    "mode.light",
+    "mode.dark",
+    "widget.unavailable"
+  ]
+}
