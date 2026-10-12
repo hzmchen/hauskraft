@@ -6,7 +6,9 @@ HearthOS is a plugin-first, themeable household cockpit centred on Home Assistan
 `packages/sdk-ts`, `packages/ui`, `packages/schemas`, `plugins/official/*`, `themes/*`.
 Spec: [docs/spec/hearthos-spec-v0.2.md](docs/spec/hearthos-spec-v0.2.md).
 Current milestone: M0* — [docs/backlog/m0-star/README.md](docs/backlog/m0-star/README.md).
-Testing: [docs/testing/README.md](docs/testing/README.md). Do not implement anything listed as out of scope.
+Testing: [docs/testing/README.md](docs/testing/README.md). Decisions: [docs/adr/](docs/adr/README.md).
+Nested `AGENTS.md` files in `apps/web`, `packages/ui`, `plugins/official/tasks` and `themes` add local rules.
+Do not implement anything listed as out of scope.
 
 ## How you work: red, green, refactor (non-negotiable)
 1. Pick one story. Read its epic file, the spec sections it cites and the ADRs.
