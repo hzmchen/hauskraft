@@ -1,0 +1,22 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Virtual uv workspace root. Each member has its own pyproject.toml and licence.
+
+[tool.uv.workspace]
+members = ["services/core_api", "packages/sdk-py", "plugins/official/tasks/backend"]
+
+[tool.uv.sources]
+hearthos-core = { workspace = true }
+hearthos-sdk = { workspace = true }
+hearthos-tasks = { workspace = true }
+
+[dependency-groups]
+# The acceptance suite pins (mirrors tests/requirements.txt, which stays for pip-only runs).
+dev = [
+    "hearthos-core",
+    "hearthos-sdk",
+    "hearthos-tasks",
+    "pytest==9.1.1",
+    "jsonschema==4.26.0",
+    "httpx==0.28.1",
+    "PyYAML==6.0.3",
+]

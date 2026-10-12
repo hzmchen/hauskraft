@@ -1,0 +1,22 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+name: hearthos
+
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: hearthos
+      POSTGRES_PASSWORD: hearthos
+      POSTGRES_DB: hearthos
+    ports:
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - hearthos_pg:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U hearthos -d hearthos"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+
+volumes:
+  hearthos_pg:
