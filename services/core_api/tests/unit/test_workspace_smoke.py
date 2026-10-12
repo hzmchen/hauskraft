@@ -5,6 +5,8 @@ import importlib
 
 import pytest
 
+pytestmark = pytest.mark.unit
+
 
 @pytest.mark.parametrize("module", ["hearthos_core", "hearthos_sdk", "hearthos_tasks"])
 def test_workspace_package_imports(module: str) -> None:
