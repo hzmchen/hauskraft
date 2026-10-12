@@ -121,3 +121,18 @@ jobs:
           uv run --with pip-licenses==5.5.5 pip-licenses --partial-match \
             --allow-only "MIT;BSD;Apache;ISC;PSF;Python Software Foundation;MPL-2.0;Unlicense;CC0;LGPL;AGPL;Mozilla Public License 2.0"
           pnpm licenses list --prod
+
+  # M0S-E02-05: lockfiles are current, free of denylisted versions and of known production vulnerabilities.
+  supply-chain:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: astral-sh/setup-uv@v10.3.0
+      - run: uv lock --check
+      - uses: actions/setup-node@v7.1.0
+        with:
+          node-version-file: .node-version
+      - run: node scripts/check-denylist.mjs pnpm-lock.yaml
+      - uses: pnpm/action-setup@v6.1.0
+      - run: pnpm audit --prod --audit-level high
