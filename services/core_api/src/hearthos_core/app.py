@@ -16,6 +16,7 @@ from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 from hearthos_core.errors import install_error_handlers
 from hearthos_core.health import install_core_checks
 from hearthos_core.logging import RequestContextMiddleware, configure_logging
+from hearthos_core.policy import policy_from_settings
 from hearthos_core.settings import Settings, get_settings
 
 API_PREFIX = "/api/v1"
@@ -65,6 +66,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         lifespan=_lifespan,
     )
     app.state.settings = settings
+    app.state.policy = policy_from_settings(settings)
     app.state.engine = None
     app.state.sessionmaker = None
     install_error_handlers(app)

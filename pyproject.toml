@@ -52,7 +52,7 @@ known-first-party = ["hearthos_core", "hearthos_sdk", "hearthos_tasks"]
 # The ban applies to plugin code only; everything outside plugins/ may import core.
 "!plugins/**" = ["TID251"]
 # Tests assert and use fixtures freely.
-"**/tests/**" = ["S101", "S105", "S106", "S603", "S607"]
+"**/tests/**" = ["S101", "S105", "S106", "S603", "S607", "PT012"]
 
 # ---------------------------------------------------------------- mypy (M0S-E01-02)
 [tool.mypy]
