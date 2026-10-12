@@ -19,4 +19,58 @@ dev = [
     "jsonschema==4.26.0",
     "httpx==0.28.1",
     "PyYAML==6.0.3",
+    # Python tooling (M0S-E01-02)
+    "ruff==0.17.0",
+    "mypy==2.4.0",
+    "pytest-asyncio==1.4.0",
+    "pydantic>=2.12",  # loaded by the pydantic.mypy plugin
+]
+
+# ---------------------------------------------------------------- ruff (M0S-E01-02)
+[tool.ruff]
+target-version = "py313"
+line-length = 120
+# The spec-owned acceptance suite and backlog tooling keep their own style (AGENTS.md rule: never edit
+# tests/acceptance, tests/e2e or tests/fixtures to get to green).
+extend-exclude = [
+    "tests/acceptance", "tests/e2e", "tests/fixtures", "tests/meta", "tests/_support", "tests/conftest.py",
+    "scripts/backlog_tools.py",
+]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "S", "ASYNC", "PT", "RUF", "TID"]
+
+[tool.ruff.lint.flake8-tidy-imports.banned-api]
+# Licence boundary (spec §4.2): plugins import only hearthos_sdk, never core internals.
+"hearthos_core".msg = "Plugins may import only hearthos_sdk, never hearthos_core (spec §4.2)."
+
+[tool.ruff.lint.per-file-ignores]
+# The ban applies to plugin code only; everything outside plugins/ may import core.
+"!plugins/**" = ["TID251"]
+# Tests assert and use fixtures freely.
+"**/tests/**" = ["S101", "S105", "S106", "S603", "S607"]
+
+# ---------------------------------------------------------------- mypy (M0S-E01-02)
+[tool.mypy]
+python_version = "3.13"
+strict = true
+plugins = ["pydantic.mypy"]
+mypy_path = ["services/core_api/src", "packages/sdk-py/src", "plugins/official/tasks/backend/src"]
+files = ["services/core_api/src", "packages/sdk-py/src", "plugins/official/tasks/backend/src"]
+
+[tool.pydantic-mypy]
+init_forbid_extra = true
+init_typed = true
+warn_required_dynamic_aliases = true
+
+# ---------------------------------------------------------------- pytest (M0S-E01-02)
+# Package tests live next to their code (services/*/tests, packages/*/tests, plugins/**/tests) and
+# run separately from the spec-owned suite in tests/, whose conftest requires story markers.
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+markers = [
+    "unit: pure tests without I/O",
+    "integration: needs a database (Testcontainers Postgres)",
+    "contract: checks schemas and the OpenAPI contract",
 ]

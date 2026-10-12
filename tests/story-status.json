@@ -6,7 +6,7 @@
       "acceptance": "suite"
     },
     "M0S-E01-02": {
-      "status": "red",
+      "status": "green",
       "acceptance": "suite"
     },
     "M0S-E01-03": {
