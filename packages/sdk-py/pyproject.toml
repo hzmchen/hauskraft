@@ -5,7 +5,7 @@ version = "0.1.0"
 description = "HearthOS plugin SDK for Python. The only HearthOS package plugins may import."
 license = "MIT"
 requires-python = ">=3.13"
-dependencies = []
+dependencies = ["pydantic>=2.12,<3"]
 
 [build-system]
 requires = ["hatchling==1.32.4"]

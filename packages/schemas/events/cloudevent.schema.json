@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hearthos.dev/schema/events/cloudevent/1.0.json",
+  "$comment": "SPDX-License-Identifier: MIT",
+  "title": "HearthOS CloudEvent envelope",
+  "description": "CloudEvents 1.0.2 structured JSON with the HearthOS extension attributes dataclass and actorid (spec §3.2, ADR-0007, decision D1). Attribute names may contain only lower-case letters and digits, so JSON bodies keep data_class but the envelope says dataclass.",
+  "type": "object",
+  "required": ["specversion", "id", "source", "type", "dataclass"],
+  "propertyNames": {
+    "pattern": "^([a-z0-9]{1,20}|data_base64)$"
+  },
+  "properties": {
+    "specversion": {
+      "const": "1.0"
+    },
+    "id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "source": {
+      "description": "Plugin id or org.hearthos.core (a URI-reference).",
+      "type": "string",
+      "minLength": 1
+    },
+    "type": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(\\.[a-z0-9_]+)+$"
+    },
+    "subject": {
+      "type": "string",
+      "minLength": 1
+    },
+    "time": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "datacontenttype": {
+      "type": "string"
+    },
+    "dataschema": {
+      "type": "string",
+      "format": "uri"
+    },
+    "dataclass": {
+      "$ref": "https://hearthos.dev/schema/common/1.0.json#/$defs/dataClass"
+    },
+    "actorid": {
+      "description": "Acting user or agent id.",
+      "type": "string",
+      "minLength": 1
+    },
+    "data": {},
+    "data_base64": {
+      "type": "string"
+    }
+  }
+}

@@ -24,3 +24,7 @@ A manifest whose `type` is exactly `["theme"]` must use `runtime.kind: "declarat
 ## Changing a schema
 
 Schemas are contracts. Change them only together with an ADR (ADR-0001), add valid and invalid fixtures under `tests/fixtures/`, and run `just contract`.
+
+## Events
+
+`events/cloudevent.schema.json` is the CloudEvents 1.0.2 envelope with the HearthOS extensions `dataclass` and `actorid` (attribute names may not contain underscores). Each event type has a data schema `events/<type without "hearthos.">.data.schema.json` whose `$id` is the envelope's `dataschema` URL. The Python models in `hearthos_sdk.events` mirror these schemas and are tested against them.

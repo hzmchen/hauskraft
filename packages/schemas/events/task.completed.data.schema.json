@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.hearthos.org/events/task.completed/v1.json",
+  "$comment": "SPDX-License-Identifier: MIT",
+  "title": "hearthos.task.completed data",
+  "type": "object",
+  "required": ["task", "completed_at"],
+  "additionalProperties": false,
+  "properties": {
+    "task": {
+      "$ref": "https://schemas.hearthos.org/events/task.created/v1.json#/$defs/task"
+    },
+    "completed_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  }
+}

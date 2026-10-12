@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.hearthos.org/events/task.created/v1.json",
+  "$comment": "SPDX-License-Identifier: MIT",
+  "title": "hearthos.task.created data",
+  "description": "Emitted by org.hearthos.tasks when a task is created. $defs/task is the task snapshot shared by every task event.",
+  "type": "object",
+  "required": ["task"],
+  "additionalProperties": false,
+  "properties": {
+    "task": {
+      "$ref": "#/$defs/task"
+    }
+  },
+  "$defs": {
+    "task": {
+      "type": "object",
+      "required": ["id", "title", "done", "due_on", "version"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "done": {
+          "type": "boolean"
+        },
+        "due_on": {
+          "type": ["string", "null"],
+          "format": "date"
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    }
+  }
+}
