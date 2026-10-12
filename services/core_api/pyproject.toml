@@ -15,6 +15,7 @@ dependencies = [
     "psycopg[binary]~=3.3",
     "structlog~=26.1",
     "alembic~=1.20",
+    "uuid6>=2025.0.1",
 ]
 
 [project.entry-points.pytest11]
