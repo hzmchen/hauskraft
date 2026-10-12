@@ -1,0 +1,10 @@
+# Generated files and the spec-owned suite keep their own formatting.
+pnpm-lock.yaml
+uv.lock
+**/*.gen.ts
+packages/sdk-ts/src/client/
+packages/schemas/openapi/
+docs/
+tests/
+# Hand-off docs at the repo root keep their hand-written layout.
+/*.md
