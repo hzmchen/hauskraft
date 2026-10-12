@@ -1,0 +1,29 @@
+{
+  "$schema": "https://hearthos.dev/schema/theme/1.0.json",
+  "theme_api": "1.0",
+  "name": "Hackspace",
+  "tokens": {
+    "light": "tokens.light.json",
+    "dark": "tokens.dark.json"
+  },
+  "components": {
+    "widget": {
+      "chrome": "tinted",
+      "header": "banner"
+    },
+    "button": {
+      "primary": "solid"
+    },
+    "checkbox": {
+      "style": "square"
+    }
+  },
+  "layout": {
+    "navigation": {
+      "wide": "topbar",
+      "narrow": "bottom-tabs"
+    },
+    "density": "compact",
+    "content_width": "contained"
+  }
+}

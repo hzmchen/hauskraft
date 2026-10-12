@@ -41,10 +41,9 @@ jobs:
     steps:
       - uses: actions/checkout@v7.0.1
       - uses: ./.github/actions/setup
-        with:
-          node: "false"
       # pyproject testpaths point at the package test folders; the spec-owned suite runs in `acceptance`.
-      - run: uv run pytest -m unit -q
+      # Contract tests without a database run here until the contract job (M0S-E02-02) exists.
+      - run: uv run pytest -m "unit or contract" -q
 
   unit-web:
     runs-on: ubuntu-latest

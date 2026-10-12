@@ -1,0 +1,12 @@
+{
+  "$comment": "SPDX-License-Identifier: MIT",
+  "$description": "Fixed enums for component variants and layout options (spec §10.2.1). New values need an ADR (ADR-0013) and a schema change.",
+  "navigation.wide": ["sidebar", "topbar"],
+  "navigation.narrow": ["bottom-tabs", "drawer"],
+  "density": ["compact", "comfortable", "spacious"],
+  "content_width": ["full", "contained"],
+  "widget.chrome": ["flat", "outlined", "elevated", "tinted"],
+  "widget.header": ["inline", "banner"],
+  "button.primary": ["solid", "soft", "outline"],
+  "checkbox.style": ["square", "round"]
+}

@@ -1,0 +1,64 @@
+{
+  "$schema": "https://hearthos.dev/schema/theme/1.0.json",
+  "theme_api": "2.0",
+  "name": "Hackspace",
+  "description": "Basement hackerspace look: near-black, phosphor green, monospace, pixel icons.",
+  "tokens": {
+    "light": "tokens.light.json",
+    "dark": "tokens.dark.json"
+  },
+  "fonts": [
+    {
+      "family": "JetBrains Mono",
+      "src": "assets/fonts/JetBrainsMono-Variable.woff2",
+      "weight": "100 800",
+      "style": "normal"
+    },
+    {
+      "family": "VT323",
+      "src": "assets/fonts/VT323-Regular.woff2",
+      "weight": "400",
+      "style": "normal"
+    }
+  ],
+  "components": {
+    "widget": {
+      "chrome": "tinted",
+      "header": "banner"
+    },
+    "button": {
+      "primary": "solid"
+    },
+    "checkbox": {
+      "style": "square"
+    }
+  },
+  "layout": {
+    "navigation": {
+      "wide": "topbar",
+      "narrow": "bottom-tabs"
+    },
+    "density": "compact",
+    "content_width": "contained"
+  },
+  "icons": {
+    "pack": "assets/icons/sprite.svg",
+    "fallback": "default"
+  },
+  "background": {
+    "light": {
+      "color": "{color.background}"
+    },
+    "dark": {
+      "image": "assets/images/grid-dark.webp"
+    }
+  },
+  "preview": {
+    "swatches": [
+      "{color.primary}",
+      "{color.accent}",
+      "{color.background}"
+    ]
+  },
+  "$comment": "theme API 1.0 only"
+}
