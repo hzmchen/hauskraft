@@ -98,7 +98,7 @@
       "acceptance": "suite"
     },
     "M0S-E06-01": {
-      "status": "red",
+      "status": "green",
       "acceptance": "suite"
     },
     "M0S-E06-02": {

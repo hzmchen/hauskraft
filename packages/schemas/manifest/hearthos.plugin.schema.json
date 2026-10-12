@@ -1,0 +1,484 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hearthos.dev/schema/plugin/1.0.json",
+  "$comment": "SPDX-License-Identifier: MIT",
+  "title": "HearthOS plugin manifest",
+  "description": "HearthOS plugin manifest (hearthos.plugin.json), spec §5.3; theme rule §5.3 and §10.2.4.",
+  "type": "object",
+  "required": [
+    "id",
+    "name",
+    "version",
+    "type",
+    "hearthos_api",
+    "license",
+    "authors",
+    "source",
+    "runtime",
+    "capabilities",
+    "data_classes"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "$comment": {
+      "type": "string"
+    },
+    "id": {
+      "$ref": "https://hearthos.dev/schema/common/1.0.json#/$defs/reverseDnsId"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 80
+    },
+    "version": {
+      "$ref": "https://hearthos.dev/schema/common/1.0.json#/$defs/semver"
+    },
+    "description": {
+      "type": "string"
+    },
+    "type": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "enum": ["connector", "domain", "skill", "workflow", "widget", "bridge", "theme"]
+      }
+    },
+    "hearthos_api": {
+      "description": "npm-style semver range of the HearthOS plugin API this plugin supports.",
+      "type": "string",
+      "minLength": 1
+    },
+    "license": {
+      "description": "SPDX licence expression.",
+      "type": "string",
+      "minLength": 1
+    },
+    "authors": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["name"],
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "email": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "source": {
+      "type": "string",
+      "minLength": 1
+    },
+    "runtime": {
+      "type": "object",
+      "required": ["kind"],
+      "properties": {
+        "kind": {
+          "enum": ["container", "subprocess", "wasm", "inprocess", "declarative"]
+        },
+        "entrypoint": {
+          "description": "inprocess: Python object path module:attribute.",
+          "type": "string",
+          "pattern": "^[A-Za-z_][A-Za-z0-9_.]*:[A-Za-z_][A-Za-z0-9_]*$"
+        },
+        "api_prefix": {
+          "type": "string",
+          "pattern": "^/[a-z0-9][a-z0-9/-]*$"
+        },
+        "migrations": {
+          "type": "string"
+        },
+        "web": {
+          "description": "Package name of the plugin's web module.",
+          "type": "string"
+        },
+        "image": {
+          "type": "string"
+        },
+        "digest": {
+          "type": "string"
+        }
+      }
+    },
+    "capabilities": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "https://hearthos.dev/schema/common/1.0.json#/$defs/capability"
+      }
+    },
+    "data_classes": {
+      "type": "object",
+      "required": ["reads", "writes", "emits"],
+      "additionalProperties": false,
+      "properties": {
+        "reads": {
+          "$ref": "#/$defs/dataClassList"
+        },
+        "writes": {
+          "$ref": "#/$defs/dataClassList"
+        },
+        "emits": {
+          "$ref": "#/$defs/dataClassList"
+        }
+      }
+    },
+    "config_schema": {
+      "type": "object"
+    },
+    "secrets": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z0-9_]+$"
+      }
+    },
+    "contributes": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "widgets": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/widget"
+          }
+        },
+        "pages": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/page"
+          }
+        },
+        "tools": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/tool"
+          }
+        },
+        "skills": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "workflows": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "entities": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/entity"
+          }
+        },
+        "ha_entities": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "settings": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "commands": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "icons": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/icon"
+          }
+        },
+        "themes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/themeContribution"
+          }
+        }
+      }
+    },
+    "subscribes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "tool_annotations": {
+      "type": "object"
+    },
+    "verification": {
+      "type": "object"
+    },
+    "i18n": {
+      "type": "object"
+    },
+    "icons": {
+      "type": "object"
+    },
+    "min_ha_version": {
+      "type": "string"
+    },
+    "signing": {
+      "type": "object"
+    }
+  },
+  "allOf": [
+    {
+      "$comment": "Theme plugin rule (spec §5.3): a plugin whose type is exactly [\"theme\"] is data only.",
+      "if": {
+        "required": ["type"],
+        "properties": {
+          "type": {
+            "const": ["theme"]
+          }
+        }
+      },
+      "then": {
+        "required": ["contributes"],
+        "properties": {
+          "runtime": {
+            "properties": {
+              "kind": {
+                "const": "declarative"
+              }
+            }
+          },
+          "capabilities": {
+            "maxItems": 0
+          },
+          "data_classes": {
+            "properties": {
+              "reads": {
+                "maxItems": 0
+              },
+              "writes": {
+                "maxItems": 0
+              },
+              "emits": {
+                "maxItems": 0
+              }
+            }
+          },
+          "contributes": {
+            "required": ["themes"],
+            "properties": {
+              "themes": {
+                "minItems": 1
+              },
+              "widgets": {
+                "maxItems": 0
+              },
+              "pages": {
+                "maxItems": 0
+              },
+              "tools": {
+                "maxItems": 0
+              },
+              "workflows": {
+                "maxItems": 0
+              }
+            }
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "dataClassList": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "https://hearthos.dev/schema/common/1.0.json#/$defs/dataClass"
+      }
+    },
+    "size": {
+      "type": "object",
+      "required": ["w", "h"],
+      "additionalProperties": false,
+      "properties": {
+        "w": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 12
+        },
+        "h": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 24
+        }
+      }
+    },
+    "widget": {
+      "type": "object",
+      "required": ["id", "title"],
+      "oneOf": [
+        {
+          "required": ["component"]
+        },
+        {
+          "required": ["resource"]
+        }
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+([._-][a-z0-9]+)*$"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "component": {
+          "type": "string"
+        },
+        "resource": {
+          "type": "string",
+          "pattern": "^ui://"
+        },
+        "default_size": {
+          "$ref": "#/$defs/size"
+        },
+        "min_size": {
+          "$ref": "#/$defs/size"
+        },
+        "roles": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "page": {
+      "type": "object",
+      "required": ["id", "title"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "component": {
+          "type": "string"
+        },
+        "nav": {
+          "type": "boolean"
+        },
+        "nav_order": {
+          "type": "integer"
+        },
+        "icon": {
+          "$ref": "https://hearthos.dev/schema/common/1.0.json#/$defs/semanticIconName"
+        },
+        "roles": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "tool": {
+      "type": "object",
+      "required": ["name"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "annotations": {
+          "type": "object",
+          "properties": {
+            "read_only": {
+              "type": "boolean"
+            },
+            "destructive": {
+              "type": "boolean"
+            },
+            "idempotent": {
+              "type": "boolean"
+            },
+            "open_world": {
+              "type": "boolean"
+            }
+          }
+        },
+        "verify": {
+          "type": "object"
+        }
+      }
+    },
+    "entity": {
+      "type": "object",
+      "required": ["type"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "pattern": "^[A-Z][A-Za-z0-9]*$"
+        },
+        "data_class": {
+          "$ref": "https://hearthos.dev/schema/common/1.0.json#/$defs/dataClass"
+        },
+        "jsonld": {
+          "type": "string"
+        }
+      }
+    },
+    "icon": {
+      "type": "object",
+      "required": ["name"],
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "$ref": "https://hearthos.dev/schema/common/1.0.json#/$defs/semanticIconName"
+        },
+        "svg": {
+          "description": "Default SVG, relative to the plugin folder.",
+          "type": "string"
+        }
+      }
+    },
+    "themeContribution": {
+      "type": "object",
+      "required": ["id", "file"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+        },
+        "file": {
+          "type": "string",
+          "pattern": "^[^/.][^:]*\\.json$"
+        }
+      }
+    }
+  }
+}

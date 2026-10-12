@@ -13,6 +13,7 @@ from referencing import Registry, Resource
 pytestmark = pytest.mark.contract
 
 SCHEMAS = Path(__file__).resolve().parents[1]
+SPDX_MIT = "SPDX-" + "License-Identifier: MIT"  # split so REUSE does not read it as this file's tag
 FIXTURES = Path(__file__).resolve().parent / "fixtures" / "manifest"
 
 
@@ -50,4 +51,4 @@ def test_every_schema_has_an_id_and_spdx_comment() -> None:
         doc = json.loads(path.read_text())
         assert doc["$schema"] == "https://json-schema.org/draft/2020-12/schema", path
         assert doc["$id"].startswith("https://hearthos.dev/schema/"), path
-        assert "SPDX-License-Identifier: MIT" in doc.get("$comment", ""), path
+        assert doc.get("$comment") == SPDX_MIT, path

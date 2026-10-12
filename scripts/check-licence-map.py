@@ -38,7 +38,7 @@ SKIP_DIRS = {".git", "node_modules", ".venv", "__pycache__", ".mypy_cache", ".ru
 # Licence texts themselves are not licensed files (REUSE spec).
 LICENCE_FILE = re.compile(r"^(LICEN[CS]E|COPYING)(\..*)?$|^.*\.license$", re.I)
 # REUSE-IgnoreStart
-SPDX_TAG = re.compile(r"SPDX-License-Identifier:\s*([^\n*]+?)\s*(?:-->|\*/|$)", re.M)
+SPDX_TAG = re.compile(r"SPDX-License-Identifier:[ \t]*([A-Za-z0-9.+() \t-]+?)[ \t]*(?:-->|\*/|[\"'\n]|$)", re.M)
 # REUSE-IgnoreEnd
 SPDX_ID = re.compile(r"[A-Za-z0-9.+-]+")
 HEADER_BYTES = 4096

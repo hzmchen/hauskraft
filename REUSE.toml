@@ -37,3 +37,11 @@ path = "tests/**"
 precedence = "override"
 SPDX-FileCopyrightText = "2026 HearthOS contributors"
 SPDX-License-Identifier = "MIT"
+
+# ------------------------------------------------------------------ JSON Schemas (MIT)
+# Schemas state their licence in "$comment"; "override" stops REUSE from parsing that JSON string as a tag.
+[[annotations]]
+path = "packages/schemas/**/*.json"
+precedence = "override"
+SPDX-FileCopyrightText = "2026 HearthOS contributors"
+SPDX-License-Identifier = "MIT"
