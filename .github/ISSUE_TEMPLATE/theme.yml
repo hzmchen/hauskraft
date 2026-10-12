@@ -1,0 +1,45 @@
+# SPDX-License-Identifier: MIT
+name: Theme submission
+description: Share a theme package (data only) for review.
+labels: ["area:theme"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Themes are data only: tokens, component variants, a few layout options and bundled assets. No CSS, no scripts, no external URLs.
+        See docs/themes.md and run `hearthos themes validate --strict <folder>` before submitting.
+  - type: input
+    id: id
+    attributes:
+      label: Theme id
+      placeholder: org.example.theme.mytheme
+    validations:
+      required: true
+  - type: input
+    id: source
+    attributes:
+      label: Where can we get the package?
+      description: Link to a repository or archive.
+    validations:
+      required: true
+  - type: textarea
+    id: validate
+    attributes:
+      label: Output of `hearthos themes validate --strict --json`
+      render: json
+    validations:
+      required: true
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots
+      description: Today and All tasks, light and dark.
+  - type: checkboxes
+    id: licences
+    attributes:
+      label: Licences
+      options:
+        - label: Every font and icon pack ships its licence text in LICENSES/.
+          required: true
+        - label: The theme uses no names, logos or artwork I do not have the rights to.
+          required: true

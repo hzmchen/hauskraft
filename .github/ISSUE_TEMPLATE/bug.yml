@@ -1,0 +1,47 @@
+# SPDX-License-Identifier: MIT
+name: Bug report
+description: Something does not work as the spec or the docs say.
+labels: ["type:bug"]
+body:
+  - type: markdown
+    attributes:
+      value: Thanks for reporting. Security problems go through private vulnerability reporting, not here.
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+      description: What you did, what you expected and what you saw instead.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. docker compose up --wait
+        2. Log in as demo
+        3. …
+    validations:
+      required: true
+  - type: input
+    id: commit
+    attributes:
+      label: Commit or version
+      placeholder: e.g. main @ abc1234
+    validations:
+      required: true
+  - type: dropdown
+    id: theme
+    attributes:
+      label: Active theme
+      options: [Default, Paper, Hackspace, Third-party theme, Not UI related]
+  - type: dropdown
+    id: mode
+    attributes:
+      label: Colour mode on this device
+      options: [System, Light, Dark, Not UI related]
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs or screenshots
+      description: Remove passwords, tokens and personal data first.

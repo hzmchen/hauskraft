@@ -2,7 +2,6 @@
 """M0S-E12-03: Home Assistant is third-party in M0*; only a NullBridge exists and it never touches the network."""
 
 import socket
-from collections.abc import Iterator
 from typing import Any
 
 import pytest
@@ -17,13 +16,15 @@ pytestmark = pytest.mark.unit
 
 
 @pytest.fixture
-def no_network(monkeypatch: pytest.MonkeyPatch) -> Iterator[None]:
+def no_network(monkeypatch: pytest.MonkeyPatch) -> None:
     def refuse(*_args: Any, **_kwargs: Any) -> None:
-        raise AssertionError("NullBridge must not open sockets")
+        raise AssertionError("NullBridge must not open network connections")
 
-    monkeypatch.setattr(socket, "socket", refuse)
+    # The event loop itself needs a socketpair, so block outgoing connections rather than sockets.
+    monkeypatch.setattr(socket.socket, "connect", refuse)
+    monkeypatch.setattr(socket.socket, "connect_ex", refuse)
     monkeypatch.setattr(socket, "create_connection", refuse)
-    yield
+    monkeypatch.setattr(socket, "getaddrinfo", refuse)
 
 
 def test_null_bridge_satisfies_the_protocol() -> None:
