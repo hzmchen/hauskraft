@@ -1,0 +1,36 @@
+{
+  "$comment": "theme plugins read no data classes",
+  "id": "org.example.theme.probe",
+  "name": "Probe",
+  "version": "0.1.0",
+  "type": [
+    "theme"
+  ],
+  "hearthos_api": "^0.1.0",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "HearthOS tests"
+    }
+  ],
+  "source": "https://example.org/probe",
+  "runtime": {
+    "kind": "declarative"
+  },
+  "capabilities": [],
+  "data_classes": {
+    "reads": [
+      "household"
+    ],
+    "writes": [],
+    "emits": []
+  },
+  "contributes": {
+    "themes": [
+      {
+        "id": "probe",
+        "file": "theme.json"
+      }
+    ]
+  }
+}
