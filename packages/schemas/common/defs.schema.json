@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hearthos.dev/schema/common/1.0.json",
+  "$comment": "SPDX-License-Identifier: MIT",
+  "title": "HearthOS shared definitions",
+  "description": "Shared definitions for HearthOS schemas (spec §5.3, §5.5, §10.2.6).",
+  "$defs": {
+    "dataClass": {
+      "description": "Data classes in ascending sensitivity: public < household < personal < financial < tenant < child < health < secret (spec §5.5, ADR-0008).",
+      "enum": ["public", "household", "personal", "financial", "tenant", "child", "health", "secret"]
+    },
+    "reverseDnsId": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(\\.[a-z0-9-]+)+$"
+    },
+    "semver": {
+      "description": "Semantic Versioning 2.0.0.",
+      "type": "string",
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$"
+    },
+    "semanticIconName": {
+      "description": "Icons are referenced by semantic name, never by file (spec §10.2.6).",
+      "type": "string",
+      "pattern": "^[a-z]+(\\.[a-z0-9-]+)+$"
+    },
+    "capability": {
+      "description": "Scoped capability string, e.g. graph:write:Task or net:egress:paperless.lan:8000 (spec §5.4).",
+      "type": "string",
+      "pattern": "^[a-z]+:[a-z]+(:[A-Za-z0-9.*_:-]+)?$"
+    }
+  }
+}
