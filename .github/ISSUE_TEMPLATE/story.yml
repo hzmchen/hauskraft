@@ -1,0 +1,57 @@
+# SPDX-License-Identifier: MIT
+name: Backlog story
+description: An implementation-ready story in the backlog format (docs/backlog/m0-star/README.md).
+labels: ["type:feature", "needs-human"]
+body:
+  - type: input
+    id: id
+    attributes:
+      label: Story ID
+      placeholder: M0S-E07-02
+    validations:
+      required: true
+  - type: textarea
+    id: story
+    attributes:
+      label: Story
+      placeholder: As a <role>, I want <capability>, so that <benefit>.
+    validations:
+      required: true
+  - type: textarea
+    id: ac
+    attributes:
+      label: Acceptance criteria (Given / When / Then)
+    validations:
+      required: true
+  - type: textarea
+    id: tech
+    attributes:
+      label: Tech notes and files to touch
+    validations:
+      required: true
+  - type: textarea
+    id: tests
+    attributes:
+      label: Tests
+      description: Spec-owned acceptance tests in tests/ and the unit/integration tests written first in the story.
+    validations:
+      required: true
+  - type: input
+    id: deps
+    attributes:
+      label: Dependencies
+      placeholder: E07-01, E10-02
+    validations:
+      required: true
+  - type: dropdown
+    id: estimate
+    attributes:
+      label: Estimate
+      options: [S, M]
+    validations:
+      required: true
+  - type: input
+    id: labels
+    attributes:
+      label: Labels
+      placeholder: area:tasks, governance

@@ -1,0 +1,43 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# REUSE annotations (https://reuse.software). Source files carry their own SPDX-License-Identifier header;
+# this file adds the copyright line and licences files that cannot carry a comment (JSON, lockfiles,
+# fonts, images, generated files). When several annotations match a path, the last one wins.
+version = 1
+
+# ------------------------------------------------------------------ AGPL core and repository tooling
+[[annotations]]
+path = [
+    "services/**", "apps/**", "deploy/**",
+    "uv.lock", "pnpm-lock.yaml", "package.json", "pnpm-workspace.yaml", "pyproject.toml",
+    "tsconfig.base.json", "eslint.config.mjs", "compose.yaml", "REUSE.toml",
+    ".python-version", ".node-version", ".editorconfig", ".gitignore", ".prettierrc.json", ".prettierignore",
+]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2026 HearthOS contributors"
+SPDX-License-Identifier = "AGPL-3.0-or-later"
+
+# ------------------------------------------------------------------ MIT: plugin-facing parts, docs, CI
+[[annotations]]
+path = [
+    "packages/**", "plugins/**", "themes/**", "integrations/**",
+    "scripts/**", "docs/**", ".github/**",
+    "README.md", "AGENTS.md", "CONTRIBUTING.md", "LICENSING.md", "SECURITY.md",
+]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2026 HearthOS contributors"
+SPDX-License-Identifier = "MIT"
+
+# ------------------------------------------------------------------ Contributor Covenant 3.0
+[[annotations]]
+path = "CODE_OF_CONDUCT.md"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "Organization for Ethical Source"
+SPDX-License-Identifier = "CC-BY-SA-4.0"
+
+# ------------------------------------------------------------------ Spec-owned acceptance suite (MIT)
+# "override": the suite's own files mention SPDX strings in test code and fixtures on purpose.
+[[annotations]]
+path = "tests/**"
+precedence = "override"
+SPDX-FileCopyrightText = "2026 HearthOS contributors"
+SPDX-License-Identifier = "MIT"

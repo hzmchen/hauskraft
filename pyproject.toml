@@ -40,6 +40,9 @@ extend-exclude = [
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B", "S", "ASYNC", "PT", "RUF", "TID"]
 
+[tool.ruff.lint.isort]
+known-first-party = ["hearthos_core", "hearthos_sdk", "hearthos_tasks"]
+
 [tool.ruff.lint.flake8-tidy-imports.banned-api]
 # Licence boundary (spec §4.2): plugins import only hearthos_sdk, never core internals.
 "hearthos_core".msg = "Plugins may import only hearthos_sdk, never hearthos_core (spec §4.2)."

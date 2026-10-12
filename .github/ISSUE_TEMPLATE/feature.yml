@@ -1,0 +1,30 @@
+# SPDX-License-Identifier: MIT
+name: Feature request
+description: Suggest a capability. Larger changes become backlog stories after discussion.
+labels: ["type:feature"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: Which household situation is hard today?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposal
+      description: What should HearthOS do? Mention the spec section if one applies.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+  - type: checkboxes
+    id: scope
+    attributes:
+      label: Scope check
+      options:
+        - label: I checked the spec's non-goals and the current milestone's out-of-scope list.
+          required: true
