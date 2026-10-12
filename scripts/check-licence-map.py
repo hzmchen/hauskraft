@@ -92,8 +92,7 @@ def load_annotations(root: Path) -> list[Annotation]:
         expr = entry.get("SPDX-License-Identifier", "")
         exprs = [expr] if isinstance(expr, str) else expr
         ids = frozenset(i for e in exprs for i in licence_ids(e))
-        annotations.append(Annotation(tuple(glob_to_regex(p) for p in paths), ids,
-                                      entry.get("precedence", "closest")))
+        annotations.append(Annotation(tuple(glob_to_regex(p) for p in paths), ids, entry.get("precedence", "closest")))
     return annotations
 
 
@@ -152,15 +151,21 @@ def check(root: Path) -> list[str]:
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("--root", type=Path, default=Path(__file__).resolve().parents[1],
-                        help="repository root to check (default: this repository)")
+    parser.add_argument(
+        "--root",
+        type=Path,
+        default=Path(__file__).resolve().parents[1],
+        help="repository root to check (default: this repository)",
+    )
     args = parser.parse_args(argv)
     problems = check(args.root.resolve())
     for line in problems:
         print(line)
     if problems:
-        print(f"\n{len(problems)} file(s) violate the licence map (spec §4.2). Fix the SPDX header or REUSE.toml.",
-              file=sys.stderr)
+        print(
+            f"\n{len(problems)} file(s) violate the licence map (spec §4.2). Fix the SPDX header or REUSE.toml.",
+            file=sys.stderr,
+        )
         return 1
     print("licence map OK")
     return 0
