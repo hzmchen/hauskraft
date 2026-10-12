@@ -2,7 +2,7 @@
   "$comment": "Single switch per story: 'red' = not done (its acceptance tests are expected to fail), 'green' = done (its tests are hard gates). 'acceptance': 'suite' = spec-owned tests exist in tests/, 'in-story' = the implementer writes the tests first inside the story. Flip to green as the last step of the story's Definition of Done. See docs/testing/README.md.",
   "stories": {
     "M0S-E01-01": {
-      "status": "red",
+      "status": "green",
       "acceptance": "suite"
     },
     "M0S-E01-02": {

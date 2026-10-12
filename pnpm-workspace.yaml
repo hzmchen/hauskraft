@@ -1,0 +1,11 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+packages:
+  - apps/*
+  - packages/sdk-ts
+  - packages/ui
+  - plugins/official/*/web
+  - tests/e2e
+
+# One version per shared dev tool; packages reference it as "catalog:".
+catalog:
+  typescript: ~6.0.3

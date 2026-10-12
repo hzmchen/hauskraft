@@ -1,0 +1,15 @@
+# SPDX-License-Identifier: MIT
+[project]
+name = "hearthos-tasks"
+version = "0.1.0"
+description = "HearthOS official tasks plugin (backend)."
+license = "MIT"
+requires-python = ">=3.13"
+dependencies = ["hearthos-sdk"]
+
+[tool.uv.sources]
+hearthos-sdk = { workspace = true }
+
+[build-system]
+requires = ["hatchling==1.32.4"]
+build-backend = "hatchling.build"
