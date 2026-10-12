@@ -8,4 +8,4 @@ packages:
 
 # One version per shared dev tool; packages reference it as "catalog:".
 catalog:
-  typescript: ~6.0.3
+  typescript: ~7.0.2
