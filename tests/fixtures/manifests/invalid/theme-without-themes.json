@@ -1,0 +1,30 @@
+{
+  "$schema": "../../../../packages/schemas/manifest/hearthos.plugin.schema.json",
+  "id": "org.example.theme.bad",
+  "name": "Bad",
+  "version": "0.1.0",
+  "type": [
+    "theme"
+  ],
+  "hearthos_api": "^0.1.0",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "HearthOS test fixtures"
+    }
+  ],
+  "source": "https://github.com/hearthos/hearthos/tree/main/tests/fixtures/themes/bad",
+  "runtime": {
+    "kind": "declarative"
+  },
+  "capabilities": [],
+  "data_classes": {
+    "reads": [],
+    "writes": [],
+    "emits": []
+  },
+  "contributes": {
+    "themes": []
+  },
+  "$comment": "theme plugins must contribute at least one theme"
+}

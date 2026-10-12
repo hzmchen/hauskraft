@@ -1,0 +1,147 @@
+{
+  "$comment": "Expected `hearthos themes validate --json` outcome per fixture. Each invalid fixture must report at least the listed error codes; valid ones must report no errors and exactly the listed warning codes.",
+  "themes": {
+    "valid-minimal": {
+      "id": "org.example.theme.valid-minimal",
+      "valid": true,
+      "errors": [],
+      "warnings": [],
+      "note": "Passes every rule with zero warnings (also with --strict)."
+    },
+    "warn-partial-icons": {
+      "id": "org.example.theme.warn-partial-icons",
+      "valid": true,
+      "errors": [],
+      "warnings": [
+        "icons.partial"
+      ],
+      "note": "Sprite covers 2 of 17 core names."
+    },
+    "warn-no-preview": {
+      "id": "org.example.theme.warn-no-preview",
+      "valid": true,
+      "errors": [],
+      "warnings": [
+        "preview.missing"
+      ],
+      "note": ""
+    },
+    "warn-no-licence": {
+      "id": "org.example.theme.warn-no-licence",
+      "valid": true,
+      "errors": [],
+      "warnings": [
+        "licence.missing"
+      ],
+      "note": "Bundled font without LICENSES/."
+    },
+    "invalid-low-contrast": {
+      "id": "org.example.theme.invalid-low-contrast",
+      "valid": false,
+      "errors": [
+        "contrast.text"
+      ],
+      "warnings": [],
+      "note": "Light muted-foreground on background is about 1.5:1."
+    },
+    "invalid-border-contrast": {
+      "id": "org.example.theme.invalid-border-contrast",
+      "valid": false,
+      "errors": [
+        "contrast.non_text"
+      ],
+      "warnings": [],
+      "note": "Dark border nearly invisible."
+    },
+    "invalid-missing-token": {
+      "id": "org.example.theme.invalid-missing-token",
+      "valid": false,
+      "errors": [
+        "token.missing"
+      ],
+      "warnings": [],
+      "note": "Dark mode lacks color.ring."
+    },
+    "invalid-css-injection": {
+      "id": "org.example.theme.invalid-css-injection",
+      "valid": false,
+      "errors": [
+        "token.invalid_value"
+      ],
+      "warnings": [],
+      "note": "A colour value that tries to break out of its CSS declaration."
+    },
+    "invalid-alias-cycle": {
+      "id": "org.example.theme.invalid-alias-cycle",
+      "valid": false,
+      "errors": [
+        "token.alias_cycle"
+      ],
+      "warnings": [],
+      "note": ""
+    },
+    "invalid-destructive-like-primary": {
+      "id": "org.example.theme.invalid-destructive-like-primary",
+      "valid": false,
+      "errors": [
+        "distinct.destructive_primary"
+      ],
+      "warnings": [],
+      "note": "Delete would look like Save."
+    },
+    "invalid-schema-css-key": {
+      "id": "org.example.theme.invalid-schema-css-key",
+      "valid": false,
+      "errors": [
+        "schema.invalid"
+      ],
+      "warnings": [],
+      "note": "Raw CSS is never accepted."
+    },
+    "invalid-external-font": {
+      "id": "org.example.theme.invalid-external-font",
+      "valid": false,
+      "errors": [
+        "schema.invalid"
+      ],
+      "warnings": [],
+      "note": "Remote assets are tracking beacons."
+    },
+    "invalid-path-traversal": {
+      "id": "org.example.theme.invalid-path-traversal",
+      "valid": false,
+      "errors": [
+        "schema.invalid"
+      ],
+      "warnings": [],
+      "note": ""
+    },
+    "invalid-bad-font-magic": {
+      "id": "org.example.theme.invalid-bad-font-magic",
+      "valid": false,
+      "errors": [
+        "asset.type"
+      ],
+      "warnings": [],
+      "note": "File named .woff2 without wOF2 magic."
+    },
+    "invalid-svg-script": {
+      "id": "org.example.theme.invalid-svg-script",
+      "valid": false,
+      "errors": [
+        "svg.unsafe"
+      ],
+      "warnings": [],
+      "note": ""
+    },
+    "invalid-manifest-capabilities": {
+      "id": "org.example.theme.invalid-manifest-capabilities",
+      "valid": false,
+      "errors": [
+        "manifest.invalid"
+      ],
+      "warnings": [],
+      "note": "Theme plugins may not request capabilities."
+    }
+  }
+}

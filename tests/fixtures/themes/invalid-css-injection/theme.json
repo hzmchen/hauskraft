@@ -1,0 +1,45 @@
+{
+  "$schema": "../../../../packages/schemas/theme/hearthos.theme.schema.json",
+  "theme_api": "1.0",
+  "name": "Invalid Css Injection",
+  "description": "Acceptance-suite fixture. See tests/fixtures/README.md.",
+  "tokens": {
+    "light": "tokens.light.json",
+    "dark": "tokens.dark.json"
+  },
+  "fonts": [
+    {
+      "family": "Fixture Sans",
+      "src": "assets/fonts/FixtureSans.woff2",
+      "weight": "400",
+      "style": "normal"
+    }
+  ],
+  "components": {
+    "widget": {
+      "chrome": "outlined",
+      "header": "inline"
+    },
+    "button": {
+      "primary": "solid"
+    },
+    "checkbox": {
+      "style": "square"
+    }
+  },
+  "layout": {
+    "navigation": {
+      "wide": "sidebar",
+      "narrow": "drawer"
+    },
+    "density": "comfortable",
+    "content_width": "full"
+  },
+  "preview": {
+    "swatches": [
+      "{color.primary}",
+      "{color.accent}",
+      "{color.background}"
+    ]
+  }
+}

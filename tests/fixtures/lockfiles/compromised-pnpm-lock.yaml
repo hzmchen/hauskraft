@@ -1,0 +1,14 @@
+lockfileVersion: '9.0'
+
+importers:
+  apps/web:
+    dependencies:
+      '@tanstack/react-router':
+        specifier: ^1.169.0
+        version: 1.169.5
+
+packages:
+  '@tanstack/react-router@1.169.5':
+    resolution: {integrity: sha512-fixture}
+  '@tanstack/router-plugin@1.167.41':
+    resolution: {integrity: sha512-fixture}

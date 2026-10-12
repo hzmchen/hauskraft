@@ -1,0 +1,6 @@
+# Acceptance-suite runtime. When M0S-E01-01 creates the uv workspace these pins move into the
+# root `dev` dependency group; until then: python -m pip install -r tests/requirements.txt
+pytest==9.1.1
+jsonschema==4.26.0
+httpx==0.28.1
+PyYAML==6.0.3
