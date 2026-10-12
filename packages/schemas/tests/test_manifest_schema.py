@@ -50,5 +50,6 @@ def test_every_schema_has_an_id_and_spdx_comment() -> None:
     for path in SCHEMAS.rglob("*.schema.json"):
         doc = json.loads(path.read_text())
         assert doc["$schema"] == "https://json-schema.org/draft/2020-12/schema", path
-        assert doc["$id"].startswith("https://hearthos.dev/schema/"), path
+        # Event data schemas use the dataschema URLs from the E10 envelope contract.
+        assert doc["$id"].startswith(("https://hearthos.dev/schema/", "https://schemas.hearthos.org/events/")), path
         assert doc.get("$comment") == SPDX_MIT, path

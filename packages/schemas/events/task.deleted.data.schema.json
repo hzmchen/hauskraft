@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.hearthos.org/events/task.deleted/v1.json",
+  "$comment": "SPDX-License-Identifier: MIT",
+  "title": "hearthos.task.deleted data",
+  "type": "object",
+  "required": ["task"],
+  "additionalProperties": false,
+  "properties": {
+    "task": {
+      "$ref": "https://schemas.hearthos.org/events/task.created/v1.json#/$defs/task"
+    }
+  }
+}
