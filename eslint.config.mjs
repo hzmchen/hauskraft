@@ -22,6 +22,7 @@ export default tseslint.config(
   {
     ignores: [
       "**/node_modules/**",
+      "**/.venv/**",
       "**/dist/**",
       "**/*.gen.ts",
       "packages/sdk-ts/src/client/**",
