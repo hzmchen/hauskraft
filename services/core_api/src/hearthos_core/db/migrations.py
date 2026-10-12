@@ -38,6 +38,7 @@ def version_locations(settings: Settings) -> list[Path]:
 
 def target_metadata(settings: Settings) -> list[MetaData]:
     """Metadata compared by ``alembic check``; plugin metadata joins once plugins load (M0S-E06-03)."""
+    from hearthos_core.db import models  # noqa: F401 - registers the core tables on the metadata
     from hearthos_core.db.base import metadata
 
     return [metadata]

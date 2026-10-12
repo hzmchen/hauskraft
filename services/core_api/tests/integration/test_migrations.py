@@ -94,8 +94,10 @@ def test_upgrade_heads_applies_core_and_plugin_branches_and_round_trips(pg: str,
     settings = _settings(pg, [probe_plugin])
     try:
         migrations.upgrade(settings)
-        assert migrations.script_heads(settings) == {"0001_core_base", "probe_0001"}
-        assert migrations.applied_revisions(settings, _versions(pg)) >= {"0001_core_base", "probe_0001"}
+        heads = migrations.script_heads(settings)
+        assert "probe_0001" in heads
+        assert len(heads) == 2, "one core head plus the probe branch"
+        assert migrations.applied_revisions(settings, _versions(pg)) >= heads | {"0001_core_base"}
         assert "probe_items" in _tables(pg)
         assert migrations.is_at_heads(settings) is True
 
