@@ -5,7 +5,15 @@ version = "0.1.0"
 description = "HearthOS core API (FastAPI)."
 license = "AGPL-3.0-or-later"
 requires-python = ">=3.13"
-dependencies = ["hearthos-sdk"]
+dependencies = [
+    "hearthos-sdk",
+    "fastapi~=0.143.0",
+    "uvicorn[standard]~=0.54.0",
+    "pydantic>=2.12,<3",
+    "pydantic-settings~=2.15",
+    "sqlalchemy[asyncio]~=2.1.4",
+    "psycopg[binary]~=3.3",
+]
 
 [tool.uv.sources]
 hearthos-sdk = { workspace = true }
