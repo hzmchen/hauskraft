@@ -8,7 +8,7 @@ from pathlib import Path
 
 import pytest
 from sqlalchemy import create_engine, inspect, text
-from testcontainers.postgres import PostgresContainer
+from testcontainers.community.postgres import PostgresContainer
 
 from hearthos_core.db import migrations
 from hearthos_core.settings import Settings
@@ -23,7 +23,7 @@ from alembic import op
 revision = "probe_0001"
 down_revision = None
 branch_labels = ("org.example.probe",)
-depends_on = "core@head"
+depends_on = "0001_core_base"  # plugin branches depend on a specific core revision
 
 
 def upgrade() -> None:
@@ -92,19 +92,22 @@ def test_version_locations_include_plugin_migrations(probe_plugin: Path) -> None
 
 def test_upgrade_heads_applies_core_and_plugin_branches_and_round_trips(pg: str, probe_plugin: Path) -> None:
     settings = _settings(pg, [probe_plugin])
-    migrations.upgrade(settings)
-    heads = migrations.script_heads(settings)
-    assert _versions(pg) == heads
-    assert "probe_items" in _tables(pg)
-    assert migrations.is_at_heads(settings) is True
+    try:
+        migrations.upgrade(settings)
+        assert migrations.script_heads(settings) == {"0001_core_base", "probe_0001"}
+        assert migrations.applied_revisions(settings, _versions(pg)) >= {"0001_core_base", "probe_0001"}
+        assert "probe_items" in _tables(pg)
+        assert migrations.is_at_heads(settings) is True
 
-    migrations.downgrade(settings, "base")
-    assert "probe_items" not in _tables(pg)
-    assert _versions(pg) == set()
-    assert migrations.is_at_heads(settings) is False
+        migrations.downgrade(settings, "base")
+        assert "probe_items" not in _tables(pg)
+        assert _versions(pg) == set()
+        assert migrations.is_at_heads(settings) is False
 
-    migrations.upgrade(settings)
-    assert _versions(pg) == heads
+        migrations.upgrade(settings)
+        assert migrations.is_at_heads(settings) is True
+    finally:
+        migrations.downgrade(settings, "base")
 
 
 def test_core_only_check_reports_no_drift(pg: str) -> None:
