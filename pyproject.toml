@@ -70,6 +70,8 @@ warn_required_dynamic_aliases = true
 # Package tests live next to their code (services/*/tests, packages/*/tests, plugins/**/tests) and
 # run separately from the spec-owned suite in tests/, whose conftest requires story markers.
 [tool.pytest.ini_options]
+# `uv run pytest` without arguments runs the package tests; the spec-owned suite runs as `pytest tests`.
+testpaths = ["services", "packages", "plugins"]
 asyncio_mode = "auto"
 asyncio_default_fixture_loop_scope = "function"
 markers = [
