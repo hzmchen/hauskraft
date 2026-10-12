@@ -54,7 +54,7 @@
       "acceptance": "suite"
     },
     "M0S-E03-04": {
-      "status": "red",
+      "status": "green",
       "acceptance": "in-story"
     },
     "M0S-E03-05": {

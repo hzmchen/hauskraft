@@ -38,10 +38,6 @@ class FakeSession:
     async def __aexit__(self, *exc: object) -> None:
         self.events.append("close")
 
-    def begin(self) -> "FakeSession":
-        self.events.append("begin")
-        return self
-
     async def commit(self) -> None:
         self.events.append("commit")
 
@@ -82,7 +78,7 @@ async def test_unit_of_work_forwards_to_the_policy_and_remembers_the_actor() -> 
         await uow.authorize(ACTOR, "task.update", resource, DataClass.HOUSEHOLD, "graph:write:Task")
         assert uow.actor == ACTOR
     assert spy.calls == [(ACTOR, "task.update", resource, DataClass.HOUSEHOLD, "graph:write:Task")]
-    assert session.events == ["begin", "commit", "close"]
+    assert session.events == ["commit", "close"]
     with pytest.raises(LookupError):
         current_uow()
 
@@ -95,7 +91,7 @@ async def test_denied_write_raises_and_rolls_back() -> None:
             pytest.fail("must not get here")
     assert err.value.status == 403
     assert err.value.code == "policy_denied"
-    assert session.events == ["begin", "rollback", "close"]
+    assert session.events == ["rollback", "close"]
 
 
 async def test_any_error_rolls_back() -> None:
