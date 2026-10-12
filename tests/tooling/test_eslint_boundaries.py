@@ -28,7 +28,6 @@ def _rules(source: str, as_path: str = PLUGIN_FILE) -> set[str]:
         capture_output=True,
         text=True,
         check=False,
-        env=env,
     )
     assert proc.returncode in (0, 1), proc.stderr
     return {m.get("ruleId") for r in json.loads(proc.stdout or "[]") for m in r.get("messages", [])}
