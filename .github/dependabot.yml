@@ -1,11 +1,16 @@
 # SPDX-License-Identifier: MIT
 # Weekly, grouped dependency updates (M0S-E02-05). Review lockfile diffs before merging; pnpm's
 # minimumReleaseAge policy and scripts/check-denylist.mjs guard against freshly compromised releases.
+# Major versions are pinned on purpose (stack table in docs/backlog/m0-star/README.md, ADR-0011) and are
+# upgraded deliberately, so Dependabot proposes only minor and patch updates for them.
 version: 2
 updates:
   - package-ecosystem: uv
     directory: /
     schedule: { interval: weekly, day: monday }
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
     groups:
       python:
         patterns: ["*"]
@@ -13,6 +18,12 @@ updates:
   - package-ecosystem: npm
     directory: /
     schedule: { interval: weekly, day: monday }
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
+      # TypeScript stays on ~6.0 until 7.x has a stable compiler API (ADR-0011).
+      - dependency-name: typescript
+        versions: [">=6.1.0"]
     groups:
       npm-dev-tooling:
         dependency-type: development
@@ -29,6 +40,9 @@ updates:
   - package-ecosystem: docker
     directories: ["/services/core_api", "/apps/web"]
     schedule: { interval: weekly, day: monday }
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
     groups:
       images:
         patterns: ["*"]
@@ -36,6 +50,10 @@ updates:
   - package-ecosystem: docker-compose
     directory: /deploy/compose
     schedule: { interval: weekly, day: monday }
+    ignore:
+      # Postgres 16 is the pinned database (stack table, ADR-0009 mentions PG18 only as a later option).
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
     groups:
       compose-images:
         patterns: ["*"]
