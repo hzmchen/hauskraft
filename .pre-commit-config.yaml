@@ -1,0 +1,40 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Install once with `just setup` (runs `pre-commit install`); run everything with `pre-commit run -a`.
+# The spec-owned acceptance suite keeps its own formatting, so hooks that rewrite files skip it.
+exclude: ^(tests/(acceptance|e2e|fixtures|meta|_support)/|tests/conftest\.py$|scripts/backlog_tools\.py$)
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: check-json
+      - id: check-yaml
+        args: ["--allow-multiple-documents"] # pnpm 12 lockfiles hold several YAML documents
+      - id: check-toml
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+        exclude: \.md$
+      - id: check-merge-conflict
+      - id: check-added-large-files
+        args: ["--maxkb=2048"]
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.17.0
+    hooks:
+      - id: ruff-check
+        args: ["--fix"]
+      - id: ruff-format
+
+  - repo: local
+    hooks:
+      - id: prettier
+        name: prettier
+        entry: pnpm exec prettier --write --ignore-unknown
+        language: system
+        types: [text]
+        exclude: (^|/)(pnpm-lock\.yaml|uv\.lock)$
+
+  - repo: https://github.com/fsfe/reuse-tool
+    rev: v6.2.0
+    hooks:
+      - id: reuse

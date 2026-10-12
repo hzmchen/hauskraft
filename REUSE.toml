@@ -4,14 +4,10 @@
 # fonts, images, generated files). When several annotations match a path, the last one wins.
 version = 1
 
-# ------------------------------------------------------------------ AGPL core and repository tooling
+# ------------------------------------------------------------------ Default: AGPL core and repository tooling
+# Matches everything; the more specific annotations below override it.
 [[annotations]]
-path = [
-    "services/**", "apps/**", "deploy/**",
-    "uv.lock", "pnpm-lock.yaml", "package.json", "pnpm-workspace.yaml", "pyproject.toml",
-    "tsconfig.base.json", "eslint.config.mjs", "compose.yaml", "REUSE.toml",
-    ".python-version", ".node-version", ".editorconfig", ".gitignore", ".prettierrc.json", ".prettierignore",
-]
+path = "**"
 precedence = "aggregate"
 SPDX-FileCopyrightText = "2026 HearthOS contributors"
 SPDX-License-Identifier = "AGPL-3.0-or-later"
