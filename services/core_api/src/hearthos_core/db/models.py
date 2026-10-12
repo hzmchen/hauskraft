@@ -101,4 +101,25 @@ class DashboardLayout(Base):
     updated_at: Mapped[dt.datetime] = mapped_column(TIMESTAMPTZ, server_default=func.now(), onupdate=func.now())
 
 
-__all__ = ["DashboardLayout", "DeploymentSetting", "Index", "PluginRecord", "Session", "User", "UserRole"]
+class OutboxEvent(Base):
+    """One CloudEvent per write, appended in the same transaction (ADR-0007). Append-only by trigger."""
+
+    __tablename__ = "outbox_events"
+    __table_args__ = (
+        Index("ix_outbox_events_unpublished", "published_at", postgresql_where=text("published_at IS NULL")),
+        Index("ix_outbox_events_time", text("time DESC")),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True)  # = CloudEvent id
+    type: Mapped[str] = mapped_column(Text)
+    source: Mapped[str] = mapped_column(Text)
+    subject: Mapped[str | None] = mapped_column(Text)
+    data_class: Mapped[str] = mapped_column(Text)
+    actor_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("users.id"))
+    time: Mapped[dt.datetime] = mapped_column(TIMESTAMPTZ)
+    envelope: Mapped[dict[str, Any]] = mapped_column(JSONB)
+    published_at: Mapped[dt.datetime | None] = mapped_column(TIMESTAMPTZ)
+    attempts: Mapped[int] = mapped_column(default=0, server_default=text("0"))
+
+
+__all__ = ["DashboardLayout", "DeploymentSetting", "OutboxEvent", "PluginRecord", "Session", "User", "UserRole"]
