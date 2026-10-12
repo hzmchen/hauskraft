@@ -22,6 +22,13 @@ jobs:
         with:
           enable-cache: true
       - run: uv sync --all-packages --locked
+      # ESLint-based checks need the pnpm workspace (pnpm version comes from package.json packageManager).
+      - uses: pnpm/action-setup@v6.1.0
+      - uses: actions/setup-node@v7.1.0
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
       - name: Validate spec, backlog, story status and coverage
         run: uv run python scripts/backlog_tools.py check
       - name: Static acceptance suite (red stories report as xfail)
