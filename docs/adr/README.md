@@ -1,0 +1,62 @@
+<!-- SPDX-License-Identifier: MIT -->
+# Architecture decision records
+
+HearthOS records architecture decisions as [MADR 4](https://adr.github.io/madr/) files in this folder (ADR-0001). An ADR is required before changing a seam (`authorize()`, the plugin loader, the outbox, `IdentityProvider`), a schema in `packages/schemas`, or the theme contract.
+
+| ADR | Title | Status |
+|---|---|---|
+| [0001](0001-record-architecture-decisions.md) | Record architecture decisions | Accepted |
+| [0002](0002-stack-split.md) | Stack split: Python backend, TypeScript frontend | Accepted |
+| [0003](0003-licence-split.md) | Licence split: AGPL core, MIT plugin-facing parts | Accepted |
+| [0004](0004-in-process-plugin-loader.md) | In-process plugin loader for M0* | Accepted |
+| [0005](0005-auth-for-m0.md) | Auth for M0*: local accounts and server-side sessions | Accepted |
+| [0006](0006-service-layer-authorize-seam.md) | Service layer and `authorize()` seam | Accepted |
+| [0007](0007-cloudevents-transactional-outbox.md) | CloudEvents and a transactional outbox | Accepted |
+| [0008](0008-data-classes-as-tags.md) | Data classes as tags | Accepted |
+| [0009](0009-uuidv7-ids.md) | UUIDv7 IDs generated in the app | Accepted |
+| [0010](0010-client-generation.md) | API client generation with hey-api | Accepted |
+| [0011](0011-typescript-6-0.md) | TypeScript 6.0 for M0* | Accepted |
+| [0012](0012-widget-grid.md) | Widget grid: react-grid-layout v2 | Accepted |
+| [0013](0013-theming.md) | Theming: data-only theme packages and validator thresholds | Accepted |
+| [0014](0014-tdd-spec-owned-acceptance-tests.md) | Test-driven development with spec-owned acceptance tests | Accepted |
+
+## Writing a new ADR
+
+1. Copy the template below to `NNNN-kebab-title.md` with the next free number.
+2. Open it with status `Proposed` in the same PR as the change it justifies; the reviewer sets `Accepted`.
+3. Add a row to the table above. Never rewrite an accepted ADR; supersede it with a new one and set the old one to `Superseded by ADR-NNNN`.
+
+```markdown
+---
+status: Proposed
+date: YYYY-MM-DD
+---
+
+# Title in the imperative or as the chosen option
+
+## Context and problem statement
+
+What forces are at play? Which question does this ADR answer?
+
+## Decision drivers
+
+* …
+
+## Considered options
+
+* Option A
+* Option B
+
+## Decision outcome
+
+Chosen option: "…", because …
+
+### Consequences
+
+* Good, because …
+* Bad, because …
+
+## More information
+
+Links to spec sections, stories and related ADRs.
+```
