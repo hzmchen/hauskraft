@@ -1,0 +1,79 @@
+# SPDX-License-Identifier: MIT
+# Fast PR gate (M0S-E02-01): independent jobs run in parallel; any failure blocks the merge.
+name: ci
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: ./.github/actions/setup
+      - run: uv run ruff check .
+      - run: uv run ruff format --check .
+      - run: pnpm lint
+      - run: pnpm format:check
+
+  typecheck:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: ./.github/actions/setup
+      - run: uv run mypy
+      - run: pnpm typecheck
+
+  unit-py:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: ./.github/actions/setup
+        with:
+          node: "false"
+      # pyproject testpaths point at the package test folders; the spec-owned suite runs in `acceptance`.
+      - run: uv run pytest -m unit -q
+
+  unit-web:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: ./.github/actions/setup
+        with:
+          python: "false"
+      - run: pnpm -r --if-present --filter '!@hearthos/acceptance-e2e' test -- --run
+
+  acceptance:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: ./.github/actions/setup
+      - name: Validate spec, backlog, story status and coverage
+        run: uv run python scripts/backlog_tools.py check
+      - name: Spec-owned acceptance suite (red stories report as xfail)
+        run: uv run python -m pytest tests --strict-status -ra
+
+  links:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - name: Check relative links in Markdown (offline)
+        uses: lycheeverse/lychee-action@v2.9.0
+        with:
+          args: --offline --no-progress --exclude-path node_modules './**/*.md'
+          fail: true

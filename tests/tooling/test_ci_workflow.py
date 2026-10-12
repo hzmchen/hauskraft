@@ -28,9 +28,9 @@ def test_every_job_has_a_timeout_under_eight_minutes() -> None:
 
 
 def test_actions_are_pinned_to_exact_versions() -> None:
-    text = CI.read_text()
-    for line in text.splitlines():
-        if "uses:" in line:
+    texts = [CI.read_text(), (REPO / ".github" / "actions" / "setup" / "action.yml").read_text()]
+    for line in "\n".join(texts).splitlines():
+        if "uses:" in line and "@" in line:  # local actions (./.github/actions/...) have no ref
             ref = line.split("@", 1)[1].split()[0]
             assert ref.count(".") >= 2 or len(ref) == 40, f"pin {line.strip()!r} to an exact release or SHA"
 
