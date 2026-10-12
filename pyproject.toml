@@ -79,3 +79,7 @@ markers = [
     "integration: needs a database (Testcontainers Postgres)",
     "contract: checks schemas and the OpenAPI contract",
 ]
+filterwarnings = [
+    # Starlette 1.7 deprecates httpx in its TestClient in favour of httpx2; FastAPI's TestClient still uses it.
+    "ignore:Using `httpx` with `starlette.testclient` is deprecated",
+]

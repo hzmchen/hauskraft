@@ -42,7 +42,7 @@
       "acceptance": "suite"
     },
     "M0S-E03-01": {
-      "status": "red",
+      "status": "green",
       "acceptance": "in-story"
     },
     "M0S-E03-02": {

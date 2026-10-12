@@ -4,6 +4,7 @@
 import pytest
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
+from starlette.routing import Route
 
 from hearthos_core.app import create_app
 from hearthos_core.settings import Settings
@@ -39,7 +40,8 @@ def test_lifespan_starts_and_stops_without_database() -> None:
 
 def test_every_route_is_under_api_v1() -> None:
     app = create_app(_settings())
-    paths = [getattr(r, "path", "") for r in app.routes]
+    # Plain routes (docs, OpenAPI) are listed directly; included routers show up in the OpenAPI paths.
+    paths = [r.path for r in app.routes if isinstance(r, Route)] + list(app.openapi()["paths"])
     assert paths, "no routes registered"
     assert all(p.startswith("/api/v1/") for p in paths), [p for p in paths if not p.startswith("/api/v1/")]
 

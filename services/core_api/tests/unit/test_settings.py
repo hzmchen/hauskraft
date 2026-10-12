@@ -24,7 +24,8 @@ def test_defaults_are_safe_for_development() -> None:
     s = Settings()
     assert s.env == "development"
     assert s.cookie_secure is False
-    assert s.policy == "noop" and s.auth_provider == "local"
+    assert s.policy == "noop"
+    assert s.auth_provider == "local"
     assert s.default_theme == "org.hearthos.theme.default"
     assert s.secret_key.get_secret_value(), "development gets an ephemeral secret"
     assert s.validate_events is True, "events are validated outside production by default"
@@ -44,7 +45,8 @@ def test_reads_hearthos_prefixed_environment(monkeypatch: pytest.MonkeyPatch) ->
     assert s.allowed_origins == ["http://localhost:8080", "http://tablet.lan:8080"]
     assert s.plugin_paths == [Path("plugins/official"), Path("/data/plugins")]
     assert s.theme_paths == [Path("themes/builtin"), Path("/data/themes")]
-    assert s.seed_demo is True and s.relay_enabled is False
+    assert s.seed_demo is True
+    assert s.relay_enabled is False
 
 
 def test_production_requires_a_secret(monkeypatch: pytest.MonkeyPatch) -> None:
