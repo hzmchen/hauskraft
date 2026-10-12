@@ -108,9 +108,11 @@ def test_request_id_generated_or_echoed(client: TestClient) -> None:
 def test_access_log_is_one_json_line(client: TestClient, caplog: pytest.LogCaptureFixture) -> None:
     caplog.set_level(logging.INFO, logger="hearthos.access")
     client.get("/api/v1/_probe/user", headers={"X-Request-ID": "log-1"})
-    lines = [json.loads(r.getMessage()) for r in caplog.records if r.name == "hearthos.access"]
+    # structlog hands the event dict to the stdlib record; the JSON renderer turns it into one line.
+    lines = [r.msg for r in caplog.records if r.name == "hearthos.access" and isinstance(r.msg, dict)]
     assert lines, "no access log line"
     line = lines[-1]
+    assert line["event"] == "http.request"
     assert line["request_id"] == "log-1"
     assert line["method"] == "GET"
     assert line["path"] == "/api/v1/_probe/user"

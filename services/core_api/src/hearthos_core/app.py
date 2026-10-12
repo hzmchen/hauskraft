@@ -13,6 +13,8 @@ from fastapi import APIRouter, FastAPI
 from fastapi.routing import APIRoute
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 
+from hearthos_core.errors import install_error_handlers
+from hearthos_core.logging import RequestContextMiddleware, configure_logging
 from hearthos_core.settings import Settings, get_settings
 
 API_PREFIX = "/api/v1"
@@ -46,6 +48,7 @@ def build_api_router() -> APIRouter:
 
 def create_app(settings: Settings | None = None) -> FastAPI:
     settings = settings or get_settings()
+    configure_logging(settings.log_level)
     app = FastAPI(
         title="HearthOS core API",
         version=API_VERSION,
@@ -59,5 +62,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.state.settings = settings
     app.state.engine = None
     app.state.sessionmaker = None
+    install_error_handlers(app)
+    app.add_middleware(RequestContextMiddleware)
     app.include_router(build_api_router(), prefix=API_PREFIX)
     return app
