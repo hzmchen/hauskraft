@@ -1,5 +1,7 @@
 {
-  "app": { "name": "HearthOS" },
+  "app": {
+    "name": "HearthOS"
+  },
   "nav": {
     "label": "Main",
     "skip_to_content": "Zum Inhalt springen",
@@ -14,11 +16,20 @@
     "sign_out": "Abmelden",
     "language": "Sprache"
   },
-  "language": { "en": "English", "de": "Deutsch" },
+  "language": {
+    "en": "English",
+    "de": "Deutsch"
+  },
   "errors": {
     "not_found": "Seite nicht gefunden",
     "not_found_hint": "Unter dieser Adresse gibt es nichts.",
     "back_home": "Zurück zu Heute",
     "generic": "Etwas ist schiefgegangen. Bitte versuche es noch einmal."
+  },
+  "mode": {
+    "label": "Farbmodus",
+    "system": "System",
+    "light": "Hell",
+    "dark": "Dunkel"
   }
 }

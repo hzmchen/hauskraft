@@ -1,5 +1,7 @@
 {
-  "app": { "name": "HearthOS" },
+  "app": {
+    "name": "HearthOS"
+  },
   "nav": {
     "label": "Main",
     "skip_to_content": "Skip to content",
@@ -14,11 +16,20 @@
     "sign_out": "Sign out",
     "language": "Language"
   },
-  "language": { "en": "English", "de": "Deutsch" },
+  "language": {
+    "en": "English",
+    "de": "Deutsch"
+  },
   "errors": {
     "not_found": "Page not found",
     "not_found_hint": "There is nothing at this address.",
     "back_home": "Back to Today",
     "generic": "Something went wrong. Please try again."
+  },
+  "mode": {
+    "label": "Colour mode",
+    "system": "System",
+    "light": "Light",
+    "dark": "Dark"
   }
 }

@@ -9,3 +9,5 @@ tests/
 # Hand-off docs at the repo root keep their hand-written layout.
 /*.md
 packages/ui/src/tokens/fallback.css
+# The inline colour-mode script is allowed by its exact hash (apps/web/CSP.md).
+apps/web/index.html

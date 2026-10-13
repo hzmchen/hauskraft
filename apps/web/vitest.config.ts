@@ -7,6 +7,7 @@ import { defineConfig } from "vitest/config";
 export default defineConfig({
   plugins: [react(), tailwindcss()],
   test: {
+    globals: true, // lets Testing Library clean up after each test
     projects: [
       {
         extends: true,
