@@ -6,14 +6,12 @@ from __future__ import annotations
 import ipaddress
 
 from fastapi import APIRouter, Request, Response
-from sqlalchemy import select
 
 from hearthos_core.auth import sessions
 from hearthos_core.auth.csrf import check_origin
 from hearthos_core.auth.deps import CurrentSession, actor_for
-from hearthos_core.auth.passwords import dummy_verify, verify_password
+from hearthos_core.auth.providers import PasswordCredentials
 from hearthos_core.auth.schemas import LoginIn, SessionOut, UserOut
-from hearthos_core.db.models import User
 from hearthos_core.uow import UnitOfWork
 from hearthos_sdk import ResourceRef
 from hearthos_sdk.errors import HearthosError
@@ -74,17 +72,13 @@ async def login(body: LoginIn, request: Request, response: Response) -> SessionO
         raise RateLimitedError(wait)
     uow = UnitOfWork(request.app.state.sessionmaker, request.app.state.policy, request.app.state.settings)
     async with uow:
-        user = (
-            await uow.session.execute(select(User).where(User.username == body.username.strip().lower()))
-        ).scalar_one_or_none()
-        if user is None or not user.is_active:
-            await dummy_verify(body.password)
-            ok, new_hash = False, None
-        else:
-            ok, new_hash = await verify_password(body.password, user.password_hash)
-        if not ok or user is None:
+        ref = await request.app.state.identity_provider.authenticate(
+            uow.session, PasswordCredentials(body.username, body.password)
+        )
+        if ref is None:
             limiter.failed(body.username, ip)
             raise InvalidCredentialsError
+        user, new_hash = ref.user, ref.upgraded_password_hash
         limiter.succeeded(body.username, ip)
         actor = actor_for(user)
         await uow.authorize(actor, "session.create", ResourceRef("Session"), "personal", "auth:login")
