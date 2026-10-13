@@ -35,6 +35,7 @@
 @custom-variant range-middle (&[data-range-middle="true"]);
 @custom-variant range-end (&[data-range-end="true"]);
 @custom-variant has-svg (&:has(> svg));
+@custom-variant current-page (&[aria-current="page"]);
 @custom-variant has-card-action (&:has([data-slot="card-action"]));
 
 /* Theme variants (M0S-E13-02). The shell sets these attributes on <html> from the active theme

@@ -12,8 +12,8 @@ import { DEMO_SESSION, fakeApi, json, problem } from "./test/fakeApi";
 
 function start(path: string) {
   const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
-  const router = createAppRouter({ initialPath: path, queryClient });
-  render(<App router={router} queryClient={queryClient} i18n={createI18n({ lng: "en" })} />);
+  const router = createAppRouter({ initialPath: path, queryClient, i18n: createI18n({ lng: "en" }) });
+  render(<App router={router} queryClient={queryClient} />);
   return { router, queryClient };
 }
 

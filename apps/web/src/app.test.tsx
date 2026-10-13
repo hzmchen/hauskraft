@@ -16,9 +16,8 @@ describe("shell", () => {
     const queryClient = new QueryClient();
     render(
       <App
-        router={createAppRouter({ initialPath: "/", queryClient })}
+        router={createAppRouter({ initialPath: "/", queryClient, i18n: createI18n({ lng: "en" }) })}
         queryClient={queryClient}
-        i18n={createI18n({ lng: "en" })}
       />,
     );
     expect(await screen.findByRole("main")).toBeDefined();
