@@ -10,7 +10,8 @@ from typing import Annotated, Literal
 
 from pydantic import BaseModel, BeforeValidator, ConfigDict, Field, StringConstraints
 
-Title = Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, max_length=200)]
+# PostgreSQL text cannot hold NUL bytes; reject them as 422 instead of failing the insert.
+Title = Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, max_length=200, pattern=r"^[^\x00]*$")]
 ISO_DATE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 
 

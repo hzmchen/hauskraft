@@ -12,7 +12,9 @@ from pydantic import BaseModel, ConfigDict, Field, StringConstraints
 from hearthos_core.db.models import User
 
 Locale = Literal["en", "de"]
-DisplayName = Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, max_length=80)]
+NO_NUL = r"^[^\x00]*$"  # PostgreSQL text cannot hold NUL bytes: 422 instead of a failed query
+DisplayName = Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, max_length=80, pattern=NO_NUL)]
+Username = Annotated[str, Field(min_length=1, max_length=64, pattern=NO_NUL)]
 
 
 class _Model(BaseModel):
@@ -41,7 +43,7 @@ class SessionOut(_Model):
 
 
 class LoginIn(_Model):
-    username: Annotated[str, Field(min_length=1, max_length=64)]
+    username: Username
     password: Annotated[str, Field(min_length=1, max_length=1024)]
 
 
@@ -51,6 +53,6 @@ class MePatch(_Model):
 
 
 class UserCreate(_Model):
-    username: Annotated[str, Field(min_length=1, max_length=64)]
+    username: Username
     display_name: DisplayName
     password: Annotated[str, Field(min_length=1, max_length=1024)]
