@@ -577,11 +577,19 @@ name = "hearthos-tasks"
 version = "0.1.0"
 source = { editable = "plugins/official/tasks/backend" }
 dependencies = [
+    { name = "fastapi" },
     { name = "hearthos-sdk" },
+    { name = "pydantic" },
+    { name = "sqlalchemy", extra = ["asyncio"] },
 ]
 
 [package.metadata]
-requires-dist = [{ name = "hearthos-sdk", editable = "packages/sdk-py" }]
+requires-dist = [
+    { name = "fastapi", specifier = "~=0.143.0" },
+    { name = "hearthos-sdk", editable = "packages/sdk-py" },
+    { name = "pydantic", specifier = ">=2.12,<3" },
+    { name = "sqlalchemy", extras = ["asyncio"], specifier = "~=2.1.4" },
+]
 
 [[package]]
 name = "httpcore"

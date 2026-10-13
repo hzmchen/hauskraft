@@ -18,8 +18,15 @@ if not config.get_main_option("sqlalchemy.url"):
     config.set_main_option("sqlalchemy.url", settings.database_url.replace("%", "%%"))
 
 
+def _include_object(obj: object, name: str | None, type_: str, reflected: bool, compare_to: object) -> bool:
+    """Skip tables a plugin declares only so its foreign keys resolve (core owns them)."""
+    info = getattr(obj, "info", {}) or {}
+    return not (type_ == "table" and info.get("hearthos_reference_only"))
+
+
 def _configure(connection: Connection | None = None) -> None:
     context.configure(
+        include_object=_include_object,
         connection=connection,
         url=None if connection is not None else config.get_main_option("sqlalchemy.url"),
         target_metadata=target_metadata(settings),
