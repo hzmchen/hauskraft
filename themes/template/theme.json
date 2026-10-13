@@ -1,0 +1,41 @@
+{
+  "$schema": "../../../packages/schemas/theme/hearthos.theme.schema.json",
+  "theme_api": "1.0",
+  "name": "My Theme",
+  "description": "Describe the look in one sentence.",
+  "tokens": {
+    "light": "tokens.light.json",
+    "dark": "tokens.dark.json"
+  },
+  "fonts": [
+    {
+      "family": "Inter",
+      "src": "assets/fonts/Inter-Variable.woff2",
+      "weight": "100 900",
+      "style": "normal"
+    }
+  ],
+  "components": {
+    "widget": {
+      "chrome": "outlined",
+      "header": "inline"
+    },
+    "button": {
+      "primary": "solid"
+    },
+    "checkbox": {
+      "style": "square"
+    }
+  },
+  "layout": {
+    "navigation": {
+      "wide": "sidebar",
+      "narrow": "drawer"
+    },
+    "density": "comfortable",
+    "content_width": "full"
+  },
+  "preview": {
+    "swatches": ["{color.background}", "{color.primary}", "{color.accent}", "{color.foreground}"]
+  }
+}

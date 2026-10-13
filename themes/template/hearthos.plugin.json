@@ -1,0 +1,33 @@
+{
+  "$schema": "../../../packages/schemas/manifest/hearthos.plugin.schema.json",
+  "id": "org.example.theme.mytheme",
+  "name": "My Theme",
+  "version": "0.1.0",
+  "description": "Describe the look in one sentence.",
+  "type": ["theme"],
+  "hearthos_api": "^0.1.0",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Your name"
+    }
+  ],
+  "source": "https://example.org/my-theme",
+  "runtime": {
+    "kind": "declarative"
+  },
+  "capabilities": [],
+  "data_classes": {
+    "reads": [],
+    "writes": [],
+    "emits": []
+  },
+  "contributes": {
+    "themes": [
+      {
+        "id": "mytheme",
+        "file": "theme.json"
+      }
+    ]
+  }
+}

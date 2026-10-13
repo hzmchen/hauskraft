@@ -63,8 +63,10 @@ def test_list_shows_validity_and_the_active_theme(monkeypatch: pytest.MonkeyPatc
     monkeypatch.setenv("HEARTHOS_DATABASE_URL", "postgresql+psycopg://x:y@127.0.0.1:9/nowhere")
     result = runner.invoke(app, ["themes", "list"])
     assert result.exit_code == 0, result.output
-    lines = {line.split()[1]: line for line in result.output.splitlines() if line[:1] in ("*", " ") and "." in line}
+    rows = [line for line in result.stdout.splitlines() if line[:2] in ("* ", "  ")]
+    lines = {line[2:].split()[0]: line for line in rows}
     assert lines["org.hearthos.theme.default"].startswith("*"), "Default is active without a stored choice"
     assert "valid" in lines["org.hearthos.theme.paper"]
     assert "invalid" in lines["org.example.theme.invalid-alias-cycle"]
-    assert "database" in result.output.lower(), "say that the stored choice could not be read"
+    assert "database" in result.stdout.lower(), "say that the stored choice could not be read"
+    assert "theme.loaded" not in result.stdout, "logs go to stderr, not into the listing"

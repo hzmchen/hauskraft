@@ -49,7 +49,7 @@ SPDX-License-Identifier = "MIT"
 # ------------------------------------------------------------------ Built-in theme fonts (OFL-1.1, M0S-E13-06)
 # Subsets built by scripts/subset-fonts.py from google/fonts; the licence text is LICENSES/OFL-1.1.txt.
 [[annotations]]
-path = "themes/builtin/default/assets/fonts/Inter-*.woff2"
+path = ["themes/builtin/default/assets/fonts/Inter-*.woff2", "themes/template/assets/fonts/Inter-*.woff2"]
 precedence = "override"
 SPDX-FileCopyrightText = "2020 The Inter Project Authors (https://github.com/rsms/inter)"
 SPDX-License-Identifier = "OFL-1.1"
