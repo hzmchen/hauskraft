@@ -68,6 +68,10 @@
 }
 
 /* Layout helpers the primitives need, named instead of arbitrary values. */
+/* content_width "contained" (spec §10.2.1 C): a readable column, about 80 monospace columns. */
+@utility max-w-content {
+  max-width: 72rem;
+}
 @utility max-w-viewport-gutter {
   max-width: calc(100% - 2rem);
 }

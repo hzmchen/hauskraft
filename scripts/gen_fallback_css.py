@@ -32,7 +32,9 @@ def render() -> str:
     if not report.valid or report.css is None:
         raise SystemExit(f"the Default theme is invalid: {[i.code for i in report.errors]}")
     lines = [line for line in report.css.splitlines() if not line.startswith(("@font-face", "/* "))]
-    return HEADER + "\n".join(lines) + "\n"
+    # A cascade layer, so the active theme's (unlayered) stylesheet always wins, whatever the link order.
+    body = "\n".join("  " + line for line in lines)
+    return HEADER + "@layer hearthos-fallback {\n" + body + "\n}\n"
 
 
 def main() -> int:

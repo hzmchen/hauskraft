@@ -91,8 +91,8 @@ describe("ThemeRuntime", () => {
   });
 
   it("refetches every 60 seconds and on window focus", async () => {
-    const { THEME_QUERY_OPTIONS } = await import("./ThemeRuntime");
-    expect(THEME_QUERY_OPTIONS.refetchInterval).toBe(60_000);
-    expect(THEME_QUERY_OPTIONS.refetchOnWindowFocus).toBe(true);
+    const { themeQueryOptions } = await import("./ThemeRuntime");
+    expect(themeQueryOptions().refetchInterval).toBe(60_000);
+    expect(themeQueryOptions().refetchOnWindowFocus).toBe(true);
   });
 });

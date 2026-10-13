@@ -3,9 +3,11 @@
 // Renderers differ only in presentation; they all get the same model.
 import { useSyncExternalStore, type ComponentType } from "react";
 
+import { BottomTabsNav } from "./BottomTabsNav";
 import { DrawerNav } from "./DrawerNav";
 import type { NavRendererProps } from "./model";
 import { SidebarNav } from "./SidebarNav";
+import { TopbarNav } from "./TopbarNav";
 
 export type NavStyle = "sidebar" | "topbar" | "drawer" | "bottom-tabs";
 export interface NavLayout {
@@ -31,9 +33,11 @@ export function useIsWide(): boolean {
   );
 }
 
-export const RENDERERS: Partial<Record<NavStyle, ComponentType<NavRendererProps>>> = {
+export const RENDERERS: Record<NavStyle, ComponentType<NavRendererProps>> = {
   sidebar: SidebarNav,
+  topbar: TopbarNav,
   drawer: DrawerNav,
+  "bottom-tabs": BottomTabsNav,
 };
 
 export function useNavStyle(layout: NavLayout = DEFAULT_NAV_LAYOUT): NavStyle {
@@ -43,6 +47,6 @@ export function useNavStyle(layout: NavLayout = DEFAULT_NAV_LAYOUT): NavStyle {
 }
 
 export function NavRenderer({ style, items }: NavRendererProps & { style: NavStyle }) {
-  const Renderer = RENDERERS[style] ?? SidebarNav;
+  const Renderer = RENDERERS[style];
   return <Renderer items={items} />;
 }
