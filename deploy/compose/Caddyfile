@@ -1,0 +1,34 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Web front door (M0S-E11-01): the SPA and the API on one origin, so there is no CORS.
+{
+	admin off
+	auto_https off
+}
+
+:8080 {
+	encode zstd gzip
+
+	header {
+		# One inline script (colour mode before first paint) is allowed by hash; see apps/web/CSP.md.
+		# style-src 'unsafe-inline' is needed for react-grid-layout positioning (ADR-0012).
+		Content-Security-Policy "default-src 'self'; script-src 'self' 'sha256-KIh951ASrNEqT/NFVFX9b2OTZvn5mM0OSS49tXdSf/8='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'"
+		X-Content-Type-Options nosniff
+		Referrer-Policy no-referrer
+		-Server
+	}
+
+	handle /api/* {
+		reverse_proxy {$HEARTHOS_API_UPSTREAM:api:8000}
+	}
+
+	handle {
+		root * /srv
+		# Hashed build assets never change; the HTML (any SPA route) is revalidated on every load.
+		@assets path /assets/*
+		header @assets Cache-Control "public, max-age=31536000, immutable"
+		@html not path /assets/*
+		header @html Cache-Control "no-cache"
+		try_files {path} /index.html
+		file_server
+	}
+}

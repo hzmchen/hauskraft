@@ -13,7 +13,7 @@ export function TaskRow({ task, children }: { task: TaskOut; children?: ReactNod
   const { t } = useTranslation("tasks");
   const update = useUpdateTask();
   return (
-    <li className="flex min-h-control items-center gap-2">
+    <li className="flex min-h-9 items-center gap-2">
       <Checkbox
         aria-label={t("a11y.mark_done", { title: task.title })}
         checked={task.done}

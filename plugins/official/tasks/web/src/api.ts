@@ -27,13 +27,17 @@ export function useTaskList(query: { status: Status; sort: Sort; limit?: number;
   return useQuery(tasksListOptions({ query: { limit: 50, ...query } }));
 }
 
+const widgetLists = () =>
+  (["open", "done"] as const).map((status) => tasksListOptions({ query: { limit: 50, status, sort: "-created_at" } }));
+
+/** Load the widget's lists ahead of rendering (PluginWebModule.prefetch). */
+export function prefetchWidget(queryClient: QueryClient): Promise<unknown> {
+  return Promise.all(widgetLists().map((options) => queryClient.ensureQueryData(options)));
+}
+
 /** The widget's open and done lists, suspending until both have loaded so it appears complete at once. */
 export function useOpenAndDone() {
-  const [open, done] = useSuspenseQueries({
-    queries: (["open", "done"] as const).map((status) =>
-      tasksListOptions({ query: { limit: 50, status, sort: "-created_at" } }),
-    ),
-  });
+  const [open, done] = useSuspenseQueries({ queries: widgetLists() });
   return { open: open!, done: done! };
 }
 

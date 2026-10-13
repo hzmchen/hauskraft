@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: MIT
 // What a plugin's web package gives the shell (spec §5, M0S-E06-05). UI primitives come from @hearthos/ui.
+import type { QueryClient } from "@tanstack/react-query";
 import type { ComponentType } from "react";
 
 export type WidgetProps = {
@@ -18,6 +19,11 @@ export type PluginWebModule = {
   locales: Record<"en" | "de", Record<string, unknown>>;
   /** Default SVGs for icon names the plugin introduces. */
   icons?: Record<string, string>;
+  /**
+   * Optional: load the data the plugin's widgets need before the dashboard renders, so widgets appear complete
+   * at once instead of filling in. Called by the shell's Today route; failures are ignored.
+   */
+  prefetch?: (queryClient: QueryClient) => Promise<unknown>;
 };
 
 /** Identity helper that type-checks a plugin's web module. */
