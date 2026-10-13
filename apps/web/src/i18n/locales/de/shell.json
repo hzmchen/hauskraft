@@ -39,5 +39,9 @@
     "submit": "Anmelden",
     "error_credentials": "Falscher Benutzername oder falsches Passwort",
     "error_rate_limited": "Zu viele Versuche. Warte eine Minute und versuche es noch einmal."
+  },
+  "widget": {
+    "unavailable": "Widget nicht verfügbar",
+    "unavailable_hint": "Dieses Widget kann gerade nicht angezeigt werden."
   }
 }

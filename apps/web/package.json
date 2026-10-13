@@ -12,6 +12,7 @@
     "test": "vitest"
   },
   "dependencies": {
+    "@hearthos/plugin-tasks": "workspace:*",
     "@hearthos/sdk-ts": "workspace:*",
     "@hearthos/ui": "workspace:*",
     "@tanstack/react-query": "catalog:",
