@@ -78,6 +78,7 @@ class ThemeRegistry:
     default_id: str = BUILTIN_DEFAULT
     reports: dict[str, ThemeReport] = field(default_factory=dict)
     origins: dict[str, Literal["builtin", "installed"]] = field(default_factory=dict)
+    _fallbacks_logged: set[str] = field(default_factory=set)
 
     def add(self, report: ThemeReport, origin: Literal["builtin", "installed"]) -> None:
         if report.theme_id in self.reports:
@@ -109,6 +110,9 @@ class ThemeRegistry:
         if report is not None and report.valid:
             return report
         chosen = self.fallback()
+        if requested in self._fallbacks_logged:  # the API resolves on every request; say it once
+            return chosen
+        self._fallbacks_logged.add(requested)
         reasons = ["not installed"] if report is None else [f"{i.code}: {i.message}" for i in report.errors]
         _log.warning("theme.fallback", requested=requested, served=chosen.theme_id if chosen else None, reasons=reasons)
         return chosen
