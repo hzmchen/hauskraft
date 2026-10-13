@@ -62,6 +62,15 @@ async def _hearthos_error(_: Request, exc: Exception) -> JSONResponse:
 async def _http_error(_: Request, exc: Exception) -> JSONResponse:
     if not isinstance(exc, StarletteHTTPException):  # pragma: no cover - registered for this type only
         raise exc
+    if exc.status_code == 400 and "parsing the body" in str(exc.detail):
+        # FastAPI answers unparseable JSON bodies with 400; the contract documents 422 for invalid input.
+        return problem(
+            422,
+            "validation_failed",
+            "Validation failed",
+            "The request body is not valid JSON.",
+            errors=[{"loc": ["body"], "msg": "Invalid JSON", "type": "json_invalid"}],
+        )
     code, title = _HTTP_CODES.get(exc.status_code, ("http_error", "HTTP error"))
     detail = exc.detail if isinstance(exc.detail, str) else title
     return problem(exc.status_code, code, title, detail, headers=dict(exc.headers or {}))

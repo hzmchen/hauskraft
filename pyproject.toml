@@ -26,6 +26,7 @@ dev = [
     "pydantic>=2.12",  # loaded by the pydantic.mypy plugin
     "testcontainers[postgres]~=4.15",  # integration tests (M0S-E04-01, M0S-E04-04)
     "types-jsonschema~=4.26",
+    "schemathesis~=4.31",  # API fuzzing in the contract job (M0S-E03-05)
 ]
 
 # ---------------------------------------------------------------- ruff (M0S-E01-02)

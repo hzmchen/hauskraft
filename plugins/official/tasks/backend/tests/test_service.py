@@ -142,7 +142,9 @@ def test_create_validation(body: dict[str, object]) -> None:
         TaskCreate.model_validate(body)
 
 
-@pytest.mark.parametrize("body", [{"title": ""}, {"done": "maybe"}, {"version": 0}, {"unknown": 1}])
+@pytest.mark.parametrize(
+    "body", [{"title": ""}, {"done": "maybe"}, {"done": 1}, {"version": 0}, {"unknown": 1}, {"due_on": 20261013}]
+)
 def test_patch_validation(body: dict[str, object]) -> None:
     with pytest.raises(ValidationError):
         TaskPatch.model_validate(body)
