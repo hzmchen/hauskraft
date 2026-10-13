@@ -1,6 +1,47 @@
 {
   "components": {
     "schemas": {
+      "ActiveTheme": {
+        "additionalProperties": false,
+        "properties": {
+          "components": {
+            "$ref": "#/components/schemas/Components"
+          },
+          "css_url": {
+            "title": "Css Url",
+            "type": "string"
+          },
+          "hash": {
+            "title": "Hash",
+            "type": "string"
+          },
+          "icons": {
+            "$ref": "#/components/schemas/Icons"
+          },
+          "layout": {
+            "$ref": "#/components/schemas/Layout"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "theme_id": {
+            "title": "Theme Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "theme_id",
+          "name",
+          "hash",
+          "css_url",
+          "components",
+          "layout",
+          "icons"
+        ],
+        "title": "ActiveTheme",
+        "type": "object"
+      },
       "ActivityActor": {
         "properties": {
           "display_name": {
@@ -84,6 +125,20 @@
         "title": "ActivityItem",
         "type": "object"
       },
+      "ButtonVariants": {
+        "additionalProperties": false,
+        "properties": {
+          "primary": {
+            "title": "Primary",
+            "type": "string"
+          }
+        },
+        "required": [
+          "primary"
+        ],
+        "title": "ButtonVariants",
+        "type": "object"
+      },
       "CheckResult": {
         "properties": {
           "detail": {
@@ -105,6 +160,41 @@
           "detail"
         ],
         "title": "CheckResult",
+        "type": "object"
+      },
+      "CheckboxVariants": {
+        "additionalProperties": false,
+        "properties": {
+          "style": {
+            "title": "Style",
+            "type": "string"
+          }
+        },
+        "required": [
+          "style"
+        ],
+        "title": "CheckboxVariants",
+        "type": "object"
+      },
+      "Components": {
+        "additionalProperties": false,
+        "properties": {
+          "button": {
+            "$ref": "#/components/schemas/ButtonVariants"
+          },
+          "checkbox": {
+            "$ref": "#/components/schemas/CheckboxVariants"
+          },
+          "widget": {
+            "$ref": "#/components/schemas/WidgetVariants"
+          }
+        },
+        "required": [
+          "widget",
+          "button",
+          "checkbox"
+        ],
+        "title": "Components",
         "type": "object"
       },
       "HTTPValidationError": {
@@ -131,6 +221,82 @@
           "status"
         ],
         "title": "Health",
+        "type": "object"
+      },
+      "Icons": {
+        "additionalProperties": false,
+        "properties": {
+          "names": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Names",
+            "type": "array"
+          },
+          "sprite_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sprite Url"
+          }
+        },
+        "required": [
+          "sprite_url",
+          "names"
+        ],
+        "title": "Icons",
+        "type": "object"
+      },
+      "IssueOut": {
+        "additionalProperties": false,
+        "properties": {
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "message": {
+            "title": "Message",
+            "type": "string"
+          },
+          "path": {
+            "title": "Path",
+            "type": "string"
+          }
+        },
+        "required": [
+          "code",
+          "message",
+          "path"
+        ],
+        "title": "IssueOut",
+        "type": "object"
+      },
+      "Layout": {
+        "additionalProperties": false,
+        "properties": {
+          "content_width": {
+            "title": "Content Width",
+            "type": "string"
+          },
+          "density": {
+            "title": "Density",
+            "type": "string"
+          },
+          "navigation": {
+            "$ref": "#/components/schemas/Navigation"
+          }
+        },
+        "required": [
+          "navigation",
+          "density",
+          "content_width"
+        ],
+        "title": "Layout",
         "type": "object"
       },
       "LoginIn": {
@@ -191,6 +357,44 @@
           }
         },
         "title": "MePatch",
+        "type": "object"
+      },
+      "Navigation": {
+        "additionalProperties": false,
+        "properties": {
+          "narrow": {
+            "title": "Narrow",
+            "type": "string"
+          },
+          "wide": {
+            "title": "Wide",
+            "type": "string"
+          }
+        },
+        "required": [
+          "wide",
+          "narrow"
+        ],
+        "title": "Navigation",
+        "type": "object"
+      },
+      "NavigationStyles": {
+        "additionalProperties": false,
+        "properties": {
+          "narrow": {
+            "title": "Narrow",
+            "type": "string"
+          },
+          "wide": {
+            "title": "Wide",
+            "type": "string"
+          }
+        },
+        "required": [
+          "wide",
+          "narrow"
+        ],
+        "title": "NavigationStyles",
         "type": "object"
       },
       "PluginOut": {
@@ -373,6 +577,31 @@
           "expires_at"
         ],
         "title": "SessionOut",
+        "type": "object"
+      },
+      "Swatches": {
+        "additionalProperties": false,
+        "properties": {
+          "dark": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Dark",
+            "type": "array"
+          },
+          "light": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Light",
+            "type": "array"
+          }
+        },
+        "required": [
+          "light",
+          "dark"
+        ],
+        "title": "Swatches",
         "type": "object"
       },
       "TaskCreate": {
@@ -572,6 +801,131 @@
         "title": "TaskPatch",
         "type": "object"
       },
+      "ThemePreview": {
+        "additionalProperties": false,
+        "properties": {
+          "density": {
+            "title": "Density",
+            "type": "string"
+          },
+          "navigation": {
+            "$ref": "#/components/schemas/NavigationStyles"
+          },
+          "swatches": {
+            "$ref": "#/components/schemas/Swatches"
+          },
+          "widget_chrome": {
+            "title": "Widget Chrome",
+            "type": "string"
+          }
+        },
+        "required": [
+          "swatches",
+          "navigation",
+          "density",
+          "widget_chrome"
+        ],
+        "title": "ThemePreview",
+        "type": "object"
+      },
+      "ThemeSelect": {
+        "additionalProperties": false,
+        "properties": {
+          "theme_id": {
+            "maxLength": 200,
+            "minLength": 1,
+            "pattern": "^[a-z0-9]+(\\.[a-z0-9-]+)+(:[a-z0-9-]+)?$",
+            "title": "Theme Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "theme_id"
+        ],
+        "title": "ThemeSelect",
+        "type": "object"
+      },
+      "ThemeSummary": {
+        "additionalProperties": false,
+        "properties": {
+          "active": {
+            "title": "Active",
+            "type": "boolean"
+          },
+          "authors": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Authors",
+            "type": "array"
+          },
+          "description": {
+            "title": "Description",
+            "type": "string"
+          },
+          "errors": {
+            "items": {
+              "$ref": "#/components/schemas/IssueOut"
+            },
+            "title": "Errors",
+            "type": "array"
+          },
+          "licence": {
+            "title": "Licence",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "origin": {
+            "enum": [
+              "builtin",
+              "installed"
+            ],
+            "title": "Origin",
+            "type": "string"
+          },
+          "preview": {
+            "$ref": "#/components/schemas/ThemePreview"
+          },
+          "theme_id": {
+            "title": "Theme Id",
+            "type": "string"
+          },
+          "valid": {
+            "title": "Valid",
+            "type": "boolean"
+          },
+          "version": {
+            "title": "Version",
+            "type": "string"
+          },
+          "warnings": {
+            "items": {
+              "$ref": "#/components/schemas/IssueOut"
+            },
+            "title": "Warnings",
+            "type": "array"
+          }
+        },
+        "required": [
+          "theme_id",
+          "name",
+          "description",
+          "version",
+          "authors",
+          "licence",
+          "origin",
+          "valid",
+          "errors",
+          "warnings",
+          "active",
+          "preview"
+        ],
+        "title": "ThemeSummary",
+        "type": "object"
+      },
       "UserCreate": {
         "additionalProperties": false,
         "properties": {
@@ -700,6 +1054,25 @@
           "type"
         ],
         "title": "ValidationError",
+        "type": "object"
+      },
+      "WidgetVariants": {
+        "additionalProperties": false,
+        "properties": {
+          "chrome": {
+            "title": "Chrome",
+            "type": "string"
+          },
+          "header": {
+            "title": "Header",
+            "type": "string"
+          }
+        },
+        "required": [
+          "chrome",
+          "header"
+        ],
+        "title": "WidgetVariants",
         "type": "object"
       }
     }
@@ -1062,6 +1435,53 @@
         ]
       }
     },
+    "/api/v1/settings/theme": {
+      "put": {
+        "description": "Set the household theme for every user and device (any adult in M0*).",
+        "operationId": "settings_theme_set",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ThemeSelect"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ThemeSummary"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "409": {
+            "description": "Conflict"
+          },
+          "422": {
+            "description": "Unprocessable Content"
+          }
+        },
+        "summary": "Theme Set",
+        "tags": [
+          "themes"
+        ]
+      }
+    },
     "/api/v1/tasks": {
       "get": {
         "operationId": "tasks_list",
@@ -1315,6 +1735,169 @@
         "summary": "Update",
         "tags": [
           "tasks"
+        ]
+      }
+    },
+    "/api/v1/theme": {
+      "get": {
+        "operationId": "themes_active",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActiveTheme"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "503": {
+            "description": "Service Unavailable"
+          }
+        },
+        "summary": "Active",
+        "tags": [
+          "themes"
+        ]
+      }
+    },
+    "/api/v1/theme/active.css": {
+      "get": {
+        "operationId": "themes_active_css",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "if-none-match",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "If-None-Match"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "text/css": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "304": {
+            "description": "Not Modified"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "503": {
+            "description": "Service Unavailable"
+          }
+        },
+        "summary": "Active Css",
+        "tags": [
+          "themes"
+        ]
+      }
+    },
+    "/api/v1/theme/assets/{theme_id}/{path}": {
+      "get": {
+        "description": "Serve one asset the theme references. ``?h=`` is only a cache key; the URL changes with the hash.",
+        "operationId": "themes_asset",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "theme_id",
+            "required": true,
+            "schema": {
+              "title": "Theme Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "path",
+            "required": true,
+            "schema": {
+              "title": "Path",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "font/woff2": {},
+              "image/avif": {},
+              "image/jpeg": {},
+              "image/png": {},
+              "image/svg+xml": {},
+              "image/webp": {}
+            },
+            "description": "Successful Response"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Asset",
+        "tags": [
+          "themes"
+        ]
+      }
+    },
+    "/api/v1/themes": {
+      "get": {
+        "operationId": "themes_list",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/ThemeSummary"
+                  },
+                  "title": "Response Themes List",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "summary": "List ",
+        "tags": [
+          "themes"
         ]
       }
     },

@@ -3,6 +3,7 @@
 
 import asyncio
 import json
+import logging
 from pathlib import Path
 
 import pytest
@@ -106,3 +107,16 @@ def test_readiness_fails_without_builtin_default(tmp_path: Path) -> None:
     ok, detail = _theme_check(_app(tmp_path, [FIXTURES]))
     assert not ok
     assert "not installed" in detail
+
+
+def test_fallback_is_logged_once_per_choice(tmp_path: Path, caplog: pytest.LogCaptureFixture) -> None:
+    registry = _app(tmp_path, [_builtin_default(tmp_path), FIXTURES]).state.themes
+    caplog.set_level(logging.WARNING, logger="hearthos.themes")
+    for _ in range(3):
+        registry.resolve("org.example.theme.invalid-alias-cycle")
+    registry.resolve("org.example.theme.not-installed")
+    logged = [r.msg for r in caplog.records if isinstance(r.msg, dict) and r.msg.get("event") == "theme.fallback"]
+    assert [m["requested"] for m in logged] == [
+        "org.example.theme.invalid-alias-cycle",
+        "org.example.theme.not-installed",
+    ]
