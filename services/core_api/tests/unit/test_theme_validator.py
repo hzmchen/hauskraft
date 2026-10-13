@@ -218,3 +218,13 @@ def test_hash_changes_with_content(tmp_path: Path) -> None:
 def test_golden_css(tmp_path: Path) -> None:
     golden = Path(__file__).parent / "golden" / "valid-minimal.css"
     assert validate_theme(FIXTURES / "valid-minimal").css == golden.read_text()
+
+
+@pytest.mark.parametrize("name", ["default", "paper", "hackspace"])
+def test_golden_css_builtin(name: str) -> None:
+    """M0S-E13-06: built-in themes compile to their reviewed stylesheet (regenerate on purpose, never blindly)."""
+    report = validate_theme(REPO / "themes" / "builtin" / name)
+    assert report.valid, report.errors
+    assert not report.warnings, report.warnings
+    golden = Path(__file__).parent / "golden" / f"builtin-{name}.css"
+    assert report.css == golden.read_text()

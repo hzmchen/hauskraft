@@ -1,0 +1,47 @@
+{
+  "$schema": "../../../packages/schemas/theme/hearthos.theme.schema.json",
+  "theme_api": "1.0",
+  "name": "Paper",
+  "description": "Ink on paper: high contrast, flat, serif headings and Atkinson Hyperlegible Next body text.",
+  "tokens": {
+    "light": "tokens.light.json",
+    "dark": "tokens.dark.json"
+  },
+  "fonts": [
+    {
+      "family": "Source Serif 4",
+      "src": "assets/fonts/SourceSerif4-Variable.woff2",
+      "weight": "200 900",
+      "style": "normal"
+    },
+    {
+      "family": "Atkinson Hyperlegible Next",
+      "src": "assets/fonts/AtkinsonHyperlegibleNext-Variable.woff2",
+      "weight": "200 800",
+      "style": "normal"
+    }
+  ],
+  "components": {
+    "widget": {
+      "chrome": "flat",
+      "header": "inline"
+    },
+    "button": {
+      "primary": "outline"
+    },
+    "checkbox": {
+      "style": "square"
+    }
+  },
+  "layout": {
+    "navigation": {
+      "wide": "topbar",
+      "narrow": "drawer"
+    },
+    "density": "compact",
+    "content_width": "full"
+  },
+  "preview": {
+    "swatches": ["{color.background}", "{color.primary}", "{color.accent}", "{color.foreground}"]
+  }
+}

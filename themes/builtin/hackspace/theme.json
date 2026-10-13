@@ -1,0 +1,59 @@
+{
+  "$schema": "../../../packages/schemas/theme/hearthos.theme.schema.json",
+  "theme_api": "1.0",
+  "name": "Hackspace",
+  "description": "Underground hackerspace: near-black with phosphor green and magenta, square corners, monospace type and pixel icons; a green-ink printout in light mode.",
+  "tokens": {
+    "light": "tokens.light.json",
+    "dark": "tokens.dark.json"
+  },
+  "fonts": [
+    {
+      "family": "VT323",
+      "src": "assets/fonts/VT323-Regular.woff2",
+      "weight": "400",
+      "style": "normal"
+    },
+    {
+      "family": "JetBrains Mono",
+      "src": "assets/fonts/JetBrainsMono-Variable.woff2",
+      "weight": "100 800",
+      "style": "normal"
+    }
+  ],
+  "icons": {
+    "pack": "assets/icons/sprite.svg",
+    "fallback": "default"
+  },
+  "background": {
+    "light": {
+      "color": "{color.background}"
+    },
+    "dark": {
+      "image": "assets/images/grid-dark.svg"
+    }
+  },
+  "components": {
+    "widget": {
+      "chrome": "tinted",
+      "header": "banner"
+    },
+    "button": {
+      "primary": "solid"
+    },
+    "checkbox": {
+      "style": "square"
+    }
+  },
+  "layout": {
+    "navigation": {
+      "wide": "topbar",
+      "narrow": "bottom-tabs"
+    },
+    "density": "compact",
+    "content_width": "contained"
+  },
+  "preview": {
+    "swatches": ["{color.background}", "{color.primary}", "{color.accent}", "{color.foreground}"]
+  }
+}
