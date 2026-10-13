@@ -1,0 +1,24 @@
+{
+  "app": { "name": "HearthOS" },
+  "nav": {
+    "label": "Main",
+    "skip_to_content": "Zum Inhalt springen",
+    "open_menu": "Menü öffnen",
+    "close_menu": "Menü schließen",
+    "today": "Heute",
+    "activity": "Aktivität",
+    "settings": "Einstellungen"
+  },
+  "account": {
+    "menu": "Kontomenü",
+    "sign_out": "Abmelden",
+    "language": "Sprache"
+  },
+  "language": { "en": "English", "de": "Deutsch" },
+  "errors": {
+    "not_found": "Seite nicht gefunden",
+    "not_found_hint": "Unter dieser Adresse gibt es nichts.",
+    "back_home": "Zurück zu Heute",
+    "generic": "Etwas ist schiefgegangen. Bitte versuche es noch einmal."
+  }
+}
