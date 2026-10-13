@@ -1,12 +1,10 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import { Outlet, createRootRoute } from "@tanstack/react-router";
+import { Outlet, createRootRouteWithContext } from "@tanstack/react-router";
 
-export const Route = createRootRoute({ component: Root });
+import type { RouterContext } from "../router";
+import { NotFound } from "../shell/NotFound";
 
-function Root() {
-  return (
-    <main id="content">
-      <Outlet />
-    </main>
-  );
-}
+export const Route = createRootRouteWithContext<RouterContext>()({
+  component: Outlet,
+  notFoundComponent: NotFound,
+});

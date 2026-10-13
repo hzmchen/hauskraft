@@ -31,5 +31,13 @@
     "system": "System",
     "light": "Hell",
     "dark": "Dunkel"
+  },
+  "login": {
+    "title": "Bei HearthOS anmelden",
+    "username": "Benutzername",
+    "password": "Passwort",
+    "submit": "Anmelden",
+    "error_credentials": "Falscher Benutzername oder falsches Passwort",
+    "error_rate_limited": "Zu viele Versuche. Warte eine Minute und versuche es noch einmal."
   }
 }

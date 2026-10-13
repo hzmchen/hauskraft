@@ -9,6 +9,7 @@ export default defineConfig({
   plugins: [tanstackRouter({ target: "react", autoCodeSplitting: true }), react(), tailwindcss()],
   server: {
     // `pnpm --filter web dev` talks to a local API (`uvicorn … --port 8000`); same origin, so cookies work.
+    // The API checks Origin on writes: add the dev URL to HEARTHOS_ALLOWED_ORIGINS (e.g. http://localhost:5173).
     proxy: { "/api": process.env.HEARTHOS_API_URL ?? "http://127.0.0.1:8000" },
   },
 });
