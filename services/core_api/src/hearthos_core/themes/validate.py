@@ -15,6 +15,7 @@ from typing import Any
 
 from hearthos_core import schemas
 from hearthos_core.themes import dtcg
+from hearthos_core.themes.compile import compile_css
 from hearthos_core.themes.model import ThemeReport
 from hearthos_core.themes.svg_sanitize import problems as svg_problems
 from hearthos_core.themes.svg_sanitize import symbol_ids
@@ -73,8 +74,6 @@ def validate_theme(folder: Path, theme_key: str | None = None) -> ThemeReport:
     _check_warnings(report)
     report.hash = theme_hash(folder)
     if report.valid:
-        from hearthos_core.themes.compile import compile_css
-
         report.css = compile_css(report)
     return report
 
