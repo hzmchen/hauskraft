@@ -13,3 +13,6 @@ export * from "./components/sheet";
 export * from "./components/sonner";
 export * from "./components/tabs";
 export * from "./theme/contract.gen";
+export { Icon, IconProvider, type IconProps } from "./icons/Icon";
+export { DEFAULT_PACK } from "./icons/default-pack";
+export { WidgetFrame, type WidgetFrameProps } from "./widget/WidgetFrame";

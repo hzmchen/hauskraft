@@ -4,6 +4,7 @@
    (/api/v1/theme/active.css); tokens/fallback.css holds the Default theme's values until it loads. */
 @import "tailwindcss";
 @import "tw-animate-css";
+@import "./tokens/theme.css";
 
 @source "./";
 
@@ -36,6 +37,35 @@
 @custom-variant has-svg (&:has(> svg));
 @custom-variant has-card-action (&:has([data-slot="card-action"]));
 
+/* Theme variants (M0S-E13-02). The shell sets these attributes on <html> from the active theme
+   (M0S-E13-05); without them components show the Default theme's variants. Variants change
+   presentation only: roles, names, focus order and keyboard behaviour stay the same. */
+@custom-variant chrome-flat (&:where([data-hearth-chrome="flat"] *));
+@custom-variant chrome-elevated (&:where([data-hearth-chrome="elevated"] *));
+@custom-variant chrome-tinted (&:where([data-hearth-chrome="tinted"] *));
+@custom-variant header-banner (&:where([data-hearth-header="banner"] *));
+@custom-variant button-soft (&:where([data-hearth-button="soft"] *));
+@custom-variant button-outline (&:where([data-hearth-button="outline"] *));
+@custom-variant checkbox-round (&:where([data-hearth-checkbox="round"] *));
+
+/* Density: spacing already scales with --hearth-density (tokens/theme.css); these name the common steps. */
+@utility p-density {
+  padding: calc(var(--spacing) * 4);
+}
+@utility px-density {
+  padding-inline: calc(var(--spacing) * 4);
+}
+@utility gap-density {
+  gap: calc(var(--spacing) * 4);
+}
+@utility h-control {
+  height: calc(var(--spacing) * 9);
+}
+/* A circle regardless of the theme's radius scale (round checkboxes in square-cornered themes). */
+@utility rounded-circle {
+  border-radius: 9999px;
+}
+
 /* Layout helpers the primitives need, named instead of arbitrary values. */
 @utility max-w-viewport-gutter {
   max-width: calc(100% - 2rem);
@@ -48,92 +78,6 @@
 }
 @utility calendar-cell-size {
   --cell-size: calc(var(--spacing) * 8);
-}
-
-/* Tailwind theme → HearthOS tokens. shadcn variable names are aliases the theme compiler emits. */
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-card: var(--card);
-  --color-card-foreground: var(--card-foreground);
-  --color-popover: var(--popover);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-secondary: var(--secondary);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-destructive: var(--destructive);
-  --color-destructive-foreground: var(--destructive-foreground);
-  --color-border: var(--border);
-  --color-input: var(--input);
-  --color-ring: var(--ring);
-  --color-chart-1: var(--chart-1);
-  --color-chart-2: var(--chart-2);
-  --color-chart-3: var(--chart-3);
-  --color-chart-4: var(--chart-4);
-  --color-chart-5: var(--chart-5);
-  --color-chart-6: var(--hearth-color-chart-6);
-  --color-sidebar: var(--sidebar);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-ring: var(--sidebar-ring);
-
-  /* HearthOS roles without a shadcn name. */
-  --color-surface: var(--hearth-color-surface);
-  --color-surface-foreground: var(--hearth-color-surface-foreground);
-  --color-overlay: var(--hearth-color-overlay);
-  --color-success: var(--hearth-color-success);
-  --color-success-foreground: var(--hearth-color-success-foreground);
-  --color-warning: var(--hearth-color-warning);
-  --color-warning-foreground: var(--hearth-color-warning-foreground);
-  --color-info: var(--hearth-color-info);
-  --color-info-foreground: var(--hearth-color-info-foreground);
-  --color-nav: var(--hearth-color-nav-background);
-  --color-nav-foreground: var(--hearth-color-nav-foreground);
-  --color-nav-active: var(--hearth-color-nav-active);
-  --color-nav-active-foreground: var(--hearth-color-nav-active-foreground);
-  --color-widget: var(--hearth-color-widget-background);
-  --color-widget-foreground: var(--hearth-color-widget-foreground);
-  --color-widget-border: var(--hearth-color-widget-border);
-
-  --font-sans: var(--hearth-font-sans);
-  --font-heading: var(--hearth-font-heading);
-  --font-mono: var(--hearth-font-mono);
-  --text-xs: var(--hearth-font-size-xs);
-  --text-sm: var(--hearth-font-size-sm);
-  --text-base: var(--hearth-font-size-base);
-  --text-lg: var(--hearth-font-size-lg);
-  --text-xl: var(--hearth-font-size-xl);
-  --text-2xl: var(--hearth-font-size-2xl);
-  --text-3xl: var(--hearth-font-size-3xl);
-  --font-weight-normal: var(--hearth-font-weight-regular);
-  --font-weight-medium: var(--hearth-font-weight-medium);
-  --font-weight-bold: var(--hearth-font-weight-bold);
-  --leading-tight: var(--hearth-line-height-tight);
-  --leading-normal: var(--hearth-line-height-normal);
-
-  --radius-sm: var(--hearth-radius-sm);
-  --radius-md: var(--hearth-radius-md);
-  --radius-lg: var(--hearth-radius-lg);
-  --radius-xl: var(--hearth-radius-xl);
-  --radius-full: var(--hearth-radius-full);
-
-  /* Density scales every spacing utility (spec §10.2.1 C). */
-  --spacing: calc(var(--hearth-space-unit) * var(--hearth-density));
-
-  --shadow-sm: var(--hearth-shadow-sm);
-  --shadow-md: var(--hearth-shadow-md);
-  --shadow-lg: var(--hearth-shadow-lg);
-  --default-transition-duration: var(--hearth-duration-normal);
-  --default-transition-timing-function: var(--hearth-easing-standard);
 }
 
 /* Sonner reads these; set from tokens here instead of inline styles. */
@@ -157,5 +101,16 @@
   h2,
   h3 {
     @apply font-heading;
+  }
+}
+
+/* Motion: themes set durations to 0 under reduced motion; this also stops library animations. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0s !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0s !important;
   }
 }

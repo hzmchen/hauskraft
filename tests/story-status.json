@@ -214,7 +214,7 @@
       "acceptance": "suite"
     },
     "M0S-E13-02": {
-      "status": "red",
+      "status": "green",
       "acceptance": "in-story"
     },
     "M0S-E13-03": {
