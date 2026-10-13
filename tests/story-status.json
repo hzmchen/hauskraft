@@ -182,7 +182,7 @@
       "acceptance": "in-story"
     },
     "M0S-E10-03": {
-      "status": "red",
+      "status": "green",
       "acceptance": "suite"
     },
     "M0S-E11-01": {
