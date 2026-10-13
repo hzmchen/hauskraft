@@ -82,7 +82,7 @@
       "acceptance": "suite"
     },
     "M0S-E05-02": {
-      "status": "red",
+      "status": "green",
       "acceptance": "suite"
     },
     "M0S-E05-03": {
@@ -106,11 +106,11 @@
       "acceptance": "in-story"
     },
     "M0S-E06-03": {
-      "status": "red",
+      "status": "green",
       "acceptance": "suite"
     },
     "M0S-E06-04": {
-      "status": "red",
+      "status": "green",
       "acceptance": "suite"
     },
     "M0S-E06-05": {
@@ -126,7 +126,7 @@
       "acceptance": "suite"
     },
     "M0S-E07-02": {
-      "status": "red",
+      "status": "green",
       "acceptance": "suite"
     },
     "M0S-E07-03": {
@@ -222,7 +222,7 @@
       "acceptance": "suite"
     },
     "M0S-E13-04": {
-      "status": "red",
+      "status": "green",
       "acceptance": "suite"
     },
     "M0S-E13-05": {
