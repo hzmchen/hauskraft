@@ -46,9 +46,10 @@ async def _authorize(ctx: PluginContext, actor: Actor, verb: str, task_id: uuid.
     )
 
 
-async def create_task(ctx: PluginContext, actor: Actor, body: TaskCreate) -> Task:
+async def create_task(ctx: PluginContext, actor: Actor, body: TaskCreate, *, task_id: uuid.UUID | None = None) -> Task:
+    """Create a task; ``task_id`` is only set by the demo seed (deterministic ids make it idempotent)."""
     async with ctx.db_session() as session:
-        task_id = uuid.uuid4()
+        task_id = task_id or uuid.uuid4()
         await _authorize(ctx, actor, "create", task_id)
         now = dt.datetime.now(dt.UTC)
         task = Task(
