@@ -25,6 +25,7 @@ dev = [
     "pytest-asyncio==1.4.0",
     "pydantic>=2.12",  # loaded by the pydantic.mypy plugin
     "testcontainers[postgres]~=4.15",  # integration tests (M0S-E04-01, M0S-E04-04)
+    "types-jsonschema~=4.26",
 ]
 
 # ---------------------------------------------------------------- ruff (M0S-E01-02)

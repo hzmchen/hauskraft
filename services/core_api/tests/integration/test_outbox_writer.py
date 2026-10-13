@@ -3,7 +3,6 @@
 
 import datetime as dt
 import uuid
-from collections.abc import AsyncIterator
 
 import pytest
 from sqlalchemy import select
@@ -24,11 +23,11 @@ TASK_ID = uuid.UUID("0199f3a2-6c1d-7c55-8a10-3e2b9f4c0d21")
 
 
 @pytest.fixture
-async def actor(db_session: AsyncSession) -> AsyncIterator[Actor]:
+async def actor(db_session: AsyncSession) -> Actor:
     user = User(username=f"outbox{uuid.uuid4().hex[:6]}", display_name="Outbox Adult", password_hash="x")
     db_session.add(user)
     await db_session.flush()
-    yield Actor(id=str(user.id), role="adult", display_name="Outbox Adult")
+    return Actor(id=str(user.id), role="adult", display_name="Outbox Adult")
 
 
 def _uow(db_session: AsyncSession, settings: Settings) -> UnitOfWork:
