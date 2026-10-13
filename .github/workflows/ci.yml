@@ -70,9 +70,8 @@ jobs:
         run: |
           just gen
           git diff --exit-code
-      - name: Built-in themes validate (once the theme CLI exists, M0S-E13-09)
-        run: |
-          if uv run hearthos themes --help >/dev/null 2>&1; then just themes-validate; else echo "hearthos themes CLI not available yet"; fi
+      - name: Built-in themes and template validate, guide doc-test (M0S-E13-09)
+        run: just themes-validate
 
   acceptance:
     runs-on: ubuntu-latest

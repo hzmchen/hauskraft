@@ -94,9 +94,10 @@ acceptance *args:
 demo:
     docker compose up --build --wait
 
-# Validate the built-in themes (M0S-E13-09)
+# Validate the built-in themes and the template, and doc-test the authoring guide (M0S-E13-09)
 themes-validate *args:
-    uv run hearthos themes validate --strict {{ args }} themes/builtin/*
+    for theme in themes/builtin/*/ themes/template/; do uv run hearthos themes validate --strict {{ args }} "$theme" || exit 1; done
+    uv run python scripts/check-theme-docs.py
 
 # lint + typecheck + unit tests
 check: lint typecheck test
