@@ -34,7 +34,13 @@ metadata = MetaData(
 
 # Core's users table, declared only so foreign keys resolve. It is never created or compared from here
 # (``info["hearthos_reference_only"]``); core owns it.
-users = Table("users", metadata, Column("id", Uuid, primary_key=True), info={"hearthos_reference_only": True})
+users = Table(
+    "users",
+    metadata,
+    Column("id", Uuid, primary_key=True),
+    Column("display_name", Text),
+    info={"hearthos_reference_only": True},
+)
 
 TIMESTAMPTZ = DateTime(timezone=True)
 
