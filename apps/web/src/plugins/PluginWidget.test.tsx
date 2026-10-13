@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 import type { PluginWebModule } from "@hearthos/sdk-ts";
-import { render, screen } from "@testing-library/react";
+import { act, render, screen } from "@testing-library/react";
 import { I18nextProvider } from "react-i18next";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
@@ -13,20 +13,23 @@ const ok: PluginWebModule = {
   locales: { en: { title: "Tasks" }, de: { title: "Aufgaben" } },
 };
 
-function show(loaders: PluginLoaders, enabled: string[], widgetId = "tasks.list") {
+async function show(loaders: PluginLoaders, enabled: string[], widgetId = "tasks.list") {
   const i18n = createI18n({ lng: "en" });
-  render(
-    <I18nextProvider i18n={i18n}>
-      <PluginWidget
-        loaders={loaders}
-        enabled={new Set(enabled)}
-        pluginId="org.hearthos.tasks"
-        widgetId={widgetId}
-        instanceId="w1"
-        size={{ w: 4, h: 6 }}
-      />
-    </I18nextProvider>,
-  );
+  // React 19: a component that suspends on first render needs an awaited act().
+  await act(async () => {
+    render(
+      <I18nextProvider i18n={i18n}>
+        <PluginWidget
+          loaders={loaders}
+          enabled={new Set(enabled)}
+          pluginId="org.hearthos.tasks"
+          widgetId={widgetId}
+          instanceId="w1"
+          size={{ w: 4, h: 6 }}
+        />
+      </I18nextProvider>,
+    );
+  });
   return i18n;
 }
 
@@ -34,7 +37,7 @@ afterEach(() => vi.restoreAllMocks());
 
 describe("PluginWidget", () => {
   it("renders an enabled plugin's widget and registers its strings", async () => {
-    const i18n = show({ "org.hearthos.tasks": async () => ({ default: ok }) }, ["org.hearthos.tasks"]);
+    const i18n = await show({ "org.hearthos.tasks": async () => ({ default: ok }) }, ["org.hearthos.tasks"]);
     expect(await screen.findByText("widget w1")).toBeDefined();
     expect(i18n.t("tasks:title")).toBe("Tasks");
   });
@@ -49,7 +52,7 @@ describe("PluginWidget", () => {
       "nope",
     ],
   ] as const)("shows 'Widget unavailable' when %s", async (_, loaders, enabled, widgetId) => {
-    show(loaders as PluginLoaders, [...enabled], widgetId);
+    await show(loaders as PluginLoaders, [...enabled], widgetId);
     expect(await screen.findByRole("region", { name: "Widget unavailable" })).toBeDefined();
   });
 
@@ -63,7 +66,7 @@ describe("PluginWidget", () => {
         },
       },
     };
-    show({ "org.hearthos.tasks": async () => ({ default: broken }) }, ["org.hearthos.tasks"]);
+    await show({ "org.hearthos.tasks": async () => ({ default: broken }) }, ["org.hearthos.tasks"]);
     expect(await screen.findByRole("region", { name: "Widget unavailable" })).toBeDefined();
   });
 });

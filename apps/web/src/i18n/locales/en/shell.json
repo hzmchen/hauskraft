@@ -39,5 +39,9 @@
     "submit": "Sign in",
     "error_credentials": "Wrong username or password",
     "error_rate_limited": "Too many attempts. Wait a minute and try again."
+  },
+  "widget": {
+    "unavailable": "Widget unavailable",
+    "unavailable_hint": "This widget can't be shown right now."
   }
 }

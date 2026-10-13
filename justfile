@@ -71,7 +71,7 @@ gen-client:
 
 # Generate the build-time web plugin registry (M0S-E06-06)
 gen-plugins:
-    {{ if path_exists("scripts/gen-plugin-registry.mjs") == "true" { "node scripts/gen-plugin-registry.mjs" } else { "echo 'gen-plugins: not implemented yet (M0S-E06-06)'" } }}
+    node scripts/gen-plugin-registry.mjs
 
 # Generate theme types from packages/schemas/theme (M0S-E13-01)
 gen-theme-types:

@@ -4,10 +4,27 @@
   "private": true,
   "license": "MIT",
   "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
   "scripts": {
     "typecheck": "tsc --noEmit"
   },
+  "dependencies": {
+    "@hearthos/sdk-ts": "workspace:*",
+    "@hearthos/ui": "workspace:*"
+  },
+  "peerDependencies": {
+    "@tanstack/react-query": "^5.104.0",
+    "react": "^19.3.0",
+    "react-i18next": "^17.0.0"
+  },
   "devDependencies": {
+    "@tanstack/react-query": "catalog:",
+    "@types/react": "catalog:",
+    "react": "catalog:",
+    "react-i18next": "catalog:",
+    "i18next": "catalog:",
     "typescript": "catalog:"
   }
 }
