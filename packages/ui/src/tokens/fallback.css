@@ -206,9 +206,5 @@
   --hearth-app-bg-color: var(--hearth-color-background);
 }
 @media (prefers-reduced-motion: reduce) {
-  :root,
-  :root.dark {
-    --hearth-duration-fast: 0ms;
-    --hearth-duration-normal: 0ms;
-  }
+  :root, :root.dark { --hearth-duration-fast: 0ms; --hearth-duration-normal: 0ms; }
 }
