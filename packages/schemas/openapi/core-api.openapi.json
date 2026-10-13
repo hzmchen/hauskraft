@@ -145,6 +145,7 @@
           "username": {
             "maxLength": 64,
             "minLength": 1,
+            "pattern": "^[^\\x00]*$",
             "title": "Username",
             "type": "string"
           }
@@ -164,6 +165,7 @@
               {
                 "maxLength": 80,
                 "minLength": 1,
+                "pattern": "^[^\\x00]*$",
                 "type": "string"
               },
               {
@@ -391,6 +393,7 @@
           "title": {
             "maxLength": 200,
             "minLength": 1,
+            "pattern": "^[^\\x00]*$",
             "title": "Title",
             "type": "string"
           }
@@ -544,6 +547,7 @@
               {
                 "maxLength": 200,
                 "minLength": 1,
+                "pattern": "^[^\\x00]*$",
                 "type": "string"
               },
               {
@@ -574,6 +578,7 @@
           "display_name": {
             "maxLength": 80,
             "minLength": 1,
+            "pattern": "^[^\\x00]*$",
             "title": "Display Name",
             "type": "string"
           },
@@ -586,6 +591,7 @@
           "username": {
             "maxLength": 64,
             "minLength": 1,
+            "pattern": "^[^\\x00]*$",
             "title": "Username",
             "type": "string"
           }
