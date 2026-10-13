@@ -82,6 +82,9 @@ def test_entrypoint_registers(db_settings: Any) -> None:
         async def current_actor(self) -> None:
             return None
 
+        def db_session(self) -> None:
+            return None
+
     registration = plugin.register(Ctx())  # type: ignore[arg-type]
     assert isinstance(registration, PluginRegistration)
     assert registration.metadata is metadata
