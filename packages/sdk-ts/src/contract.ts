@@ -20,8 +20,8 @@ export type PluginWebModule = {
   /** Default SVGs for icon names the plugin introduces. */
   icons?: Record<string, string>;
   /**
-   * Optional: load the data the plugin's widgets need before the dashboard renders, so widgets appear complete
-   * at once instead of filling in. Called by the shell's Today route; failures are ignored.
+   * Optional: load the data the plugin's widgets and pages show by default before they render, so they appear
+   * complete at once instead of filling in. Called by the shell's Today and plugin-page routes; failures are ignored.
    */
   prefetch?: (queryClient: QueryClient) => Promise<unknown>;
 };

@@ -11,6 +11,7 @@ import {
 } from "@hearthos/sdk-ts";
 import { toast } from "@hearthos/ui";
 import {
+  keepPreviousData,
   useMutation,
   useQuery,
   useQueryClient,
@@ -23,16 +24,22 @@ import { useTranslation } from "react-i18next";
 export type Status = "open" | "done" | "all";
 export type Sort = "-created_at" | "due_on";
 
-export function useTaskList(query: { status: Status; sort: Sort; limit?: number; offset?: number }) {
-  return useQuery(tasksListOptions({ query: { limit: 50, ...query } }));
+type ListQuery = { status: Status; sort: Sort; limit?: number; offset?: number };
+const listOptions = (query: ListQuery) => tasksListOptions({ query: { limit: 50, offset: 0, ...query } });
+
+/** One task list. Keeps showing the previous result while a new filter or sort loads (no empty flash); the
+ * first render finds the default list prefetched by the shell. */
+export function useTaskList(query: ListQuery) {
+  return useQuery({ ...listOptions(query), placeholderData: keepPreviousData });
 }
 
 const widgetLists = () =>
   (["open", "done"] as const).map((status) => tasksListOptions({ query: { limit: 50, status, sort: "-created_at" } }));
 
-/** Load the widget's lists ahead of rendering (PluginWebModule.prefetch). */
-export function prefetchWidget(queryClient: QueryClient): Promise<unknown> {
-  return Promise.all(widgetLists().map((options) => queryClient.ensureQueryData(options)));
+/** Load what the widget and the All tasks page show by default, ahead of rendering (PluginWebModule.prefetch). */
+export function prefetchTasks(queryClient: QueryClient): Promise<unknown> {
+  const page = listOptions({ status: "open", sort: "-created_at" });
+  return Promise.all([...widgetLists(), page].map((options) => queryClient.ensureQueryData(options)));
 }
 
 /** The widget's open and done lists, suspending until both have loaded so it appears complete at once. */
@@ -142,7 +149,8 @@ export function useUpdateTask() {
     },
     onSettled: invalidate,
   });
-  return (taskId: string, body: TaskPatch) => mutation.mutate({ path: { task_id: taskId }, body });
+  return (taskId: string, body: TaskPatch, onSettled?: () => void) =>
+    mutation.mutate({ path: { task_id: taskId }, body }, onSettled ? { onSettled } : undefined);
 }
 
 export function useDeleteTask() {

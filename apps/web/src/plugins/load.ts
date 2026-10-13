@@ -26,7 +26,13 @@ export function ensurePluginLocales(i18n: I18n, pluginId: string, module: Plugin
 export function pluginModulePromise(loader: Loader): Promise<PluginWebModule> {
   let promise = modules.get(loader);
   if (!promise) {
-    promise = loader().then(({ default: module }) => module);
+    const pending = loader().then(({ default: module }) => {
+      // React's thenable protocol: with status and value set, use() returns at once instead of suspending
+      // for a tick on an already-loaded module (which would flash the widget's loading frame).
+      Object.assign(pending, { status: "fulfilled", value: module });
+      return module;
+    });
+    promise = pending;
     modules.set(loader, promise);
   }
   return promise;
