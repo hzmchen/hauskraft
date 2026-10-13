@@ -7,8 +7,12 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { fakeApi, json, page, renderWithPlugin, task } from "../test/harness";
 import { TasksPage } from "./TasksPage";
 
-function host(search: Record<string, string> = {}): Host & { setSearch: ReturnType<typeof vi.fn> } {
-  return { navigate: vi.fn(), search, setSearch: vi.fn() };
+function host(search: Record<string, string> = {}) {
+  return {
+    navigate: vi.fn<Host["navigate"]>(),
+    search,
+    setSearch: vi.fn<Host["setSearch"]>(),
+  } satisfies Host;
 }
 
 async function show(h: Host, routes: Parameters<typeof fakeApi>[0]) {
