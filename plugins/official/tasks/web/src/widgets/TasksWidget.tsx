@@ -49,6 +49,7 @@ export function TasksWidget({ instanceId }: WidgetProps) {
         <p className="text-muted-foreground">{t("list.empty_open")}</p>
       ) : null}
       <div className="flex flex-wrap items-center justify-between gap-2">
+        <span className="text-sm text-muted-foreground">{t("open_count", { count: open.data?.total ?? 0 })}</span>
         <Button variant="ghost" size="sm" aria-expanded={showDone} onClick={() => setShowDone(!showDone)}>
           <Icon name="status.done" />
           {t(showDone ? "hide_done" : "show_done", { count: doneCount })}

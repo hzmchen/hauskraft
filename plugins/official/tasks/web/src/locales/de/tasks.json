@@ -1,0 +1,65 @@
+{
+  "widget": {
+    "title": "Aufgaben"
+  },
+  "page": {
+    "title": "Aufgaben"
+  },
+  "add": {
+    "label": "Aufgabe hinzufügen",
+    "placeholder": "Aufgabe hinzufügen …",
+    "submit": "Hinzufügen"
+  },
+  "list": {
+    "open": "Offene Aufgaben",
+    "done": "Erledigte Aufgaben",
+    "empty_open": "Nichts zu tun."
+  },
+  "show_done": "Erledigte anzeigen ({{count}})",
+  "hide_done": "Erledigte ausblenden ({{count}})",
+  "all_tasks": "Alle Aufgaben",
+  "due": {
+    "overdue": "Überfällig",
+    "today": "Heute",
+    "on": "Fällig {{date}}"
+  },
+  "a11y": {
+    "mark_done": "'{{title}}' als erledigt markieren",
+    "edit": "'{{title}}' bearbeiten",
+    "title_input": "Titel der Aufgabe"
+  },
+  "errors": {
+    "save": "Die Aufgabe konnte nicht gespeichert werden. Bitte versuche es noch einmal."
+  },
+  "page_heading": "Alle Aufgaben",
+  "filter": {
+    "open": "Offen",
+    "done": "Erledigt",
+    "all": "Alle"
+  },
+  "sort": {
+    "label": "Sortieren nach",
+    "created": "Erstellt",
+    "due": "Fälligkeitsdatum"
+  },
+  "due_input": {
+    "set": "Fälligkeitsdatum für '{{title}}'",
+    "clear": "Fälligkeitsdatum für '{{title}}' entfernen"
+  },
+  "delete": {
+    "button": "'{{title}}' löschen",
+    "title": "Aufgabe löschen?",
+    "body": "'{{title}}' wird für alle im Haushalt entfernt.",
+    "confirm": "Löschen",
+    "cancel": "Abbrechen"
+  },
+  "empty": "Noch keine Aufgaben",
+  "pagination": {
+    "label": "Seiten",
+    "previous": "Vorherige Seite",
+    "next": "Nächste Seite",
+    "status": "Seite {{page}} von {{pages}}"
+  },
+  "open_count_one": "{{count}} offen",
+  "open_count_other": "{{count}} offen"
+}

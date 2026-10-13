@@ -1,0 +1,65 @@
+{
+  "widget": {
+    "title": "Tasks"
+  },
+  "page": {
+    "title": "Tasks"
+  },
+  "add": {
+    "label": "Add a task",
+    "placeholder": "Add a task…",
+    "submit": "Add"
+  },
+  "list": {
+    "open": "Open tasks",
+    "done": "Done tasks",
+    "empty_open": "Nothing to do."
+  },
+  "show_done": "Show done ({{count}})",
+  "hide_done": "Hide done ({{count}})",
+  "all_tasks": "All tasks",
+  "due": {
+    "overdue": "Overdue",
+    "today": "Today",
+    "on": "Due {{date}}"
+  },
+  "a11y": {
+    "mark_done": "Mark '{{title}}' as done",
+    "edit": "Edit '{{title}}'",
+    "title_input": "Task title"
+  },
+  "errors": {
+    "save": "Couldn't save the task. Please try again."
+  },
+  "page_heading": "All tasks",
+  "filter": {
+    "open": "Open",
+    "done": "Done",
+    "all": "All"
+  },
+  "sort": {
+    "label": "Sort by",
+    "created": "Created",
+    "due": "Due date"
+  },
+  "due_input": {
+    "set": "Due date for '{{title}}'",
+    "clear": "Clear due date for '{{title}}'"
+  },
+  "delete": {
+    "button": "Delete '{{title}}'",
+    "title": "Delete task?",
+    "body": "'{{title}}' will be removed for everyone in the household.",
+    "confirm": "Delete",
+    "cancel": "Cancel"
+  },
+  "empty": "No tasks yet",
+  "pagination": {
+    "label": "Pagination",
+    "previous": "Previous page",
+    "next": "Next page",
+    "status": "Page {{page}} of {{pages}}"
+  },
+  "open_count_one": "{{count}} open",
+  "open_count_other": "{{count}} open"
+}
