@@ -23,6 +23,8 @@ from hearthos_core.logging import RequestContextMiddleware, configure_logging, g
 from hearthos_core.plugins.loader import load_plugins
 from hearthos_core.policy import policy_from_settings
 from hearthos_core.settings import Settings, get_settings
+from hearthos_core.themes.registry import install as install_themes
+from hearthos_core.themes.registry import log_active_theme
 
 API_PREFIX = "/api/v1"
 API_VERSION = "0.1.0"
@@ -41,6 +43,7 @@ async def _lifespan(app: FastAPI) -> AsyncIterator[None]:
     app.state.engine = engine
     app.state.sessionmaker = async_sessionmaker(engine, expire_on_commit=False)
     await _sync_plugin_records(app)
+    await log_active_theme(app)
     stop = asyncio.Event()
     relay = asyncio.create_task(run_relay(app.state.sessionmaker, stop)) if settings.relay_enabled else None
     try:
@@ -114,4 +117,5 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.add_middleware(RequestContextMiddleware)
     app.include_router(build_api_router(), prefix=API_PREFIX)
     load_plugins(app, settings.plugin_paths, settings.theme_paths)
+    install_themes(app)
     return app
