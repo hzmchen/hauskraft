@@ -50,7 +50,7 @@
       "acceptance": "suite"
     },
     "M0S-E03-03": {
-      "status": "red",
+      "status": "green",
       "acceptance": "suite"
     },
     "M0S-E03-04": {
@@ -78,7 +78,7 @@
       "acceptance": "in-story"
     },
     "M0S-E05-01": {
-      "status": "red",
+      "status": "green",
       "acceptance": "suite"
     },
     "M0S-E05-02": {
@@ -86,7 +86,7 @@
       "acceptance": "suite"
     },
     "M0S-E05-03": {
-      "status": "red",
+      "status": "green",
       "acceptance": "suite"
     },
     "M0S-E05-04": {
@@ -94,7 +94,7 @@
       "acceptance": "in-story"
     },
     "M0S-E05-05": {
-      "status": "red",
+      "status": "green",
       "acceptance": "suite"
     },
     "M0S-E06-01": {
@@ -130,11 +130,11 @@
       "acceptance": "suite"
     },
     "M0S-E07-03": {
-      "status": "red",
+      "status": "green",
       "acceptance": "suite"
     },
     "M0S-E07-04": {
-      "status": "red",
+      "status": "green",
       "acceptance": "suite"
     },
     "M0S-E08-01": {
@@ -190,7 +190,7 @@
       "acceptance": "suite"
     },
     "M0S-E11-02": {
-      "status": "red",
+      "status": "green",
       "acceptance": "suite"
     },
     "M0S-E11-03": {
