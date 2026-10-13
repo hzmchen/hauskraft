@@ -14,6 +14,7 @@ import { sessionQuery } from "../session";
 import { AccountMenu } from "../shell/AccountMenu";
 import { buildNavModel } from "../shell/nav/model";
 import { NavRenderer, useNavStyle } from "../shell/nav/NavRenderer";
+import { RouterHost } from "../shell/RouterHost";
 import { useThemeLayout } from "../shell/ThemeRuntime";
 
 export const Route = createFileRoute("/_app")({
@@ -71,7 +72,9 @@ function AppLayout() {
             style === "bottom-tabs" && "pb-20",
           )}
         >
-          <Outlet />
+          <RouterHost>
+            <Outlet />
+          </RouterHost>
         </main>
         {style === "bottom-tabs" ? <NavRenderer style={style} items={items} /> : null}
       </div>
