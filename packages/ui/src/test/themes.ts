@@ -27,7 +27,7 @@ export function cssVar(name: string): string {
   return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
 }
 
-/** Normalise "rgb(1, 2, 3)" / "rgb(1 2 3)" for comparisons. */
-export function rgb(value: string): string {
+/** Normalise a computed colour ("1, 2, 3" vs "1 2 3" separators) for comparisons. */
+export function sameColour(value: string): string {
   return value.replace(/,\s*/g, " ").replace(/\s+\/\s+1\)$/, ")");
 }

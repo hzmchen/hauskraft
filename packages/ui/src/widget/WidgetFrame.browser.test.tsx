@@ -4,7 +4,7 @@ import { afterEach, describe, expect, it } from "vitest";
 
 import "../styles.css";
 import { Button, WidgetFrame } from "../index";
-import { applyTheme, cssVar, rgb, THEMES, type ThemeName } from "../test/themes";
+import { applyTheme, cssVar, sameColour, THEMES, type ThemeName } from "../test/themes";
 
 const CHROMES = ["flat", "outlined", "elevated", "tinted"] as const;
 const HEADERS = ["inline", "banner"] as const;
@@ -27,10 +27,11 @@ describe.each(Object.keys(THEMES) as ThemeName[])("WidgetFrame in %s", (theme) =
       const style = getComputedStyle(region);
       if (chrome === "outlined") expect(style.borderTopWidth).not.toBe("0px");
       if (chrome === "elevated") expect(style.boxShadow).not.toBe("none");
-      if (chrome === "tinted") expect(rgb(style.backgroundColor)).toBe(rgb(cssVar("--hearth-color-secondary")));
+      if (chrome === "tinted")
+        expect(sameColour(style.backgroundColor)).toBe(sameColour(cssVar("--hearth-color-secondary")));
       const bar = region.querySelector("[data-slot=widget-header]")!;
       if (header === "banner") {
-        expect(rgb(getComputedStyle(bar).backgroundColor)).toBe(rgb(cssVar("--hearth-color-primary")));
+        expect(sameColour(getComputedStyle(bar).backgroundColor)).toBe(sameColour(cssVar("--hearth-color-primary")));
       }
     },
   );
