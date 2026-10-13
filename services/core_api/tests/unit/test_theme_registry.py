@@ -3,7 +3,6 @@
 
 import asyncio
 import json
-import shutil
 from pathlib import Path
 
 import pytest
@@ -12,21 +11,10 @@ from fastapi import FastAPI
 from hearthos_core.app import create_app
 from hearthos_core.settings import Settings
 from hearthos_core.themes.registry import BUILTIN_DEFAULT
+from tests.theme_helpers import FIXTURES
+from tests.theme_helpers import builtin_default as _builtin_default
 
 pytestmark = pytest.mark.unit
-
-FIXTURES = Path(__file__).resolve().parents[4] / "tests" / "fixtures" / "themes"
-
-
-def _builtin_default(root: Path, source: str = "valid-minimal") -> Path:
-    """A copy of a fixture posing as the built-in Default theme."""
-    folder = root / "builtin" / "default"
-    shutil.copytree(FIXTURES / source, folder)
-    manifest_path = folder / "hearthos.plugin.json"
-    manifest = json.loads(manifest_path.read_text())
-    manifest["id"] = BUILTIN_DEFAULT
-    manifest_path.write_text(json.dumps(manifest))
-    return root / "builtin"
 
 
 def _app(tmp_path: Path, theme_paths: list[Path], default_theme: str = BUILTIN_DEFAULT) -> FastAPI:

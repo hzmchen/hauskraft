@@ -2,6 +2,7 @@
 """M0S-E03-02: liveness never touches the database; readiness reports named checks."""
 
 from collections.abc import Iterator
+from pathlib import Path
 
 import pytest
 from fastapi.testclient import TestClient
@@ -12,6 +13,7 @@ from hearthos_core.app import create_app
 from hearthos_core.db import migrations
 from hearthos_core.health import register_check
 from hearthos_core.settings import Settings
+from tests.theme_helpers import builtin_default
 
 pytestmark = pytest.mark.integration
 
@@ -29,8 +31,8 @@ def fresh_db(pg_url: str) -> Iterator[str]:
     admin.dispose()
 
 
-def _settings(url: str) -> Settings:
-    return Settings(env="test", database_url=url, plugin_paths=[], theme_paths=[], relay_enabled=False)
+def _settings(url: str, theme_paths: list[Path] | None = None) -> Settings:
+    return Settings(env="test", database_url=url, plugin_paths=[], theme_paths=theme_paths or [], relay_enabled=False)
 
 
 def test_healthz_needs_no_database() -> None:
@@ -51,8 +53,8 @@ def test_readyz_fails_without_database() -> None:
     assert checks["database"]["detail"]
 
 
-def test_readyz_503_before_migration_and_200_after(fresh_db: str) -> None:
-    settings = _settings(fresh_db)
+def test_readyz_503_before_migration_and_200_after(fresh_db: str, tmp_path: Path) -> None:
+    settings = _settings(fresh_db, [builtin_default(tmp_path)])
     with TestClient(create_app(settings)) as client:
         before = client.get("/api/v1/readyz")
         assert before.status_code == 503
@@ -65,7 +67,7 @@ def test_readyz_503_before_migration_and_200_after(fresh_db: str) -> None:
         assert after.status_code == 200, after.text
         body = after.json()
         assert body["status"] == "ready"
-        assert {"database", "migrations", "plugins"} <= {c["name"] for c in body["checks"]}
+        assert {"database", "migrations", "plugins", "theme"} <= {c["name"] for c in body["checks"]}
         assert all({"name", "ok", "detail"} <= set(c) for c in body["checks"])
 
 
