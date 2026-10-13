@@ -34,6 +34,10 @@ class RateLimitedError(HearthosError):
     code = "rate_limited"
     title = "Too many attempts"
 
+    def __init__(self, retry_after: int) -> None:
+        super().__init__(f"Too many failed attempts. Try again in {retry_after} seconds.")
+        self.headers = {"Retry-After": str(retry_after)}
+
 
 def _client_ip(request: Request) -> str:
     return request.client.host if request.client else "unknown"
@@ -65,9 +69,7 @@ async def login(body: LoginIn, request: Request, response: Response) -> SessionO
     ip = _client_ip(request)
     wait = limiter.retry_after(body.username, ip)
     if wait:
-        err = RateLimitedError(f"Too many failed attempts. Try again in {wait} seconds.")
-        err.extra = {}
-        raise _with_retry_after(err, wait)
+        raise RateLimitedError(wait)
     uow = UnitOfWork(request.app.state.sessionmaker, request.app.state.policy, request.app.state.settings)
     async with uow:
         user = (
@@ -94,11 +96,6 @@ async def login(body: LoginIn, request: Request, response: Response) -> SessionO
         out = SessionOut(user=UserOut.of(user), csrf_token=row.csrf_token, expires_at=row.expires_at)
     _set_cookie(response, request, token)
     return out
-
-
-def _with_retry_after(err: HearthosError, seconds: int) -> HearthosError:
-    err.headers = {"Retry-After": str(seconds)}  # type: ignore[attr-defined]
-    return err
 
 
 @router.post("/logout", status_code=204, responses={401: {}, 403: {}})

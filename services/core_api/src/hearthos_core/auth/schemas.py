@@ -28,9 +28,10 @@ class UserOut(_Model):
 
     @classmethod
     def of(cls, user: User) -> UserOut:
+        locale: Locale = "de" if user.locale == "de" else "en"
         return cls(
-            id=user.id, username=user.username, display_name=user.display_name, role=str(user.role), locale=user.locale
-        )  # type: ignore[arg-type]
+            id=user.id, username=user.username, display_name=user.display_name, role=str(user.role), locale=locale
+        )
 
 
 class SessionOut(_Model):
