@@ -2,7 +2,7 @@
 // Tasks plugin web module (M0S-E09-01..03). The shell loads it through the build-time registry.
 import { definePluginWeb } from "@hearthos/sdk-ts";
 
-import { prefetchWidget } from "./api";
+import { prefetchTasks } from "./api";
 
 import de from "./locales/de/tasks.json";
 import en from "./locales/en/tasks.json";
@@ -15,5 +15,5 @@ export default definePluginWeb({
   widgets: { "tasks.list": TasksWidget },
   pages: { TasksPage },
   locales: { en, de },
-  prefetch: prefetchWidget,
+  prefetch: prefetchTasks,
 });

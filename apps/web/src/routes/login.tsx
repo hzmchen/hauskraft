@@ -54,7 +54,11 @@ function Login() {
     }
     rememberSession(router.options.context.queryClient, data);
     if (!hasDeviceLanguage() && isLanguage(data.user.locale)) await i18n.changeLanguage(data.user.locale);
-    await router.navigate({ href: safeRedirect(target) });
+    // Load the target's data first, so the URL changes together with the new page (no stale login frame).
+    const href = safeRedirect(target);
+    // preloadRoute accepts an href at runtime; its types only list typed `to` routes.
+    await router.preloadRoute({ href } as unknown as Parameters<typeof router.preloadRoute>[0]).catch(() => undefined);
+    await router.navigate({ href });
   }
 
   return (
