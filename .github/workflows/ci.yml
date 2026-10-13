@@ -54,6 +54,8 @@ jobs:
       - uses: ./.github/actions/setup
         with:
           python: "false"
+      # Vitest's browser project (M0S-E08-01) runs in Chromium.
+      - run: pnpm --filter web exec playwright install --with-deps chromium
       - run: pnpm -r --if-present --filter '!@hearthos/acceptance-e2e' test -- --run
 
   # M0S-E02-02: DB-backed integration tests (Testcontainers Postgres 16), contract tests, and drift of

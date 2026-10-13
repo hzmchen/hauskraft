@@ -59,7 +59,7 @@ contract:
     @just _pytest contract
 
 # Regenerate OpenAPI, the TS client, the web plugin registry and theme types
-gen: gen-openapi gen-client gen-plugins gen-theme-types
+gen: gen-openapi gen-client gen-plugins gen-theme-types gen-theme-fallback
 
 # Export the OpenAPI contract (M0S-E03-05)
 gen-openapi:
@@ -76,6 +76,10 @@ gen-plugins:
 # Generate theme types from packages/schemas/theme (M0S-E13-01)
 gen-theme-types:
     {{ if path_exists("scripts/gen-theme-types.mjs") == "true" { "node scripts/gen-theme-types.mjs && uv run python scripts/gen_theme_types.py" } else { "echo 'gen-theme-types: not implemented yet (M0S-E13-01)'" } }}
+
+# Default theme tokens as @hearthos/ui's fallback stylesheet (M0S-E08-01)
+gen-theme-fallback:
+    uv run python scripts/gen_fallback_css.py
 
 # Playwright end-to-end tests against a running stack (just demo)
 e2e *args:

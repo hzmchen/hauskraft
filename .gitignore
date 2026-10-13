@@ -19,3 +19,7 @@ data/themes/*
 .DS_Store
 .idea/
 .vscode/
+
+# Vitest browser-mode failure artefacts
+.vitest-attachments/
+__screenshots__/

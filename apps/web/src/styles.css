@@ -1,0 +1,6 @@
+/* SPDX-License-Identifier: AGPL-3.0-or-later */
+/* Shell styles: @hearthos/ui's Tailwind setup and the Default theme's tokens as fallback. */
+@import "@hearthos/ui/styles.css";
+@import "@hearthos/ui/tokens/fallback.css";
+
+@source "./";
