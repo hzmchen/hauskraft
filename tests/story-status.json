@@ -30,7 +30,7 @@
       "acceptance": "suite"
     },
     "M0S-E02-03": {
-      "status": "red",
+      "status": "green",
       "acceptance": "suite"
     },
     "M0S-E02-04": {
