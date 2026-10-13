@@ -17,7 +17,7 @@ from hearthos_core.auth.providers import provider_from_settings
 from hearthos_core.auth.ratelimit import LoginRateLimiter
 from hearthos_core.errors import install_error_handlers
 from hearthos_core.health import install_core_checks
-from hearthos_core.logging import RequestContextMiddleware, configure_logging
+from hearthos_core.logging import RequestContextMiddleware, configure_logging, get_logger
 from hearthos_core.plugins.loader import load_plugins
 from hearthos_core.policy import policy_from_settings
 from hearthos_core.settings import Settings, get_settings
@@ -38,6 +38,7 @@ async def _lifespan(app: FastAPI) -> AsyncIterator[None]:
     engine = create_async_engine(settings.database_url, pool_pre_ping=True)
     app.state.engine = engine
     app.state.sessionmaker = async_sessionmaker(engine, expire_on_commit=False)
+    await _sync_plugin_records(app)
     try:
         yield
     finally:
@@ -46,16 +47,37 @@ async def _lifespan(app: FastAPI) -> AsyncIterator[None]:
         app.state.sessionmaker = None
 
 
+async def _sync_plugin_records(app: FastAPI) -> None:
+    """Upsert the ``plugins`` table and apply its ``enabled`` flags; tolerate an unreachable database."""
+    from hearthos_core.plugins.repository import upsert_loaded
+    from hearthos_core.uow import UnitOfWork
+    from hearthos_core.users.service import SYSTEM_ACTOR
+    from hearthos_sdk import ResourceRef
+
+    try:
+        async with UnitOfWork(app.state.sessionmaker, app.state.policy, app.state.settings) as uow:
+            await uow.authorize(SYSTEM_ACTOR, "plugin.sync", ResourceRef("Plugin"), "household", "plugins:write")
+            enabled = await upsert_loaded(uow.session, app.state.plugins.values())
+    except Exception as exc:  # readiness reports the database problem
+        get_logger("hearthos.plugins").warning("plugin.sync_failed", error_type=type(exc).__name__)
+        return
+    app.state.disabled_plugins = {pid for pid, on in enabled.items() if not on}
+    for pid in app.state.disabled_plugins:
+        app.state.plugin_load_errors.pop(pid, None)  # a disabled plugin does not block readiness
+
+
 def build_api_router() -> APIRouter:
     """Core routers; later stories add auth, users, plugins, themes, activity and dashboards."""
     from hearthos_core import health
     from hearthos_core.auth import router as auth
+    from hearthos_core.plugins import router as plugins
     from hearthos_core.users import router as users
 
     router = APIRouter()
     router.include_router(health.router)
     router.include_router(auth.router)
     router.include_router(users.router)
+    router.include_router(plugins.router)
     return router
 
 
