@@ -79,5 +79,24 @@
   "dashboard": {
     "edit_layout": "Layout bearbeiten",
     "done_editing": "Fertig"
+  },
+  "activity": {
+    "system": "HearthOS",
+    "empty": "Bisher ist nichts passiert.",
+    "show_older": "Ältere anzeigen",
+    "unknown": "{{actor}}: {{type}}",
+    "task": {
+      "created": "{{actor}} hat '{{title}}' hinzugefügt",
+      "updated": "{{actor}} hat '{{title}}' geändert",
+      "completed": "{{actor}} hat '{{title}}' erledigt",
+      "deleted": "{{actor}} hat '{{title}}' gelöscht"
+    },
+    "settings": {
+      "theme_changed": "{{actor}} hat das Design auf {{theme}} umgestellt"
+    },
+    "plugin": {
+      "toggled_on": "{{actor}} hat {{plugin}} eingeschaltet",
+      "toggled_off": "{{actor}} hat {{plugin}} ausgeschaltet"
+    }
   }
 }
