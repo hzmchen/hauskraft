@@ -2,6 +2,7 @@
 // Every page behind sign-in (M0S-E08-03) inside the shell (M0S-E08-05): skip link, navigation from the
 // NavModel, account menu and one main landmark.
 import { pluginsListOptions } from "@hearthos/sdk-ts";
+import { cn } from "@hearthos/ui";
 import { Outlet, createFileRoute, redirect } from "@tanstack/react-router";
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
@@ -13,6 +14,7 @@ import { sessionQuery } from "../session";
 import { AccountMenu } from "../shell/AccountMenu";
 import { buildNavModel } from "../shell/nav/model";
 import { NavRenderer, useNavStyle } from "../shell/nav/NavRenderer";
+import { useThemeLayout } from "../shell/ThemeRuntime";
 
 export const Route = createFileRoute("/_app")({
   beforeLoad: async ({ context, location }) => {
@@ -40,7 +42,8 @@ function AppLayout() {
   const { t } = useTranslation();
   const { plugins } = useWebPlugins();
   const items = useMemo(() => buildNavModel(plugins), [plugins]);
-  const style = useNavStyle();
+  const layout = useThemeLayout();
+  const style = useNavStyle(layout.navigation);
   return (
     <div className="flex min-h-svh">
       <a
@@ -52,15 +55,25 @@ function AppLayout() {
       {style === "sidebar" ? <NavRenderer style={style} items={items} /> : null}
       <div className="flex min-w-0 flex-1 flex-col">
         <header className="flex items-center justify-between gap-density border-b bg-nav px-density py-2 text-nav-foreground">
-          <div className="flex items-center gap-2">
+          <div className="flex min-w-0 items-center gap-density">
             {style === "drawer" ? <NavRenderer style={style} items={items} /> : null}
             <span className="font-heading text-lg font-bold">{t("app.name")}</span>
+            {style === "topbar" ? <NavRenderer style={style} items={items} /> : null}
           </div>
           <AccountMenu />
         </header>
-        <main id="content" tabIndex={-1} className="flex-1 p-density outline-none">
+        <main
+          id="content"
+          tabIndex={-1}
+          className={cn(
+            "w-full flex-1 p-density outline-none",
+            layout.content_width === "contained" && "mx-auto max-w-content",
+            style === "bottom-tabs" && "pb-20",
+          )}
+        >
           <Outlet />
         </main>
+        {style === "bottom-tabs" ? <NavRenderer style={style} items={items} /> : null}
       </div>
     </div>
   );

@@ -5,13 +5,16 @@ import { I18nextProvider } from "react-i18next";
 
 import type { AppRouter } from "./router";
 import { ColorModeProvider } from "./shell/ColorMode";
+import { ThemeRuntime } from "./shell/ThemeRuntime";
 
 export function App({ router, queryClient }: { router: AppRouter; queryClient: QueryClient }) {
   return (
     <I18nextProvider i18n={router.options.context.i18n}>
       <ColorModeProvider>
         <QueryClientProvider client={queryClient}>
-          <RouterProvider router={router} />
+          <ThemeRuntime>
+            <RouterProvider router={router} />
+          </ThemeRuntime>
         </QueryClientProvider>
       </ColorModeProvider>
     </I18nextProvider>
