@@ -9,7 +9,8 @@
     "close_menu": "Close menu",
     "today": "Today",
     "activity": "Activity",
-    "settings": "Settings"
+    "settings": "Settings",
+    "menu_button": "Menu"
   },
   "account": {
     "menu": "Account menu",
@@ -43,5 +44,10 @@
   "widget": {
     "unavailable": "Widget unavailable",
     "unavailable_hint": "This widget can't be shown right now."
+  },
+  "settings": {
+    "appearance": "Appearance",
+    "this_device": "This device",
+    "this_device_hint": "Only this device. Other devices keep their own setting."
   }
 }

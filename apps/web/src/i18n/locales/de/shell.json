@@ -9,7 +9,8 @@
     "close_menu": "Menü schließen",
     "today": "Heute",
     "activity": "Aktivität",
-    "settings": "Einstellungen"
+    "settings": "Einstellungen",
+    "menu_button": "Menü"
   },
   "account": {
     "menu": "Kontomenü",
@@ -43,5 +44,10 @@
   "widget": {
     "unavailable": "Widget nicht verfügbar",
     "unavailable_hint": "Dieses Widget kann gerade nicht angezeigt werden."
+  },
+  "settings": {
+    "appearance": "Darstellung",
+    "this_device": "Dieses Gerät",
+    "this_device_hint": "Nur dieses Gerät. Andere Geräte behalten ihre eigene Einstellung."
   }
 }
