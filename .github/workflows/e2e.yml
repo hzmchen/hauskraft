@@ -1,0 +1,64 @@
+# SPDX-License-Identifier: MIT
+# End-to-end gate (M0S-E02-03): the Compose stack with the fixture themes, the live API acceptance suite and the
+# spec-owned Playwright suites (demo script, tasks, theme invariance) against http://localhost:8080.
+name: e2e
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: e2e-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  HEARTHOS_BASE_URL: http://localhost:8080
+  COMPOSE: docker compose -f compose.yaml -f deploy/compose/compose.test.yaml
+
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: ./.github/actions/setup
+      - uses: docker/setup-buildx-action@v4.4.1
+
+      - name: Build images
+        run: $COMPOSE build
+      - name: Start the stack
+        run: $COMPOSE up --wait
+      - name: Live API acceptance suite
+        run: uv run python -m pytest tests --live --strict-status -ra
+      - name: Install Chromium
+        run: pnpm --filter @hearthos/acceptance-e2e exec playwright install --with-deps chromium
+      - name: Playwright (demo, tasks, theme invariance)
+        env:
+          # Step 11 of the demo restarts the whole stack and checks that everything survived.
+          HEARTHOS_E2E_RESTART_CMD: >-
+            docker compose -f ${{ github.workspace }}/compose.yaml -f ${{ github.workspace }}/deploy/compose/compose.test.yaml down &&
+            docker compose -f ${{ github.workspace }}/compose.yaml -f ${{ github.workspace }}/deploy/compose/compose.test.yaml up --wait
+        run: pnpm --filter @hearthos/acceptance-e2e exec playwright test
+      - name: Web shell checks (CSP in every built-in theme)
+        run: pnpm --filter web exec playwright test
+
+      - name: Stack logs
+        if: failure()
+        run: $COMPOSE logs --no-color > compose-logs.txt
+      - name: Upload traces, reports and logs
+        if: failure()
+        uses: actions/upload-artifact@v7.0.2
+        with:
+          name: e2e-${{ github.run_id }}
+          path: |
+            tests/e2e/playwright-report
+            tests/e2e/test-results
+            apps/web/test-results
+            compose-logs.txt
+          retention-days: 14
