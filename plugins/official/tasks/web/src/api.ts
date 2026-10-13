@@ -10,7 +10,14 @@ import {
   type TaskPatch,
 } from "@hearthos/sdk-ts";
 import { toast } from "@hearthos/ui";
-import { useMutation, useQuery, useQueryClient, type Query, type QueryClient } from "@tanstack/react-query";
+import {
+  useMutation,
+  useQuery,
+  useQueryClient,
+  useSuspenseQueries,
+  type Query,
+  type QueryClient,
+} from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 
 export type Status = "open" | "done" | "all";
@@ -18,6 +25,16 @@ export type Sort = "-created_at" | "due_on";
 
 export function useTaskList(query: { status: Status; sort: Sort; limit?: number; offset?: number }) {
   return useQuery(tasksListOptions({ query: { limit: 50, ...query } }));
+}
+
+/** The widget's open and done lists, suspending until both have loaded so it appears complete at once. */
+export function useOpenAndDone() {
+  const [open, done] = useSuspenseQueries({
+    queries: (["open", "done"] as const).map((status) =>
+      tasksListOptions({ query: { limit: 50, status, sort: "-created_at" } }),
+    ),
+  });
+  return { open: open!, done: done! };
 }
 
 interface ListKey {

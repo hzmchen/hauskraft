@@ -5,6 +5,7 @@ packages:
   - packages/ui
   - plugins/official/*/web
   - tests/e2e
+  - tools/*
 
 # One version per shared dev tool; packages reference it as "catalog:".
 catalog:

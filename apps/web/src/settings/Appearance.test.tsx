@@ -23,7 +23,7 @@ const summary = (id: string, name: string, extra: Record<string, unknown> = {}) 
   warnings: [],
   active: false,
   preview: {
-    swatches: { light: ["rgb(255 255 255)"], dark: ["rgb(0 0 0)"] },
+    swatches: { light: ["rgb(255 255 255)"], dark: ["rgb(0 0 0)"] }, // hearthos-allow-raw-style: theme preview data
     navigation: { wide: "sidebar", narrow: "drawer" },
     density: "comfortable",
     widget_chrome: "outlined",

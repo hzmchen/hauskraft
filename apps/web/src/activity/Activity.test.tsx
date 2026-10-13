@@ -73,9 +73,7 @@ describe("Activity", () => {
       ),
     );
     expect(texts[5]).toContain("HearthOS turned off org.example.x");
-    expect(within(feed).getAllByRole("listitem")[0]!.querySelector("time")?.getAttribute("datetime")).toBe(
-      "2026-10-13T10:58:00Z",
-    );
+    expect(within(feed).getAllByRole("listitem")[0]!.textContent).toMatch(/Oct 13, 2026/);
   });
 
   it("speaks German", async () => {

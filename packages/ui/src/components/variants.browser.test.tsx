@@ -5,7 +5,7 @@ import { afterEach, describe, expect, it } from "vitest";
 
 import "../styles.css";
 import { Button, Checkbox } from "../index";
-import { applyTheme, cssVar, rgb, THEMES, type ThemeName } from "../test/themes";
+import { applyTheme, cssVar, sameColour, THEMES, type ThemeName } from "../test/themes";
 
 afterEach(() => document.body.replaceChildren());
 
@@ -20,9 +20,9 @@ describe.each(Object.keys(THEMES) as ThemeName[])("variants in %s", (theme) => {
     expect(document.activeElement).toBe(el);
     await userEvent.keyboard("{Enter}");
     expect(clicks).toBe(1);
-    const bg = rgb(getComputedStyle(el).backgroundColor);
-    if (button === "solid") expect(bg).toBe(rgb(cssVar("--hearth-color-primary")));
-    if (button === "soft") expect(bg).toBe(rgb(cssVar("--hearth-color-accent")));
+    const bg = sameColour(getComputedStyle(el).backgroundColor);
+    if (button === "solid") expect(bg).toBe(sameColour(cssVar("--hearth-color-primary")));
+    if (button === "soft") expect(bg).toBe(sameColour(cssVar("--hearth-color-accent")));
     if (button === "outline") expect(getComputedStyle(el).borderTopWidth).not.toBe("0px");
   });
 

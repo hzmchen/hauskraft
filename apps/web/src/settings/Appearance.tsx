@@ -131,7 +131,8 @@ function ThemeCard({
       className={cn(
         "flex flex-col gap-2 rounded-lg border bg-widget p-density text-widget-foreground",
         checked && "border-primary ring-2 ring-ring",
-        !theme.valid && "opacity-70",
+        // Not faded: dimming would push its text below the contrast minimum. Dashed border + message instead.
+        !theme.valid && "border-dashed",
       )}
     >
       <label className="flex items-center gap-2">
@@ -150,7 +151,8 @@ function ThemeCard({
           {theme.name}
         </span>
         {theme.active ? (
-          <span className="ml-auto rounded-full bg-primary px-2 text-xs text-primary-foreground">
+          // Visual only: the checked radio already tells assistive tech which theme is active.
+          <span aria-hidden="true" className="ml-auto rounded-full bg-primary px-2 text-xs text-primary-foreground">
             {t("settings.active")}
           </span>
         ) : null}
