@@ -13,6 +13,7 @@ from fastapi import APIRouter, FastAPI
 from fastapi.routing import APIRoute
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 
+from hearthos_core.auth.providers import provider_from_settings
 from hearthos_core.auth.ratelimit import LoginRateLimiter
 from hearthos_core.errors import install_error_handlers
 from hearthos_core.health import install_core_checks
@@ -73,6 +74,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.state.settings = settings
     app.state.policy = policy_from_settings(settings)
     app.state.login_limiter = LoginRateLimiter()
+    app.state.identity_provider = provider_from_settings(settings)
     app.state.engine = None
     app.state.sessionmaker = None
     install_error_handlers(app)
