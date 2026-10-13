@@ -11,6 +11,24 @@ export const en = {
   due: { overdue: "Overdue", today: "Today", on: "Due {{date}}" },
   a11y: { mark_done: "Mark '{{title}}' as done", edit: "Edit '{{title}}'", title_input: "Task title" },
   errors: { save: "Couldn't save the task. Please try again." },
+  page_heading: "All tasks",
+  filter: { open: "Open", done: "Done", all: "All" },
+  sort: { label: "Sort by", created: "Created", due: "Due date" },
+  due_input: { set: "Due date for '{{title}}'", clear: "Clear due date for '{{title}}'" },
+  delete: {
+    button: "Delete '{{title}}'",
+    title: "Delete task?",
+    body: "'{{title}}' will be removed for everyone in the household.",
+    confirm: "Delete",
+    cancel: "Cancel",
+  },
+  empty: "No tasks yet",
+  pagination: {
+    label: "Pagination",
+    previous: "Previous page",
+    next: "Next page",
+    status: "Page {{page}} of {{pages}}",
+  },
 };
 
 export const de: typeof en = {
@@ -28,4 +46,22 @@ export const de: typeof en = {
     title_input: "Titel der Aufgabe",
   },
   errors: { save: "Die Aufgabe konnte nicht gespeichert werden. Bitte versuche es noch einmal." },
+  page_heading: "Alle Aufgaben",
+  filter: { open: "Offen", done: "Erledigt", all: "Alle" },
+  sort: { label: "Sortieren nach", created: "Erstellt", due: "Fälligkeitsdatum" },
+  due_input: { set: "Fälligkeitsdatum für '{{title}}'", clear: "Fälligkeitsdatum für '{{title}}' entfernen" },
+  delete: {
+    button: "'{{title}}' löschen",
+    title: "Aufgabe löschen?",
+    body: "'{{title}}' wird für alle im Haushalt entfernt.",
+    confirm: "Löschen",
+    cancel: "Abbrechen",
+  },
+  empty: "Noch keine Aufgaben",
+  pagination: {
+    label: "Seiten",
+    previous: "Vorherige Seite",
+    next: "Nächste Seite",
+    status: "Seite {{page}} von {{pages}}",
+  },
 };

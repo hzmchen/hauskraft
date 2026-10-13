@@ -107,14 +107,12 @@ export function useUpdateTask() {
     ...tasksUpdateMutation(),
     onMutate: async ({ path, body }) => {
       const saved = await snapshot(queryClient);
-      edit(queryClient, (page, query) => {
-        const items = page.items.flatMap((task) => {
-          if (task.id !== path.task_id) return [task];
-          const next = { ...task, ...body } as TaskOut;
-          return fits(query, next) ? [next] : [];
-        });
-        return { ...page, items, total: page.total - (page.items.length - items.length) };
-      });
+      // Change rows in place: a ticked task stays visible (checked, struck through) until the refetch
+      // after the save moves it to the other list.
+      edit(queryClient, (page) => ({
+        ...page,
+        items: page.items.map((task) => (task.id === path.task_id ? ({ ...task, ...body } as TaskOut) : task)),
+      }));
       return saved;
     },
     onError: (_error, _variables, saved) => {
