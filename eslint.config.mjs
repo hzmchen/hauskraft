@@ -1,10 +1,18 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // ESLint 9 flat config for every TypeScript package in the pnpm workspace (M0S-E01-03).
+import css from "@eslint/css";
 import js from "@eslint/js";
 import jsxA11y from "eslint-plugin-jsx-a11y";
 import reactHooks from "eslint-plugin-react-hooks";
 import globals from "globals";
 import tseslint from "typescript-eslint";
+
+import hearthos from "./tools/eslint-plugin-hearthos/index.js";
+
+const SCRIPTS = ["**/*.{js,mjs,cjs,ts,tsx,mts,cts}"];
+
+// UI code that must use theme tokens only (AGPL rule 11, M0S-E13-08).
+const UI_SOURCES = ["apps/web/src", "packages/ui/src", "plugins/**/web/src"];
 
 // Plugin web code may import only these packages (spec §4.2 licence boundary, AGENTS.md rule 2).
 const PLUGIN_WEB_ALLOWED = [
@@ -30,8 +38,9 @@ export default tseslint.config(
       "tests/**",
     ],
   },
-  js.configs.recommended,
-  ...tseslint.configs.recommended,
+  // JS/TS presets apply to script files only; CSS has its own language block below.
+  { files: SCRIPTS, ...js.configs.recommended },
+  ...tseslint.configs.recommended.map((config) => ({ files: SCRIPTS, ...config })),
   {
     files: ["**/*.{ts,tsx}"],
     languageOptions: { globals: { ...globals.browser } },
@@ -65,5 +74,19 @@ export default tseslint.config(
   {
     files: ["**/*.{js,mjs,cjs}"],
     languageOptions: { globals: { ...globals.node } },
+  },
+  {
+    files: UI_SOURCES.map((root) => `${root}/**/*.{ts,tsx}`),
+    plugins: { hearthos },
+    rules: { "hearthos/no-raw-styles": "error" },
+  },
+  {
+    files: UI_SOURCES.map((root) => `${root}/**/*.css`),
+    // The Default theme's values, generated from themes/builtin/default (the one place for literals).
+    ignores: ["packages/ui/src/tokens/fallback.css"],
+    language: "css/css",
+    languageOptions: { tolerant: true }, // Tailwind at-rules (@theme, @utility, @custom-variant, …)
+    plugins: { css, hearthos },
+    rules: { "hearthos/no-raw-styles": "error" },
   },
 );

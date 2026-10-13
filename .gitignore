@@ -20,6 +20,8 @@ data/themes/*
 .idea/
 .vscode/
 
-# Vitest browser-mode failure artefacts
+# Vitest browser-mode failure artefacts (not the e2e visual baselines in tests/e2e/__screenshots__)
 .vitest-attachments/
-__screenshots__/
+apps/**/src/**/__screenshots__/
+packages/**/src/**/__screenshots__/
+plugins/**/src/**/__screenshots__/

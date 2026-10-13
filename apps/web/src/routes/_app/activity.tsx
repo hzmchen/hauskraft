@@ -1,6 +1,10 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 import { createFileRoute } from "@tanstack/react-router";
 
-import { ActivityFeed } from "../../activity/Activity";
+import { ActivityFeed, activityQuery } from "../../activity/Activity";
 
-export const Route = createFileRoute("/_app/activity")({ component: ActivityFeed });
+export const Route = createFileRoute("/_app/activity")({
+  // Prefetch only: a failure must not replace the page; the component's own query loads and reports it.
+  loader: ({ context }) => context.queryClient.ensureInfiniteQueryData(activityQuery).catch(() => undefined),
+  component: ActivityFeed,
+});

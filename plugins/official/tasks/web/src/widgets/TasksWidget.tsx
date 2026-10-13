@@ -5,14 +5,13 @@ import { Button, Icon, Input } from "@hearthos/ui";
 import { useState, type FormEvent } from "react";
 import { useTranslation } from "react-i18next";
 
-import { useCreateTask, useTaskList } from "../api";
+import { useCreateTask, useOpenAndDone } from "../api";
 import { TaskRow } from "../components/TaskRow";
 
 export function TasksWidget({ instanceId }: WidgetProps) {
   const { t } = useTranslation("tasks");
   const host = useHost();
-  const open = useTaskList({ status: "open", sort: "-created_at" });
-  const done = useTaskList({ status: "done", sort: "-created_at" });
+  const { open, done } = useOpenAndDone();
   const create = useCreateTask();
   const [title, setTitle] = useState("");
   const [showDone, setShowDone] = useState(false);

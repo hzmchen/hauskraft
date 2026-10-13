@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Unit tests for hearthos/no-raw-styles (M0S-E13-08). Run: node --test tools/eslint-plugin-hearthos
+// Unit tests for hearthos/no-raw-styles (M0S-E13-08). Run: pnpm --filter eslint-plugin-hearthos test
 import css from "@eslint/css";
 import { RuleTester } from "eslint";
 import tseslint from "typescript-eslint";

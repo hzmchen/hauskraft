@@ -504,7 +504,11 @@ importers:
         specifier: ~6.0.3
         version: 6.0.3
 
-  tools/eslint-plugin-hearthos: {}
+  tools/eslint-plugin-hearthos:
+    devDependencies:
+      vitest:
+        specifier: 'catalog:'
+        version: 4.1.11(@types/node@24.19.2)(@vitest/browser-playwright@4.1.11)(jsdom@29.1.1)(vite@8.3.4(@types/node@24.19.2)(jiti@2.7.0))
 
 packages:
 
