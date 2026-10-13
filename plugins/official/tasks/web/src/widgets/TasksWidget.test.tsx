@@ -61,10 +61,14 @@ describe("TasksWidget", () => {
   });
 
   it("ticking a task marks it done", async () => {
+    let done = false;
     const calls = fakeApi({
-      [OPEN]: () => page([task("Water the plants")]),
-      [DONE]: () => page([]),
-      "PATCH /api/v1/tasks/id-Water the plants": () => json(task("Water the plants", { done: true, version: 2 })),
+      [OPEN]: () => page(done ? [] : [task("Water the plants")]),
+      [DONE]: () => page(done ? [task("Water the plants", { done: true })] : []),
+      "PATCH /api/v1/tasks/id-Water-the-plants": () => {
+        done = true;
+        return json(task("Water the plants", { done: true, version: 2 }));
+      },
     });
     await renderWithPlugin(<TasksWidget {...props} />);
     await userEvent.click(await screen.findByRole("checkbox", { name: "Mark 'Water the plants' as done" }));
@@ -74,10 +78,14 @@ describe("TasksWidget", () => {
   });
 
   it("renames inline: Enter saves, Escape cancels", async () => {
+    let stored = "Buy milk";
     const calls = fakeApi({
-      [OPEN]: () => page([task("Buy milk")]),
+      [OPEN]: () => page([task(stored, { id: "id-Buy-milk" })]),
       [DONE]: () => page([]),
-      "PATCH /api/v1/tasks/id-Buy milk": () => json(task("Buy oat milk", { version: 2 })),
+      "PATCH /api/v1/tasks/id-Buy-milk": () => {
+        stored = "Buy oat milk";
+        return json(task(stored, { id: "id-Buy-milk", version: 2 }));
+      },
     });
     await renderWithPlugin(<TasksWidget {...props} />);
     await userEvent.click(await screen.findByRole("button", { name: "Edit 'Buy milk'" }));

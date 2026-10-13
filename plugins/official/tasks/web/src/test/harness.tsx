@@ -16,8 +16,18 @@ export function json(body: unknown, status = 200): Response {
   return new Response(JSON.stringify(body), { status, headers: { "Content-Type": "application/json" } });
 }
 
+/** "GET /path?b=2&a=1" → "GET /path?a=1&b=2", so routes match whatever order the client sends. */
+function normalise(key: string): string {
+  const [head, query] = key.split("?");
+  if (!query) return key;
+  const params = new URLSearchParams(query);
+  params.sort();
+  return `${head}?${params.toString()}`;
+}
+
 export function fakeApi(routes: Record<string, Handler>): Request[] {
   const seen: Request[] = [];
+  const table = Object.fromEntries(Object.entries(routes).map(([key, handler]) => [normalise(key), handler]));
   client.setConfig({ baseUrl: "http://hearthos.test" });
   vi.stubGlobal(
     "fetch",
@@ -25,7 +35,8 @@ export function fakeApi(routes: Record<string, Handler>): Request[] {
       seen.push(request.clone());
       const url = new URL(request.url);
       const handler =
-        routes[`${request.method} ${url.pathname}${url.search}`] ?? routes[`${request.method} ${url.pathname}`];
+        table[normalise(`${request.method} ${url.pathname}${url.search}`)] ??
+        table[`${request.method} ${url.pathname}`];
       return handler ? handler(request) : json({ code: "not_found" }, 404);
     }),
   );
@@ -35,7 +46,7 @@ export function fakeApi(routes: Record<string, Handler>): Request[] {
 export function task(title: string, extra: Record<string, unknown> = {}) {
   const user = { id: "0199f390-1111-7aaa-8bbb-cccccccccccc", display_name: "Demo Adult" };
   return {
-    id: `id-${title}`,
+    id: `id-${title.replace(/\s+/g, "-")}`,
     title,
     done: false,
     done_at: null,

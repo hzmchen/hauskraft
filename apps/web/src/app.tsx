@@ -4,7 +4,9 @@ import { RouterProvider } from "@tanstack/react-router";
 import { I18nextProvider } from "react-i18next";
 
 import type { AppRouter } from "./router";
-import { ColorModeProvider } from "./shell/ColorMode";
+import { Toaster } from "@hearthos/ui";
+
+import { ColorModeProvider, useColorMode } from "./shell/ColorMode";
 import { ThemeRuntime } from "./shell/ThemeRuntime";
 
 export function App({ router, queryClient }: { router: AppRouter; queryClient: QueryClient }) {
@@ -14,9 +16,16 @@ export function App({ router, queryClient }: { router: AppRouter; queryClient: Q
         <QueryClientProvider client={queryClient}>
           <ThemeRuntime>
             <RouterProvider router={router} />
+            <ShellToaster />
           </ThemeRuntime>
         </QueryClientProvider>
       </ColorModeProvider>
     </I18nextProvider>
   );
+}
+
+/** One toast area for the shell and plugins, in this device's colour mode. */
+function ShellToaster() {
+  const { mode } = useColorMode();
+  return <Toaster theme={mode} />;
 }

@@ -20,3 +20,5 @@ const Toaster = ({ theme = "system", ...props }: ToasterProps) => {
 };
 
 export { Toaster };
+// Plugins show toasts through @hearthos/ui; the shell mounts the Toaster once.
+export { toast } from "sonner";

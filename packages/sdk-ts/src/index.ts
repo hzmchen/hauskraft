@@ -10,3 +10,4 @@ export * from "./client/@tanstack/react-query.gen";
 export { definePluginWeb, type PageProps, type PluginWebModule, type WidgetProps } from "./contract";
 export { getCsrfToken, setCsrfToken } from "./csrf";
 export { HearthosClientProvider, useHearthosClient } from "./hooks";
+export { HostProvider, useHost, type Host } from "./host";
