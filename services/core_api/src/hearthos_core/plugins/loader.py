@@ -118,10 +118,14 @@ def _load_one(found: DiscoveredManifest, app: FastAPI, prefixes_in_use: dict[str
         type=list(manifest.get("type") or []),
     )
     loaded.load_error = _check_manifest(found)
-    if loaded.load_error:
-        return loaded
-    if loaded.kind == "declarative" and loaded.is_theme:
+    if loaded.is_theme:
+        # Themes go to the theme registry even when broken: it records why, and only a broken built-in
+        # Default theme fails readiness (M0S-E13-03).
         app.state.theme_manifests.append(found)
+        if not loaded.load_error and loaded.kind != "declarative":
+            loaded.load_error = "theme plugins must be declarative"
+        return loaded
+    if loaded.load_error:
         return loaded
     if loaded.kind != "inprocess":
         loaded.load_error = UNSUPPORTED
@@ -161,7 +165,7 @@ def load_plugins(app: FastAPI, plugin_paths: Iterable[Path], theme_paths: Iterab
             continue
         loaded = _load_one(found, app, prefixes)
         app.state.plugins[loaded.id] = loaded
-        if loaded.load_error:
+        if loaded.load_error and not loaded.is_theme:
             app.state.plugin_load_errors[loaded.id] = loaded.load_error
 
 
