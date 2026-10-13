@@ -22,9 +22,12 @@ names the story and what I did for now. Everything I chose is reversible.
    from editing `tests/e2e`.
 2. **Visual baselines depend on the date.** The "visual baselines" tests in `tests/e2e/theme-invariance.spec.ts`
    screenshot `/p/tasks`, which shows the seeded "Take out recycling" due date (seed `due_in_days: 1`) in its badge
-   and in the native date input. The baselines (committed with E11-01, generated against the Compose stack on
-   2026-10-13) will differ on any later day. Suggest `await page.clock.setFixedTime(…)` before navigating (plus a
-   fixed seed date), or masking the due-date cells.
+   and in the native date input. The baselines (regenerated against the Compose stack on 2026-10-13 in the
+   plugin-page prefetch fix; the first set from E11-01 had captured some views mid-load) will differ on any later
+   day. Suggest `await page.clock.setFixedTime(…)` before navigating (plus a fixed seed date), or masking the
+   due-date cells. The suite also screenshots as soon as the theme attribute is set; the app now prefetches each
+   view's data in its route loader so pages render complete, but waiting for network idle in the spec would
+   make it sturdier.
 3. **Repo admin settings** (my token has no Administration permission):
    - Branch protection on `main` with required checks: `lint`, `typecheck`, `unit-py`, `unit-web`, `acceptance`,
      `links`, `contract`, `dco`, `licences`, `supply-chain`, and `e2e` once item 1 is fixed (M0S-E02-01).
