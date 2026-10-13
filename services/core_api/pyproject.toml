@@ -18,7 +18,11 @@ dependencies = [
     "uuid6>=2025.0.1",
     "jsonschema~=4.26",
     "pwdlib[argon2]~=0.3.1",
+    "typer~=0.27",
 ]
+
+[project.scripts]
+hearthos = "hearthos_core.cli:app"
 
 [project.entry-points.pytest11]
 # Database fixtures for integration tests in core and plugins (M0S-E04-04).
