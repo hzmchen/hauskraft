@@ -56,7 +56,7 @@ def problem(
 async def _hearthos_error(_: Request, exc: Exception) -> JSONResponse:
     if not isinstance(exc, HearthosError):  # pragma: no cover - registered for this type only
         raise exc
-    return problem(exc.status, exc.code, exc.title, exc.detail, **exc.extra)
+    return problem(exc.status, exc.code, exc.title, exc.detail, headers=getattr(exc, "headers", None), **exc.extra)
 
 
 async def _http_error(_: Request, exc: Exception) -> JSONResponse:
