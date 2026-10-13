@@ -3,18 +3,16 @@
 
 from __future__ import annotations
 
-from fastapi import APIRouter
-
 from hearthos_sdk import PluginContext, PluginRegistration
 from hearthos_tasks.models import metadata
+from hearthos_tasks.router import build_router
 
 
 class TasksPlugin:
     id = "org.hearthos.tasks"
 
     def register(self, ctx: PluginContext) -> PluginRegistration:
-        router = APIRouter()
-        return PluginRegistration(router=router, metadata=metadata)
+        return PluginRegistration(router=build_router(ctx), metadata=metadata)
 
 
 plugin = TasksPlugin()
