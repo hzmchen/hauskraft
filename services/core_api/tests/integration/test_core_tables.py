@@ -86,19 +86,19 @@ async def test_sessions_cascade_with_their_user(db_session: AsyncSession) -> Non
 async def test_plugin_record(db_session: AsyncSession) -> None:
     db_session.add(
         PluginRecord(
-            id="org.hearthos.tasks",
+            id="org.example.recordprobe",
             version="0.1.0",
             kind="inprocess",
-            manifest={"id": "org.hearthos.tasks"},
+            manifest={"id": "org.example.recordprobe"},
             manifest_sha256="0" * 64,
         )
     )
     await db_session.flush()
-    record = await db_session.get(PluginRecord, "org.hearthos.tasks")
+    record = await db_session.get(PluginRecord, "org.example.recordprobe")
     assert record is not None
     assert record.enabled is True
     assert record.load_error is None
-    assert record.manifest["id"] == "org.hearthos.tasks"
+    assert record.manifest["id"] == "org.example.recordprobe"
 
 
 async def test_deployment_setting_upsert_by_key(db_session: AsyncSession) -> None:
