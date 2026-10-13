@@ -123,5 +123,7 @@ describe("pre-paint script in index.html", () => {
   it("has its CSP hash documented", () => {
     const hash = `sha256-${createHash("sha256").update(script).digest("base64")}`;
     expect(readFileSync(resolve(__dirname, "../../CSP.md"), "utf8")).toContain(hash);
+    // …and Caddy allows exactly that script (M0S-E11-01).
+    expect(readFileSync(resolve(__dirname, "../../../../deploy/compose/Caddyfile"), "utf8")).toContain(`'${hash}'`);
   });
 });
