@@ -37,11 +37,13 @@ def version_locations(settings: Settings) -> list[Path]:
 
 
 def target_metadata(settings: Settings) -> list[MetaData]:
-    """Metadata compared by ``alembic check``; plugin metadata joins once plugins load (M0S-E06-03)."""
+    """Metadata compared by ``alembic check``: core tables plus every loaded plugin's own MetaData."""
+    from hearthos_core.app import create_app
     from hearthos_core.db import models  # noqa: F401 - registers the core tables on the metadata
     from hearthos_core.db.base import metadata
+    from hearthos_core.plugins.loader import plugin_metadata
 
-    return [metadata]
+    return [metadata, *plugin_metadata(create_app(settings))]
 
 
 def sync_url(url: str) -> str:

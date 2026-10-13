@@ -44,9 +44,10 @@ class PluginContext(Protocol):
     logger: logging.Logger
     config: Mapping[str, Any]
 
-    async def current_actor(self) -> Actor:
-        """FastAPI dependency resolving the signed-in actor (401 without a session)."""
-        ...
+    current_actor: Callable[..., Awaitable[Actor]]
+    """FastAPI dependency resolving the signed-in actor: ``actor: Actor = Depends(ctx.current_actor)``.
+
+    Answers 401 without a session and 403 ``csrf_failed`` for writes without the CSRF token."""
 
     def db_session(self) -> AbstractAsyncContextManager[AsyncSession]:
         """A unit of work: one transaction, committed on clean exit, rolled back on error.
