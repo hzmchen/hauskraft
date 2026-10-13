@@ -86,6 +86,27 @@ def users_set_password(username: Annotated[str, typer.Option(help="Account to ch
     typer.echo(f"Password changed for {_run(work)!r}.")
 
 
+@app.command("seed")
+def seed(
+    if_empty: Annotated[
+        bool,
+        typer.Option(
+            "--if-empty", help="Accepted for clarity; seeding never touches a database that already has users."
+        ),
+    ] = True,
+    force_demo: Annotated[bool, typer.Option("--force-demo", help="Allow the demo password in production.")] = False,
+) -> None:
+    """Create the demo household (fixtures/household/demo.json) when HEARTHOS_SEED_DEMO is on."""
+    from hearthos_core.seed import load_fixture, run_seed
+
+    try:
+        result = asyncio.run(run_seed(Settings(), load_fixture(), force_demo=force_demo))
+    except HearthosError as exc:
+        typer.secho(f"error: {exc.detail}", err=True, fg=typer.colors.RED)
+        raise typer.Exit(1) from None
+    typer.echo(result.reason)
+
+
 @db_app.command("upgrade")
 def db_upgrade() -> None:
     """Apply core and plugin migrations up to heads."""
