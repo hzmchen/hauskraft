@@ -69,8 +69,9 @@ async function show() {
   return within(await screen.findByRole("radiogroup", { name: "Household theme" }));
 }
 
+// hidden: a modal dialog hides the page behind it from assistive tech while it is open.
 const radio = (group: ReturnType<typeof within>, name: string) =>
-  group.getByRole("radio", { name }) as HTMLInputElement;
+  group.getByRole("radio", { name, hidden: true }) as HTMLInputElement;
 
 beforeEach(() =>
   vi.stubGlobal("matchMedia", () => ({ matches: false, addEventListener() {}, removeEventListener() {} })),

@@ -11,6 +11,7 @@ export * from "./components/input";
 export * from "./components/popover";
 export * from "./components/sheet";
 export * from "./components/sonner";
+export * from "./components/swatch";
 export * from "./components/tabs";
 export * from "./theme/contract.gen";
 export { Icon, IconProvider, type IconProps } from "./icons/Icon";
