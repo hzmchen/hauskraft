@@ -63,6 +63,10 @@ plugins = ["pydantic.mypy"]
 mypy_path = ["services/core_api/src", "packages/sdk-py/src", "plugins/official/tasks/backend/src"]
 files = ["services/core_api/src", "packages/sdk-py/src", "plugins/official/tasks/backend/src"]
 
+[[tool.mypy.overrides]]
+module = ["semantic_version"]
+ignore_missing_imports = true
+
 [tool.pydantic-mypy]
 init_forbid_extra = true
 init_typed = true

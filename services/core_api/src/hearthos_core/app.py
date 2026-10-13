@@ -18,6 +18,7 @@ from hearthos_core.auth.ratelimit import LoginRateLimiter
 from hearthos_core.errors import install_error_handlers
 from hearthos_core.health import install_core_checks
 from hearthos_core.logging import RequestContextMiddleware, configure_logging
+from hearthos_core.plugins.loader import load_plugins
 from hearthos_core.policy import policy_from_settings
 from hearthos_core.settings import Settings, get_settings
 
@@ -81,4 +82,5 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     install_core_checks(app)
     app.add_middleware(RequestContextMiddleware)
     app.include_router(build_api_router(), prefix=API_PREFIX)
+    load_plugins(app, settings.plugin_paths, settings.theme_paths)
     return app
