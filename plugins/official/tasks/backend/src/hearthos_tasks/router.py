@@ -31,7 +31,7 @@ def build_router(ctx: PluginContext) -> APIRouter:
         status: Status = "all",
         sort: Sort = "-created_at",
         limit: Annotated[int, Query(ge=1, le=200)] = 50,
-        offset: Annotated[int, Query(ge=0)] = 0,
+        offset: Annotated[int, Query(ge=0, le=2_147_483_647)] = 0,
     ) -> TaskPage:
         async with ctx.db_session() as session:
             page = await service.list_tasks(session, status, sort, limit, offset)
