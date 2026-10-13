@@ -8,6 +8,7 @@ from typing import Annotated
 from fastapi import Depends, Request
 
 from hearthos_core.auth import sessions
+from hearthos_core.auth.csrf import check_request
 from hearthos_core.db.models import Session, User
 from hearthos_core.db.session import DbSession
 from hearthos_core.logging import request_user_id
@@ -31,6 +32,7 @@ async def current_session(request: Request, db: DbSession) -> tuple[Session, Use
     if resolved is None:
         raise UnauthenticatedError("Sign in to continue.")
     sess, user = resolved
+    check_request(request, sess.csrf_token)
     request.state.session = sess
     request.state.user = user
     request_user_id.set(str(user.id))

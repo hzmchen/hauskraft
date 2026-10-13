@@ -9,6 +9,7 @@ from fastapi import APIRouter, Request, Response
 from sqlalchemy import select
 
 from hearthos_core.auth import sessions
+from hearthos_core.auth.csrf import check_origin
 from hearthos_core.auth.deps import CurrentSession, actor_for
 from hearthos_core.auth.passwords import dummy_verify, verify_password
 from hearthos_core.auth.schemas import LoginIn, SessionOut, UserOut
@@ -65,6 +66,7 @@ def _set_cookie(response: Response, request: Request, token: str) -> None:
 
 @router.post("/login", responses={401: {}, 403: {}, 429: {}})
 async def login(body: LoginIn, request: Request, response: Response) -> SessionOut:
+    check_origin(request)
     limiter = request.app.state.login_limiter
     ip = _client_ip(request)
     wait = limiter.retry_after(body.username, ip)
