@@ -31,5 +31,13 @@
     "system": "System",
     "light": "Light",
     "dark": "Dark"
+  },
+  "login": {
+    "title": "Sign in to HearthOS",
+    "username": "Username",
+    "password": "Password",
+    "submit": "Sign in",
+    "error_credentials": "Wrong username or password",
+    "error_rate_limited": "Too many attempts. Wait a minute and try again."
   }
 }
