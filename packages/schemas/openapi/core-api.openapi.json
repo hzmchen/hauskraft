@@ -197,6 +197,88 @@
         "title": "Components",
         "type": "object"
       },
+      "Dashboard": {
+        "properties": {
+          "dashboard_id": {
+            "title": "Dashboard Id",
+            "type": "string"
+          },
+          "layout": {
+            "items": {
+              "$ref": "#/components/schemas/DashboardCell"
+            },
+            "title": "Layout",
+            "type": "array"
+          }
+        },
+        "required": [
+          "dashboard_id",
+          "layout"
+        ],
+        "title": "Dashboard",
+        "type": "object"
+      },
+      "DashboardCell": {
+        "additionalProperties": false,
+        "properties": {
+          "h": {
+            "maximum": 100.0,
+            "minimum": 1.0,
+            "title": "H",
+            "type": "integer"
+          },
+          "i": {
+            "maxLength": 200,
+            "minLength": 1,
+            "pattern": "^[^\\x00]*$",
+            "title": "I",
+            "type": "string"
+          },
+          "plugin_id": {
+            "maxLength": 200,
+            "minLength": 1,
+            "pattern": "^[^\\x00]*$",
+            "title": "Plugin Id",
+            "type": "string"
+          },
+          "w": {
+            "maximum": 12.0,
+            "minimum": 1.0,
+            "title": "W",
+            "type": "integer"
+          },
+          "widget_id": {
+            "maxLength": 200,
+            "minLength": 1,
+            "pattern": "^[^\\x00]*$",
+            "title": "Widget Id",
+            "type": "string"
+          },
+          "x": {
+            "exclusiveMaximum": 12.0,
+            "minimum": 0.0,
+            "title": "X",
+            "type": "integer"
+          },
+          "y": {
+            "maximum": 10000.0,
+            "minimum": 0.0,
+            "title": "Y",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "i",
+          "plugin_id",
+          "widget_id",
+          "x",
+          "y",
+          "w",
+          "h"
+        ],
+        "title": "DashboardCell",
+        "type": "object"
+      },
       "HTTPValidationError": {
         "properties": {
           "detail": {
@@ -297,6 +379,24 @@
           "content_width"
         ],
         "title": "Layout",
+        "type": "object"
+      },
+      "LayoutIn": {
+        "additionalProperties": false,
+        "properties": {
+          "layout": {
+            "items": {
+              "$ref": "#/components/schemas/DashboardCell"
+            },
+            "maxItems": 100,
+            "title": "Layout",
+            "type": "array"
+          }
+        },
+        "required": [
+          "layout"
+        ],
+        "title": "LayoutIn",
         "type": "object"
       },
       "LoginIn": {
@@ -1236,6 +1336,95 @@
         "summary": "Session",
         "tags": [
           "auth"
+        ]
+      }
+    },
+    "/api/v1/dashboard/{dashboard_id}": {
+      "get": {
+        "operationId": "dashboard_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "dashboard_id",
+            "required": true,
+            "schema": {
+              "pattern": "^[a-z0-9-]{1,40}$",
+              "title": "Dashboard Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Dashboard"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "422": {
+            "description": "Unprocessable Content"
+          }
+        },
+        "summary": "Get",
+        "tags": [
+          "dashboard"
+        ]
+      },
+      "put": {
+        "operationId": "dashboard_put",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "dashboard_id",
+            "required": true,
+            "schema": {
+              "pattern": "^[a-z0-9-]{1,40}$",
+              "title": "Dashboard Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LayoutIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Dashboard"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "422": {
+            "description": "Unprocessable Content"
+          }
+        },
+        "summary": "Put",
+        "tags": [
+          "dashboard"
         ]
       }
     },

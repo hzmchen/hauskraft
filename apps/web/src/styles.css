@@ -2,5 +2,13 @@
 /* Shell styles: @hearthos/ui's Tailwind setup and the Default theme's tokens as fallback. */
 @import "@hearthos/ui/styles.css";
 @import "@hearthos/ui/tokens/fallback.css";
+@import "react-grid-layout/css/styles.css";
 
 @source "./";
+
+/* react-grid-layout (M0S-E08-06): the drop placeholder in theme colours. */
+.react-grid-item.react-grid-placeholder {
+  background: var(--primary);
+  opacity: 0.2;
+  border-radius: var(--radius);
+}

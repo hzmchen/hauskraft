@@ -7,7 +7,7 @@ import { Icon, WidgetFrame } from "@hearthos/ui";
 import { Component, Suspense, use, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 
-import { loadPluginModule } from "./load";
+import { ensurePluginLocales, pluginModulePromise } from "./load";
 import { pluginRegistry } from "./registry.gen";
 
 export type PluginLoaders = Record<string, () => Promise<{ default: PluginWebModule }>>;
@@ -47,7 +47,8 @@ function LoadedWidget({
   title,
 }: Omit<PluginWidgetProps, "enabled" | "loaders"> & { loader: PluginLoaders[string] }) {
   const { i18n } = useTranslation();
-  const module = use(loadPluginModule(pluginId, loader, i18n));
+  const module = use(pluginModulePromise(loader));
+  ensurePluginLocales(i18n, pluginId, module);
   const Widget = module.widgets[widgetId];
   if (!Widget) return <WidgetUnavailable />;
   return (

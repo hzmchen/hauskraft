@@ -75,5 +75,9 @@
     "confirm": "Change theme",
     "cancel": "Cancel",
     "add_theme": "Add a theme"
+  },
+  "dashboard": {
+    "edit_layout": "Edit layout",
+    "done_editing": "Done editing"
   }
 }
