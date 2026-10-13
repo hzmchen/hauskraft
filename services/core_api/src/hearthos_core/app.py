@@ -81,6 +81,7 @@ def build_api_router() -> APIRouter:
     from hearthos_core import health
     from hearthos_core.activity import router as activity
     from hearthos_core.auth import router as auth
+    from hearthos_core.dashboard import router as dashboard
     from hearthos_core.plugins import router as plugins
     from hearthos_core.themes import router as themes
     from hearthos_core.users import router as users
@@ -92,6 +93,7 @@ def build_api_router() -> APIRouter:
     router.include_router(plugins.router)
     router.include_router(activity.router)
     router.include_router(themes.router)
+    router.include_router(dashboard.router)
     return router
 
 

@@ -6,7 +6,7 @@ import { useTranslation } from "react-i18next";
 
 import { pluginPages } from "../shell/nav/model";
 import { NotFound } from "../shell/NotFound";
-import { loadPluginModule } from "./load";
+import { ensurePluginLocales, pluginModulePromise } from "./load";
 import type { PluginLoaders } from "./PluginWidget";
 import { pluginRegistry } from "./registry.gen";
 
@@ -33,7 +33,8 @@ export function PluginPage({
 
 function LoadedPage({ pluginId, component, loaders }: { pluginId: string; component: string; loaders: PluginLoaders }) {
   const { i18n } = useTranslation();
-  const module = use(loadPluginModule(pluginId, loaders[pluginId]!, i18n));
+  const module = use(pluginModulePromise(loaders[pluginId]!));
+  ensurePluginLocales(i18n, pluginId, module);
   const Page = module.pages[component];
   return Page ? <Page pluginId={pluginId} /> : <NotFound />;
 }

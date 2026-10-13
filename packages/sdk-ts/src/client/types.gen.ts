@@ -122,6 +122,54 @@ export type Components = {
 };
 
 /**
+ * Dashboard
+ */
+export type Dashboard = {
+    /**
+     * Dashboard Id
+     */
+    dashboard_id: string;
+    /**
+     * Layout
+     */
+    layout: Array<DashboardCell>;
+};
+
+/**
+ * DashboardCell
+ */
+export type DashboardCell = {
+    /**
+     * H
+     */
+    h: number;
+    /**
+     * I
+     */
+    i: string;
+    /**
+     * Plugin Id
+     */
+    plugin_id: string;
+    /**
+     * W
+     */
+    w: number;
+    /**
+     * Widget Id
+     */
+    widget_id: string;
+    /**
+     * X
+     */
+    x: number;
+    /**
+     * Y
+     */
+    y: number;
+};
+
+/**
  * HTTPValidationError
  */
 export type HttpValidationError = {
@@ -186,6 +234,16 @@ export type Layout = {
      */
     density: string;
     navigation: Navigation;
+};
+
+/**
+ * LayoutIn
+ */
+export type LayoutIn = {
+    /**
+     * Layout
+     */
+    layout: Array<DashboardCell>;
 };
 
 /**
@@ -786,6 +844,74 @@ export type AuthSessionResponses = {
 };
 
 export type AuthSessionResponse = AuthSessionResponses[keyof AuthSessionResponses];
+
+export type DashboardGetData = {
+    body?: never;
+    path: {
+        /**
+         * Dashboard Id
+         */
+        dashboard_id: string;
+    };
+    query?: never;
+    url: '/api/v1/dashboard/{dashboard_id}';
+};
+
+export type DashboardGetErrors = {
+    /**
+     * Unauthorized
+     */
+    401: unknown;
+    /**
+     * Unprocessable Content
+     */
+    422: unknown;
+};
+
+export type DashboardGetResponses = {
+    /**
+     * Successful Response
+     */
+    200: Dashboard;
+};
+
+export type DashboardGetResponse = DashboardGetResponses[keyof DashboardGetResponses];
+
+export type DashboardPutData = {
+    body: LayoutIn;
+    path: {
+        /**
+         * Dashboard Id
+         */
+        dashboard_id: string;
+    };
+    query?: never;
+    url: '/api/v1/dashboard/{dashboard_id}';
+};
+
+export type DashboardPutErrors = {
+    /**
+     * Unauthorized
+     */
+    401: unknown;
+    /**
+     * Forbidden
+     */
+    403: unknown;
+    /**
+     * Unprocessable Content
+     */
+    422: unknown;
+};
+
+export type DashboardPutResponses = {
+    /**
+     * Successful Response
+     */
+    200: Dashboard;
+};
+
+export type DashboardPutResponse = DashboardPutResponses[keyof DashboardPutResponses];
 
 export type HealthHealthzData = {
     body?: never;

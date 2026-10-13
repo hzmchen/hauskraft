@@ -3,8 +3,8 @@
 import { type DefaultError, type InfiniteData, infiniteQueryOptions, queryOptions, type UseMutationOptions } from '@tanstack/react-query';
 
 import { client } from '../client.gen';
-import { activityList, authLogin, authLogout, authSession, healthHealthz, healthReadyz, type Options, pluginsList, pluginsUpdate, settingsThemeSet, tasksCreate, tasksDelete, tasksGet, tasksList, tasksUpdate, themesActive, themesActiveCss, themesAsset, themesList, usersMeGet, usersMeUpdate, usersUsersCreate } from '../sdk.gen';
-import type { ActivityListData, ActivityListResponse, AuthLoginData, AuthLoginError, AuthLoginResponse, AuthLogoutData, AuthLogoutResponse, AuthSessionData, AuthSessionResponse, HealthHealthzData, HealthHealthzResponse, HealthReadyzData, HealthReadyzError, HealthReadyzResponse, PluginsListData, PluginsListResponse, PluginsUpdateData, PluginsUpdateResponse, SettingsThemeSetData, SettingsThemeSetResponse, TasksCreateData, TasksCreateResponse, TasksDeleteData, TasksDeleteResponse, TasksGetData, TasksGetResponse, TasksListData, TasksListResponse, TasksUpdateData, TasksUpdateResponse, ThemesActiveCssData, ThemesActiveCssError, ThemesActiveCssResponse, ThemesActiveData, ThemesActiveResponse, ThemesAssetData, ThemesAssetError, ThemesListData, ThemesListResponse, UsersMeGetData, UsersMeGetResponse, UsersMeUpdateData, UsersMeUpdateResponse, UsersUsersCreateData, UsersUsersCreateResponse } from '../types.gen';
+import { activityList, authLogin, authLogout, authSession, dashboardGet, dashboardPut, healthHealthz, healthReadyz, type Options, pluginsList, pluginsUpdate, settingsThemeSet, tasksCreate, tasksDelete, tasksGet, tasksList, tasksUpdate, themesActive, themesActiveCss, themesAsset, themesList, usersMeGet, usersMeUpdate, usersUsersCreate } from '../sdk.gen';
+import type { ActivityListData, ActivityListResponse, AuthLoginData, AuthLoginError, AuthLoginResponse, AuthLogoutData, AuthLogoutResponse, AuthSessionData, AuthSessionResponse, DashboardGetData, DashboardGetResponse, DashboardPutData, DashboardPutResponse, HealthHealthzData, HealthHealthzResponse, HealthReadyzData, HealthReadyzError, HealthReadyzResponse, PluginsListData, PluginsListResponse, PluginsUpdateData, PluginsUpdateResponse, SettingsThemeSetData, SettingsThemeSetResponse, TasksCreateData, TasksCreateResponse, TasksDeleteData, TasksDeleteResponse, TasksGetData, TasksGetResponse, TasksListData, TasksListResponse, TasksUpdateData, TasksUpdateResponse, ThemesActiveCssData, ThemesActiveCssError, ThemesActiveCssResponse, ThemesActiveData, ThemesActiveResponse, ThemesAssetData, ThemesAssetError, ThemesListData, ThemesListResponse, UsersMeGetData, UsersMeGetResponse, UsersMeUpdateData, UsersMeUpdateResponse, UsersUsersCreateData, UsersUsersCreateResponse } from '../types.gen';
 
 export type QueryKey<TOptions extends Options> = [
     Pick<TOptions, 'baseUrl' | 'body' | 'headers' | 'path' | 'query'> & {
@@ -167,6 +167,41 @@ export const authSessionOptions = (options?: Options<AuthSessionData>) => queryO
     },
     queryKey: authSessionQueryKey(options)
 });
+
+export const dashboardGetQueryKey = (options: Options<DashboardGetData>) => createQueryKey('dashboardGet', options);
+
+/**
+ * Get
+ */
+export const dashboardGetOptions = (options: Options<DashboardGetData>) => queryOptions<DashboardGetResponse, DefaultError, DashboardGetResponse, ReturnType<typeof dashboardGetQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await dashboardGet({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: dashboardGetQueryKey(options)
+});
+
+/**
+ * Put
+ */
+export const dashboardPutMutation = (options?: Partial<Options<DashboardPutData>>): UseMutationOptions<DashboardPutResponse, DefaultError, Options<DashboardPutData>> => {
+    const mutationOptions: UseMutationOptions<DashboardPutResponse, DefaultError, Options<DashboardPutData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await dashboardPut({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
 
 export const healthHealthzQueryKey = (options?: Options<HealthHealthzData>) => createQueryKey('healthHealthz', options);
 

@@ -75,5 +75,9 @@
     "confirm": "Design ändern",
     "cancel": "Abbrechen",
     "add_theme": "Design hinzufügen"
+  },
+  "dashboard": {
+    "edit_layout": "Layout bearbeiten",
+    "done_editing": "Fertig"
   }
 }

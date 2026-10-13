@@ -20,6 +20,7 @@
     "i18next": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:",
+    "react-grid-layout": "2.3.0",
     "react-i18next": "catalog:"
   },
   "devDependencies": {

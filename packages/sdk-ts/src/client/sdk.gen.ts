@@ -2,7 +2,7 @@
 
 import type { Client, ClientMeta, Options as Options2, RequestResult, TDataShape } from './client';
 import { client } from './client.gen';
-import type { ActivityListData, ActivityListErrors, ActivityListResponses, AuthLoginData, AuthLoginErrors, AuthLoginResponses, AuthLogoutData, AuthLogoutErrors, AuthLogoutResponses, AuthSessionData, AuthSessionErrors, AuthSessionResponses, HealthHealthzData, HealthHealthzResponses, HealthReadyzData, HealthReadyzErrors, HealthReadyzResponses, PluginsListData, PluginsListErrors, PluginsListResponses, PluginsUpdateData, PluginsUpdateErrors, PluginsUpdateResponses, SettingsThemeSetData, SettingsThemeSetErrors, SettingsThemeSetResponses, TasksCreateData, TasksCreateErrors, TasksCreateResponses, TasksDeleteData, TasksDeleteErrors, TasksDeleteResponses, TasksGetData, TasksGetErrors, TasksGetResponses, TasksListData, TasksListErrors, TasksListResponses, TasksUpdateData, TasksUpdateErrors, TasksUpdateResponses, ThemesActiveCssData, ThemesActiveCssErrors, ThemesActiveCssResponses, ThemesActiveData, ThemesActiveErrors, ThemesActiveResponses, ThemesAssetData, ThemesAssetErrors, ThemesAssetResponses, ThemesListData, ThemesListErrors, ThemesListResponses, UsersMeGetData, UsersMeGetErrors, UsersMeGetResponses, UsersMeUpdateData, UsersMeUpdateErrors, UsersMeUpdateResponses, UsersUsersCreateData, UsersUsersCreateErrors, UsersUsersCreateResponses } from './types.gen';
+import type { ActivityListData, ActivityListErrors, ActivityListResponses, AuthLoginData, AuthLoginErrors, AuthLoginResponses, AuthLogoutData, AuthLogoutErrors, AuthLogoutResponses, AuthSessionData, AuthSessionErrors, AuthSessionResponses, DashboardGetData, DashboardGetErrors, DashboardGetResponses, DashboardPutData, DashboardPutErrors, DashboardPutResponses, HealthHealthzData, HealthHealthzResponses, HealthReadyzData, HealthReadyzErrors, HealthReadyzResponses, PluginsListData, PluginsListErrors, PluginsListResponses, PluginsUpdateData, PluginsUpdateErrors, PluginsUpdateResponses, SettingsThemeSetData, SettingsThemeSetErrors, SettingsThemeSetResponses, TasksCreateData, TasksCreateErrors, TasksCreateResponses, TasksDeleteData, TasksDeleteErrors, TasksDeleteResponses, TasksGetData, TasksGetErrors, TasksGetResponses, TasksListData, TasksListErrors, TasksListResponses, TasksUpdateData, TasksUpdateErrors, TasksUpdateResponses, ThemesActiveCssData, ThemesActiveCssErrors, ThemesActiveCssResponses, ThemesActiveData, ThemesActiveErrors, ThemesActiveResponses, ThemesAssetData, ThemesAssetErrors, ThemesAssetResponses, ThemesListData, ThemesListErrors, ThemesListResponses, UsersMeGetData, UsersMeGetErrors, UsersMeGetResponses, UsersMeUpdateData, UsersMeUpdateErrors, UsersMeUpdateResponses, UsersUsersCreateData, UsersUsersCreateErrors, UsersUsersCreateResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean, TResponse = unknown> = Options2<TData, ThrowOnError, TResponse> & {
     /**
@@ -44,6 +44,23 @@ export const authLogout = <ThrowOnError extends boolean = false>(options?: Optio
  * Session
  */
 export const authSession = <ThrowOnError extends boolean = false>(options?: Options<AuthSessionData, ThrowOnError>): RequestResult<AuthSessionResponses, AuthSessionErrors, ThrowOnError> => (options?.client ?? client).get<AuthSessionResponses, AuthSessionErrors, ThrowOnError>({ url: '/api/v1/auth/session', ...options });
+
+/**
+ * Get
+ */
+export const dashboardGet = <ThrowOnError extends boolean = false>(options: Options<DashboardGetData, ThrowOnError>): RequestResult<DashboardGetResponses, DashboardGetErrors, ThrowOnError> => (options.client ?? client).get<DashboardGetResponses, DashboardGetErrors, ThrowOnError>({ url: '/api/v1/dashboard/{dashboard_id}', ...options });
+
+/**
+ * Put
+ */
+export const dashboardPut = <ThrowOnError extends boolean = false>(options: Options<DashboardPutData, ThrowOnError>): RequestResult<DashboardPutResponses, DashboardPutErrors, ThrowOnError> => (options.client ?? client).put<DashboardPutResponses, DashboardPutErrors, ThrowOnError>({
+    url: '/api/v1/dashboard/{dashboard_id}',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
 
 /**
  * Healthz
