@@ -6,6 +6,7 @@ Run with ``uvicorn hearthos_core.app:create_app --factory``. Every route lives u
 
 from __future__ import annotations
 
+import asyncio
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 
@@ -16,6 +17,7 @@ from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 from hearthos_core.auth.providers import provider_from_settings
 from hearthos_core.auth.ratelimit import LoginRateLimiter
 from hearthos_core.errors import install_error_handlers
+from hearthos_core.events.relay import run_relay
 from hearthos_core.health import install_core_checks
 from hearthos_core.logging import RequestContextMiddleware, configure_logging, get_logger
 from hearthos_core.plugins.loader import load_plugins
@@ -39,9 +41,14 @@ async def _lifespan(app: FastAPI) -> AsyncIterator[None]:
     app.state.engine = engine
     app.state.sessionmaker = async_sessionmaker(engine, expire_on_commit=False)
     await _sync_plugin_records(app)
+    stop = asyncio.Event()
+    relay = asyncio.create_task(run_relay(app.state.sessionmaker, stop)) if settings.relay_enabled else None
     try:
         yield
     finally:
+        stop.set()
+        if relay is not None:
+            await relay
         await engine.dispose()
         app.state.engine = None
         app.state.sessionmaker = None
@@ -69,6 +76,7 @@ async def _sync_plugin_records(app: FastAPI) -> None:
 def build_api_router() -> APIRouter:
     """Core routers; later stories add auth, users, plugins, themes, activity and dashboards."""
     from hearthos_core import health
+    from hearthos_core.activity import router as activity
     from hearthos_core.auth import router as auth
     from hearthos_core.plugins import router as plugins
     from hearthos_core.users import router as users
@@ -78,6 +86,7 @@ def build_api_router() -> APIRouter:
     router.include_router(auth.router)
     router.include_router(users.router)
     router.include_router(plugins.router)
+    router.include_router(activity.router)
     return router
 
 

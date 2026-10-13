@@ -1,6 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """M0S-E10-03 (backend): the log relay publishes outbox events; /activity lists them newest first."""
 
+import asyncio
 import datetime as dt
 import uuid
 from collections.abc import Callable
@@ -24,17 +25,22 @@ def _login(client: TestClient, username: str) -> dict[str, str]:
     return {"X-CSRF-Token": r.json()["csrf_token"]}
 
 
-async def test_relay_publishes_unpublished_events(
+def test_relay_publishes_unpublished_events(
     api_settings: Settings, client: TestClient, make_user: Callable[..., str], caplog: pytest.LogCaptureFixture
 ) -> None:
     h = _login(client, make_user())
     task = client.post("/api/v1/tasks", json={"title": "relay me"}, headers=h).json()
-    engine = create_async_engine(api_settings.database_url, poolclass=NullPool)
-    sessions = async_sessionmaker(engine, expire_on_commit=False)
-    published = 0
-    while (n := await publish_batch(sessions, batch_size=100)) > 0:
-        published += n
-    await engine.dispose()
+
+    async def drain() -> int:
+        engine = create_async_engine(api_settings.database_url, poolclass=NullPool)
+        sessions = async_sessionmaker(engine, expire_on_commit=False)
+        total = 0
+        while (n := await publish_batch(sessions, batch_size=100)) > 0:
+            total += n
+        await engine.dispose()
+        return total
+
+    published = asyncio.run(drain())
     assert published >= 1
     sync = create_engine(api_settings.database_url)
     with sync.connect() as conn:
