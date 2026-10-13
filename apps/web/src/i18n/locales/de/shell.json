@@ -49,6 +49,31 @@
   "settings": {
     "appearance": "Darstellung",
     "this_device": "Dieses Gerät",
-    "this_device_hint": "Nur dieses Gerät. Andere Geräte behalten ihre eigene Einstellung."
+    "this_device_hint": "Nur dieses Gerät. Andere Geräte behalten ihre eigene Einstellung.",
+    "household_theme": "Design des Haushalts",
+    "household_hint": "Gilt für alle auf jedem Gerät",
+    "active": "Aktiv",
+    "invalid": "Dieses Design hat Probleme und kann nicht verwendet werden.",
+    "show_problems": "Probleme anzeigen",
+    "by": "von {{authors}}",
+    "version": "Version {{version}}",
+    "navigation": "Navigation: {{wide}} / {{narrow}}",
+    "density": "Dichte: {{density}}",
+    "nav_style": {
+      "sidebar": "Seitenleiste",
+      "topbar": "Leiste oben",
+      "drawer": "Ausklappmenü",
+      "bottom-tabs": "Tabs unten"
+    },
+    "density_value": {
+      "compact": "kompakt",
+      "comfortable": "bequem",
+      "spacious": "großzügig"
+    },
+    "confirm_title": "Aussehen für alle ändern?",
+    "confirm_body": "{{name}} wird auf jedem Gerät im Haushalt verwendet. Alles funktioniert weiter wie gewohnt.",
+    "confirm": "Design ändern",
+    "cancel": "Abbrechen",
+    "add_theme": "Design hinzufügen"
   }
 }

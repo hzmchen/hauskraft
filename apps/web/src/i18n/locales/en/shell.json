@@ -49,6 +49,31 @@
   "settings": {
     "appearance": "Appearance",
     "this_device": "This device",
-    "this_device_hint": "Only this device. Other devices keep their own setting."
+    "this_device_hint": "Only this device. Other devices keep their own setting.",
+    "household_theme": "Household theme",
+    "household_hint": "Applies to everyone on every device",
+    "active": "Active",
+    "invalid": "This theme has problems and can't be used.",
+    "show_problems": "Show problems",
+    "by": "by {{authors}}",
+    "version": "version {{version}}",
+    "navigation": "Navigation: {{wide}} / {{narrow}}",
+    "density": "Density: {{density}}",
+    "nav_style": {
+      "sidebar": "sidebar",
+      "topbar": "top bar",
+      "drawer": "drawer",
+      "bottom-tabs": "bottom tabs"
+    },
+    "density_value": {
+      "compact": "compact",
+      "comfortable": "comfortable",
+      "spacious": "spacious"
+    },
+    "confirm_title": "Change the look for everyone?",
+    "confirm_body": "{{name}} will be used on every device in the household. Everything keeps working the same way.",
+    "confirm": "Change theme",
+    "cancel": "Cancel",
+    "add_theme": "Add a theme"
   }
 }

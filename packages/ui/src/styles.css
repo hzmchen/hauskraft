@@ -72,6 +72,10 @@
 @utility max-w-content {
   max-width: 72rem;
 }
+/* Theme preview chips: the colour comes from the theme's data (components/swatch.tsx). */
+@utility bg-swatch {
+  background-color: var(--swatch);
+}
 @utility max-w-viewport-gutter {
   max-width: calc(100% - 2rem);
 }
