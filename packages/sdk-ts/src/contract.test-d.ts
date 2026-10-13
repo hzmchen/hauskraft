@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: MIT
+import type { QueryClient } from "@tanstack/react-query";
 import type { ComponentType } from "react";
 import { describe, expectTypeOf, it } from "vitest";
 
@@ -23,6 +24,9 @@ describe("widget and page contract", () => {
     expectTypeOf<PluginWebModule["pages"]>().toEqualTypeOf<Record<string, ComponentType<PageProps>>>();
     expectTypeOf<PluginWebModule["locales"]>().toEqualTypeOf<Record<"en" | "de", Record<string, unknown>>>();
     expectTypeOf<PluginWebModule["icons"]>().toEqualTypeOf<Record<string, string> | undefined>();
+    expectTypeOf<PluginWebModule["prefetch"]>().toEqualTypeOf<
+      ((queryClient: QueryClient) => Promise<unknown>) | undefined
+    >();
   });
 
   it("definePluginWeb returns the module unchanged and rejects missing locales", () => {

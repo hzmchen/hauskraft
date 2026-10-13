@@ -5,6 +5,8 @@
 @import "react-grid-layout/css/styles.css";
 
 @source "./";
+/* Plugin web code uses the same utilities; Tailwind only emits classes it finds in these folders. */
+@source "../../../plugins/official/*/web/src/**/*.{ts,tsx}";
 
 /* react-grid-layout (M0S-E08-06): the drop placeholder in theme colours. */
 .react-grid-item.react-grid-placeholder {

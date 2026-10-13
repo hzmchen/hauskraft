@@ -1,5 +1,20 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
+# The HearthOS stack (M0S-E11-01): `docker compose up --wait` from the repository root.
+#   db       Postgres 16
+#   migrate  one-shot: schema upgrade and demo seed (only into an empty database)
+#   api      core API (FastAPI) with the built-in themes and ./data/themes
+#   web      Caddy: the SPA and /api/* on one origin, published on HEARTHOS_WEB_PORT (8080)
 name: hearthos
+
+x-api-env: &api-env
+  HEARTHOS_DATABASE_URL: postgresql+psycopg://hearthos:hearthos@db:5432/hearthos
+  HEARTHOS_ENV: ${HEARTHOS_ENV:-development}
+  HEARTHOS_SECRET_KEY: ${HEARTHOS_SECRET_KEY:-}
+  HEARTHOS_COOKIE_SECURE: ${HEARTHOS_COOKIE_SECURE:-false}
+  HEARTHOS_ALLOWED_ORIGINS: ${HEARTHOS_ALLOWED_ORIGINS:-http://localhost:8080}
+  HEARTHOS_DEFAULT_THEME: ${HEARTHOS_DEFAULT_THEME:-org.hearthos.theme.default}
+  HEARTHOS_THEME_PATHS: /app/themes/builtin,/data/themes
+  HEARTHOS_SEED_DEMO: ${HEARTHOS_SEED_DEMO:-true}
 
 services:
   db:
@@ -17,6 +32,57 @@ services:
       interval: 2s
       timeout: 3s
       retries: 30
+
+  migrate:
+    build:
+      context: ../..
+      dockerfile: services/core_api/Dockerfile
+    image: hearthos/core-api:dev
+    command: ["sh", "-c", "hearthos db upgrade && hearthos seed --if-empty"]
+    environment: *api-env
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: "no"
+
+  api:
+    image: hearthos/core-api:dev
+    environment: *api-env
+    volumes:
+      - ../../data/themes:/data/themes:ro
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request, sys; sys.exit(urllib.request.urlopen('http://127.0.0.1:8000/api/v1/readyz').status != 200)",
+        ]
+      interval: 3s
+      timeout: 5s
+      retries: 40
+      start_period: 5s
+    restart: unless-stopped
+
+  web:
+    build:
+      context: ../..
+      dockerfile: apps/web/Dockerfile
+    image: hearthos/web:dev
+    ports:
+      - "${HEARTHOS_WEB_PORT:-8080}:8080"
+    depends_on:
+      api:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:8080/"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+    restart: unless-stopped
 
 volumes:
   hearthos_pg:
