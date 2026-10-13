@@ -8,6 +8,7 @@ export default defineConfig({
   plugins: [react(), tailwindcss()],
   server: { fs: { allow: ["../.."] } },
   test: {
+    globals: true, // lets Testing Library clean up after each test
     projects: [
       {
         extends: true,
