@@ -146,7 +146,7 @@ function CalendarDayButton({ className, day, modifiers, ...props }: React.Compon
       data-range-end={modifiers.range_end}
       data-range-middle={modifiers.range_middle}
       className={cn(
-        "flex aspect-square size-auto w-full min-w-(--cell-size) flex-col gap-1 leading-none font-normal group-focused:relative group-focused:z-10 group-focused:border-ring group-focused:ring-3 group-focused:ring-ring/50 range-end:rounded-md range-end:rounded-r-md range-end:bg-primary range-end:text-primary-foreground range-middle:rounded-none range-middle:bg-accent range-middle:text-accent-foreground range-start:rounded-md range-start:rounded-l-md range-start:bg-primary range-start:text-primary-foreground selected-single:bg-primary selected-single:text-primary-foreground dark:hover:text-accent-foreground [&>span]:text-xs [&>span]:opacity-70",
+        "flex aspect-square size-auto w-full min-w-(--cell-size) flex-col gap-1 leading-none font-normal group-focused:relative group-focused:z-10 group-focused:border-ring group-focused:ring-3 group-focused:ring-ring/50 range-end:rounded-md range-end:rounded-r-md range-end:bg-primary range-end:text-primary-foreground range-middle:rounded-none range-middle:bg-accent range-middle:text-accent-foreground range-start:rounded-md range-start:rounded-l-md range-start:bg-primary range-start:text-primary-foreground selected-single:bg-primary selected-single:text-primary-foreground [&>span]:text-xs [&>span]:opacity-70",
         defaultClassNames.day,
         className,
       )}

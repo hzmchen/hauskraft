@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 import { render, screen } from "@testing-library/react";
-import { userEvent } from "@vitest/browser/context";
+import { userEvent } from "vitest/browser";
 import { afterEach, describe, expect, it } from "vitest";
 
 import "../styles.css";
@@ -15,6 +15,7 @@ describe.each(Object.keys(THEMES) as ThemeName[])("variants in %s", (theme) => {
     let clicks = 0;
     render(<Button onClick={() => clicks++}>Save</Button>);
     const el = screen.getByRole("button", { name: "Save" });
+    await userEvent.unhover(el); // the pointer may still rest where an earlier test's button was
     await userEvent.tab();
     expect(document.activeElement).toBe(el);
     await userEvent.keyboard("{Enter}");

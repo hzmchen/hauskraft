@@ -52,9 +52,9 @@ function TabsTrigger({ className, ...props }: React.ComponentProps<typeof TabsPr
     <TabsPrimitive.Trigger
       data-slot="tabs-trigger"
       className={cn(
-        "relative inline-flex h-full flex-1 items-center justify-center gap-1.5 rounded-md border border-transparent px-2 py-1 text-sm font-medium whitespace-nowrap text-foreground/60 transition-all group-orientation-vertical:w-full group-orientation-vertical:justify-start hover:text-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-1 focus-visible:outline-ring disabled:pointer-events-none disabled:opacity-50 group-variant-default:state-active:shadow-sm group-variant-line:state-active:shadow-none dark:text-muted-foreground dark:hover:text-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
-        "group-variant-line:bg-transparent group-variant-line:state-active:bg-transparent dark:group-variant-line:state-active:border-transparent dark:group-variant-line:state-active:bg-transparent",
-        "state-active:bg-background state-active:text-foreground dark:state-active:border-input dark:state-active:bg-input/30 dark:state-active:text-foreground",
+        "relative inline-flex h-full flex-1 items-center justify-center gap-1.5 rounded-md border border-transparent px-2 py-1 text-sm font-medium whitespace-nowrap text-foreground/60 transition-all group-orientation-vertical:w-full group-orientation-vertical:justify-start hover:text-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-1 focus-visible:outline-ring disabled:pointer-events-none disabled:opacity-50 group-variant-default:state-active:shadow-sm group-variant-line:state-active:shadow-none [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+        "group-variant-line:bg-transparent group-variant-line:state-active:bg-transparent",
+        "state-active:bg-background state-active:text-foreground",
         "after:absolute after:bg-foreground after:opacity-0 after:transition-opacity group-orientation-horizontal:after:inset-x-0 group-orientation-horizontal:after:-bottom-1.25 group-orientation-horizontal:after:h-0.5 group-orientation-vertical:after:inset-y-0 group-orientation-vertical:after:-right-1 group-orientation-vertical:after:w-0.5 group-variant-line:state-active:after:opacity-100",
         className,
       )}
