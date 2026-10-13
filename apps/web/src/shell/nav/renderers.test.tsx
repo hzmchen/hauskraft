@@ -9,9 +9,11 @@ import { I18nextProvider } from "react-i18next";
 import { describe, expect, it } from "vitest";
 
 import { createI18n } from "../../i18n";
+import { BottomTabsNav } from "./BottomTabsNav";
 import { DrawerNav } from "./DrawerNav";
 import type { NavItem, NavRendererProps } from "./model";
 import { SidebarNav } from "./SidebarNav";
+import { TopbarNav } from "./TopbarNav";
 
 const MODEL: NavItem[] = [
   { id: "today", labelKey: "nav.today", icon: "nav.today", href: "/today", order: 10 },
@@ -23,13 +25,15 @@ const MODEL: NavItem[] = [
 export const RENDERERS: [string, ComponentType<NavRendererProps>][] = [
   ["sidebar", SidebarNav],
   ["drawer", DrawerNav],
+  ["topbar", TopbarNav],
+  ["bottom-tabs", BottomTabsNav],
 ];
 
-async function show(Renderer: ComponentType<NavRendererProps>) {
+async function show(Renderer: ComponentType<NavRendererProps>, items: NavItem[] = MODEL) {
   const i18n = createI18n({ lng: "en" });
   i18n.addResourceBundle("en", "test", { tasks: "Tasks" });
   const router = createRouter({
-    routeTree: createRootRoute({ component: () => <Renderer items={MODEL} /> }),
+    routeTree: createRootRoute({ component: () => <Renderer items={items} /> }),
     history: createMemoryHistory({ initialEntries: ["/today"] }),
   });
   await act(async () => {
@@ -62,5 +66,38 @@ describe.each(RENDERERS)("%s renderer", (style, Renderer) => {
     await openIfNeeded();
     const nav = await screen.findByRole("navigation", { name: "Main" });
     expect(within(nav).getByRole("link", { name: "Today" }).getAttribute("aria-current")).toBe("page");
+  });
+});
+
+describe("bottom tabs overflow", () => {
+  const many: NavItem[] = Array.from({ length: 7 }, (_, i) => ({
+    id: `i${i}`,
+    labelKey: `test:item${i}`,
+    icon: "nav.today",
+    href: `/p/i${i}`,
+    order: i,
+  }));
+
+  it("shows four tabs and puts the rest, in order, behind More", async () => {
+    await show(BottomTabsNav, many);
+    const nav = screen.getByRole("navigation", { name: "Main" });
+    expect(
+      within(nav)
+        .getAllByRole("link")
+        .map((l) => l.getAttribute("href")),
+    ).toEqual(["/p/i0", "/p/i1", "/p/i2", "/p/i3"]);
+    await userEvent.click(within(nav).getByRole("button", { name: "More" }));
+    const sheet = await screen.findByRole("dialog");
+    expect(
+      within(sheet)
+        .getAllByRole("link")
+        .map((l) => l.getAttribute("href")),
+    ).toEqual(["/p/i4", "/p/i5", "/p/i6"]);
+  });
+
+  it("needs no More for five items or fewer", async () => {
+    await show(BottomTabsNav, many.slice(0, 5));
+    expect(screen.queryByRole("button", { name: "More" })).toBeNull();
+    expect(within(screen.getByRole("navigation", { name: "Main" })).getAllByRole("link")).toHaveLength(5);
   });
 });
