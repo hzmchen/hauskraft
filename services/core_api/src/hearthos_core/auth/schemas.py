@@ -48,3 +48,9 @@ class LoginIn(_Model):
 class MePatch(_Model):
     display_name: DisplayName | None = None
     locale: Locale | None = None
+
+
+class UserCreate(_Model):
+    username: Annotated[str, Field(min_length=1, max_length=64)]
+    display_name: DisplayName
+    password: Annotated[str, Field(min_length=1, max_length=1024)]
