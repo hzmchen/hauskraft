@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="430" viewBox="0 0 1100 430" font-family="DejaVu Sans, Helvetica, Arial, sans-serif">
+<defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#444"/></marker></defs>
+<rect width="1100" height="430" fill="#ffffff"/>
+<text x="20" y="30" font-size="18" font-weight="bold" fill="#1d1d1f">Figure 2 — One write = one authorize(), one row change, one event, one transaction</text>
+<rect x="20" y="60" width="170" height="74" rx="8" fill="#fef3e2" stroke="#d98a1c" stroke-width="1.6"/>
+<text x="105.0" y="86.0" text-anchor="middle" font-size="13" font-weight="bold" fill="#1d1d1f">HTTP request</text>
+<text x="105.0" y="102.0" text-anchor="middle" font-size="11.5"  fill="#1d1d1f">PATCH /api/v1/tasks/{id}</text>
+<text x="105.0" y="118.0" text-anchor="middle" font-size="11.5"  fill="#1d1d1f">cookie + X-CSRF-Token</text>
+<rect x="225" y="60" width="185" height="74" rx="8" fill="#e8f0fe" stroke="#3b6fd8" stroke-width="1.6"/>
+<text x="317.5" y="86.0" text-anchor="middle" font-size="13" font-weight="bold" fill="#1d1d1f">current_session dep.</text>
+<text x="317.5" y="102.0" text-anchor="middle" font-size="11.5"  fill="#1d1d1f">session, CSRF token,</text>
+<text x="317.5" y="118.0" text-anchor="middle" font-size="11.5"  fill="#1d1d1f">Origin check (#32, #33)</text>
+<rect x="445" y="60" width="165" height="74" rx="8" fill="#e6f4ea" stroke="#2e8b57" stroke-width="1.6"/>
+<text x="527.5" y="86.0" text-anchor="middle" font-size="13" font-weight="bold" fill="#1d1d1f">Plugin router (#40)</text>
+<text x="527.5" y="102.0" text-anchor="middle" font-size="11.5"  fill="#1d1d1f">Pydantic validation</text>
+<text x="527.5" y="118.0" text-anchor="middle" font-size="11.5"  fill="#1d1d1f">→ 422 problem+json</text>
+<rect x="645" y="60" width="200" height="74" rx="8" fill="#e6f4ea" stroke="#2e8b57" stroke-width="1.6"/>
+<text x="745.0" y="86.0" text-anchor="middle" font-size="13" font-weight="bold" fill="#1d1d1f">Task service (#39)</text>
+<text x="745.0" y="102.0" text-anchor="middle" font-size="11.5"  fill="#1d1d1f">SELECT … FOR UPDATE,</text>
+<text x="745.0" y="118.0" text-anchor="middle" font-size="11.5"  fill="#1d1d1f">version check → 409</text>
+<rect x="440" y="190" width="190" height="74" rx="8" fill="#e8f0fe" stroke="#3b6fd8" stroke-width="1.6"/>
+<text x="535.0" y="216.0" text-anchor="middle" font-size="13" font-weight="bold" fill="#1d1d1f">① ctx.authorize()</text>
+<text x="535.0" y="232.0" text-anchor="middle" font-size="11.5"  fill="#1d1d1f">NoOpPolicy in M0*;</text>
+<text x="535.0" y="248.0" text-anchor="middle" font-size="11.5"  fill="#1d1d1f">DenyAll → 403, no write</text>
+<rect x="660" y="190" width="170" height="74" rx="8" fill="#f3e8fd" stroke="#8a4fd0" stroke-width="1.6"/>
+<text x="745.0" y="216.0" text-anchor="middle" font-size="13" font-weight="bold" fill="#1d1d1f">② UPDATE tasks</text>
+<text x="745.0" y="232.0" text-anchor="middle" font-size="11.5"  fill="#1d1d1f">version + 1,</text>
+<text x="745.0" y="248.0" text-anchor="middle" font-size="11.5"  fill="#1d1d1f">updated_by = actor</text>
+<rect x="860" y="190" width="215" height="74" rx="8" fill="#f3e8fd" stroke="#8a4fd0" stroke-width="1.6"/>
+<text x="967.5" y="216.0" text-anchor="middle" font-size="13" font-weight="bold" fill="#1d1d1f">③ ctx.emit() → outbox</text>
+<text x="967.5" y="232.0" text-anchor="middle" font-size="11.5"  fill="#1d1d1f">CloudEvent, actorid from</text>
+<text x="967.5" y="248.0" text-anchor="middle" font-size="11.5"  fill="#1d1d1f">authorize(), schema-checked</text>
+<rect x="660" y="320" width="170" height="56" rx="8" fill="#e8f0fe" stroke="#3b6fd8" stroke-width="1.6"/>
+<text x="745.0" y="345.0" text-anchor="middle" font-size="13" font-weight="bold" fill="#1d1d1f">COMMIT</text>
+<text x="745.0" y="361.0" text-anchor="middle" font-size="11.5"  fill="#1d1d1f">UnitOfWork (#29)</text>
+<rect x="880" y="320" width="195" height="56" rx="8" fill="#eef0f2" stroke="#5f6b7a" stroke-width="1.6"/>
+<text x="977.5" y="345.0" text-anchor="middle" font-size="13" font-weight="bold" fill="#1d1d1f">Relay (#44)</text>
+<text x="977.5" y="361.0" text-anchor="middle" font-size="11.5"  fill="#1d1d1f">every 2 s, SKIP LOCKED → log</text>
+<rect x="420" y="320" width="205" height="56" rx="8" fill="#fef3e2" stroke="#d98a1c" stroke-width="1.6"/>
+<text x="522.5" y="345.0" text-anchor="middle" font-size="13" font-weight="bold" fill="#1d1d1f">GET /activity (#44)</text>
+<text x="522.5" y="361.0" text-anchor="middle" font-size="11.5"  fill="#1d1d1f">→ Activity page (#65)</text>
+<path d="M190,97.0 L225,97.0" fill="none" stroke="#444" stroke-width="1.5"  marker-end="url(#a)"/>
+<path d="M410,97.0 L445,97.0" fill="none" stroke="#444" stroke-width="1.5"  marker-end="url(#a)"/>
+<path d="M610,97.0 L645,97.0" fill="none" stroke="#444" stroke-width="1.5"  marker-end="url(#a)"/>
+<path d="M745.0,134 L745.0,162.0 L535.0,162.0 L535.0,190" fill="none" stroke="#444" stroke-width="1.5"  marker-end="url(#a)"/>
+<path d="M745.0,134 L745.0,190" fill="none" stroke="#444" stroke-width="1.5"  marker-end="url(#a)"/>
+<path d="M745.0,134 L745.0,162.0 L967.5,162.0 L967.5,190" fill="none" stroke="#444" stroke-width="1.5"  marker-end="url(#a)"/>
+<path d="M745.0,264 L745.0,320" fill="none" stroke="#444" stroke-width="1.5"  marker-end="url(#a)"/>
+<path d="M830,348.0 L880,348.0" fill="none" stroke="#444" stroke-width="1.5" stroke-dasharray="5,4" marker-end="url(#a)"/>
+<rect x="813.8" y="337.0" width="82.4" height="16" fill="#ffffff" opacity="0.92"/>
+<text x="855.0" y="349.0" text-anchor="middle" font-size="11" font-style="italic" fill="#333">after commit</text>
+<path d="M660,348.0 L625,348.0" fill="none" stroke="#444" stroke-width="1.5" stroke-dasharray="5,4" marker-end="url(#a)"/>
+<rect x="601.3" y="337.0" width="82.4" height="16" fill="#ffffff" opacity="0.92"/>
+<text x="642.5" y="349.0" text-anchor="middle" font-size="11" font-style="italic" fill="#333">reads outbox</text>
+<rect x="20" y="404" width="14" height="14" rx="3" fill="#fef3e2" stroke="#d98a1c"/>
+<text x="40" y="416" font-size="12" fill="#333">client / web</text>
+<rect x="154" y="404" width="14" height="14" rx="3" fill="#e8f0fe" stroke="#3b6fd8"/>
+<text x="174" y="416" font-size="12" fill="#333">core API</text>
+<rect x="260" y="404" width="14" height="14" rx="3" fill="#e6f4ea" stroke="#2e8b57"/>
+<text x="280" y="416" font-size="12" fill="#333">tasks plugin</text>
+<rect x="394" y="404" width="14" height="14" rx="3" fill="#f3e8fd" stroke="#8a4fd0"/>
+<text x="414" y="416" font-size="12" fill="#333">database rows</text>
+<rect x="535" y="404" width="14" height="14" rx="3" fill="#eef0f2" stroke="#5f6b7a"/>
+<text x="555" y="416" font-size="12" fill="#333">background</text>
+</svg>

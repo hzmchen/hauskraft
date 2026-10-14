@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="470" viewBox="0 0 1100 470" font-family="DejaVu Sans, Helvetica, Arial, sans-serif">
+<defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#444"/></marker></defs>
+<rect width="1100" height="470" fill="#ffffff"/>
+<text x="20" y="30" font-size="18" font-weight="bold" fill="#1d1d1f">Figure 1 — How the 71 PRs build on each other (merged 12–13 Oct 2026)</text>
+<rect x="20" y="60" width="190" height="70" rx="8" fill="#eef0f2" stroke="#5f6b7a" stroke-width="1.6"/>
+<text x="115.0" y="84.0" text-anchor="middle" font-size="13" font-weight="bold" fill="#1d1d1f">E01 Repo &amp; tooling</text>
+<text x="115.0" y="100.0" text-anchor="middle" font-size="11.5"  fill="#1d1d1f">uv + pnpm, ruff, ESLint</text>
+<text x="115.0" y="116.0" text-anchor="middle" font-size="11.5"  fill="#1d1d1f">PRs #2–4, #7–8</text>
+<rect x="20" y="160" width="190" height="70" rx="8" fill="#eef0f2" stroke="#5f6b7a" stroke-width="1.6"/>
+<text x="115.0" y="184.0" text-anchor="middle" font-size="13" font-weight="bold" fill="#1d1d1f">E12 Docs &amp; community</text>
+<text x="115.0" y="200.0" text-anchor="middle" font-size="11.5"  fill="#1d1d1f">ADRs, AGENTS.md, licences</text>
+<text x="115.0" y="216.0" text-anchor="middle" font-size="11.5"  fill="#1d1d1f">PRs #5, #6, #9</text>
+<rect x="20" y="260" width="190" height="70" rx="8" fill="#eef0f2" stroke="#5f6b7a" stroke-width="1.6"/>
+<text x="115.0" y="284.0" text-anchor="middle" font-size="13" font-weight="bold" fill="#1d1d1f">E02 CI gates</text>
+<text x="115.0" y="300.0" text-anchor="middle" font-size="11.5"  fill="#1d1d1f">ci.yml, DCO, REUSE, deps</text>
+<text x="115.0" y="316.0" text-anchor="middle" font-size="11.5"  fill="#1d1d1f">PRs #10–12, #17, #25</text>
+<rect x="250" y="60" width="190" height="70" rx="8" fill="#f3e8fd" stroke="#8a4fd0" stroke-width="1.6"/>
+<text x="345.0" y="84.0" text-anchor="middle" font-size="13" font-weight="bold" fill="#1d1d1f">Contracts first</text>
+<text x="345.0" y="100.0" text-anchor="middle" font-size="11.5"  fill="#1d1d1f">manifest, event, theme</text>
+<text x="345.0" y="116.0" text-anchor="middle" font-size="11.5"  fill="#1d1d1f">schemas  #16, #18, #19</text>
+<rect x="250" y="160" width="190" height="70" rx="8" fill="#e8f0fe" stroke="#3b6fd8" stroke-width="1.6"/>
+<text x="345.0" y="184.0" text-anchor="middle" font-size="13" font-weight="bold" fill="#1d1d1f">E03 + E04 Core API &amp; DB</text>
+<text x="345.0" y="200.0" text-anchor="middle" font-size="11.5"  fill="#1d1d1f">factory, errors, Alembic,</text>
+<text x="345.0" y="216.0" text-anchor="middle" font-size="11.5"  fill="#1d1d1f">tables, outbox  #20–29</text>
+<rect x="480" y="60" width="190" height="70" rx="8" fill="#e8f0fe" stroke="#3b6fd8" stroke-width="1.6"/>
+<text x="575.0" y="84.0" text-anchor="middle" font-size="13" font-weight="bold" fill="#1d1d1f">E05 Auth &amp; users</text>
+<text x="575.0" y="100.0" text-anchor="middle" font-size="11.5"  fill="#1d1d1f">argon2, sessions, CSRF,</text>
+<text x="575.0" y="116.0" text-anchor="middle" font-size="11.5"  fill="#1d1d1f">IdP seam, CLI  #31–35</text>
+<rect x="480" y="160" width="190" height="70" rx="8" fill="#e8f0fe" stroke="#3b6fd8" stroke-width="1.6"/>
+<text x="575.0" y="184.0" text-anchor="middle" font-size="13" font-weight="bold" fill="#1d1d1f">E10 Events</text>
+<text x="575.0" y="200.0" text-anchor="middle" font-size="11.5"  fill="#1d1d1f">outbox writer #30,</text>
+<text x="575.0" y="216.0" text-anchor="middle" font-size="11.5"  fill="#1d1d1f">relay + activity #44</text>
+<rect x="480" y="260" width="190" height="70" rx="8" fill="#e6f4ea" stroke="#2e8b57" stroke-width="1.6"/>
+<text x="575.0" y="284.0" text-anchor="middle" font-size="13" font-weight="bold" fill="#1d1d1f">E06 Plugin skeleton</text>
+<text x="575.0" y="300.0" text-anchor="middle" font-size="11.5"  fill="#1d1d1f">SDK, loader, registry API</text>
+<text x="575.0" y="316.0" text-anchor="middle" font-size="11.5"  fill="#1d1d1f">#21, #36, #37</text>
+<rect x="710" y="260" width="190" height="70" rx="8" fill="#e6f4ea" stroke="#2e8b57" stroke-width="1.6"/>
+<text x="805.0" y="284.0" text-anchor="middle" font-size="13" font-weight="bold" fill="#1d1d1f">E07 Tasks backend</text>
+<text x="805.0" y="300.0" text-anchor="middle" font-size="11.5"  fill="#1d1d1f">model, service, router,</text>
+<text x="805.0" y="316.0" text-anchor="middle" font-size="11.5"  fill="#1d1d1f">seed  #38–42, #45</text>
+<rect x="710" y="160" width="190" height="70" rx="8" fill="#f3e8fd" stroke="#8a4fd0" stroke-width="1.6"/>
+<text x="805.0" y="184.0" text-anchor="middle" font-size="13" font-weight="bold" fill="#1d1d1f">E13 Themes (backend)</text>
+<text x="805.0" y="200.0" text-anchor="middle" font-size="11.5"  fill="#1d1d1f">validator, API, built-ins,</text>
+<text x="805.0" y="216.0" text-anchor="middle" font-size="11.5"  fill="#1d1d1f">CLI  #46–50</text>
+<rect x="710" y="60" width="190" height="70" rx="8" fill="#fef3e2" stroke="#d98a1c" stroke-width="1.6"/>
+<text x="805.0" y="84.0" text-anchor="middle" font-size="13" font-weight="bold" fill="#1d1d1f">E08/E09 Web</text>
+<text x="805.0" y="100.0" text-anchor="middle" font-size="11.5"  fill="#1d1d1f">scaffold, SDK-ts, shell,</text>
+<text x="805.0" y="116.0" text-anchor="middle" font-size="11.5"  fill="#1d1d1f">dashboard, tasks UI #51–64</text>
+<rect x="920" y="60" width="165" height="70" rx="8" fill="#fef3e2" stroke="#d98a1c" stroke-width="1.6"/>
+<text x="1002.5" y="84.0" text-anchor="middle" font-size="13" font-weight="bold" fill="#1d1d1f">E13 Themes (web)</text>
+<text x="1002.5" y="100.0" text-anchor="middle" font-size="11.5"  fill="#1d1d1f">runtime, Appearance,</text>
+<text x="1002.5" y="116.0" text-anchor="middle" font-size="11.5"  fill="#1d1d1f">invariance #59,#60,#66</text>
+<rect x="920" y="260" width="165" height="70" rx="8" fill="#eef0f2" stroke="#5f6b7a" stroke-width="1.6"/>
+<text x="1002.5" y="284.0" text-anchor="middle" font-size="13" font-weight="bold" fill="#1d1d1f">E11 + E02-03</text>
+<text x="1002.5" y="300.0" text-anchor="middle" font-size="11.5"  fill="#1d1d1f">Compose, docs, e2e CI</text>
+<text x="1002.5" y="316.0" text-anchor="middle" font-size="11.5"  fill="#1d1d1f">#67–69, fix #71</text>
+<rect x="920" y="360" width="165" height="60" rx="8" fill="#fdecea" stroke="#c0392b" stroke-width="1.6"/>
+<text x="1002.5" y="387.0" text-anchor="middle" font-size="13" font-weight="bold" fill="#1d1d1f">Hand-off #70</text>
+<text x="1002.5" y="403.0" text-anchor="middle" font-size="11.5"  fill="#1d1d1f">open questions</text>
+<path d="M210,95.0 L250,95.0" fill="none" stroke="#444" stroke-width="1.5"  marker-end="url(#a)"/>
+<path d="M210,195.0 L250,195.0" fill="none" stroke="#444" stroke-width="1.5"  marker-end="url(#a)"/>
+<path d="M345.0,130 L345.0,160" fill="none" stroke="#444" stroke-width="1.5"  marker-end="url(#a)"/>
+<path d="M440,195.0 L480,195.0" fill="none" stroke="#444" stroke-width="1.5"  marker-end="url(#a)"/>
+<path d="M440,195.0 L460.0,195.0 L460.0,95.0 L480,95.0" fill="none" stroke="#444" stroke-width="1.5"  marker-end="url(#a)"/>
+<path d="M440,195.0 L460.0,195.0 L460.0,295.0 L480,295.0" fill="none" stroke="#444" stroke-width="1.5"  marker-end="url(#a)"/>
+<path d="M670,295.0 L710,295.0" fill="none" stroke="#444" stroke-width="1.5"  marker-end="url(#a)"/>
+<path d="M670,195.0 L710,195.0" fill="none" stroke="#444" stroke-width="1.5"  marker-end="url(#a)"/>
+<path d="M670,95.0 L710,95.0" fill="none" stroke="#444" stroke-width="1.5"  marker-end="url(#a)"/>
+<path d="M805.0,160 L805.0,130" fill="none" stroke="#444" stroke-width="1.5"  marker-end="url(#a)"/>
+<path d="M900,95.0 L920,95.0" fill="none" stroke="#444" stroke-width="1.5"  marker-end="url(#a)"/>
+<path d="M900,295.0 L920,295.0" fill="none" stroke="#444" stroke-width="1.5"  marker-end="url(#a)"/>
+<path d="M1002.5,130 L1002.5,260" fill="none" stroke="#444" stroke-width="1.5"  marker-end="url(#a)"/>
+<path d="M1002.5,330 L1002.5,360" fill="none" stroke="#444" stroke-width="1.5"  marker-end="url(#a)"/>
+<rect x="20" y="444" width="14" height="14" rx="3" fill="#eef0f2" stroke="#5f6b7a"/>
+<text x="40" y="456" font-size="12" fill="#333">tooling / CI / docs</text>
+<rect x="203" y="444" width="14" height="14" rx="3" fill="#f3e8fd" stroke="#8a4fd0"/>
+<text x="223" y="456" font-size="12" fill="#333">contracts &amp; themes</text>
+<rect x="379" y="444" width="14" height="14" rx="3" fill="#e8f0fe" stroke="#3b6fd8"/>
+<text x="399" y="456" font-size="12" fill="#333">core API</text>
+<rect x="485" y="444" width="14" height="14" rx="3" fill="#e6f4ea" stroke="#2e8b57"/>
+<text x="505" y="456" font-size="12" fill="#333">plugins</text>
+<rect x="584" y="444" width="14" height="14" rx="3" fill="#fef3e2" stroke="#d98a1c"/>
+<text x="604" y="456" font-size="12" fill="#333">web app</text>
+</svg>

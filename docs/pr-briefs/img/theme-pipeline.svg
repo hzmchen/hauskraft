@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="430" viewBox="0 0 1100 430" font-family="DejaVu Sans, Helvetica, Arial, sans-serif">
+<defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#444"/></marker></defs>
+<rect width="1100" height="430" fill="#ffffff"/>
+<text x="20" y="30" font-size="18" font-weight="bold" fill="#1d1d1f">Figure 4 — Theme pipeline: data in, validated CSS variables out, functions unchanged</text>
+<rect x="20" y="60" width="175" height="90" rx="8" fill="#f3e8fd" stroke="#8a4fd0" stroke-width="1.6"/>
+<text x="107.5" y="86.0" text-anchor="middle" font-size="13" font-weight="bold" fill="#1d1d1f">Theme folder</text>
+<text x="107.5" y="102.0" text-anchor="middle" font-size="11.5"  fill="#1d1d1f">theme.json, tokens</text>
+<text x="107.5" y="118.0" text-anchor="middle" font-size="11.5"  fill="#1d1d1f">light/dark, fonts,</text>
+<text x="107.5" y="134.0" text-anchor="middle" font-size="11.5"  fill="#1d1d1f">icon sprite</text>
+<rect x="230" y="60" width="180" height="90" rx="8" fill="#e8f0fe" stroke="#3b6fd8" stroke-width="1.6"/>
+<text x="320.0" y="86.0" text-anchor="middle" font-size="13" font-weight="bold" fill="#1d1d1f">Validator (#46)</text>
+<text x="320.0" y="102.0" text-anchor="middle" font-size="11.5"  fill="#1d1d1f">schema, contrast 4.5/3,</text>
+<text x="320.0" y="118.0" text-anchor="middle" font-size="11.5"  fill="#1d1d1f">OKLab ≥ 0.15,</text>
+<text x="320.0" y="134.0" text-anchor="middle" font-size="11.5"  fill="#1d1d1f">assets, SVG safety</text>
+<rect x="445" y="60" width="175" height="90" rx="8" fill="#e8f0fe" stroke="#3b6fd8" stroke-width="1.6"/>
+<text x="532.5" y="86.0" text-anchor="middle" font-size="13" font-weight="bold" fill="#1d1d1f">Compiler</text>
+<text x="532.5" y="102.0" text-anchor="middle" font-size="11.5"  fill="#1d1d1f">typed re-serialise →</text>
+<text x="532.5" y="118.0" text-anchor="middle" font-size="11.5"  fill="#1d1d1f">--hearth-* CSS vars,</text>
+<text x="532.5" y="134.0" text-anchor="middle" font-size="11.5"  fill="#1d1d1f">SHA-256 hash</text>
+<rect x="445" y="190" width="175" height="74" rx="8" fill="#f3e8fd" stroke="#8a4fd0" stroke-width="1.6"/>
+<text x="532.5" y="216.0" text-anchor="middle" font-size="13" font-weight="bold" fill="#1d1d1f">deployment_settings</text>
+<text x="532.5" y="232.0" text-anchor="middle" font-size="11.5"  fill="#1d1d1f">theme_id (#47)</text>
+<text x="532.5" y="248.0" text-anchor="middle" font-size="11.5"  fill="#1d1d1f">PUT + CloudEvent</text>
+<rect x="655" y="60" width="180" height="90" rx="8" fill="#e8f0fe" stroke="#3b6fd8" stroke-width="1.6"/>
+<text x="745.0" y="86.0" text-anchor="middle" font-size="13" font-weight="bold" fill="#1d1d1f">GET /theme/active.css</text>
+<text x="745.0" y="102.0" text-anchor="middle" font-size="11.5"  fill="#1d1d1f">ETag = hash,</text>
+<text x="745.0" y="118.0" text-anchor="middle" font-size="11.5"  fill="#1d1d1f">304 on match;</text>
+<text x="745.0" y="134.0" text-anchor="middle" font-size="11.5"  fill="#1d1d1f">GET /theme (attrs)</text>
+<rect x="870" y="60" width="210" height="90" rx="8" fill="#fef3e2" stroke="#d98a1c" stroke-width="1.6"/>
+<text x="975.0" y="86.0" text-anchor="middle" font-size="13" font-weight="bold" fill="#1d1d1f">ThemeRuntime (#59)</text>
+<text x="975.0" y="102.0" text-anchor="middle" font-size="11.5"  fill="#1d1d1f">polls 60 s, swaps sheet</text>
+<text x="975.0" y="118.0" text-anchor="middle" font-size="11.5"  fill="#1d1d1f">after load, sets</text>
+<text x="975.0" y="134.0" text-anchor="middle" font-size="11.5"  fill="#1d1d1f">data-hearth-* on &lt;html&gt;</text>
+<rect x="870" y="190" width="210" height="90" rx="8" fill="#fef3e2" stroke="#d98a1c" stroke-width="1.6"/>
+<text x="975.0" y="216.0" text-anchor="middle" font-size="13" font-weight="bold" fill="#1d1d1f">@hearthos/ui (#53)</text>
+<text x="975.0" y="232.0" text-anchor="middle" font-size="11.5"  fill="#1d1d1f">Tailwind @theme → vars,</text>
+<text x="975.0" y="248.0" text-anchor="middle" font-size="11.5"  fill="#1d1d1f">variants via data attrs,</text>
+<text x="975.0" y="264.0" text-anchor="middle" font-size="11.5"  fill="#1d1d1f">&lt;Icon&gt; sprite / Lucide</text>
+<rect x="655" y="190" width="180" height="74" rx="8" fill="#fef3e2" stroke="#d98a1c" stroke-width="1.6"/>
+<text x="745.0" y="216.0" text-anchor="middle" font-size="13" font-weight="bold" fill="#1d1d1f">Colour mode (#55)</text>
+<text x="745.0" y="232.0" text-anchor="middle" font-size="11.5"  fill="#1d1d1f">localStorage, .dark</text>
+<text x="745.0" y="248.0" text-anchor="middle" font-size="11.5"  fill="#1d1d1f">per device only</text>
+<rect x="870" y="320" width="210" height="74" rx="8" fill="#fdecea" stroke="#c0392b" stroke-width="1.6"/>
+<text x="975.0" y="346.0" text-anchor="middle" font-size="13" font-weight="bold" fill="#1d1d1f">Invariance gate (#66)</text>
+<text x="975.0" y="362.0" text-anchor="middle" font-size="11.5"  fill="#1d1d1f">same ARIA tree in all</text>
+<text x="975.0" y="378.0" text-anchor="middle" font-size="11.5"  fill="#1d1d1f">themes; no-raw-styles</text>
+<rect x="20" y="200" width="175" height="74" rx="8" fill="#eef0f2" stroke="#5f6b7a" stroke-width="1.6"/>
+<text x="107.5" y="226.0" text-anchor="middle" font-size="13" font-weight="bold" fill="#1d1d1f">hearthos themes</text>
+<text x="107.5" y="242.0" text-anchor="middle" font-size="11.5"  fill="#1d1d1f">validate / list (#49)</text>
+<text x="107.5" y="258.0" text-anchor="middle" font-size="11.5"  fill="#1d1d1f">template + guide</text>
+<path d="M195,105.0 L230,105.0" fill="none" stroke="#444" stroke-width="1.5"  marker-end="url(#a)"/>
+<path d="M410,105.0 L445,105.0" fill="none" stroke="#444" stroke-width="1.5"  marker-end="url(#a)"/>
+<rect x="408.0" y="94.0" width="39.0" height="16" fill="#ffffff" opacity="0.92"/>
+<text x="427.5" y="106.0" text-anchor="middle" font-size="11" font-style="italic" fill="#333">valid</text>
+<path d="M620,105.0 L655,105.0" fill="none" stroke="#444" stroke-width="1.5"  marker-end="url(#a)"/>
+<path d="M620,227.0 L637.5,227.0 L637.5,105.0 L655,105.0" fill="none" stroke="#444" stroke-width="1.5"  marker-end="url(#a)"/>
+<rect x="605.6" y="155.0" width="63.800000000000004" height="16" fill="#ffffff" opacity="0.92"/>
+<text x="637.5" y="167.0" text-anchor="middle" font-size="11" font-style="italic" fill="#333">active id</text>
+<path d="M835,105.0 L870,105.0" fill="none" stroke="#444" stroke-width="1.5"  marker-end="url(#a)"/>
+<path d="M975.0,150 L975.0,190" fill="none" stroke="#444" stroke-width="1.5"  marker-end="url(#a)"/>
+<path d="M835,227.0 L852.5,227.0 L852.5,235.0 L870,235.0" fill="none" stroke="#444" stroke-width="1.5"  marker-end="url(#a)"/>
+<path d="M975.0,280 L975.0,320" fill="none" stroke="#444" stroke-width="1.5" stroke-dasharray="5,4" marker-end="url(#a)"/>
+<path d="M195,237.0 L212.5,237.0 L212.5,105.0 L230,105.0" fill="none" stroke="#444" stroke-width="1.5" stroke-dasharray="5,4" marker-end="url(#a)"/>
+<rect x="180.6" y="160.0" width="63.800000000000004" height="16" fill="#ffffff" opacity="0.92"/>
+<text x="212.5" y="172.0" text-anchor="middle" font-size="11" font-style="italic" fill="#333">same code</text>
+<rect x="20" y="404" width="14" height="14" rx="3" fill="#f3e8fd" stroke="#8a4fd0"/>
+<text x="40" y="416" font-size="12" fill="#333">theme data</text>
+<rect x="140" y="404" width="14" height="14" rx="3" fill="#e8f0fe" stroke="#3b6fd8"/>
+<text x="160" y="416" font-size="12" fill="#333">core API</text>
+<rect x="246" y="404" width="14" height="14" rx="3" fill="#fef3e2" stroke="#d98a1c"/>
+<text x="266" y="416" font-size="12" fill="#333">web</text>
+<rect x="317" y="404" width="14" height="14" rx="3" fill="#fdecea" stroke="#c0392b"/>
+<text x="337" y="416" font-size="12" fill="#333">quality gate</text>
+<rect x="451" y="404" width="14" height="14" rx="3" fill="#eef0f2" stroke="#5f6b7a"/>
+<text x="471" y="416" font-size="12" fill="#333">author tooling</text>
+</svg>
