@@ -2,7 +2,7 @@
 # core-api image (M0S-E11-01): uv workspace install on python:3.13-slim, runs as a non-root user.
 # The source tree keeps its repository layout under /app: migrations, JSON schemas, built-in themes
 # and the demo fixture are found relative to the code.
-FROM python:3.13-slim AS build
+FROM python:3.14-slim AS build
 COPY --from=ghcr.io/astral-sh/uv:0.11.16 /uv /usr/local/bin/uv
 ENV UV_COMPILE_BYTECODE=1 UV_LINK_MODE=copy UV_PYTHON_DOWNLOADS=never UV_PROJECT_ENVIRONMENT=/app/.venv
 WORKDIR /app
@@ -21,7 +21,7 @@ COPY themes/builtin themes/builtin
 COPY fixtures fixtures
 RUN uv sync --frozen --no-dev --all-packages
 
-FROM python:3.13-slim
+FROM python:3.14-slim
 RUN useradd --system --uid 10001 --home-dir /app hearthos
 WORKDIR /app
 COPY --from=build --chown=hearthos:hearthos /app /app
