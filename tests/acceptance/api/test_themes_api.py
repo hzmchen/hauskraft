@@ -15,8 +15,8 @@ import pytest
 from _support.live import API, Api, assert_problem, reachable
 
 pytestmark = [pytest.mark.live, pytest.mark.story("M0S-E13-04")]
-DEFAULT = "org.hearthos.theme.default"
-HACKSPACE = "org.hearthos.theme.hackspace"
+DEFAULT = "dev.hauskraft.theme.default"
+HACKSPACE = "dev.hauskraft.theme.hackspace"
 FIXTURE_OK = "org.example.theme.valid-minimal"
 FIXTURE_BAD = "org.example.theme.invalid-low-contrast"
 
@@ -50,7 +50,7 @@ def test_active_css_has_etag_and_304() -> None:
     assert r.status_code == 200 and r.headers["content-type"].startswith("text/css")
     etag = r.headers.get("etag")
     assert etag and not etag.startswith("W/"), "strong ETag required"
-    assert "--hearth-color-background" in r.text and ":root.dark" in r.text
+    assert "--hauskraft-color-background" in r.text and ":root.dark" in r.text
     assert httpx.get(f"{API}/theme/active.css", headers={"If-None-Match": etag}).status_code == 304
 
 
@@ -60,7 +60,7 @@ def test_theme_list_needs_session(anon: Api) -> None:
 
 def test_builtins_and_fixtures_are_listed(demo: Api) -> None:
     themes = _themes(demo)
-    for theme_id in (DEFAULT, "org.hearthos.theme.paper", HACKSPACE, FIXTURE_OK):
+    for theme_id in (DEFAULT, "dev.hauskraft.theme.paper", HACKSPACE, FIXTURE_OK):
         assert theme_id in themes and themes[theme_id]["valid"] is True, themes.get(theme_id)
     assert themes[DEFAULT]["origin"] == "builtin" and themes[FIXTURE_OK]["origin"] == "installed"
     bad = themes.get(FIXTURE_BAD)
@@ -85,7 +85,7 @@ def test_theme_change_is_an_event(demo: Api, restore_theme) -> None:
     deadline, hit = time.time() + 15, None
     while time.time() < deadline and hit is None:
         hit = next((i for i in demo.get("/activity", params={"limit": 20}).json()
-                    if i["type"] == "hearthos.settings.theme_changed" and i["data"].get("to") == FIXTURE_OK), None)
+                    if i["type"] == "hauskraft.settings.theme_changed" and i["data"].get("to") == FIXTURE_OK), None)
         time.sleep(0.5)
     assert hit and hit["actor"]["display_name"] == "Demo Adult", hit
 
@@ -95,7 +95,7 @@ def test_selected_fixture_theme_compiles_safely(demo: Api, restore_theme) -> Non
     css = httpx.get(f"{API}/theme/active.css").text
     assert "@font-face" in css and "Fixture Sans" in css
     assert f"/api/v1/theme/assets/{FIXTURE_OK}/" in css
-    assert "--hearth-color-primary" in css and "--primary" in css, "tokens and shadcn aliases expected"
+    assert "--hauskraft-color-primary" in css and "--primary" in css, "tokens and shadcn aliases expected"
     font_url = css.split(f"/api/v1/theme/assets/{FIXTURE_OK}/", 1)[1].split('"', 1)[0].split(")", 1)[0]
     asset = httpx.get(f"{API}/theme/assets/{FIXTURE_OK}/{font_url}")
     assert asset.status_code == 200 and asset.content[:4] == b"wOF2"
@@ -103,7 +103,7 @@ def test_selected_fixture_theme_compiles_safely(demo: Api, restore_theme) -> Non
     assert "immutable" in asset.headers.get("cache-control", "")
 
 
-@pytest.mark.parametrize("path", ["..%2Fhearthos.plugin.json", "../../etc/passwd", "%2e%2e/%2e%2e/etc/passwd",
+@pytest.mark.parametrize("path", ["..%2Fhauskraft.plugin.json", "../../etc/passwd", "%2e%2e/%2e%2e/etc/passwd",
                                   "tokens.light.json"])
 def test_assets_only_serve_asset_files(path: str) -> None:
     reachable()

@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
-// eslint-plugin-hearthos (M0S-E13-08): `hearthos/no-raw-styles` keeps UI code on theme tokens
+// eslint-plugin-hauskraft (M0S-E13-08): `hauskraft/no-raw-styles` keeps UI code on theme tokens
 // (AGENTS.md rule 11). It reports colour literals, Tailwind default palette classes, arbitrary values
 // and inline colour/font/spacing styles in TS/TSX, and colour literals in CSS (with @eslint/css).
-// A line containing `hearthos-allow-raw-style` is exempt (for data such as theme previews).
+// A line containing `hauskraft-allow-raw-style` is exempt (for data such as theme previews).
 
 const HEX = /(?<![\w&/])#(?:[0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})\b(?![\w-])/;
 const COLOUR_FN = /\b(?:rgba?|hsla?|oklch|oklab|hwb|lab|lch|color)\(/;
@@ -12,7 +12,7 @@ const PALETTE = new RegExp(
     "purple|fuchsia|pink|rose)-(?:50|[1-9]00|950)|white|black)\\b",
 );
 const ARBITRARY = /\b[a-z][a-z-]*-\[[^\]\s]+\]/;
-const ALLOW = "hearthos-allow-raw-style";
+const ALLOW = "hauskraft-allow-raw-style";
 
 // CSS named colours (CSS Color 4), without transparent and currentColor.
 const NAMED = new Set(
@@ -59,8 +59,8 @@ const rule = {
     messages: {
       colourLiteral: "Colour literal: use a semantic token or utility (bg-primary, text-muted-foreground, …).",
       paletteClass: "Tailwind palette class: use a semantic utility (bg-destructive, text-foreground, …).",
-      arbitraryValue: "Arbitrary value: use the theme scale or a named utility in @hearthos/ui.",
-      inlineStyle: "Inline {{prop}} style: use @hearthos/ui primitives and semantic utilities.",
+      arbitraryValue: "Arbitrary value: use the theme scale or a named utility in @hauskraft/ui.",
+      inlineStyle: "Inline {{prop}} style: use @hauskraft/ui primitives and semantic utilities.",
     },
     schema: [],
   },
@@ -122,6 +122,6 @@ const rule = {
 };
 
 export default {
-  meta: { name: "eslint-plugin-hearthos", version: "0.1.0" },
+  meta: { name: "eslint-plugin-hauskraft", version: "0.1.0" },
   rules: { "no-raw-styles": rule },
 };

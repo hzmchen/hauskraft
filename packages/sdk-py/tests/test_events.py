@@ -12,7 +12,7 @@ from jsonschema import Draft202012Validator
 from pydantic import ValidationError
 from referencing import Registry, Resource
 
-from hearthos_sdk.events import DATA_MODELS, CloudEvent
+from hauskraft_sdk.events import DATA_MODELS, CloudEvent
 
 pytestmark = pytest.mark.contract
 
@@ -41,7 +41,7 @@ def test_fixture_round_trips_through_the_models(path: Path) -> None:
     data = DATA_MODELS[event.type].model_validate(raw["data"])
     dumped = event.model_dump(mode="json", exclude_none=True) | {"data": data.model_dump(mode="json")}
     assert not list(_validator("events/cloudevent.schema.json").iter_errors(dumped))
-    suffix = event.type.removeprefix("hearthos.")
+    suffix = event.type.removeprefix("hauskraft.")
     assert not list(_validator(f"events/{suffix}.data.schema.json").iter_errors(dumped["data"]))
 
 
@@ -54,7 +54,7 @@ def test_invalid_envelopes_are_rejected_by_the_model(path: Path) -> None:
 
 def test_every_data_schema_has_a_model() -> None:
     types = {
-        "hearthos." + p.name.removesuffix(".data.schema.json") for p in (SCHEMAS / "events").glob("*.data.schema.json")
+        "hauskraft." + p.name.removesuffix(".data.schema.json") for p in (SCHEMAS / "events").glob("*.data.schema.json")
     }
     assert types == set(DATA_MODELS)
 
@@ -63,4 +63,4 @@ def test_task_snapshot_rejects_unknown_fields() -> None:
     raw = _load(next(p for p in VALID if p.stem == "task.created"))
     raw["data"]["task"]["password"] = "leak"
     with pytest.raises(ValidationError):
-        DATA_MODELS["hearthos.task.created"].model_validate(raw["data"])
+        DATA_MODELS["hauskraft.task.created"].model_validate(raw["data"])

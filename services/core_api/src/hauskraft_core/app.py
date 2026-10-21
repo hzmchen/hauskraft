@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """FastAPI application factory (M0S-E03-01).
 
-Run with ``uvicorn hearthos_core.app:create_app --factory``. Every route lives under ``/api/v1``.
+Run with ``uvicorn hauskraft_core.app:create_app --factory``. Every route lives under ``/api/v1``.
 """
 
 from __future__ import annotations
@@ -14,17 +14,17 @@ from fastapi import APIRouter, FastAPI
 from fastapi.routing import APIRoute
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 
-from hearthos_core.auth.providers import provider_from_settings
-from hearthos_core.auth.ratelimit import LoginRateLimiter
-from hearthos_core.errors import install_error_handlers
-from hearthos_core.events.relay import run_relay
-from hearthos_core.health import install_core_checks
-from hearthos_core.logging import RequestContextMiddleware, configure_logging, get_logger
-from hearthos_core.plugins.loader import load_plugins
-from hearthos_core.policy import policy_from_settings
-from hearthos_core.settings import Settings, get_settings
-from hearthos_core.themes.registry import install as install_themes
-from hearthos_core.themes.registry import log_active_theme
+from hauskraft_core.auth.providers import provider_from_settings
+from hauskraft_core.auth.ratelimit import LoginRateLimiter
+from hauskraft_core.errors import install_error_handlers
+from hauskraft_core.events.relay import run_relay
+from hauskraft_core.health import install_core_checks
+from hauskraft_core.logging import RequestContextMiddleware, configure_logging, get_logger
+from hauskraft_core.plugins.loader import load_plugins
+from hauskraft_core.policy import policy_from_settings
+from hauskraft_core.settings import Settings, get_settings
+from hauskraft_core.themes.registry import install as install_themes
+from hauskraft_core.themes.registry import log_active_theme
 
 API_PREFIX = "/api/v1"
 API_VERSION = "0.1.0"
@@ -59,17 +59,17 @@ async def _lifespan(app: FastAPI) -> AsyncIterator[None]:
 
 async def _sync_plugin_records(app: FastAPI) -> None:
     """Upsert the ``plugins`` table and apply its ``enabled`` flags; tolerate an unreachable database."""
-    from hearthos_core.plugins.repository import upsert_loaded
-    from hearthos_core.uow import UnitOfWork
-    from hearthos_core.users.service import SYSTEM_ACTOR
-    from hearthos_sdk import ResourceRef
+    from hauskraft_core.plugins.repository import upsert_loaded
+    from hauskraft_core.uow import UnitOfWork
+    from hauskraft_core.users.service import SYSTEM_ACTOR
+    from hauskraft_sdk import ResourceRef
 
     try:
         async with UnitOfWork(app.state.sessionmaker, app.state.policy, app.state.settings) as uow:
             await uow.authorize(SYSTEM_ACTOR, "plugin.sync", ResourceRef("Plugin"), "household", "plugins:write")
             enabled = await upsert_loaded(uow.session, app.state.plugins.values())
     except Exception as exc:  # readiness reports the database problem
-        get_logger("hearthos.plugins").warning("plugin.sync_failed", error_type=type(exc).__name__)
+        get_logger("hauskraft.plugins").warning("plugin.sync_failed", error_type=type(exc).__name__)
         return
     app.state.disabled_plugins = {pid for pid, on in enabled.items() if not on}
     for pid in app.state.disabled_plugins:
@@ -78,13 +78,13 @@ async def _sync_plugin_records(app: FastAPI) -> None:
 
 def build_api_router() -> APIRouter:
     """Core routers; later stories add auth, users, plugins, themes, activity and dashboards."""
-    from hearthos_core import health
-    from hearthos_core.activity import router as activity
-    from hearthos_core.auth import router as auth
-    from hearthos_core.dashboard import router as dashboard
-    from hearthos_core.plugins import router as plugins
-    from hearthos_core.themes import router as themes
-    from hearthos_core.users import router as users
+    from hauskraft_core import health
+    from hauskraft_core.activity import router as activity
+    from hauskraft_core.auth import router as auth
+    from hauskraft_core.dashboard import router as dashboard
+    from hauskraft_core.plugins import router as plugins
+    from hauskraft_core.themes import router as themes
+    from hauskraft_core.users import router as users
 
     router = APIRouter()
     router.include_router(health.router)
@@ -101,7 +101,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     settings = settings or get_settings()
     configure_logging(settings.log_level)
     app = FastAPI(
-        title="HearthOS core API",
+        title="Hauskraft core API",
         version=API_VERSION,
         openapi_url=f"{API_PREFIX}/openapi.json",
         docs_url=f"{API_PREFIX}/docs",

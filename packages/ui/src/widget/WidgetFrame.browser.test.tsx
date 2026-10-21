@@ -28,10 +28,10 @@ describe.each(Object.keys(THEMES) as ThemeName[])("WidgetFrame in %s", (theme) =
       if (chrome === "outlined") expect(style.borderTopWidth).not.toBe("0px");
       if (chrome === "elevated") expect(style.boxShadow).not.toBe("none");
       if (chrome === "tinted")
-        expect(sameColour(style.backgroundColor)).toBe(sameColour(cssVar("--hearth-color-secondary")));
+        expect(sameColour(style.backgroundColor)).toBe(sameColour(cssVar("--hauskraft-color-secondary")));
       const bar = region.querySelector("[data-slot=widget-header]")!;
       if (header === "banner") {
-        expect(sameColour(getComputedStyle(bar).backgroundColor)).toBe(sameColour(cssVar("--hearth-color-primary")));
+        expect(sameColour(getComputedStyle(bar).backgroundColor)).toBe(sameColour(cssVar("--hauskraft-color-primary")));
       }
     },
   );

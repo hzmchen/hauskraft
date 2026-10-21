@@ -11,9 +11,9 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends, Query, Request, Response
 
-from hearthos_sdk import Actor, PluginContext
-from hearthos_tasks import service
-from hearthos_tasks.schemas import Sort, Status, TaskCreate, TaskOut, TaskPage, TaskPatch
+from hauskraft_sdk import Actor, PluginContext
+from hauskraft_tasks import service
+from hauskraft_tasks.schemas import Sort, Status, TaskCreate, TaskOut, TaskPage, TaskPatch
 
 ERRORS: dict[int | str, dict[str, str]] = {
     401: {"description": "Not signed in"},

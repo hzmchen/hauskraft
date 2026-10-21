@@ -8,11 +8,11 @@ Changing a name is a contract change: update this file and the e2e tests togethe
 
 | Hook | Where | Values | Story |
 |---|---|---|---|
-| `data-hearth-theme` | `<html>` | active `theme_id`, e.g. `org.hearthos.theme.hackspace` | M0S-E13-05 |
-| `data-hearth-chrome`, `data-hearth-header`, `data-hearth-button`, `data-hearth-checkbox`, `data-hearth-density`, `data-hearth-content` | `<html>` | the active theme's variants | M0S-E13-05 |
+| `data-hauskraft-theme` | `<html>` | active `theme_id`, e.g. `dev.hauskraft.theme.hackspace` | M0S-E13-05 |
+| `data-hauskraft-chrome`, `data-hauskraft-header`, `data-hauskraft-button`, `data-hauskraft-checkbox`, `data-hauskraft-density`, `data-hauskraft-content` | `<html>` | the active theme's variants | M0S-E13-05 |
 | `class="dark"` | `<html>` | present in dark mode | M0S-E08-02 |
 | `data-nav-style` | the `nav` named "Main" | `sidebar`, `topbar`, `bottom-tabs`, `drawer` | M0S-E13-05 |
-| `localStorage["hearthos.mode"]` | browser | `system`, `light`, `dark` | M0S-E08-02 |
+| `localStorage["hauskraft.mode"]` | browser | `system`, `light`, `dark` | M0S-E08-02 |
 
 ## Login (`/login`) · M0S-E08-03
 

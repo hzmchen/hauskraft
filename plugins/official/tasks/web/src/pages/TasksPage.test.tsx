@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-import { HostProvider, type Host } from "@hearthos/sdk-ts";
+import { HostProvider, type Host } from "@hauskraft/sdk-ts";
 import { screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
@@ -19,7 +19,7 @@ async function show(h: Host, routes: Parameters<typeof fakeApi>[0]) {
   const calls = fakeApi(routes);
   await renderWithPlugin(
     <HostProvider host={h}>
-      <TasksPage pluginId="org.hearthos.tasks" />
+      <TasksPage pluginId="dev.hauskraft.tasks" />
     </HostProvider>,
   );
   return calls;

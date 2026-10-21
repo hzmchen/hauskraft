@@ -10,9 +10,9 @@ from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from hearthos_core.db import migrations
-from hearthos_core.db.models import DashboardLayout, DeploymentSetting, PluginRecord, Session, User, UserRole
-from hearthos_core.settings import Settings
+from hauskraft_core.db import migrations
+from hauskraft_core.db.models import DashboardLayout, DeploymentSetting, PluginRecord, Session, User, UserRole
+from hauskraft_core.settings import Settings
 
 pytestmark = pytest.mark.integration
 NOW = dt.datetime(2026, 10, 12, 9, 0, tzinfo=dt.UTC)
@@ -102,20 +102,20 @@ async def test_plugin_record(db_session: AsyncSession) -> None:
 
 
 async def test_deployment_setting_upsert_by_key(db_session: AsyncSession) -> None:
-    for value in ("org.hearthos.theme.default", "org.hearthos.theme.hackspace"):
+    for value in ("dev.hauskraft.theme.default", "dev.hauskraft.theme.hackspace"):
         stmt = insert(DeploymentSetting).values(key="theme_id", value=value, updated_at=NOW)
         await db_session.execute(
             stmt.on_conflict_do_update(index_elements=["key"], set_={"value": value, "updated_at": NOW})
         )
     rows = (await db_session.execute(select(DeploymentSetting))).scalars().all()
-    assert [(r.key, r.value) for r in rows] == [("theme_id", "org.hearthos.theme.hackspace")]
+    assert [(r.key, r.value) for r in rows] == [("theme_id", "dev.hauskraft.theme.hackspace")]
 
 
 async def test_dashboard_layout_per_user_and_dashboard(db_session: AsyncSession) -> None:
     user = _user("dash")
     db_session.add(user)
     await db_session.flush()
-    cell = {"i": "a", "plugin_id": "org.hearthos.tasks", "widget_id": "tasks.list", "x": 0, "y": 0, "w": 4, "h": 6}
+    cell = {"i": "a", "plugin_id": "dev.hauskraft.tasks", "widget_id": "tasks.list", "x": 0, "y": 0, "w": 4, "h": 6}
     db_session.add(DashboardLayout(user_id=user.id, layout=[cell]))
     await db_session.flush()
     layout = await db_session.get(DashboardLayout, (user.id, "today"))
@@ -128,7 +128,7 @@ def test_models_match_migrations(db_settings: Settings) -> None:
 
 
 def test_uuid7_helper_is_time_ordered() -> None:
-    from hearthos_core.db.ids import new_id
+    from hauskraft_core.db.ids import new_id
 
     ids = [new_id() for _ in range(50)]
     assert all(isinstance(i, uuid.UUID) and i.version == 7 for i in ids)

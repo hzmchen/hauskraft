@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: MIT
-"""Enforce the HearthOS licence map (spec §4.2, ADR-0003, M0S-E02-04).
+"""Enforce the Hauskraft licence map (spec §4.2, ADR-0003, M0S-E02-04).
 
     python scripts/check-licence-map.py [--root DIR]
 

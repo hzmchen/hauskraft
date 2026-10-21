@@ -1,18 +1,18 @@
 {
-  "$schema": "../../../packages/schemas/manifest/hearthos.plugin.schema.json",
-  "id": "org.hearthos.theme.default",
+  "$schema": "../../../packages/schemas/manifest/hauskraft.plugin.schema.json",
+  "id": "dev.hauskraft.theme.default",
   "name": "Default",
   "version": "0.1.0",
   "description": "Calm neutral surfaces with a soft blue accent. Inter, Lucide icons, sidebar navigation.",
   "type": ["theme"],
-  "hearthos_api": "^0.1.0",
+  "hauskraft_api": "^0.1.0",
   "license": "MIT",
   "authors": [
     {
-      "name": "HearthOS contributors"
+      "name": "Hauskraft contributors"
     }
   ],
-  "source": "https://github.com/hearthos/hearthos/tree/main/themes/builtin/default",
+  "source": "https://github.com/hzmchen/hauskraft/tree/main/themes/builtin/default",
   "runtime": {
     "kind": "declarative"
   },

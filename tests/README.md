@@ -1,4 +1,4 @@
-# HearthOS acceptance suite
+# Hauskraft acceptance suite
 
 Spec-owned tests written before the code. Start with [docs/testing/README.md](../docs/testing/README.md).
 

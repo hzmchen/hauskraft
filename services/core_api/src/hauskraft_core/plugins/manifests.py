@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
-"""Find plugin manifests (``<path>/*/hearthos.plugin.json``) under the configured plugin and theme paths."""
+"""Find plugin manifests (``<path>/*/hauskraft.plugin.json``) under the configured plugin and theme paths."""
 
 from __future__ import annotations
 
@@ -10,7 +10,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
-MANIFEST_FILE = "hearthos.plugin.json"
+MANIFEST_FILE = "hauskraft.plugin.json"
 
 
 @dataclass(frozen=True)

@@ -16,7 +16,7 @@ from pydantic import BaseModel
 from sqlalchemy import Connection, text
 from starlette.responses import JSONResponse
 
-from hearthos_core.db import migrations
+from hauskraft_core.db import migrations
 
 Check = Callable[[], Awaitable[tuple[bool, str]]]
 
@@ -69,7 +69,7 @@ def install_core_checks(app: FastAPI) -> None:
                 ok = await conn.run_sync(at_heads)
         except Exception as exc:
             return False, f"{type(exc).__name__}: cannot read alembic_version"
-        return (True, "at heads") if ok else (False, "database is not at heads; run `hearthos db upgrade`")
+        return (True, "at heads") if ok else (False, "database is not at heads; run `hauskraft db upgrade`")
 
     async def plugins() -> tuple[bool, str]:
         errors: dict[str, str] = app.state.plugin_load_errors

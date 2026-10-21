@@ -1,19 +1,19 @@
 {
-  "$schema": "../../../../packages/schemas/manifest/hearthos.plugin.schema.json",
+  "$schema": "../../../../packages/schemas/manifest/hauskraft.plugin.schema.json",
   "id": "org.example.theme.invalid-bad-font-magic",
   "name": "Invalid Bad Font Magic",
   "version": "0.1.0",
   "type": [
     "theme"
   ],
-  "hearthos_api": "^0.1.0",
+  "hauskraft_api": "^0.1.0",
   "license": "MIT",
   "authors": [
     {
-      "name": "HearthOS test fixtures"
+      "name": "Hauskraft test fixtures"
     }
   ],
-  "source": "https://github.com/hearthos/hearthos/tree/main/tests/fixtures/themes/invalid-bad-font-magic",
+  "source": "https://github.com/hzmchen/hauskraft/tree/main/tests/fixtures/themes/invalid-bad-font-magic",
   "runtime": {
     "kind": "declarative"
   },

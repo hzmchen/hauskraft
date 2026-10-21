@@ -8,7 +8,7 @@
 
 ---
 
-## `tasks` table (plugin branch `org.hearthos.tasks`)
+## `tasks` table (plugin branch `dev.hauskraft.tasks`)
 
 ```text
 tasks  id uuid PK (UUIDv7) | title text NOT NULL CHECK (char_length(btrim(title)) BETWEEN 1 AND 200) |
@@ -36,20 +36,20 @@ tasks  id uuid PK (UUIDv7) | title text NOT NULL CHECK (char_length(btrim(title)
 ## M0S-E07-01 · Plugin package, model and migration
 - **Story:** As a plugin author, I want the tasks plugin to own its table and migration, so that it proves the plugin data seam.
 - **AC:**
-  - Given the loader, then `hearthos_tasks.plugin:plugin` registers.
+  - Given the loader, then `hauskraft_tasks.plugin:plugin` registers.
   - `alembic upgrade heads` creates `tasks` per the contract.
-  - The package imports nothing from `hearthos_core` (lint-enforced). Licence MIT.
-- **Tech:** `plugins/official/tasks/backend/src/hearthos_tasks/{plugin.py,models.py}`. Models use their own `MetaData` passed in `PluginRegistration`.
+  - The package imports nothing from `hauskraft_core` (lint-enforced). Licence MIT.
+- **Tech:** `plugins/official/tasks/backend/src/hauskraft_tasks/{plugin.py,models.py}`. Models use their own `MetaData` passed in `PluginRegistration`.
 - **Tests:** Integration: migration and CHECK constraint.
 - **Deps:** E06-03, E04-01 · **Est:** S · **Labels:** area:tasks
 
 ## M0S-E07-02 · Task service with authorize and events
 - **Story:** As an adult household member, I want my task changes recorded consistently, so that the list and activity feed never disagree.
 - **AC:** Given any create, update or delete, then the service calls `ctx.authorize(actor, "task.<verb>", ResourceRef("Task", id), "household", "graph:write:Task")`, writes the row, and calls `ctx.emit(...)` in the same transaction. Events:
-  - `hearthos.task.created` on create.
-  - `hearthos.task.completed` when `done` flips false→true (sets `done_at`).
-  - `hearthos.task.updated` for other changes, including reopening (clears `done_at`); payload has `changes`.
-  - `hearthos.task.deleted` with a snapshot on delete.
+  - `hauskraft.task.created` on create.
+  - `hauskraft.task.completed` when `done` flips false→true (sets `done_at`).
+  - `hauskraft.task.updated` for other changes, including reopening (clears `done_at`); payload has `changes`.
+  - `hauskraft.task.deleted` with a snapshot on delete.
   - A version mismatch returns 409. A rollback leaves neither row nor event.
   - Adult B can update and delete a task created by adult A; `updated_by` and the event `actorid` record B.
 - **Tech:** `service.py` (pure functions over `PluginContext`); `schemas.py` (Pydantic v2 `TaskCreate`, `TaskPatch`, `TaskOut`).

@@ -7,11 +7,11 @@ from typing import Annotated, Any
 
 from fastapi import APIRouter, Path, Request
 
-from hearthos_core.auth.deps import CurrentSession, actor_for
-from hearthos_core.dashboard.schemas import Dashboard, LayoutIn
-from hearthos_core.dashboard.service import default_layout, save_layout, stored_layout
-from hearthos_core.db.session import DbSession
-from hearthos_core.uow import UnitOfWork
+from hauskraft_core.auth.deps import CurrentSession, actor_for
+from hauskraft_core.dashboard.schemas import Dashboard, LayoutIn
+from hauskraft_core.dashboard.service import default_layout, save_layout, stored_layout
+from hauskraft_core.db.session import DbSession
+from hauskraft_core.uow import UnitOfWork
 
 router = APIRouter(prefix="/dashboard", tags=["dashboard"])
 DashboardId = Annotated[str, Path(pattern=r"^[a-z0-9-]{1,40}$")]

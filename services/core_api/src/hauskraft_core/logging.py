@@ -19,8 +19,8 @@ import structlog
 from starlette.datastructures import MutableHeaders
 from starlette.types import ASGIApp, Message, Receive, Scope, Send
 
-request_id_var: ContextVar[str | None] = ContextVar("hearthos_request_id", default=None)
-request_user_id: ContextVar[str | None] = ContextVar("hearthos_request_user_id", default=None)
+request_id_var: ContextVar[str | None] = ContextVar("hauskraft_request_id", default=None)
+request_user_id: ContextVar[str | None] = ContextVar("hauskraft_request_user_id", default=None)
 
 _SAFE_REQUEST_ID = re.compile(r"^[A-Za-z0-9._:-]{1,128}$")
 _configured = False
@@ -57,9 +57,9 @@ def configure_logging(level: str = "INFO") -> None:
     if not _configured:
         handler = logging.StreamHandler(sys.stderr)
         handler.setFormatter(formatter)
-        handler.set_name("hearthos-json")
+        handler.set_name("hauskraft-json")
         root.addHandler(handler)
-        logging.getLogger("uvicorn.access").disabled = True  # replaced by hearthos.access
+        logging.getLogger("uvicorn.access").disabled = True  # replaced by hauskraft.access
         _configured = True
     root.setLevel(level)
 
@@ -69,7 +69,7 @@ def get_logger(name: str) -> structlog.stdlib.BoundLogger:
     return logger
 
 
-_access = structlog.get_logger("hearthos.access")
+_access = structlog.get_logger("hauskraft.access")
 
 
 class RequestContextMiddleware:
@@ -105,9 +105,9 @@ class RequestContextMiddleware:
             # middleware), so answer here while the request id is still known.
             if response_started:
                 raise
-            from hearthos_core.errors import internal_error_response
+            from hauskraft_core.errors import internal_error_response
 
-            get_logger("hearthos.errors").exception("unhandled_error", error_type=type(exc).__name__)
+            get_logger("hauskraft.errors").exception("unhandled_error", error_type=type(exc).__name__)
             await internal_error_response()(scope, receive, send_with_id)
         finally:
             _access.info(

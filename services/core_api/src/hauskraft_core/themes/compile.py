@@ -8,12 +8,12 @@ attributes by the shell, not as CSS from the theme.
 
 from __future__ import annotations
 
-from hearthos_core.themes import dtcg
-from hearthos_core.themes.model import ThemeReport
+from hauskraft_core.themes import dtcg
+from hauskraft_core.themes.model import ThemeReport
 
 ASSET_URL = "/api/v1/theme/assets/{theme_id}/{path}?h={hash}"
 DENSITY = {"compact": "0.85", "comfortable": "1", "spacious": "1.15"}
-# shadcn/ui variable names, so @hearthos/ui components work unmodified (spec §10.2.5).
+# shadcn/ui variable names, so @hauskraft/ui components work unmodified (spec §10.2.5).
 SHADCN = {
     "background": "color.background",
     "foreground": "color.foreground",
@@ -52,7 +52,7 @@ SHADCN = {
 
 
 def var(token: str) -> str:
-    return "--hearth-" + token.replace(".", "-")
+    return "--hauskraft-" + token.replace(".", "-")
 
 
 def asset_url(report: ThemeReport, path: str) -> str:
@@ -64,18 +64,18 @@ def _background(report: ThemeReport, mode: str) -> list[str]:
     values = report.css_values[mode]
     lines = []
     if "color" in spec:
-        lines.append(f"  --hearth-app-bg-color: {_colour(spec['color'], values)};")
+        lines.append(f"  --hauskraft-app-bg-color: {_colour(spec['color'], values)};")
     if "image" in spec:
-        lines.append(f'  --hearth-app-bg-image: url("{asset_url(report, spec["image"])}");')
+        lines.append(f'  --hauskraft-app-bg-image: url("{asset_url(report, spec["image"])}");')
     if "gradient" in spec:
         g = spec["gradient"]
         angle = dtcg.parse_number(g.get("angle", 180))
         lines.append(
-            f"  --hearth-app-bg-image: linear-gradient({angle}deg, {_colour(g['from'], values)}, "
+            f"  --hauskraft-app-bg-image: linear-gradient({angle}deg, {_colour(g['from'], values)}, "
             f"{_colour(g['to'], values)});"
         )
     if not spec:
-        lines.append("  --hearth-app-bg-color: var(--hearth-color-background);")
+        lines.append("  --hauskraft-app-bg-color: var(--hauskraft-color-background);")
     return lines
 
 
@@ -105,12 +105,12 @@ def compile_css(report: ThemeReport) -> str:
         out.extend(f"  {var(token)}: {value};" for token, value in sorted(values.items()))
         out.extend(f"  --{alias}: var({var(token)});" for alias, token in SHADCN.items())
         if mode == "light":
-            out.append(f"  --hearth-density: {DENSITY[layout['density']]};")
-            out.append("  --hearth-grid-row: calc(10 * var(--hearth-space-unit) * var(--hearth-density));")
-            out.append("  --hearth-grid-gap: calc(4 * var(--hearth-space-unit) * var(--hearth-density));")
+            out.append(f"  --hauskraft-density: {DENSITY[layout['density']]};")
+            out.append("  --hauskraft-grid-row: calc(10 * var(--hauskraft-space-unit) * var(--hauskraft-density));")
+            out.append("  --hauskraft-grid-gap: calc(4 * var(--hauskraft-space-unit) * var(--hauskraft-density));")
         out.extend(_background(report, mode))
         out.append("}")
     out.append("@media (prefers-reduced-motion: reduce) {")
-    out.append("  :root, :root.dark { --hearth-duration-fast: 0ms; --hearth-duration-normal: 0ms; }")
+    out.append("  :root, :root.dark { --hauskraft-duration-fast: 0ms; --hauskraft-duration-normal: 0ms; }")
     out.append("}")
     return "\n".join(out) + "\n"

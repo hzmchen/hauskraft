@@ -15,9 +15,9 @@ import pytest
 from fastapi import APIRouter
 from sqlalchemy import MetaData
 
-import hearthos_sdk
-from hearthos_sdk import (
-    HEARTHOS_API_VERSION,
+import hauskraft_sdk
+from hauskraft_sdk import (
+    HAUSKRAFT_API_VERSION,
     Actor,
     DataClass,
     Plugin,
@@ -25,13 +25,13 @@ from hearthos_sdk import (
     PluginRegistration,
     ResourceRef,
 )
-from hearthos_sdk.errors import ConflictError, HearthosError, NotFoundError, PolicyDeniedError
+from hauskraft_sdk.errors import ConflictError, HauskraftError, NotFoundError, PolicyDeniedError
 
 pytestmark = pytest.mark.unit
 
 
 def test_api_version_is_semver() -> None:
-    assert HEARTHOS_API_VERSION == "0.1.0"
+    assert HAUSKRAFT_API_VERSION == "0.1.0"
 
 
 def test_public_names() -> None:
@@ -42,9 +42,9 @@ def test_public_names() -> None:
         "Actor",
         "DataClass",
         "ResourceRef",
-        "HEARTHOS_API_VERSION",
+        "HAUSKRAFT_API_VERSION",
     ):
-        assert name in hearthos_sdk.__all__
+        assert name in hauskraft_sdk.__all__
 
 
 def test_data_classes_are_ordered() -> None:
@@ -111,19 +111,19 @@ def test_protocols_are_structural() -> None:
         (PolicyDeniedError("task.delete"), 403, "policy_denied"),
     ],
 )
-def test_errors_carry_status_and_code(error: HearthosError, status: int, code: str) -> None:
+def test_errors_carry_status_and_code(error: HauskraftError, status: int, code: str) -> None:
     assert error.status == status
     assert error.code == code
-    assert isinstance(error, HearthosError)
+    assert isinstance(error, HauskraftError)
 
 
 def test_sdk_ships_type_information() -> None:
-    assert (Path(hearthos_sdk.__file__).parent / "py.typed").exists()
+    assert (Path(hauskraft_sdk.__file__).parent / "py.typed").exists()
 
 
 def test_importing_the_sdk_never_imports_core() -> None:
     code = (
-        "import sys, hearthos_sdk, hearthos_sdk.events; print(any(m.startswith('hearthos_core') for m in sys.modules))"
+        "import sys, hauskraft_sdk, hauskraft_sdk.events; print(any(m.startswith('hauskraft_core') for m in sys.modules))"
     )
     out = subprocess.run([sys.executable, "-c", code], capture_output=True, text=True, check=True).stdout
     assert out.strip() == "False"

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Unit tests for hearthos/no-raw-styles (M0S-E13-08). Run: pnpm --filter eslint-plugin-hearthos test
+// Unit tests for hauskraft/no-raw-styles (M0S-E13-08). Run: pnpm --filter eslint-plugin-hauskraft test
 import css from "@eslint/css";
 import { RuleTester } from "eslint";
 import tseslint from "typescript-eslint";
@@ -17,7 +17,7 @@ tsx.run("no-raw-styles (TS/TSX)", rule, {
     `const a = <div className="bg-surface text-surface-foreground p-density rounded-lg border-border" />;`,
     `const b = <a href="#content">skip</a>;`,
     `const c = <span style={{ "--swatch": color }} />;`,
-    `const d = "rgb(1 2 3)"; // hearthos-allow-raw-style: theme data`,
+    `const d = "rgb(1 2 3)"; // hauskraft-allow-raw-style: theme data`,
     `import x from "./bg-red-500.js";`,
     `const e = cn("state-open:animate-in", active && "bg-primary text-primary-foreground");`,
   ],

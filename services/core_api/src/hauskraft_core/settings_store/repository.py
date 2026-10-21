@@ -10,7 +10,7 @@ from sqlalchemy import func, select
 from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from hearthos_core.db.models import DeploymentSetting
+from hauskraft_core.db.models import DeploymentSetting
 
 
 async def get(session: AsyncSession, key: str) -> Any:

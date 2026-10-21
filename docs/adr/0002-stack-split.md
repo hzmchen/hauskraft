@@ -9,7 +9,7 @@ Status: Accepted
 
 ## Context and problem statement
 
-HearthOS needs a backend that speaks Home Assistant, agent frameworks and German banking, and a frontend that renders a themeable widget dashboard. Spec §4.1 compares the options.
+Hauskraft needs a backend that speaks Home Assistant, agent frameworks and German banking, and a frontend that renders a themeable widget dashboard. Spec §4.1 compares the options.
 
 ## Decision drivers
 
@@ -27,7 +27,7 @@ HearthOS needs a backend that speaks Home Assistant, agent frameworks and German
 
 ## Decision outcome
 
-Chosen option: "Python backend + TypeScript frontend". Backend: Python 3.13, FastAPI, SQLAlchemy 2.1 (async), Pydantic v2, Alembic, Postgres 16. Frontend: React 19, Vite 8, TypeScript, TanStack Router/Query, shadcn/ui on Radix and Tailwind v4 packaged as `@hearthos/ui`. The contract between them is OpenAPI 3.1 generated from FastAPI and committed (`packages/schemas/openapi/core-api.openapi.json`); the TypeScript client is generated from it (ADR-0010).
+Chosen option: "Python backend + TypeScript frontend". Backend: Python 3.13, FastAPI, SQLAlchemy 2.1 (async), Pydantic v2, Alembic, Postgres 16. Frontend: React 19, Vite 8, TypeScript, TanStack Router/Query, shadcn/ui on Radix and Tailwind v4 packaged as `@hauskraft/ui`. The contract between them is OpenAPI 3.1 generated from FastAPI and committed (`packages/schemas/openapi/core-api.openapi.json`); the TypeScript client is generated from it (ADR-0010).
 
 ### Consequences
 

@@ -9,12 +9,12 @@
 ## M0S-E03-01 · App factory and settings
 - **Story:** As an operator, I want env-driven configuration, so that the same image runs in dev, CI and the demo.
 - **AC:**
-  - Given `HEARTHOS_DATABASE_URL` and `HEARTHOS_SECRET_KEY`, when I call `create_app()`, then the app starts.
-  - A missing secret in `HEARTHOS_ENV=production` raises at startup.
+  - Given `HAUSKRAFT_DATABASE_URL` and `HAUSKRAFT_SECRET_KEY`, when I call `create_app()`, then the app starts.
+  - A missing secret in `HAUSKRAFT_ENV=production` raises at startup.
   - All routes are under `/api/v1`.
 - **Tech:**
-  - `hearthos_core/app.py` (`create_app()`; lifespan opens the async engine, loads plugins and themes).
-  - `settings.py` with pydantic-settings, env prefix `HEARTHOS_`. Settings known now: `DATABASE_URL`, `SECRET_KEY`, `ENV`, `COOKIE_SECURE`, `ALLOWED_ORIGINS`, `PLUGIN_PATHS`, `THEME_PATHS`, `DEFAULT_THEME`, `POLICY`, `AUTH_PROVIDER`, `SEED_DEMO`, `RELAY_ENABLED`, `VALIDATE_EVENTS`, `OTEL_ENABLED`.
+  - `hauskraft_core/app.py` (`create_app()`; lifespan opens the async engine, loads plugins and themes).
+  - `settings.py` with pydantic-settings, env prefix `HAUSKRAFT_`. Settings known now: `DATABASE_URL`, `SECRET_KEY`, `ENV`, `COOKIE_SECURE`, `ALLOWED_ORIGINS`, `PLUGIN_PATHS`, `THEME_PATHS`, `DEFAULT_THEME`, `POLICY`, `AUTH_PROVIDER`, `SEED_DEMO`, `RELAY_ENABLED`, `VALIDATE_EVENTS`, `OTEL_ENABLED`.
   - FastAPI `~=0.143`, uvicorn.
 - **Tests:** Unit: settings validation; app boots with a test DB URL.
 - **Deps:** E01-02 · **Est:** S · **Labels:** area:api
@@ -34,7 +34,7 @@
 - **AC:**
   - Given any request, then a JSON log line includes `request_id`, `method`, `path`, `status`, `duration_ms` and `user_id` (if authenticated). The response echoes `X-Request-ID`.
   - Errors are `application/problem+json` (RFC 9457) with `type`, `title`, `status`, `detail`, `code`, `request_id`. Validation errors return 422 with `errors[]`.
-- **Tech:** structlog with a stdlib bridge; `errors.py` exception handlers. Optional `HEARTHOS_OTEL_ENABLED` wires `opentelemetry-instrumentation-fastapi`, off by default.
+- **Tech:** structlog with a stdlib bridge; `errors.py` exception handlers. Optional `HAUSKRAFT_OTEL_ENABLED` wires `opentelemetry-instrumentation-fastapi`, off by default.
 - **Tests:** Unit: error shape snapshot; log capture.
 - **Deps:** E03-01 · **Est:** S · **Labels:** area:api
 
@@ -45,7 +45,7 @@
   - `NoOpPolicy` returns `Decision.ALLOW` and logs at debug. A test-only `DenyAllPolicy` makes the API return 403 `code=policy_denied`.
 - **Tech:**
   - `policy/__init__.py`: `Actor(id, role, kind="user")`, `ResourceRef(type, id)`, `Decision`, `Policy` Protocol.
-  - Chosen via `HEARTHOS_POLICY=noop`; exposed to plugins through `PluginContext.authorize` (sdk-py).
+  - Chosen via `HAUSKRAFT_POLICY=noop`; exposed to plugins through `PluginContext.authorize` (sdk-py).
   - `UnitOfWork` (async session + outbox writer, a single commit).
 - **Tests:** Unit: spy policy called with expected args. Integration: DenyAll → 403, no row written, no event written.
 - **Deps:** E03-01, E04-01 · **Est:** M · **Labels:** area:api, governance

@@ -11,11 +11,11 @@ from fastapi.exceptions import RequestValidationError
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from starlette.responses import JSONResponse
 
-from hearthos_core.logging import get_logger, request_id_var
-from hearthos_sdk.errors import HearthosError
+from hauskraft_core.logging import get_logger, request_id_var
+from hauskraft_sdk.errors import HauskraftError
 
 PROBLEM_JSON = "application/problem+json"
-PROBLEM_TYPE = "https://hearthos.dev/problems/{code}"
+PROBLEM_TYPE = "https://hauskraft.dev/problems/{code}"
 
 _HTTP_CODES = {
     400: ("bad_request", "Bad request"),
@@ -29,7 +29,7 @@ _HTTP_CODES = {
     422: ("validation_failed", "Validation failed"),
     429: ("rate_limited", "Too many requests"),
 }
-_log = get_logger("hearthos.errors")
+_log = get_logger("hauskraft.errors")
 
 
 def problem(
@@ -53,8 +53,8 @@ def problem(
     return JSONResponse(jsonable_encoder(body), status_code=status, media_type=PROBLEM_JSON, headers=headers)
 
 
-async def _hearthos_error(_: Request, exc: Exception) -> JSONResponse:
-    if not isinstance(exc, HearthosError):  # pragma: no cover - registered for this type only
+async def _hauskraft_error(_: Request, exc: Exception) -> JSONResponse:
+    if not isinstance(exc, HauskraftError):  # pragma: no cover - registered for this type only
         raise exc
     return problem(exc.status, exc.code, exc.title, exc.detail, headers=getattr(exc, "headers", None), **exc.extra)
 
@@ -93,7 +93,7 @@ async def _unexpected_error(_: Request, exc: Exception) -> JSONResponse:
 
 
 def install_error_handlers(app: FastAPI) -> None:
-    app.add_exception_handler(HearthosError, _hearthos_error)
+    app.add_exception_handler(HauskraftError, _hauskraft_error)
     app.add_exception_handler(StarletteHTTPException, _http_error)
     app.add_exception_handler(RequestValidationError, _validation_error)
     app.add_exception_handler(Exception, _unexpected_error)

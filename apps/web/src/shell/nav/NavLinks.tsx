@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import { Icon, cn } from "@hearthos/ui";
+import { Icon, cn } from "@hauskraft/ui";
 import { Link } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 

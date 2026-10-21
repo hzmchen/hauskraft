@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Access to the MIT JSON Schemas in ``packages/schemas`` (manifest, events, theme).
 
-``HEARTHOS_SCHEMAS_DIR`` overrides the location (the container image copies the folder next to the app).
+``HAUSKRAFT_SCHEMAS_DIR`` overrides the location (the container image copies the folder next to the app).
 """
 
 from __future__ import annotations
@@ -19,7 +19,7 @@ DEFAULT_SCHEMAS_DIR = Path(__file__).resolve().parents[4] / "packages" / "schema
 
 
 def schemas_dir() -> Path:
-    return Path(os.environ.get("HEARTHOS_SCHEMAS_DIR") or DEFAULT_SCHEMAS_DIR)
+    return Path(os.environ.get("HAUSKRAFT_SCHEMAS_DIR") or DEFAULT_SCHEMAS_DIR)
 
 
 @cache

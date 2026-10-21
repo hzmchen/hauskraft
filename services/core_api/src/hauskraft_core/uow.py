@@ -16,12 +16,12 @@ from typing import Self
 from fastapi import Request
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from hearthos_core.policy import Decision, Policy
-from hearthos_core.settings import Settings
-from hearthos_sdk import Actor, DataClass, ResourceRef
-from hearthos_sdk.errors import PolicyDeniedError
+from hauskraft_core.policy import Decision, Policy
+from hauskraft_core.settings import Settings
+from hauskraft_sdk import Actor, DataClass, ResourceRef
+from hauskraft_sdk.errors import PolicyDeniedError
 
-_current: ContextVar[UnitOfWork | None] = ContextVar("hearthos_uow", default=None)
+_current: ContextVar[UnitOfWork | None] = ContextVar("hauskraft_uow", default=None)
 
 
 def current_uow() -> UnitOfWork:

@@ -20,7 +20,7 @@ function stubFetch(): { calls: Request[] } {
 
 // Node cannot build a Request from a relative URL; browsers resolve "/api/v1/…" against the page.
 beforeEach(() => {
-  client.setConfig({ baseUrl: "http://hearthos.test" });
+  client.setConfig({ baseUrl: "http://hauskraft.test" });
 });
 
 afterEach(() => {

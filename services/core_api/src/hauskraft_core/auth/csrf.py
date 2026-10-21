@@ -2,7 +2,7 @@
 """CSRF protection (M0S-E05-03, ADR-0005): synchronizer token plus Origin allowlist.
 
 Every state-changing request from a signed-in session must carry ``X-CSRF-Token`` equal to the session's
-token (constant-time compare) and, if it sends ``Origin``, an origin from ``HEARTHOS_ALLOWED_ORIGINS``.
+token (constant-time compare) and, if it sends ``Origin``, an origin from ``HAUSKRAFT_ALLOWED_ORIGINS``.
 Login has no session yet, so it gets the Origin check only (login CSRF). GET never changes state.
 """
 
@@ -12,13 +12,13 @@ import hmac
 
 from fastapi import Request
 
-from hearthos_sdk.errors import HearthosError
+from hauskraft_sdk.errors import HauskraftError
 
 SAFE_METHODS = frozenset({"GET", "HEAD", "OPTIONS"})
 HEADER = "X-CSRF-Token"
 
 
-class CsrfFailedError(HearthosError):
+class CsrfFailedError(HauskraftError):
     status = 403
     code = "csrf_failed"
     title = "Request blocked"

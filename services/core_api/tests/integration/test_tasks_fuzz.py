@@ -13,8 +13,8 @@ import schemathesis
 from fastapi.testclient import TestClient
 from hypothesis import HealthCheck, settings
 
-from hearthos_core.app import create_app
-from hearthos_core.settings import Settings
+from hauskraft_core.app import create_app
+from hauskraft_core.settings import Settings
 from tests.integration.conftest import PASSWORD
 
 pytestmark = [pytest.mark.integration, pytest.mark.contract]
@@ -29,7 +29,7 @@ def fuzz_app(api_settings: Settings, make_user: Callable[..., str]):  # type: ig
     with TestClient(app, headers={"Origin": "http://testserver"}) as client:
         r = client.post("/api/v1/auth/login", json={"username": make_user(), "password": PASSWORD})
         app.state.fuzz_auth = {
-            "cookie": f"hearthos_session={client.cookies['hearthos_session']}",
+            "cookie": f"hauskraft_session={client.cookies['hauskraft_session']}",
             "csrf": r.json()["csrf_token"],
         }
         yield app

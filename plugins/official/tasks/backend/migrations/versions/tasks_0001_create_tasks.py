@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: MIT
-"""Create the tasks table (M0S-E07-01). Plugin branch org.hearthos.tasks, after core's users table.
+"""Create the tasks table (M0S-E07-01). Plugin branch dev.hauskraft.tasks, after core's users table.
 
 Revision ID: tasks_0001
 Revises:
@@ -13,7 +13,7 @@ from alembic import op
 
 revision: str = "tasks_0001"
 down_revision: str | Sequence[str] | None = None
-branch_labels: str | Sequence[str] | None = ("org.hearthos.tasks",)
+branch_labels: str | Sequence[str] | None = ("dev.hauskraft.tasks",)
 depends_on: str | Sequence[str] | None = "0002_core_tables"
 
 TZ = sa.DateTime(timezone=True)

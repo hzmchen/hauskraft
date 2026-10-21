@@ -27,11 +27,11 @@ def _validator(rel: str) -> Draft202012Validator:
     return Draft202012Validator(schema, registry=Registry().with_resources(resources))
 
 
-MANIFEST = _validator("manifest/hearthos.plugin.schema.json") if (SCHEMAS / "manifest").exists() else None
+MANIFEST = _validator("manifest/hauskraft.plugin.schema.json") if (SCHEMAS / "manifest").exists() else None
 
 
 def _errors(doc: object) -> list[str]:
-    assert MANIFEST is not None, "packages/schemas/manifest/hearthos.plugin.schema.json missing"
+    assert MANIFEST is not None, "packages/schemas/manifest/hauskraft.plugin.schema.json missing"
     return [e.message for e in MANIFEST.iter_errors(doc)]
 
 
@@ -51,5 +51,5 @@ def test_every_schema_has_an_id_and_spdx_comment() -> None:
         doc = json.loads(path.read_text())
         assert doc["$schema"] == "https://json-schema.org/draft/2020-12/schema", path
         # Event data schemas use the dataschema URLs from the E10 envelope contract.
-        assert doc["$id"].startswith(("https://hearthos.dev/schema/", "https://schemas.hearthos.org/events/")), path
+        assert doc["$id"].startswith(("https://hauskraft.dev/schema/", "https://hauskraft.dev/schema/events/")), path
         assert doc.get("$comment") == SPDX_MIT, path

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 // Delete with confirmation. Any adult may delete any task (decision D3).
-import type { TaskOut } from "@hearthos/sdk-ts";
-import { Button, Dialog, DialogContent, DialogDescription, DialogFooter, DialogTitle, Icon } from "@hearthos/ui";
+import type { TaskOut } from "@hauskraft/sdk-ts";
+import { Button, Dialog, DialogContent, DialogDescription, DialogFooter, DialogTitle, Icon } from "@hauskraft/ui";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 

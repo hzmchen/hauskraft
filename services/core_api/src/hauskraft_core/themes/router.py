@@ -13,15 +13,15 @@ from fastapi import APIRouter, Header, Request
 from pydantic import BaseModel, ConfigDict, Field
 from starlette.responses import FileResponse, Response
 
-from hearthos_core.auth.deps import CurrentActor, CurrentSession
-from hearthos_core.db.session import DbSession
-from hearthos_core.settings_store.service import set_theme
-from hearthos_core.themes.compile import asset_url
-from hearthos_core.themes.model import ThemeReport
-from hearthos_core.themes.registry import ThemeRegistry, ThemeSummary, stored_theme_id
-from hearthos_core.themes.validate import referenced_assets
-from hearthos_core.uow import UnitOfWork
-from hearthos_sdk.errors import HearthosError, NotFoundError
+from hauskraft_core.auth.deps import CurrentActor, CurrentSession
+from hauskraft_core.db.session import DbSession
+from hauskraft_core.settings_store.service import set_theme
+from hauskraft_core.themes.compile import asset_url
+from hauskraft_core.themes.model import ThemeReport
+from hauskraft_core.themes.registry import ThemeRegistry, ThemeSummary, stored_theme_id
+from hauskraft_core.themes.validate import referenced_assets
+from hauskraft_core.uow import UnitOfWork
+from hauskraft_sdk.errors import HauskraftError, NotFoundError
 
 router = APIRouter(tags=["themes"])
 
@@ -38,7 +38,7 @@ ASSET_HEADERS = {"Cache-Control": "public, max-age=31536000, immutable", "X-Cont
 THEME_ID = r"^[a-z0-9]+(\.[a-z0-9-]+)+(:[a-z0-9-]+)?$"
 
 
-class NoThemeError(HearthosError):
+class NoThemeError(HauskraftError):
     status = 503
     code = "no_theme"
     title = "No usable theme"

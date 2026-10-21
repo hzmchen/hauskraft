@@ -1,9 +1,9 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://schemas.hearthos.org/events/task.created/v1.json",
+  "$id": "https://hauskraft.dev/schema/events/task.created/v1.json",
   "$comment": "SPDX-License-Identifier: MIT",
-  "title": "hearthos.task.created data",
-  "description": "Emitted by org.hearthos.tasks when a task is created. $defs/task is the task snapshot shared by every task event.",
+  "title": "hauskraft.task.created data",
+  "description": "Emitted by dev.hauskraft.tasks when a task is created. $defs/task is the task snapshot shared by every task event.",
   "type": "object",
   "required": ["task"],
   "additionalProperties": false,

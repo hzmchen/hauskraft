@@ -1,8 +1,8 @@
 # SPDX-License-Identifier: MIT
-"""M0S-E13-03 (validator) and M0S-E13-09 (CLI) · `hearthos themes validate` on fixture themes.
+"""M0S-E13-03 (validator) and M0S-E13-09 (CLI) · `hauskraft themes validate` on fixture themes.
 
 Contract (E13 "Contracts"):
-    hearthos themes validate <path> [--strict] [--json]
+    hauskraft themes validate <path> [--strict] [--json]
     exit 0 = valid (and, with --strict, no warnings), 1 = invalid, 2 = usage error / path not found.
     --json prints {"theme_id", "path", "valid", "errors": [Issue], "warnings": [Issue]}
     Issue = {"code", "message", "path"}; codes come from the fixed list in tests/_support/theme_contract.py.
@@ -138,7 +138,7 @@ def test_too_many_fonts_is_rejected(tmp_path: Path) -> None:
 def test_list_shows_builtin_themes() -> None:
     res = run("themes", "list")
     assert res.code == 0, res.stderr
-    for theme_id in ("org.hearthos.theme.default", "org.hearthos.theme.paper", "org.hearthos.theme.hackspace"):
+    for theme_id in ("dev.hauskraft.theme.default", "dev.hauskraft.theme.paper", "dev.hauskraft.theme.hackspace"):
         assert theme_id in res.stdout
 
 

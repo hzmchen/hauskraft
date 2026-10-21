@@ -12,16 +12,16 @@ import uuid
 from collections.abc import Mapping
 from typing import Any
 
-from hearthos_sdk import Actor, PluginContext
-from hearthos_tasks import service
-from hearthos_tasks.models import Task
-from hearthos_tasks.schemas import TaskCreate, TaskPatch
+from hauskraft_sdk import Actor, PluginContext
+from hauskraft_tasks import service
+from hauskraft_tasks.models import Task
+from hauskraft_tasks.schemas import TaskCreate, TaskPatch
 
 SEED_NAMESPACE = uuid.UUID("6f1d3c1e-2b8a-5f0e-9c4d-7a1b2c3d4e5f")
 
 
 def seed_id(key: str) -> uuid.UUID:
-    return uuid.uuid5(SEED_NAMESPACE, f"org.hearthos.tasks/{key}")
+    return uuid.uuid5(SEED_NAMESPACE, f"dev.hauskraft.tasks/{key}")
 
 
 async def seed(ctx: PluginContext, fixture: Mapping[str, Any]) -> None:

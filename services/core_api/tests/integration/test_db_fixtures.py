@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
-"""M0S-E04-04: the shared database fixtures (pytest plugin ``hearthos_core.testing``).
+"""M0S-E04-04: the shared database fixtures (pytest plugin ``hauskraft_core.testing``).
 
 The two ordered tests prove isolation: what one test writes is gone in the next.
 """
@@ -8,8 +8,8 @@ import pytest
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from hearthos_core.db import migrations
-from hearthos_core.settings import Settings
+from hauskraft_core.db import migrations
+from hauskraft_core.settings import Settings
 
 pytestmark = pytest.mark.integration
 

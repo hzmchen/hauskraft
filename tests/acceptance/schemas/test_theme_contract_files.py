@@ -16,7 +16,7 @@ from _support.theme_contract import (
 )
 
 pytestmark = pytest.mark.story("M0S-E13-01")
-SCHEMA = "theme/hearthos.theme.schema.json"
+SCHEMA = "theme/hauskraft.theme.schema.json"
 EXPECTED = json.loads((FIXTURES / "themes" / "expected.json").read_text())["themes"]
 
 

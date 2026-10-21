@@ -18,8 +18,8 @@ from alembic.runtime.migration import MigrationContext
 from alembic.script import ScriptDirectory
 from sqlalchemy import Connection, MetaData, create_engine
 
-from hearthos_core.plugins.manifests import discover
-from hearthos_core.settings import Settings
+from hauskraft_core.plugins.manifests import discover
+from hauskraft_core.settings import Settings
 
 MIGRATIONS_DIR = Path(__file__).resolve().parents[3] / "migrations"
 CORE_VERSIONS = MIGRATIONS_DIR / "versions"
@@ -40,17 +40,17 @@ def target_metadata(settings: Settings) -> list[MetaData]:
     """Metadata compared by ``alembic check``: core tables plus every loaded plugin's own tables.
 
     Everything is copied into one MetaData, so plugin foreign keys to core tables resolve; tables a plugin
-    declares only as references (``info["hearthos_reference_only"]``) are left out.
+    declares only as references (``info["hauskraft_reference_only"]``) are left out.
     """
-    from hearthos_core.app import create_app
-    from hearthos_core.db import models  # noqa: F401 - registers the core tables on the metadata
-    from hearthos_core.db.base import metadata
-    from hearthos_core.plugins.loader import plugin_metadata
+    from hauskraft_core.app import create_app
+    from hauskraft_core.db import models  # noqa: F401 - registers the core tables on the metadata
+    from hauskraft_core.db.base import metadata
+    from hauskraft_core.plugins.loader import plugin_metadata
 
     combined = MetaData(naming_convention=metadata.naming_convention)
     for source in [metadata, *plugin_metadata(create_app(settings))]:
         for table in source.sorted_tables:
-            if not table.info.get("hearthos_reference_only") and table.key not in combined.tables:
+            if not table.info.get("hauskraft_reference_only") and table.key not in combined.tables:
                 table.to_metadata(combined)
     return [combined]
 

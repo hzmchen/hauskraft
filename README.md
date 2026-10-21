@@ -1,4 +1,4 @@
-# HearthOS
+# Hauskraft
 
 A Home Assistant–centred, plugin-first household cockpit: one themeable dashboard for a busy family, with governed AI help that prepares and drafts while people approve anything consequential. Self-hosted, local-first, open source.
 
@@ -8,7 +8,7 @@ A Home Assistant–centred, plugin-first household cockpit: one themeable dashbo
 
 | If you want to… | Read |
 |---|---|
-| Understand the product and architecture | [docs/spec/hearthos-spec-v0.2.md](docs/spec/hearthos-spec-v0.2.md) |
+| Understand the product and architecture | [docs/spec/hauskraft-spec-v0.2.md](docs/spec/hauskraft-spec-v0.2.md) |
 | See what M0\* delivers and in which order | [docs/backlog/m0-star/README.md](docs/backlog/m0-star/README.md) |
 | Implement a story (human or AI agent) | [AGENTS.md](AGENTS.md), then the story's epic file |
 | Run or extend the tests | [docs/testing/README.md](docs/testing/README.md) |

@@ -12,8 +12,8 @@ from sqlalchemy import CheckConstraint, DateTime, Enum, ForeignKey, Index, Strin
 from sqlalchemy.dialects.postgresql import INET, JSONB
 from sqlalchemy.orm import Mapped, mapped_column
 
-from hearthos_core.db.base import Base
-from hearthos_core.db.ids import new_id
+from hauskraft_core.db.base import Base
+from hauskraft_core.db.ids import new_id
 
 
 class UserRole(enum.StrEnum):

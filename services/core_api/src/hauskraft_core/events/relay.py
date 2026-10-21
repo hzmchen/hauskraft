@@ -15,13 +15,13 @@ import datetime as dt
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
-from hearthos_core.db.models import OutboxEvent
-from hearthos_core.logging import get_logger
+from hauskraft_core.db.models import OutboxEvent
+from hauskraft_core.logging import get_logger
 
 POLL_SECONDS = 2.0
 BATCH_SIZE = 100
 
-_log = get_logger("hearthos.events")
+_log = get_logger("hauskraft.events")
 
 
 async def publish_batch(sessions: async_sessionmaker[AsyncSession], batch_size: int = BATCH_SIZE) -> int:

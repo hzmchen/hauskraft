@@ -36,9 +36,9 @@ def _rules(source: str, as_path: str = PLUGIN_FILE) -> set[str]:
 @pytest.mark.parametrize(
     "module",
     [
-        "@hearthos/sdk-ts",
-        "@hearthos/ui",
-        "@hearthos/ui/widget",
+        "@hauskraft/sdk-ts",
+        "@hauskraft/ui",
+        "@hauskraft/ui/widget",
         "react",
         "react-dom/client",
         "react-i18next",

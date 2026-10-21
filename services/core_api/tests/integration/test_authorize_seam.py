@@ -6,11 +6,11 @@ from fastapi import APIRouter, Depends
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine, func, select, text
 
-from hearthos_core.app import create_app
-from hearthos_core.db.models import DeploymentSetting, OutboxEvent
-from hearthos_core.settings import Settings
-from hearthos_core.uow import UnitOfWork, unit_of_work
-from hearthos_sdk import Actor, ResourceRef
+from hauskraft_core.app import create_app
+from hauskraft_core.db.models import DeploymentSetting, OutboxEvent
+from hauskraft_core.settings import Settings
+from hauskraft_core.uow import UnitOfWork, unit_of_work
+from hauskraft_sdk import Actor, ResourceRef
 
 pytestmark = pytest.mark.integration
 ACTOR = Actor(id="0199f390-1111-7aaa-8bbb-cccccccccccc", role="adult", display_name="Probe")

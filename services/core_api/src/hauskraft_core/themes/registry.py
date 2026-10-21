@@ -17,17 +17,17 @@ from pydantic import BaseModel, ConfigDict
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from hearthos_core.db.models import DeploymentSetting
-from hearthos_core.health import register_check
-from hearthos_core.logging import get_logger
-from hearthos_core.plugins.manifests import DiscoveredManifest
-from hearthos_core.themes.model import ThemeReport
-from hearthos_core.themes.validate import validate_theme
+from hauskraft_core.db.models import DeploymentSetting
+from hauskraft_core.health import register_check
+from hauskraft_core.logging import get_logger
+from hauskraft_core.plugins.manifests import DiscoveredManifest
+from hauskraft_core.themes.model import ThemeReport
+from hauskraft_core.themes.validate import validate_theme
 
-BUILTIN_DEFAULT = "org.hearthos.theme.default"
+BUILTIN_DEFAULT = "dev.hauskraft.theme.default"
 THEME_SETTING = "theme_id"
 
-_log = get_logger("hearthos.themes")
+_log = get_logger("hauskraft.themes")
 
 
 class IssueOut(BaseModel):
@@ -152,7 +152,7 @@ def _author(author: Any) -> str:
 
 
 def _origin(found: DiscoveredManifest) -> Literal["builtin", "installed"]:
-    return "builtin" if found.folder.parent.name == "builtin" and found.id.startswith("org.hearthos.") else "installed"
+    return "builtin" if found.folder.parent.name == "builtin" and found.id.startswith("dev.hauskraft.") else "installed"
 
 
 def build_registry(found: Iterable[DiscoveredManifest], default_id: str = BUILTIN_DEFAULT) -> ThemeRegistry:

@@ -18,7 +18,7 @@ story = pytest.mark.story
 def test_root_agents_md_is_short_and_linked() -> None:
     text = require_text("AGENTS.md", "M0S-E12-01")
     assert len(text.splitlines()) < 300
-    for link in ("docs/spec/hearthos-spec-v0.2.md", "docs/backlog/m0-star/README.md", "docs/testing/README.md"):
+    for link in ("docs/spec/hauskraft-spec-v0.2.md", "docs/backlog/m0-star/README.md", "docs/testing/README.md"):
         assert link in text, f"AGENTS.md should link {link}"
     assert re.search(r"red", text, re.I) and re.search(r"green", text, re.I), "AGENTS.md must describe red/green TDD"
 
@@ -54,7 +54,7 @@ def test_adr_0013_fixes_theme_thresholds() -> None:
 
 # ---------------------------------------------------------------- M0S-E12-03
 MIT_PACKAGES = ["packages/sdk-py", "packages/sdk-ts", "packages/ui", "packages/schemas",
-                "plugins/official/tasks", "themes/template", "integrations/ha-hearthos"]
+                "plugins/official/tasks", "themes/template", "integrations/ha-hauskraft"]
 
 
 @story("M0S-E12-03")
@@ -116,5 +116,5 @@ def test_pull_request_template() -> None:
 
 @story("M0S-E12-03")
 def test_null_home_assistant_bridge() -> None:
-    text = require_text("services/core_api/src/hearthos_core/integrations/ha.py", "M0S-E12-03")
+    text = require_text("services/core_api/src/hauskraft_core/integrations/ha.py", "M0S-E12-03")
     assert "HomeAssistantBridge" in text and "class NullBridge" in text

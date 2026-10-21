@@ -2,12 +2,12 @@
 // Thin API helper for e2e setup and clean-up (login with CSRF, theme switching, tasks).
 import { request, type APIRequestContext } from "@playwright/test";
 
-export const BASE_URL = process.env.HEARTHOS_BASE_URL ?? "http://localhost:8080";
-export const PASSWORD = process.env.HEARTHOS_DEMO_PASSWORD ?? "hearthos-demo";
+export const BASE_URL = process.env.HAUSKRAFT_BASE_URL ?? "http://localhost:8080";
+export const PASSWORD = process.env.HAUSKRAFT_DEMO_PASSWORD ?? "hauskraft-demo";
 export const THEMES = {
-  default: "org.hearthos.theme.default",
-  paper: "org.hearthos.theme.paper",
-  hackspace: "org.hearthos.theme.hackspace",
+  default: "dev.hauskraft.theme.default",
+  paper: "dev.hauskraft.theme.paper",
+  hackspace: "dev.hauskraft.theme.hackspace",
 } as const;
 
 export class Api {

@@ -7,8 +7,8 @@ import {
   dashboardPutMutation,
   type DashboardCell,
   type PluginOut,
-} from "@hearthos/sdk-ts";
-import { Button } from "@hearthos/ui";
+} from "@hauskraft/sdk-ts";
+import { Button } from "@hauskraft/ui";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
 import { GridLayout, useContainerWidth } from "react-grid-layout";
@@ -130,7 +130,7 @@ function useGridMetrics(): GridMetrics {
     const observer = new MutationObserver(() => setMetrics(readGridMetrics(document.body)));
     observer.observe(document.documentElement, {
       attributes: true,
-      attributeFilter: ["data-hearth-theme", "data-hearth-density"],
+      attributeFilter: ["data-hauskraft-theme", "data-hauskraft-density"],
     });
     return () => observer.disconnect();
   }, []);

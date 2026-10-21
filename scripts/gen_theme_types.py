@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: MIT
 """Generate Python types from the theme contract (M0S-E13-01).
 
-python scripts/gen_theme_types.py           write packages/sdk-py/src/hearthos_sdk/theme_contract.py
+python scripts/gen_theme_types.py           write packages/sdk-py/src/hauskraft_sdk/theme_contract.py
 python scripts/gen_theme_types.py --check   exit 1 if the file is stale
 """
 
@@ -14,7 +14,7 @@ from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[1]
 THEME = REPO / "packages" / "schemas" / "theme"
-OUT = REPO / "packages" / "sdk-py" / "src" / "hearthos_sdk" / "theme_contract.py"
+OUT = REPO / "packages" / "sdk-py" / "src" / "hauskraft_sdk" / "theme_contract.py"
 
 
 def _read(name: str) -> dict[str, object]:

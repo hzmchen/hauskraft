@@ -5,13 +5,13 @@ from __future__ import annotations
 
 import uuid
 
-from hearthos_core.events.outbox import emit
-from hearthos_core.settings_store import repository
-from hearthos_core.themes.model import ThemeReport
-from hearthos_core.themes.registry import THEME_SETTING, ThemeRegistry
-from hearthos_core.uow import UnitOfWork
-from hearthos_sdk import Actor, ResourceRef
-from hearthos_sdk.errors import ConflictError, NotFoundError
+from hauskraft_core.events.outbox import emit
+from hauskraft_core.settings_store import repository
+from hauskraft_core.themes.model import ThemeReport
+from hauskraft_core.themes.registry import THEME_SETTING, ThemeRegistry
+from hauskraft_core.uow import UnitOfWork
+from hauskraft_sdk import Actor, ResourceRef
+from hauskraft_sdk.errors import ConflictError, NotFoundError
 
 
 class UnknownThemeError(NotFoundError):
@@ -29,7 +29,7 @@ class ThemeInvalidError(ConflictError):
 
 
 async def set_theme(uow: UnitOfWork, actor: Actor, registry: ThemeRegistry, theme_id: str) -> ThemeReport:
-    """Make ``theme_id`` the household theme; emits ``hearthos.settings.theme_changed`` ``{from, to}``."""
+    """Make ``theme_id`` the household theme; emits ``hauskraft.settings.theme_changed`` ``{from, to}``."""
     await uow.authorize(
         actor, "settings.theme.set", ResourceRef("DeploymentSetting", THEME_SETTING), "household", "settings:write"
     )
@@ -45,7 +45,7 @@ async def set_theme(uow: UnitOfWork, actor: Actor, registry: ThemeRegistry, them
     updated_by = uuid.UUID(actor.id) if actor.kind == "user" else None
     await repository.upsert(uow.session, THEME_SETTING, theme_id, updated_by)
     await emit(
-        "hearthos.settings.theme_changed",
+        "hauskraft.settings.theme_changed",
         f"settings/{THEME_SETTING}",
         {"from": previous.theme_id if previous else registry.default_id, "to": theme_id},
         "household",

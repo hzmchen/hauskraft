@@ -16,12 +16,12 @@ from typing import Any
 from fastapi.encoders import jsonable_encoder
 from pydantic import BaseModel
 
-from hearthos_core import schemas
-from hearthos_core.db.ids import new_id
-from hearthos_core.db.models import OutboxEvent
-from hearthos_core.uow import current_uow
-from hearthos_sdk import DataClass
-from hearthos_sdk.events import CORE_SOURCE, data_schema_url
+from hauskraft_core import schemas
+from hauskraft_core.db.ids import new_id
+from hauskraft_core.db.models import OutboxEvent
+from hauskraft_core.uow import current_uow
+from hauskraft_sdk import DataClass
+from hauskraft_sdk.events import CORE_SOURCE, data_schema_url
 
 ENVELOPE_SCHEMA = "events/cloudevent.schema.json"
 
@@ -31,11 +31,11 @@ class OutsideUnitOfWorkError(RuntimeError):
 
 
 class EventValidationError(ValueError):
-    """An event does not match its schema (only checked when ``HEARTHOS_VALIDATE_EVENTS`` is on)."""
+    """An event does not match its schema (only checked when ``HAUSKRAFT_VALIDATE_EVENTS`` is on)."""
 
 
 def _data_schema(event_type: str) -> str:
-    return f"events/{event_type.removeprefix('hearthos.')}.data.schema.json"
+    return f"events/{event_type.removeprefix('hauskraft.')}.data.schema.json"
 
 
 def _json(data: Any) -> Any:

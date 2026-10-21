@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
-"""Core's implementation of ``hearthos_sdk.PluginContext`` (M0S-E06-03).
+"""Core's implementation of ``hauskraft_sdk.PluginContext`` (M0S-E06-03).
 
 ``emit`` uses the plugin id as CloudEvents ``source``. Using a capability or data class the manifest did not
 declare logs a ``governance.undeclared`` warning; M0* records but does not enforce (spec §5.4, §5.5).
@@ -14,23 +14,23 @@ from typing import TYPE_CHECKING, Any
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from hearthos_core.auth.deps import current_actor
-from hearthos_core.events import outbox
-from hearthos_core.logging import get_logger
-from hearthos_core.uow import UnitOfWork, current_uow
-from hearthos_sdk import Actor, DataClass, ResourceRef
-from hearthos_sdk.errors import PolicyDeniedError
+from hauskraft_core.auth.deps import current_actor
+from hauskraft_core.events import outbox
+from hauskraft_core.logging import get_logger
+from hauskraft_core.uow import UnitOfWork, current_uow
+from hauskraft_sdk import Actor, DataClass, ResourceRef
+from hauskraft_sdk.errors import PolicyDeniedError
 
 if TYPE_CHECKING:
     from fastapi import FastAPI
 
-_governance = get_logger("hearthos.governance")
+_governance = get_logger("hauskraft.governance")
 
 
 class CorePluginContext:
     def __init__(self, plugin_id: str, manifest: Mapping[str, Any], app: FastAPI) -> None:
         self.plugin_id = plugin_id
-        self.logger = logging.getLogger(f"hearthos.plugin.{plugin_id}")
+        self.logger = logging.getLogger(f"hauskraft.plugin.{plugin_id}")
         self.config: Mapping[str, Any] = {}
         self._manifest = manifest
         self._app = app

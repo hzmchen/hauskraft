@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://hearthos.dev/schema/theme/1.0.json",
+  "$id": "https://hauskraft.dev/schema/theme/1.0.json",
   "$comment": "SPDX-License-Identifier: MIT",
-  "title": "HearthOS theme definition (theme.json)",
+  "title": "Hauskraft theme definition (theme.json)",
   "description": "Theme API 1.0 (spec §10.2.4). Themes are data only: every object is closed, so unknown keys (including any css, script, html or style key outside the defined font and checkbox styles) are rejected, as are remote or absolute asset paths and '..'. Enums mirror layout-options-v1.json; limits follow ADR-0013.",
   "type": "object",
   "additionalProperties": false,

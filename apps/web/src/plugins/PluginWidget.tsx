@@ -2,8 +2,8 @@
 // Renders one plugin widget (M0S-E06-06): only if the plugin is in the build-time registry and enabled
 // (GET /plugins), inside a WidgetFrame, a Suspense boundary and an error boundary. Anything else shows
 // the "Widget unavailable" card instead of breaking the dashboard.
-import type { PluginWebModule } from "@hearthos/sdk-ts";
-import { Icon, WidgetFrame } from "@hearthos/ui";
+import type { PluginWebModule } from "@hauskraft/sdk-ts";
+import { Icon, WidgetFrame } from "@hauskraft/ui";
 import { Component, Suspense, use, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 

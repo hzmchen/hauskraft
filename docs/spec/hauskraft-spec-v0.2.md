@@ -1,4 +1,4 @@
-# HearthOS Specification v0.2
+# Hauskraft Specification v0.2
 
 **A Home Assistant–centred, plugin-first household cockpit**
 
@@ -10,7 +10,7 @@
 | Name | Hauskraft, formerly HearthOS (D10, ADR 0015) |
 | Companion docs | `docs/backlog/m0-star/` (M0* backlog), `docs/adr/` (decisions) |
 
-**Bottom line.** HearthOS is an AGPL-3.0, Python-backend / TypeScript-frontend standalone web app. Home Assistant (HA) is the event bus and device layer. Every household domain is a plugin that wraps an existing tool through MCP or REST, or a native module where no tool exists. All agent actions pass through one governed tool gateway (default-deny writes, human approval, spend limits, data-class routing). The dashboard is themeable: themes change how it looks, never what it does. Native code is written only where the ecosystem has real gaps: the German rental/Nebenkosten workflow, a cross-domain household graph and deadline engine, the approval inbox, the theming system and the cockpit UI itself.
+**Bottom line.** Hauskraft is an AGPL-3.0, Python-backend / TypeScript-frontend standalone web app. Home Assistant (HA) is the event bus and device layer. Every household domain is a plugin that wraps an existing tool through MCP or REST, or a native module where no tool exists. All agent actions pass through one governed tool gateway (default-deny writes, human approval, spend limits, data-class routing). The dashboard is themeable: themes change how it looks, never what it does. Native code is written only where the ecosystem has real gaps: the German rental/Nebenkosten workflow, a cross-domain household graph and deadline engine, the approval inbox, the theming system and the cockpit UI itself.
 
 ---
 
@@ -112,7 +112,7 @@ M0* creates the full role enum but enables only `adult`. Cockpit identity is loc
 │ SOPS/age or OpenBao/Vault                                         │
 └──────────────────────────────────────────────────────────────────┘
    ▲ MCP/REST                         ▲ WebSocket/REST/MCP
- Domain tools (Mealie, Grocy, Actual,  Home Assistant + hearthos
+ Domain tools (Mealie, Grocy, Actual,  Home Assistant + hauskraft
  Paperless, Vikunja, Donetick, …)      custom integration
 ```
 
@@ -124,10 +124,10 @@ M0* creates the full role enum but enables only `adult`. Cockpit identity is loc
 - `tool-gateway`: single choke point for every tool call by agents, workflows or UI automations: policy, audit, verification.
 - `llm-router`: LiteLLM proxy with per-data-class model groups.
 - `ha-bridge`: persistent HA WebSocket subscription, entity cache, event fan-out, service-call client.
-- `hearthos` HA custom integration (Python, separate repo or `integrations/`): exposes cockpit entities/services/events and an LLM API back into HA.
+- `hauskraft` HA custom integration (Python, separate repo or `integrations/`): exposes cockpit entities/services/events and an LLM API back into HA.
 
 ### 3.2 Internal event bus
-Postgres `LISTEN/NOTIFY` plus an outbox table in v1 (NATS optional later). Envelope: CloudEvents 1.0 structured JSON with `type` like `hearthos.lease.rent_missing`, `source` = plugin id, `subject` = graph node id, and two HearthOS extension attributes:
+Postgres `LISTEN/NOTIFY` plus an outbox table in v1 (NATS optional later). Envelope: CloudEvents 1.0 structured JSON with `type` like `hauskraft.lease.rent_missing`, `source` = plugin id, `subject` = graph node id, and two Hauskraft extension attributes:
 - `dataclass`: the event's data class (spelled without underscore because CloudEvents attribute names may contain only lower-case letters and digits),
 - `actorid`: the acting user or agent.
 
@@ -159,13 +159,13 @@ JSON bodies, DB columns and manifests keep the readable `data_class`. HA events 
 
 **Backend.** Python 3.13, FastAPI, SQLAlchemy 2 + Alembic, Pydantic v2, DBOS, Pydantic AI, LiteLLM proxy, MCP Python SDK.
 
-**Frontend.** React 19 + Vite + TypeScript, TanStack Router/Query, shadcn/ui (Radix + Tailwind v4) packaged as `@hearthos/ui`, react-grid-layout, Workbox PWA (later), `home-assistant-js-websocket` for direct entity subscriptions (M1+). React over SvelteKit for agent-implementability: coding agents have the deepest React/shadcn corpus, shadcn's CSS-variable theming maps directly onto theme tokens, and MCP Apps examples are predominantly React/iframe-based. SvelteKit remains the credible alternative.
+**Frontend.** React 19 + Vite + TypeScript, TanStack Router/Query, shadcn/ui (Radix + Tailwind v4) packaged as `@hauskraft/ui`, react-grid-layout, Workbox PWA (later), `home-assistant-js-websocket` for direct entity subscriptions (M1+). React over SvelteKit for agent-implementability: coding agents have the deepest React/shadcn corpus, shadcn's CSS-variable theming maps directly onto theme tokens, and MCP Apps examples are predominantly React/iframe-based. SvelteKit remains the credible alternative.
 
 **Why DBOS as core engine.** DBOS is a library, not a cluster; its system database can be Postgres or SQLite, Pydantic AI integrates it natively, and its durable `recv/send` maps directly to "wait for approval". Temporal is the power-user upgrade path. **n8n remains a supported plugin** (trigger n8n workflows as tools, receive webhooks) but not the governed spine, because of its fair-code licence and separate auth model.
 
 **Policy engine.** Cedar (Apache-2.0, typed schema, analysable, embeddable via `cedarpy`) over OPA/Rego: household policies are small, role- and attribute-based, and benefit from schema validation.
 
-**MCP gateway choice.** Implement a thin **HearthOS gateway** in Python, since it must understand data classes, household roles, spend and approvals. Keep wire compatibility so users can front it with agentgateway or IBM ContextForge for federation. Portero's allow/deny/require-approval model is the conceptual template.
+**MCP gateway choice.** Implement a thin **Hauskraft gateway** in Python, since it must understand data classes, household roles, spend and approvals. Keep wire compatibility so users can front it with agentgateway or IBM ContextForge for federation. Portero's allow/deny/require-approval model is the conceptual template.
 
 ### 4.2 Licences
 
@@ -175,7 +175,7 @@ JSON bodies, DB columns and manifests keep the readable `data_class`. HA events 
 | Plugin-facing packages | `packages/sdk-py`, `packages/sdk-ts`, `packages/ui`, `packages/schemas` | **MIT** | Plugins import these. An AGPL SDK would arguably make every plugin AGPL. |
 | Official plugins | `plugins/official/*` | **MIT** | Reference implementations people copy. |
 | Built-in themes | `themes/builtin/*` | **MIT** (theme data); bundled fonts **OFL-1.1**; icon packs under their own permissive licences (e.g. Lucide ISC, Pixelarticons MIT) | Copyable starting points for theme authors. |
-| HA custom integration | `integrations/ha-hearthos` | **MIT** | Plugin-facing; HA custom integrations may use any licence. |
+| HA custom integration | `integrations/ha-hauskraft` | **MIT** | Plugin-facing; HA custom integrations may use any licence. |
 | Acceptance suite, scripts, docs | `tests/`, `scripts/`, `docs/` | **MIT** | Reusable by plugin and theme authors. |
 | Third-party plugins and themes | elsewhere | Author's choice | — |
 
@@ -183,7 +183,7 @@ JSON bodies, DB columns and manifests keep the readable `data_class`. HA events 
 
 **Licence boundary (normative)**
 - Out-of-process plugins (container, subprocess, WASM) and declarative themes are separate works and may use any licence.
-- In-process plugins may import only the MIT packages (`hearthos_sdk`, `@hearthos/sdk-ts`, `@hearthos/ui`), never core internals (lint-enforced). MIT code combines with the AGPL core without conflict, so official in-process plugins are fine. Whether a closed-source third-party plugin may run in-process is legally unsettled; the project recommends out-of-process runtimes for non-open plugins and documents this in `LICENSING.md`.
+- In-process plugins may import only the MIT packages (`hauskraft_sdk`, `@hauskraft/sdk-ts`, `@hauskraft/ui`), never core internals (lint-enforced). MIT code combines with the AGPL core without conflict, so official in-process plugins are fine. Whether a closed-source third-party plugin may run in-process is legally unsettled; the project recommends out-of-process runtimes for non-open plugins and documents this in `LICENSING.md`.
 - Widgets in sandboxed iframes are separate works. Plugin web code bundled into the core SPA build is distributed as part of the AGPL web app while keeping its own MIT licence.
 - Contributions use DCO sign-off, no CLA. REUSE-compliant SPDX headers everywhere. This is not legal advice.
 
@@ -191,7 +191,7 @@ JSON bodies, DB columns and manifests keep the readable `data_class`. HA events 
 
 ### 5.1 Lessons applied
 - **HA integrations:** declarative `manifest.json`, UI config/options flows, diagnostics, quality scale.
-- **VS Code / Backstage / Grafana:** typed, lazy-loaded *contribution points*; VS Code colour themes are a contribution type, which HearthOS mirrors with `contributes.themes`.
+- **VS Code / Backstage / Grafana:** typed, lazy-loaded *contribution points*; VS Code colour themes are a contribution type, which Hauskraft mirrors with `contributes.themes`.
 - **Browser extensions / Deno:** explicit permission lists shown at install, revocable.
 - **Obsidian / WordPress:** cautionary. Full-access in-process plugins and code-carrying themes produce supply-chain risk (cf. ClawHub). Default to out-of-process; themes are data only.
 - **MCP:** tools/resources/prompts as the universal agent contract. MCP Apps (SEP-1865, extension id `io.modelcontextprotocol/ui`, stable 2026-01-26) defines `ui://` resources rendered in mandatory sandboxed iframes and lets the host pass its theme and CSS variables to the view; adopted as the third-party widget contract.
@@ -207,11 +207,11 @@ JSON bodies, DB columns and manifests keep the readable `data_class`. HA events 
 | `workflow` | Durable workflow | DBOS via SDK | `rent-reconciliation` |
 | `widget` | UI card/page | Bundled component (first-party) or sandboxed iframe (MCP Apps) | `rent-status-card` |
 | `bridge` | HA or channel bridge | Python | `signal-notify` |
-| `theme` | Visual theme for the whole cockpit (§10.2) | **Declarative only** (data + assets, no code) | `org.hearthos.theme.hackspace` |
+| `theme` | Visual theme for the whole cockpit (§10.2) | **Declarative only** (data + assets, no code) | `dev.hauskraft.theme.hackspace` |
 
-### 5.3 Manifest schema (`hearthos.plugin.json`, JSON Schema 2020-12)
+### 5.3 Manifest schema (`hauskraft.plugin.json`, JSON Schema 2020-12)
 
-Required: `id` (reverse-DNS), `name`, `version` (SemVer), `type[]`, `hearthos_api` (semver range), `license` (SPDX), `authors[]`, `source`, `runtime` `{kind: container|subprocess|wasm|inprocess|declarative, …}`, `capabilities`, `data_classes` `{reads, writes, emits}`.
+Required: `id` (reverse-DNS), `name`, `version` (SemVer), `type[]`, `hauskraft_api` (semver range), `license` (SPDX), `authors[]`, `source`, `runtime` `{kind: container|subprocess|wasm|inprocess|declarative, …}`, `capabilities`, `data_classes` `{reads, writes, emits}`.
 
 Optional:
 - `config_schema` (rendered as a config flow) plus separately declared `secrets[]`.
@@ -251,22 +251,22 @@ Isolation tiers (default = most isolated that works):
 - **Registry:** Git-based index of manifests + digests with tiers `official`, `verified` (reviewed, signed, conformance CI), `community` (author-signed, install warning). Remote MCP servers registered by URL with OAuth metadata. Themes are listed in the same registry.
 - **Signing:** Sigstore keyless for images, WASM and theme archives; Minisign offline. Unsigned artifacts refused unless the owner enables developer mode. (Not in M0*: local folders only.)
 - **Versioning:** SemVer'd plugin API and theme schema; deprecations announced two minor versions ahead.
-- **Testing:** `hearthos-plugin-kit` (pip + npm) with mock core, recorded HA fixture, MCP conformance tests (schemas, annotations, verify hooks), widget sandbox runner and a CI action. Connectors ship a docker-compose fixture of their upstream tool. Themes are tested with `hearthos themes validate` plus the function-invariance suite (§10.2.2).
+- **Testing:** `hauskraft-plugin-kit` (pip + npm) with mock core, recorded HA fixture, MCP conformance tests (schemas, annotations, verify hooks), widget sandbox runner and a CI action. Connectors ship a docker-compose fixture of their upstream tool. Themes are tested with `hauskraft themes validate` plus the function-invariance suite (§10.2.2).
 
 ### 5.8 Example manifest (connector)
 
 ```json
 {
-  "$schema": "https://hearthos.dev/schema/plugin/1.0.json",
-  "id": "org.hearthos.connector.paperless",
+  "$schema": "https://hauskraft.dev/schema/plugin/1.0.json",
+  "id": "dev.hauskraft.connector.paperless",
   "name": "Paperless-ngx",
   "version": "0.3.0",
   "type": ["connector", "widget"],
-  "hearthos_api": ">=1.0 <2.0",
+  "hauskraft_api": ">=1.0 <2.0",
   "license": "MIT",
-  "authors": [{ "name": "HearthOS contributors" }],
-  "source": "https://github.com/hearthos/plugin-paperless",
-  "runtime": { "kind": "container", "image": "ghcr.io/hearthos/plugin-paperless", "digest": "sha256:…" },
+  "authors": [{ "name": "Hauskraft contributors" }],
+  "source": "https://github.com/hzmchen/plugin-paperless",
+  "runtime": { "kind": "container", "image": "ghcr.io/hauskraft/plugin-paperless", "digest": "sha256:…" },
   "config_schema": { "type": "object", "required": ["base_url"],
     "properties": { "base_url": { "type": "string", "format": "uri" } } },
   "secrets": ["paperless_api_token"],
@@ -274,7 +274,7 @@ Isolation tiers (default = most isolated that works):
     "graph:read:Property", "llm:invoke:financial", "notify:inbox"],
   "data_classes": { "reads": ["financial", "tenant", "health"], "writes": ["financial"],
     "emits": ["financial", "tenant", "health"] },
-  "subscribes": ["hearthos.deadline.created"],
+  "subscribes": ["hauskraft.deadline.created"],
   "contributes": {
     "tools": [
       { "name": "paperless.search", "annotations": { "read_only": true, "open_world": false } },
@@ -325,26 +325,26 @@ Status as of October 2026. "Official" means published by the tool's own maintain
 - **Focalboard** standalone is unmaintained: excluded.
 - **Maybe Finance** is archived; its fork **Sure** is active but US-oriented (second tier).
 - **GoCardless Bank Account Data** stopped accepting new signups (Actual's docs: from July 2025); new installs use Enable Banking or FinTS.
-- **FinTS** requires a free **product registration** with Die Deutsche Kreditwirtschaft. HearthOS does *not* ship a shared product ID; the user registers, the setup wizard explains it; read-only, no payment initiation.
+- **FinTS** requires a free **product registration** with Die Deutsche Kreditwirtschaft. Hauskraft does *not* ship a shared product ID; the user registers, the setup wizard explains it; read-only, no payment initiation.
 
 ## 7. Home Assistant integration specification (two-way, M1+)
 
 ### 7.1 Cockpit consumes HA (`ha-bridge`)
 - **Transport:** HA WebSocket API (`subscribe_events`/`subscribe_entities`, `call_service`, `get_states`, registries); REST only for history/statistics bulk reads.
-- **Auth:** dedicated HA **non-admin user** "hearthos" with a long-lived token in the secret store; admin token opt-in only for registry writes. The PWA may hold the user's own HA OAuth token for direct subscriptions to entities they may see.
+- **Auth:** dedicated HA **non-admin user** "hauskraft" with a long-lived token in the secret store; admin token opt-in only for registry writes. The PWA may hold the user's own HA OAuth token for direct subscriptions to entities they may see.
 - **Consumed surfaces:** entities/areas/floors/labels (→ graph `Place`, `Asset`), `todo.*`, `calendar.*`, `notify.*` and mobile-app actionable notifications, `event` entities, `person.*`, Energy/statistics, Assist (`conversation.process`).
 - **HA MCP Server:** the agent reaches HA's official MCP Server through the gateway for device control; HA's exposed-entity scoping remains, cockpit policy adds a layer.
 - **M0*:** only a `HomeAssistantBridge` protocol with a `NullBridge` (no network).
 
-### 7.2 Cockpit exposes to HA (`hearthos` custom integration, HACS, MIT)
+### 7.2 Cockpit exposes to HA (`hauskraft` custom integration, HACS, MIT)
 - **Config flow:** URL + OAuth client (cockpit as provider) or API key; options flow selects domains to publish.
-- **Entities:** `sensor.hearthos_pending_approvals`, `sensor.hearthos_next_deadline`, `sensor.hearthos_rent_status_<unit>`, `sensor.hearthos_budget_<category>_remaining`, `binary_sensor.hearthos_agent_healthy`, `todo.hearthos_<list>`, `calendar.hearthos_deadlines`, `event.hearthos_*`.
-- **Actions:** `hearthos.approve` / `hearthos.reject`, `hearthos.run_workflow`, `hearthos.ask`, `hearthos.log_meter_reading`, `hearthos.add_to_cart_proposal`.
+- **Entities:** `sensor.hauskraft_pending_approvals`, `sensor.hauskraft_next_deadline`, `sensor.hauskraft_rent_status_<unit>`, `sensor.hauskraft_budget_<category>_remaining`, `binary_sensor.hauskraft_agent_healthy`, `todo.hauskraft_<list>`, `calendar.hauskraft_deadlines`, `event.hauskraft_*`.
+- **Actions:** `hauskraft.approve` / `hauskraft.reject`, `hauskraft.run_workflow`, `hauskraft.ask`, `hauskraft.log_meter_reading`, `hauskraft.add_to_cart_proposal`.
 - **Actionable approvals:** pushed via the HA mobile app with APPROVE/REJECT; the integration handles `mobile_app_notification_action` and calls back. The responding HA user must map to a cockpit role with sufficient rights; out-of-band PIN confirmation above a configurable amount.
-- **LLM API registration:** register a HearthOS LLM API via `llm.async_register_api` and contribute tools through an `llm.py` platform, using HA 2026.10's `llm.ToolResult` with declared `integration` and `llm.ToolAnnotations`. HA serves every registered LLM API over its MCP Server. **Only read-only and proposal tools are exposed this way**; write tools stay behind the HearthOS gateway so policy cannot be bypassed via HA.
+- **LLM API registration:** register a Hauskraft LLM API via `llm.async_register_api` and contribute tools through an `llm.py` platform, using HA 2026.10's `llm.ToolResult` with declared `integration` and `llm.ToolAnnotations`. HA serves every registered LLM API over its MCP Server. **Only read-only and proposal tools are exposed this way**; write tools stay behind the Hauskraft gateway so policy cannot be bypassed via HA.
 
 ### 7.3 Direction-of-truth rules
-HA is truth for device state, presence and energy. The cockpit is truth for approvals, deadlines, rentals, graph, dashboards and theme, mirrored into HA as entities where useful. HA todo lists from other integrations (Picnic cart, Mealie list) are linked, not duplicated. HA frontend themes and HearthOS themes are independent; an HA-theme importer is a possible later tool (§14).
+HA is truth for device state, presence and energy. The cockpit is truth for approvals, deadlines, rentals, graph, dashboards and theme, mirrored into HA as entities where useful. HA todo lists from other integrations (Picnic cart, Mealie list) are linked, not duplicated. HA frontend themes and Hauskraft themes are independent; an HA-theme importer is a possible later tool (§14).
 
 ## 8. Agent harness and governance specification (M1+)
 
@@ -358,7 +358,7 @@ HA is truth for device state, presence and energy. The cockpit is truth for appr
 | `briefer` | Summaries | Typed data only | Read tools |
 | `concierge` | Chat/voice front door | Own user's text | Delegates to planner |
 
-This is a CaMeL-style split: control flow is separated from data flow so untrusted data cannot alter program flow (Debenedetti et al., "Defeating Prompt Injections by Design", arXiv:2503.18813 / IEEE SaTML 2026). HearthOS uses **plan-then-execute + dual-LLM** by default and **action-selector** for kids/voice, drawn from Beurer-Kellner et al., "Design Patterns for Securing LLM Agents against Prompt Injections" (arXiv:2506.08837, 2025).
+This is a CaMeL-style split: control flow is separated from data flow so untrusted data cannot alter program flow (Debenedetti et al., "Defeating Prompt Injections by Design", arXiv:2503.18813 / IEEE SaTML 2026). Hauskraft uses **plan-then-execute + dual-LLM** by default and **action-selector** for kids/voice, drawn from Beurer-Kellner et al., "Design Patterns for Securing LLM Agents against Prompt Injections" (arXiv:2506.08837, 2025).
 
 ### 8.2 Tool access
 Agents get only an MCP client pointed at the gateway, which lists tools filtered by `{agent, acting_user.role, data_class ceiling, time window}`. Pydantic AI's deferred tools / `ApprovalRequiredToolset` surface approval-required calls as `DeferredToolRequests`; workflows persist them and wait durably (DBOS `recv`). Arguments are validated *before* approval, so malformed calls never reach a human.
@@ -412,20 +412,20 @@ SOPS+age for small installs, OpenBao/Vault optional; plugins get only declared s
 ### 9.1 Core entities (household graph)
 `Person`, `Role`, `Contact` (vCard), `Place` (↔ HA areas), `Property`, `Unit`, `Asset`, `Document`, `Event` (iCal), `Task`, `Project`, `Transaction`, `Account`, `Contract`, `Lease`, `Tenancy` (Person×Unit×period), `RentExpectation`, `MeterPoint`, `MeterReading`, `CostItem` (BetrKV category, allocation key), `Statement`, `Ticket`, `Contractor`, `Deadline`, `Approval`, `Milestone`.
 
-Typed edges: `owns`, `located_in`, `about`, `evidences`, `pays`, `party_to`, `assigned_to`, `due_for`, `measured_by`. Storage: Postgres tables per core type plus a generic `edge` table. JSON-LD export uses schema.org where it fits (Person, Place, Residence, Product, DigitalDocument, Event, Invoice, MonetaryAmount) and a `hearthos:` vocabulary for the rest (Lease, CostAllocationKey, BetrKVCategory).
+Typed edges: `owns`, `located_in`, `about`, `evidences`, `pays`, `party_to`, `assigned_to`, `due_for`, `measured_by`. Storage: Postgres tables per core type plus a generic `edge` table. JSON-LD export uses schema.org where it fits (Person, Place, Residence, Product, DigitalDocument, Event, Invoice, MonetaryAmount) and a `hauskraft:` vocabulary for the rest (Lease, CostAllocationKey, BetrKVCategory).
 
 Configuration entities (not part of the graph): `DeploymentSetting` (key/value, e.g. `theme_id`), `DashboardLayout` (per user), `PluginRecord`, `ThemeRecord` (discovered theme packages and validation results).
 
 ### 9.2 System of record vs cache
 - **External SoR:** store `external_ref {plugin, id, etag, synced_at}` plus a minimal projection for search/joins; scheduled pull + webhooks; writes go to the SoR via tools, then re-sync.
 - **Cockpit SoR:** native tasks, rentals, deadlines, graph edges, PRM extras, milestones, approvals, audit, deployment settings, dashboard layouts.
-- **Conflict rule:** SoR wins; projections are rebuildable (`hearthos reindex <plugin>`).
+- **Conflict rule:** SoR wins; projections are rebuildable (`hauskraft reindex <plugin>`).
 
 ### 9.3 Search/RAG
 Hybrid Postgres full-text + pgvector (sqlite-vec on the add-on tier) with local embeddings on M/L tiers. Chunks inherit data class; retrieval filters by the requester's role **before** ranking; `child/health/tenant` embeddings are generated locally only.
 
 ### 9.4 Backup/export
-`hearthos backup` dumps Postgres + object store + config + installed theme packages (age-encrypted) and lists external tools needing their own backups. Exports: JSON-LD, ICS, vCard, CSV (rent ledger), PDF (statements), and a one-click per-tenant GDPR Art. 15 export.
+`hauskraft backup` dumps Postgres + object store + config + installed theme packages (age-encrypted) and lists external tools needing their own backups. Exports: JSON-LD, ICS, vCard, CSV (rent ledger), PDF (statements), and a one-click per-tenant GDPR Art. 15 export.
 
 ## 10. Dashboard and UI specification
 
@@ -439,7 +439,7 @@ Hybrid Postgres full-text + pgvector (sqlite-vec on the add-on tier) with local 
 | Level | A theme may change | Notes |
 |---|---|---|
 | **A. Tokens** | Colours (semantic roles), typography (families, scale, weights, line heights), shape (radius scale), spacing scale, elevation (shadows), motion durations, focus ring, app background (colour, gradient or bundled image) | Light and dark token sets are both required |
-| **B. Component styles** | Widget chrome (`flat` · `outlined` · `elevated` · `tinted`), widget header (`inline` · `banner`), primary button style (`solid` · `soft` · `outline`), checkbox style (`square` · `round`), icon pack, empty-state illustrations | Fixed enums; the shell maps them to `@hearthos/ui` variants |
+| **B. Component styles** | Widget chrome (`flat` · `outlined` · `elevated` · `tinted`), widget header (`inline` · `banner`), primary button style (`solid` · `soft` · `outline`), checkbox style (`square` · `round`), icon pack, empty-state illustrations | Fixed enums; the shell maps them to `@hauskraft/ui` variants |
 | **C. Layout (limited)** | Navigation style on wide screens (`sidebar` · `topbar`), on narrow screens (`bottom-tabs` · `drawer`); density (`compact` · `comfortable` · `spacious`); content width (`full` · `contained`) | Grid stays 12 columns so saved layouts remain valid; density changes spacing, control size, grid row height and gutters only |
 | **D. Custom CSS or scripts** | **Not allowed** | Revisit later; would need sandboxing and review |
 
@@ -453,7 +453,7 @@ Enforcement:
 4. **Readability is function.** A control nobody can read is effectively hidden, so required contrast pairs are hard requirements (§10.2.5): a theme that fails them is rejected, not just warned about.
 
 #### 10.2.3 Scope of a theme
-- **One active theme per deployment.** Everyone sees the same theme on every device. Stored in `deployment_settings.theme_id`; the default comes from `HEARTHOS_DEFAULT_THEME` (falls back to the built-in default theme).
+- **One active theme per deployment.** Everyone sees the same theme on every device. Stored in `deployment_settings.theme_id`; the default comes from `HAUSKRAFT_DEFAULT_THEME` (falls back to the built-in default theme).
 - **Who switches it:** any adult in M0*; `owner` only once RBAC lands (policy rule 7, §8.3).
 - **Colour mode is per device.** Each device chooses `system` (default), `light` or `dark`, stored in that browser. A wall tablet can go dark at night while a phone stays light; both use the same theme.
 - **Later (not v0.2):** per-user or per-device theme overrides, with precedence device > user > deployment.
@@ -463,8 +463,8 @@ A theme is a plugin of type `theme` (§5.3). It contains no code.
 
 ```text
 hackspace/
-  hearthos.plugin.json        # type ["theme"], runtime.kind "declarative"
-  theme.json                  # HearthOS theme definition (schema below)
+  hauskraft.plugin.json        # type ["theme"], runtime.kind "declarative"
+  theme.json                  # Hauskraft theme definition (schema below)
   tokens.light.json           # DTCG 2025.10 design tokens, light mode
   tokens.dark.json            # DTCG 2025.10 design tokens, dark mode
   assets/fonts/*.woff2        # self-hosted fonts only
@@ -473,21 +473,21 @@ hackspace/
   LICENSE  LICENSES/          # theme licence + font/icon licences
 ```
 
-Token files use the Design Tokens Community Group format, whose first stable version (2025.10) was published in October 2025, so themes can come out of Figma, Tokens Studio or Penpot pipelines. HearthOS defines which semantic token names must exist (§10.2.5). Light and dark are two files so the loader does not depend on any optional DTCG module.
+Token files use the Design Tokens Community Group format, whose first stable version (2025.10) was published in October 2025, so themes can come out of Figma, Tokens Studio or Penpot pipelines. Hauskraft defines which semantic token names must exist (§10.2.5). Light and dark are two files so the loader does not depend on any optional DTCG module.
 
-`hearthos.plugin.json`:
+`hauskraft.plugin.json`:
 
 ```json
 {
-  "$schema": "https://hearthos.dev/schema/plugin/1.0.json",
-  "id": "org.hearthos.theme.hackspace",
+  "$schema": "https://hauskraft.dev/schema/plugin/1.0.json",
+  "id": "dev.hauskraft.theme.hackspace",
   "name": "Hackspace",
   "version": "0.1.0",
   "type": ["theme"],
-  "hearthos_api": "^0.1.0",
+  "hauskraft_api": "^0.1.0",
   "license": "MIT",
-  "authors": [{ "name": "HearthOS contributors" }],
-  "source": "https://github.com/hearthos/hearthos/tree/main/themes/builtin/hackspace",
+  "authors": [{ "name": "Hauskraft contributors" }],
+  "source": "https://github.com/hzmchen/hauskraft/tree/main/themes/builtin/hackspace",
   "runtime": { "kind": "declarative" },
   "capabilities": [],
   "data_classes": { "reads": [], "writes": [], "emits": [] },
@@ -499,7 +499,7 @@ Token files use the Design Tokens Community Group format, whose first stable ver
 
 ```json
 {
-  "$schema": "https://hearthos.dev/schema/theme/1.0.json",
+  "$schema": "https://hauskraft.dev/schema/theme/1.0.json",
   "theme_api": "1.0",
   "name": "Hackspace",
   "description": "Basement hackerspace look: near-black, phosphor green, monospace, pixel icons. Dark is its home turf.",
@@ -540,7 +540,7 @@ Token files use the Design Tokens Community Group format, whose first stable ver
 | Elevation | `shadow.sm`, `shadow.md`, `shadow.lg` |
 | Motion | `duration.fast`, `duration.normal`, `easing.standard` (always reduced to 0 under `prefers-reduced-motion`) |
 
-Compilation: tokens become CSS custom properties `--hearth-<group>-<name>` and are aliased to the variable names shadcn/ui expects (`--background`, `--primary`, `--radius`, …), so `@hearthos/ui` components work unmodified. Tailwind v4 `@theme inline` maps utility classes (`bg-primary`, `text-muted-foreground`, `rounded-lg`) onto these variables.
+Compilation: tokens become CSS custom properties `--hauskraft-<group>-<name>` and are aliased to the variable names shadcn/ui expects (`--background`, `--primary`, `--radius`, …), so `@hauskraft/ui` components work unmodified. Tailwind v4 `@theme inline` maps utility classes (`bg-primary`, `text-muted-foreground`, `rounded-lg`) onto these variables.
 
 **Hard requirements (theme rejected if violated), checked in both modes:**
 - Text contrast ≥ 4.5:1 (WCAG 2.2 AA) for: foreground/background, surface-foreground/surface, muted-foreground/background, primary-foreground/primary, secondary-foreground/secondary, accent-foreground/accent, destructive-foreground/destructive, success/warning/info foreground pairs, nav-foreground/nav-background, nav-active-foreground/nav-active, widget-foreground/widget-background.
@@ -553,27 +553,27 @@ Icons are referenced by semantic name, never by file: `nav.today`, `nav.tasks`, 
 
 #### 10.2.7 Distribution and installation
 - **Built-in themes** ship in the image under `themes/builtin/`. M0* ships three: `default` (neutral, sidebar/drawer, comfortable, outlined cards, Lucide), `paper` (high contrast, flat cards, top bar/drawer, compact, serif headings) and `hackspace` (underground hackerspace style: near-black with phosphor green and magenta, monospace type, square corners, tinted panels with title bars, top bar/bottom tabs, compact, pixel icon pack). Hackspace is inspired by the Berlin hacker scene but uses no name, logo or artwork of any real club or event.
-- **Third-party themes** are folders dropped into the themes volume (`HEARTHOS_THEME_PATHS`, default `/data/themes`), discovered at API start (hot reload later) and listed in Settings → Appearance with their validation result. Invalid themes are listed with reasons but cannot be selected.
-- **No in-app editor.** Authors use a template folder, the authoring guide and `hearthos themes validate <path>`.
+- **Third-party themes** are folders dropped into the themes volume (`HAUSKRAFT_THEME_PATHS`, default `/data/themes`), discovered at API start (hot reload later) and listed in Settings → Appearance with their validation result. Invalid themes are listed with reasons but cannot be selected.
+- **No in-app editor.** Authors use a template folder, the authoring guide and `hauskraft themes validate <path>`.
 - **Registry and signing** follow the plugin registry once it exists (M5+).
 
 #### 10.2.8 Runtime behaviour
 - The API compiles the active theme to one stylesheet, `GET /api/v1/theme/active.css` (strong ETag = hash of theme content), and serves its assets from `/api/v1/theme/assets/{theme_id}/{path}`. Light tokens go on `:root`, dark tokens on `:root.dark`.
 - `index.html` links the stylesheet directly, and a small inline head script sets `.dark` from the device's mode before first paint (no flash). A bundled copy of the default theme is the fallback if the stylesheet fails to load.
 - Clients refetch theme metadata every 60 seconds and on window focus; when the hash changes they swap the stylesheet without a reload. (Live push over the event bus later.)
-- Changing the deployment theme is a normal governed write: service layer, `authorize()`, outbox event `hearthos.settings.theme_changed`.
+- Changing the deployment theme is a normal governed write: service layer, `authorize()`, outbox event `hauskraft.settings.theme_changed`.
 
 #### 10.2.9 Rules for widget and page authors (normative)
-- Use only `@hearthos/ui` primitives and semantic utility classes. No colour literals (hex, rgb, hsl, oklch), no Tailwind default palette classes (`bg-red-500`), no arbitrary values (`p-[13px]`), no inline styles for colour, font or spacing. Lint rule `hearthos/no-raw-styles` enforces this in `apps/web` and `plugins/**/web`.
+- Use only `@hauskraft/ui` primitives and semantic utility classes. No colour literals (hex, rgb, hsl, oklch), no Tailwind default palette classes (`bg-red-500`), no arbitrary values (`p-[13px]`), no inline styles for colour, font or spacing. Lint rule `hauskraft/no-raw-styles` enforces this in `apps/web` and `plugins/**/web`.
 - Icons only through `<Icon name="…">`.
-- Respect density through spacing utilities and `@hearthos/ui` sizes; never hard-code row heights.
+- Respect density through spacing utilities and `@hauskraft/ui` sizes; never hard-code row heights.
 - **Iframe widgets (MCP Apps):** the host passes the active theme to each view through MCP Apps host context: the light/dark mode plus a set of CSS variables (`McpUiHostContext.styles.variables`), which the official ext-apps SDK applies to the view. The cockpit maps its semantic tokens onto those variable names. Views that ignore host variables will look off-theme; registry review flags them.
 
 ### 10.3 Widget system
 react-grid-layout grid per role or user, 12 columns, layouts stored as JSON. Widgets are first-party React components (bundled at build time from plugin web packages) or, from M5, **MCP Apps** views (`ui://` resources in sandboxed iframes, postMessage JSON-RPC). The host enforces CSP from resource metadata and routes widget tool calls through the gateway with the *viewing user's* permissions. Each widget sits in an error boundary; unknown widgets render a "Widget unavailable" card.
 
 ### 10.4 Generative UI
-Agents return either a `ui://` reference from an installed plugin or a constrained declarative card (list, table, chart, form, approval) rendered by the host with `@hearthos/ui`, so it follows the active theme. Never arbitrary HTML. A2UI-style specs are a watch item.
+Agents return either a `ui://` reference from an installed plugin or a constrained declarative card (list, table, chart, form, approval) rendered by the host with `@hauskraft/ui`, so it follows the active theme. Never arbitrary HTML. A2UI-style specs are a watch item.
 
 ### 10.5 Kiosk/wall mode (M5)
 `kiosk` role with device-bound token; large type, auto-rotating pages, presence-aware via HA, night dimming (uses the device colour mode); no approvals except kid chore ticks.
@@ -622,8 +622,8 @@ LAN-only by default; remote access via WireGuard/Tailscale (HA Cloud for HA). If
 4. **`deadlines` engine** with extraction-with-provenance from Paperless.
 5. **Household graph + data-class-aware hybrid search.**
 6. **Cockpit web app** with widget grid and MCP Apps host.
-7. **Theming system:** theme schema, validator and compiler, `@hearthos/ui` themed primitives, navigation renderers, function-invariance test suite, built-in themes and authoring kit. No existing self-hosted dashboard offers swappable, validated, data-only themes with guaranteed function invariance.
-8. **`hearthos` HA custom integration.**
+7. **Theming system:** theme schema, validator and compiler, `@hauskraft/ui` themed primitives, navigation renderers, function-invariance test suite, built-in themes and authoring kit. No existing self-hosted dashboard offers swappable, validated, data-only themes with guaranteed function invariance.
+8. **`hauskraft` HA custom integration.**
 9. **FinTS bridge plugin** (read-only, user-registered ID) and bank-provider abstraction (Enable Banking / FinTS / CSV-CAMT).
 10. **Kids milestones/school/activities module** (local-only).
 11. **Minimal health log**, since Fasten OnPrem is archived.
@@ -633,7 +633,7 @@ LAN-only by default; remote access via WireGuard/Tailscale (HA Cloud for HA). If
 ### 13.1 Milestones
 
 - **M0\* Scaffolding MVP** (replaces M0). Monorepo, CI, Compose; core-api with local session auth (OIDC seam) and the role enum (only `adult` enabled); migrations; in-process plugin loader; native `tasks` plugin (shared list: title, done, optional due date; any adult may edit or delete any task); web shell with Today grid, All tasks page and Activity feed; CloudEvents outbox; `authorize()` no-op seam; theming system with three built-in themes, deployment-wide theme and per-device colour mode; en/de. **No** third-party integrations (HA counts as one; `NullBridge` only), gateway, agents, approvals, registry or signing. *AC:* the demo script in `docs/backlog/m0-star/README.md` (12 steps, automated in Playwright) and green CI. Detailed in 13 epics / 61 stories.
-- **M1 Governed gateway + HA bridge (3–5 wks):** MCP aggregation, Cedar behind `authorize()`, audit chain fed from the outbox, LiteLLM class routing, verify hooks; ha-bridge v0 replacing `NullBridge`; OIDC `IdentityProvider`; RBAC for owner/adult/teen/kid. *AC:* unpermitted write denied; approval calls appear in the inbox; tampering any audit row fails `hearthos audit verify`; a `child` prompt with no local model fails closed; HA entity widget live.
+- **M1 Governed gateway + HA bridge (3–5 wks):** MCP aggregation, Cedar behind `authorize()`, audit chain fed from the outbox, LiteLLM class routing, verify hooks; ha-bridge v0 replacing `NullBridge`; OIDC `IdentityProvider`; RBAC for owner/adult/teen/kid. *AC:* unpermitted write denied; approval calls appear in the inbox; tampering any audit row fails `hauskraft audit verify`; a `child` prompt with no local model fails closed; HA entity widget live.
 - **M2 MVP domains (4–6 wks):** Vikunja, Donetick, Paperless, Actual, Mealie, Grocy, CalDAV connectors; weekly briefing; HA integration v0. *AC:* Journey 1 runs end-to-end on a fixture household; approval via HA notification works; every item links to its source.
 - **M3 Deadlines + documents (3–4 wks):** reader extraction with provenance; contract deadlines; Wallos; HA calendar/todo publication. *AC:* ≥90% of notice dates correct across 20 fixture contracts after the confirmation UI; zero deadlines scheduled without confirmation.
 - **M4 Rentals v1 (6–8 wks):** leases, reconciliation (Enable Banking + CSV/CAMT), Nebenkosten calculation + PDF, §556 countdown, tickets, contractors, GDPR toolkit. *AC:* golden-file tests vs hand-calculated statements; 100% deterministic reconciliation on fixtures; complete Art. 15 export.
@@ -643,7 +643,7 @@ LAN-only by default; remote access via WireGuard/Tailscale (HA Cloud for HA). If
 ### 13.2 Repository structure
 
 ```
-hearthos/
+hauskraft/
   apps/web/                 # React+Vite shell (AGPL)
   services/core_api/        # FastAPI, RBAC, graph API, approvals, theme registry (AGPL)
   services/gateway/         # MCP gateway, Cedar, audit, verify (AGPL, M1)
@@ -651,12 +651,12 @@ hearthos/
   services/workflows/       # DBOS workflows (AGPL, M2+)
   services/plugin_host/     # manifest verify, supervisor, egress cfg (AGPL, M5)
   packages/sdk-py/ sdk-ts/  # SDKs (MIT)
-  packages/ui/              # @hearthos/ui themed primitives (MIT)
+  packages/ui/              # @hauskraft/ui themed primitives (MIT)
   packages/schemas/         # JSON Schemas: manifest, theme, events, graph, policies (MIT)
   plugins/official/*        # connectors & domain plugins (MIT)
   themes/builtin/*          # default, paper, hackspace (MIT + OFL fonts)
   themes/template/          # starting point for theme authors (MIT)
-  integrations/ha-hearthos/ # HA custom integration (MIT, M1+)
+  integrations/ha-hauskraft/ # HA custom integration (MIT, M1+)
   deploy/compose/ deploy/ha-addon/
   docs/spec/ docs/adr/ docs/backlog/ docs/testing/ docs/themes.md
   tests/                    # spec-owned acceptance suite + fixtures (MIT), written before the code

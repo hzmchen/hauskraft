@@ -4,7 +4,7 @@ import { RouterProvider } from "@tanstack/react-router";
 import { I18nextProvider } from "react-i18next";
 
 import type { AppRouter } from "./router";
-import { Toaster } from "@hearthos/ui";
+import { Toaster } from "@hauskraft/ui";
 
 import { ColorModeProvider, useColorMode } from "./shell/ColorMode";
 import { ThemeRuntime } from "./shell/ThemeRuntime";

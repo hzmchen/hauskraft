@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 // All tasks (M0S-E09-02): filter, sort, due dates, delete, 50 per page. Filter, sort and page live in the
 // URL (useHost().search), validated here.
-import { useHost, type PageProps } from "@hearthos/sdk-ts";
-import { Button, Tabs, TabsContent, TabsList, TabsTrigger } from "@hearthos/ui";
+import { useHost, type PageProps } from "@hauskraft/sdk-ts";
+import { Button, Tabs, TabsContent, TabsList, TabsTrigger } from "@hauskraft/ui";
 import { useId } from "react";
 import { useTranslation } from "react-i18next";
 

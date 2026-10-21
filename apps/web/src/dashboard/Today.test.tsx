@@ -11,8 +11,8 @@ import { TodayDashboard } from "./Today";
 
 const LAYOUT = [
   {
-    i: "org.hearthos.tasks/tasks.list",
-    plugin_id: "org.hearthos.tasks",
+    i: "dev.hauskraft.tasks/tasks.list",
+    plugin_id: "dev.hauskraft.tasks",
     widget_id: "tasks.list",
     x: 0,
     y: 0,

@@ -1,7 +1,7 @@
 <!-- SPDX-License-Identifier: MIT -->
 # Architecture decision records
 
-HearthOS records architecture decisions as [MADR 4](https://adr.github.io/madr/) files in this folder (ADR-0001). An ADR is required before changing a seam (`authorize()`, the plugin loader, the outbox, `IdentityProvider`), a schema in `packages/schemas`, or the theme contract.
+Hauskraft records architecture decisions as [MADR 4](https://adr.github.io/madr/) files in this folder (ADR-0001). An ADR is required before changing a seam (`authorize()`, the plugin loader, the outbox, `IdentityProvider`), a schema in `packages/schemas`, or the theme contract.
 
 | ADR | Title | Status |
 |---|---|---|

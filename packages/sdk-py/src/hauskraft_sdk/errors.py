@@ -7,7 +7,7 @@ from collections.abc import Mapping
 from typing import Any
 
 
-class HearthosError(Exception):
+class HauskraftError(Exception):
     """Base error with an HTTP status and a stable machine-readable code."""
 
     status: int = 400
@@ -34,13 +34,13 @@ class HearthosError(Exception):
         self.extra: dict[str, Any] = dict(extra or {})
 
 
-class NotFoundError(HearthosError):
+class NotFoundError(HauskraftError):
     status = 404
     code = "not_found"
     title = "Not found"
 
 
-class ConflictError(HearthosError):
+class ConflictError(HauskraftError):
     status = 409
     code = "conflict"
     title = "Conflict"
@@ -49,7 +49,7 @@ class ConflictError(HearthosError):
         super().__init__(detail, code=code, extra=extra)
 
 
-class PolicyDeniedError(HearthosError):
+class PolicyDeniedError(HauskraftError):
     """Raised by ``authorize()`` when the policy denies an action."""
 
     status = 403

@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 // The title as a button ("Edit '<title>'"); clicking it edits inline. Enter saves, Escape cancels.
-import { Input, cn } from "@hearthos/ui";
+import { Input, cn } from "@hauskraft/ui";
 import { useState, type KeyboardEvent } from "react";
 import { useTranslation } from "react-i18next";
 

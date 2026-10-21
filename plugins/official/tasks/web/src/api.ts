@@ -8,8 +8,8 @@ import {
   type TaskOut,
   type TaskPage,
   type TaskPatch,
-} from "@hearthos/sdk-ts";
-import { toast } from "@hearthos/ui";
+} from "@hauskraft/sdk-ts";
+import { toast } from "@hauskraft/ui";
 import {
   keepPreviousData,
   useMutation,

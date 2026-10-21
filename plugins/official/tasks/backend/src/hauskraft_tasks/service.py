@@ -15,9 +15,9 @@ from typing import Any
 from sqlalchemy import ColumnElement, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from hearthos_sdk import Actor, DataClass, PluginContext, ResourceRef
-from hearthos_sdk.errors import ConflictError, NotFoundError
-from hearthos_sdk.events import (
+from hauskraft_sdk import Actor, DataClass, PluginContext, ResourceRef
+from hauskraft_sdk.errors import ConflictError, NotFoundError
+from hauskraft_sdk.events import (
     TaskChanges,
     TaskCompletedData,
     TaskCreatedData,
@@ -25,8 +25,8 @@ from hearthos_sdk.events import (
     TaskSnapshot,
     TaskUpdatedData,
 )
-from hearthos_tasks.models import Task, users
-from hearthos_tasks.schemas import Sort, Status, TaskCreate, TaskOut, TaskPage, TaskPatch, UserRef
+from hauskraft_tasks.models import Task, users
+from hauskraft_tasks.schemas import Sort, Status, TaskCreate, TaskOut, TaskPage, TaskPatch, UserRef
 
 DATA_CLASS = DataClass.HOUSEHOLD
 CAPABILITY = "graph:write:Task"
@@ -65,7 +65,7 @@ async def create_task(ctx: PluginContext, actor: Actor, body: TaskCreate, *, tas
         )
         session.add(task)
         await session.flush()
-        await ctx.emit("hearthos.task.created", subject(task.id), TaskCreatedData(task=snapshot(task)), DATA_CLASS)
+        await ctx.emit("hauskraft.task.created", subject(task.id), TaskCreatedData(task=snapshot(task)), DATA_CLASS)
     return task
 
 
@@ -109,14 +109,14 @@ async def update_task(ctx: PluginContext, actor: Actor, task_id: uuid.UUID, patc
         await session.flush()
         if completed:
             await ctx.emit(
-                "hearthos.task.completed",
+                "hauskraft.task.completed",
                 subject(task.id),
                 TaskCompletedData(task=snapshot(task), completed_at=now),
                 DATA_CLASS,
             )
         else:
             await ctx.emit(
-                "hearthos.task.updated",
+                "hauskraft.task.updated",
                 subject(task.id),
                 TaskUpdatedData(task=snapshot(task), changes=TaskChanges(**changes)),
                 DATA_CLASS,
@@ -131,7 +131,7 @@ async def delete_task(ctx: PluginContext, actor: Actor, task_id: uuid.UUID) -> N
         last = snapshot(task)
         await session.delete(task)
         await session.flush()
-        await ctx.emit("hearthos.task.deleted", subject(task_id), TaskDeletedData(task=last), DATA_CLASS)
+        await ctx.emit("hauskraft.task.deleted", subject(task_id), TaskDeletedData(task=last), DATA_CLASS)
 
 
 @dataclass

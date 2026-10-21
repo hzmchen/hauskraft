@@ -1,11 +1,11 @@
 {
   "specversion": "1.0",
   "id": "0199f3a2-6c1e-7b8a-9d40-2f6c1a0b7e11",
-  "type": "hearthos.task.created",
+  "type": "hauskraft.task.created",
   "subject": "task/0199f3a2-6c1d-7c55-8a10-3e2b9f4c0d21",
   "time": "2026-10-12T09:15:02.481Z",
   "datacontenttype": "application/json",
-  "dataschema": "https://schemas.hearthos.org/events/task.created/v1.json",
+  "dataschema": "https://hauskraft.dev/schema/events/task.created/v1.json",
   "dataclass": "household",
   "actorid": "0199f390-1111-7aaa-8bbb-cccccccccccc",
   "data": {

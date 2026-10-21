@@ -14,7 +14,7 @@ body:
     id: proposal
     attributes:
       label: Proposal
-      description: What should HearthOS do? Mention the spec section if one applies.
+      description: What should Hauskraft do? Mention the spec section if one applies.
     validations:
       required: true
   - type: textarea

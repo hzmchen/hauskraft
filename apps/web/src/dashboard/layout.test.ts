@@ -4,7 +4,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { fromGridLayout, readGridMetrics, stackOrder, toGridLayout } from "./layout";
 
 const cells = [
-  { i: "a", plugin_id: "org.hearthos.tasks", widget_id: "tasks.list", x: 4, y: 0, w: 4, h: 6 },
+  { i: "a", plugin_id: "dev.hauskraft.tasks", widget_id: "tasks.list", x: 4, y: 0, w: 4, h: 6 },
   { i: "b", plugin_id: "org.example.x", widget_id: "x.y", x: 0, y: 0, w: 4, h: 3 },
 ];
 
@@ -12,7 +12,7 @@ afterEach(() => vi.restoreAllMocks());
 
 describe("layout mapping", () => {
   it("turns API cells into grid items with the manifest's minimum size", () => {
-    const items = toGridLayout(cells, { "org.hearthos.tasks/tasks.list": { w: 3, h: 4 } });
+    const items = toGridLayout(cells, { "dev.hauskraft.tasks/tasks.list": { w: 3, h: 4 } });
     expect(items[0]).toEqual({ i: "a", x: 4, y: 0, w: 4, h: 6, minW: 3, minH: 4 });
     expect(items[1]).toEqual({ i: "b", x: 0, y: 0, w: 4, h: 3 });
   });
@@ -23,7 +23,7 @@ describe("layout mapping", () => {
       { i: "b", x: 0, y: 0, w: 12, h: 3 },
     ];
     expect(fromGridLayout(moved, cells)).toEqual([
-      { i: "a", plugin_id: "org.hearthos.tasks", widget_id: "tasks.list", x: 0, y: 3, w: 6, h: 6 },
+      { i: "a", plugin_id: "dev.hauskraft.tasks", widget_id: "tasks.list", x: 0, y: 3, w: 6, h: 6 },
       { i: "b", plugin_id: "org.example.x", widget_id: "x.y", x: 0, y: 0, w: 12, h: 3 },
     ]);
   });
@@ -38,8 +38,8 @@ describe("grid metrics", () => {
     vi.spyOn(window, "getComputedStyle").mockImplementation(
       (el) =>
         ({
-          height: (el as HTMLElement).style.height === "var(--hearth-grid-row)" ? "34px" : "0px",
-          width: (el as HTMLElement).style.width === "var(--hearth-grid-gap)" ? "13.6px" : "0px",
+          height: (el as HTMLElement).style.height === "var(--hauskraft-grid-row)" ? "34px" : "0px",
+          width: (el as HTMLElement).style.width === "var(--hauskraft-grid-gap)" ? "13.6px" : "0px",
         }) as CSSStyleDeclaration,
     );
     expect(readGridMetrics(document.body)).toEqual({ rowHeight: 34, gap: 13.6 });

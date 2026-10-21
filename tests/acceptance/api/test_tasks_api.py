@@ -146,8 +146,8 @@ def test_each_write_appears_once_in_activity(demo: Api) -> None:
     demo.patch(f"/tasks/{task['id']}", json={"done": True})
     demo.patch(f"/tasks/{task['id']}", json={"done": False})
     demo.delete(f"/tasks/{task['id']}")
-    expected = ["hearthos.task.created", "hearthos.task.updated", "hearthos.task.completed",
-                "hearthos.task.updated", "hearthos.task.deleted"]
+    expected = ["hauskraft.task.created", "hauskraft.task.updated", "hauskraft.task.completed",
+                "hauskraft.task.updated", "hauskraft.task.deleted"]
     deadline = time.time() + 15
     seen: list[str] = []
     while time.time() < deadline:

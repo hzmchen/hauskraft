@@ -1,9 +1,9 @@
 # SPDX-License-Identifier: MIT
-"""Black-box HTTP client for live acceptance tests against a running HearthOS stack.
+"""Black-box HTTP client for live acceptance tests against a running Hauskraft stack.
 
 Environment:
-  HEARTHOS_BASE_URL   default http://localhost:8080 (the Caddy web container; /api is proxied)
-  HEARTHOS_DEMO_PASSWORD  default hearthos-demo (seeded by M0S-E11-02)
+  HAUSKRAFT_BASE_URL   default http://localhost:8080 (the Caddy web container; /api is proxied)
+  HAUSKRAFT_DEMO_PASSWORD  default hauskraft-demo (seeded by M0S-E11-02)
 """
 
 from __future__ import annotations
@@ -17,9 +17,9 @@ from typing import Any
 import httpx
 import pytest
 
-BASE_URL = os.environ.get("HEARTHOS_BASE_URL", "http://localhost:8080").rstrip("/")
+BASE_URL = os.environ.get("HAUSKRAFT_BASE_URL", "http://localhost:8080").rstrip("/")
 API = f"{BASE_URL}/api/v1"
-DEMO_PASSWORD = os.environ.get("HEARTHOS_DEMO_PASSWORD", "hearthos-demo")
+DEMO_PASSWORD = os.environ.get("HAUSKRAFT_DEMO_PASSWORD", "hauskraft-demo")
 PROBLEM_JSON = "application/problem+json"
 
 
@@ -71,7 +71,7 @@ def reachable() -> None:
     try:
         httpx.get(f"{API}/healthz", timeout=3)
     except httpx.HTTPError as exc:
-        pytest.fail(f"RED: no HearthOS stack at {BASE_URL} ({exc.__class__.__name__}). "
+        pytest.fail(f"RED: no Hauskraft stack at {BASE_URL} ({exc.__class__.__name__}). "
                     "Start it with `docker compose -f compose.yaml -f deploy/compose/compose.test.yaml up --wait`.",
                     pytrace=False)
 

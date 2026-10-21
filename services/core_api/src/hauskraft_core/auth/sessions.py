@@ -15,9 +15,9 @@ import uuid
 from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from hearthos_core.db.models import Session, User
+from hauskraft_core.db.models import Session, User
 
-COOKIE_NAME = "hearthos_session"
+COOKIE_NAME = "hauskraft_session"
 LIFETIME = dt.timedelta(days=14)
 IDLE_TIMEOUT = dt.timedelta(days=7)
 TOUCH_INTERVAL = dt.timedelta(minutes=1)

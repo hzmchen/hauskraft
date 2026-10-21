@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import type { PluginOut } from "@hearthos/sdk-ts";
+import type { PluginOut } from "@hauskraft/sdk-ts";
 import { describe, expect, it } from "vitest";
 
 import { buildNavModel } from "./model";
 
 const tasks: PluginOut = {
-  id: "org.hearthos.tasks",
+  id: "dev.hauskraft.tasks",
   name: "Tasks",
   version: "0.1.0",
   kind: "inprocess",
@@ -31,7 +31,7 @@ describe("buildNavModel", () => {
   it("orders Today, plugin pages, Activity, Settings", () => {
     expect(buildNavModel([tasks]).map((i) => [i.id, i.href, i.order])).toEqual([
       ["today", "/today", 10],
-      ["org.hearthos.tasks/tasks", "/p/tasks", 20],
+      ["dev.hauskraft.tasks/tasks", "/p/tasks", 20],
       ["activity", "/activity", 90],
       ["settings", "/settings", 100],
     ]);

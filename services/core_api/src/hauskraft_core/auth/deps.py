@@ -7,16 +7,16 @@ from typing import Annotated
 
 from fastapi import Depends, Request
 
-from hearthos_core.auth import sessions
-from hearthos_core.auth.csrf import check_request
-from hearthos_core.db.models import Session, User
-from hearthos_core.db.session import DbSession
-from hearthos_core.logging import request_user_id
-from hearthos_sdk import Actor
-from hearthos_sdk.errors import HearthosError
+from hauskraft_core.auth import sessions
+from hauskraft_core.auth.csrf import check_request
+from hauskraft_core.db.models import Session, User
+from hauskraft_core.db.session import DbSession
+from hauskraft_core.logging import request_user_id
+from hauskraft_sdk import Actor
+from hauskraft_sdk.errors import HauskraftError
 
 
-class UnauthenticatedError(HearthosError):
+class UnauthenticatedError(HauskraftError):
     status = 401
     code = "unauthenticated"
     title = "Not signed in"

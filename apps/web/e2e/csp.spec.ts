@@ -1,17 +1,17 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // M0S-E11-01: the web front door sends a strict CSP, and no built-in theme triggers a CSP violation
 // (no remote fonts or images, the colour-mode script allowed by hash). Runs against the Compose stack:
-//   HEARTHOS_BASE_URL=http://localhost:8080 pnpm --filter web exec playwright test
+//   HAUSKRAFT_BASE_URL=http://localhost:8080 pnpm --filter web exec playwright test
 import { expect, request, test } from "@playwright/test";
 
-const BASE_URL = process.env.HEARTHOS_BASE_URL ?? "http://localhost:8080";
-const THEMES = ["org.hearthos.theme.default", "org.hearthos.theme.paper", "org.hearthos.theme.hackspace"];
+const BASE_URL = process.env.HAUSKRAFT_BASE_URL ?? "http://localhost:8080";
+const THEMES = ["dev.hauskraft.theme.default", "dev.hauskraft.theme.paper", "dev.hauskraft.theme.hackspace"];
 const VIEWS = ["/login", "/today", "/p/tasks", "/activity", "/settings/appearance"];
 
 async function setTheme(themeId: string) {
   const api = await request.newContext({ baseURL: `${BASE_URL}/api/v1/`, extraHTTPHeaders: { Origin: BASE_URL } });
   const session = await (
-    await api.post("auth/login", { data: { username: "demo", password: "hearthos-demo" } })
+    await api.post("auth/login", { data: { username: "demo", password: "hauskraft-demo" } })
   ).json();
   const res = await api.put("settings/theme", {
     data: { theme_id: themeId },
@@ -55,12 +55,12 @@ for (const themeId of THEMES) {
       );
       await page.goto(`${BASE_URL}/login`);
       await page.getByRole("textbox", { name: "Username" }).fill("demo");
-      await page.getByLabel("Password").fill("hearthos-demo");
+      await page.getByLabel("Password").fill("hauskraft-demo");
       await page.getByRole("button", { name: "Sign in" }).click();
       await page.waitForURL(/\/today$/);
       for (const view of VIEWS.slice(1)) {
         await page.goto(`${BASE_URL}${view}`);
-        await expect.poll(() => page.evaluate(() => document.documentElement.dataset.hearthTheme)).toBe(themeId);
+        await expect.poll(() => page.evaluate(() => document.documentElement.dataset.hauskraftTheme)).toBe(themeId);
         await page.waitForLoadState("networkidle");
       }
       expect(violations).toEqual([]);

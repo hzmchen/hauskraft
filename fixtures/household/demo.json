@@ -1,11 +1,11 @@
 {
   "$comment": "Synthetic demo household (M0S-E07-04, M0S-E11-02). The password is the documented public demo password; never use it outside the demo.",
   "users": [
-    { "key": "demo", "username": "demo", "display_name": "Demo Adult", "password": "hearthos-demo", "locale": "en" },
-    { "key": "alex", "username": "alex", "display_name": "Alex Adult", "password": "hearthos-demo", "locale": "en" }
+    { "key": "demo", "username": "demo", "display_name": "Demo Adult", "password": "hauskraft-demo", "locale": "en" },
+    { "key": "alex", "username": "alex", "display_name": "Alex Adult", "password": "hauskraft-demo", "locale": "en" }
   ],
   "plugins": {
-    "org.hearthos.tasks": {
+    "dev.hauskraft.tasks": {
       "tasks": [
         { "key": "water-plants", "title": "Water the plants", "created_by": "demo" },
         { "key": "recycling", "title": "Take out recycling", "created_by": "demo", "due_in_days": 1 },

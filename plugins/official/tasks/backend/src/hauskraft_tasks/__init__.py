@@ -1,2 +1,2 @@
 # SPDX-License-Identifier: MIT
-"""HearthOS official tasks plugin."""
+"""Hauskraft official tasks plugin."""

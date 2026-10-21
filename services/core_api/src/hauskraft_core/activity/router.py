@@ -11,9 +11,9 @@ from fastapi import APIRouter, Query
 from pydantic import BaseModel
 from sqlalchemy import select
 
-from hearthos_core.auth.deps import CurrentActor
-from hearthos_core.db.models import OutboxEvent, User
-from hearthos_core.db.session import DbSession
+from hauskraft_core.auth.deps import CurrentActor
+from hauskraft_core.db.models import OutboxEvent, User
+from hauskraft_core.db.session import DbSession
 
 router = APIRouter(tags=["activity"])
 
@@ -34,8 +34,8 @@ class ActivityItem(BaseModel):
 
 
 def summary_key(event_type: str) -> str:
-    """i18n key for the web feed, e.g. ``hearthos.task.created`` -> ``activity.task.created``."""
-    return "activity." + event_type.removeprefix("hearthos.")
+    """i18n key for the web feed, e.g. ``hauskraft.task.created`` -> ``activity.task.created``."""
+    return "activity." + event_type.removeprefix("hauskraft.")
 
 
 @router.get("/activity", responses={401: {}, 422: {}})

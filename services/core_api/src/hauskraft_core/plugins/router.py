@@ -8,19 +8,19 @@ from typing import Any
 from fastapi import APIRouter, Request
 from pydantic import BaseModel, ConfigDict
 
-from hearthos_core.auth.deps import CurrentActor
-from hearthos_core.db.models import PluginRecord
-from hearthos_core.db.session import DbSession
-from hearthos_core.events.outbox import emit
-from hearthos_core.plugins.loader import LoadedPlugin
-from hearthos_core.uow import UnitOfWork
-from hearthos_sdk import ResourceRef
-from hearthos_sdk.errors import HearthosError, NotFoundError
+from hauskraft_core.auth.deps import CurrentActor
+from hauskraft_core.db.models import PluginRecord
+from hauskraft_core.db.session import DbSession
+from hauskraft_core.events.outbox import emit
+from hauskraft_core.plugins.loader import LoadedPlugin
+from hauskraft_core.uow import UnitOfWork
+from hauskraft_sdk import ResourceRef
+from hauskraft_sdk.errors import HauskraftError, NotFoundError
 
 router = APIRouter(prefix="/plugins", tags=["plugins"])
 
 
-class UseThemeSettingsError(HearthosError):
+class UseThemeSettingsError(HauskraftError):
     status = 422
     code = "use_theme_settings"
     title = "Themes are chosen in the theme settings"
@@ -87,7 +87,7 @@ async def update(plugin_id: str, body: PluginPatch, request: Request, actor: Cur
             raise NotFoundError(f"No plugin record for {plugin_id!r}.")
         record.enabled = body.enabled
         await emit(
-            "hearthos.plugin.toggled",
+            "hauskraft.plugin.toggled",
             f"plugin/{plugin_id}",
             {"plugin_id": plugin_id, "enabled": body.enabled},
             "household",

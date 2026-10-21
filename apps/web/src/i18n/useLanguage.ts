@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import { usersMeUpdate } from "@hearthos/sdk-ts";
+import { usersMeUpdate } from "@hauskraft/sdk-ts";
 import { useTranslation } from "react-i18next";
 
 import { isLanguage, setLanguage, type Language } from "./index";

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import { pluginsListOptions } from "@hearthos/sdk-ts";
+import { pluginsListOptions } from "@hauskraft/sdk-ts";
 import { createFileRoute } from "@tanstack/react-router";
 
 import { loadPluginModule } from "../../plugins/load";

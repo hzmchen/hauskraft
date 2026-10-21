@@ -1,5 +1,5 @@
 {
-  "name": "HearthOS",
+  "name": "Hauskraft",
   "image": "mcr.microsoft.com/devcontainers/python:3.13",
   "features": {
     "ghcr.io/devcontainers/features/node:1": { "version": "24" },
@@ -9,7 +9,7 @@
   },
   "containerEnv": {
     "COREPACK_ENABLE_DOWNLOAD_PROMPT": "0",
-    "UV_PROJECT_ENVIRONMENT": "/home/vscode/.venvs/hearthos"
+    "UV_PROJECT_ENVIRONMENT": "/home/vscode/.venvs/hauskraft"
   },
   "postCreateCommand": "corepack enable pnpm && just setup",
   "forwardPorts": [8000, 5173, 8080],

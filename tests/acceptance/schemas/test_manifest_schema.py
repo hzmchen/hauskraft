@@ -11,7 +11,7 @@ from _support import FIXTURES, REPO
 from _support.schemas import errors, load_json, validator
 
 pytestmark = pytest.mark.story("M0S-E06-01")
-SCHEMA = "manifest/hearthos.plugin.schema.json"
+SCHEMA = "manifest/hauskraft.plugin.schema.json"
 
 EXPECTED = json.loads((FIXTURES / "themes" / "expected.json").read_text())["themes"]
 THEME_MANIFESTS_OK = [n for n, e in EXPECTED.items() if "manifest.invalid" not in e["errors"]]
@@ -32,12 +32,12 @@ def test_invalid_manifest_fixture_fails(path) -> None:
 
 @pytest.mark.parametrize("name", THEME_MANIFESTS_OK)
 def test_fixture_theme_manifests_pass(name: str) -> None:
-    errs = errors(validator(SCHEMA, "M0S-E06-01"), load_json(FIXTURES / "themes" / name / "hearthos.plugin.json"))
+    errs = errors(validator(SCHEMA, "M0S-E06-01"), load_json(FIXTURES / "themes" / name / "hauskraft.plugin.json"))
     assert not errs, errs
 
 
 def test_theme_manifest_with_capabilities_fails() -> None:
-    doc = load_json(FIXTURES / "themes" / "invalid-manifest-capabilities" / "hearthos.plugin.json")
+    doc = load_json(FIXTURES / "themes" / "invalid-manifest-capabilities" / "hauskraft.plugin.json")
     assert errors(validator(SCHEMA, "M0S-E06-01"), doc)
 
 
@@ -58,10 +58,10 @@ def test_all_data_classes_are_accepted(data_class: str) -> None:
 
 @pytest.mark.story("M0S-E07-01")
 def test_real_tasks_manifest_passes() -> None:
-    path = REPO / "plugins" / "official" / "tasks" / "hearthos.plugin.json"
+    path = REPO / "plugins" / "official" / "tasks" / "hauskraft.plugin.json"
     if not path.exists():
-        pytest.fail("RED (M0S-E07-01): plugins/official/tasks/hearthos.plugin.json missing", pytrace=False)
+        pytest.fail("RED (M0S-E07-01): plugins/official/tasks/hauskraft.plugin.json missing", pytrace=False)
     doc = load_json(path)
     assert not errors(validator(SCHEMA, "M0S-E06-01"), doc)
-    assert doc["id"] == "org.hearthos.tasks" and doc["license"] == "MIT"
+    assert doc["id"] == "dev.hauskraft.tasks" and doc["license"] == "MIT"
     assert doc["runtime"]["kind"] == "inprocess"

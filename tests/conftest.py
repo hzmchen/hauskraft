@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: MIT
-"""Story-aware red/green plumbing for the HearthOS acceptance suite.
+"""Story-aware red/green plumbing for the Hauskraft acceptance suite.
 
 Every test carries ``@pytest.mark.story("M0S-Exx-yy", ...)`` (or ``@pytest.mark.meta``).
 tests/story-status.json says whether each story is red or green:
@@ -12,7 +12,7 @@ Options:
   --story ID     run only tests for these stories, in raw mode (real failures shown).
                  This is the TDD loop for an agent working on one story.
   --raw          disable the red -> xfail mapping for all tests.
-  --live         also run tests that need a running stack (HEARTHOS_BASE_URL).
+  --live         also run tests that need a running stack (HAUSKRAFT_BASE_URL).
   --strict-status  fail the run if a red story has every one of its tests passing,
                  i.e. the story is green and tests/story-status.json must be flipped.
 """
@@ -35,19 +35,19 @@ _COLLECTED: dict[str, int] = defaultdict(int)  # every test of a story, before -
 
 
 def pytest_addoption(parser: pytest.Parser) -> None:
-    g = parser.getgroup("hearthos")
+    g = parser.getgroup("hauskraft")
     g.addoption("--story", action="append", default=[], metavar="ID",
                 help="Run only tests for these story IDs, without red->xfail mapping.")
     g.addoption("--raw", action="store_true", help="Do not map red stories to xfail.")
     g.addoption("--live", action="store_true",
-                help="Run live tests against a running stack (HEARTHOS_BASE_URL).")
+                help="Run live tests against a running stack (HAUSKRAFT_BASE_URL).")
     g.addoption("--strict-status", action="store_true",
                 help="Fail if a red story has all of its tests passing.")
 
 
 def pytest_configure(config: pytest.Config) -> None:
     config.addinivalue_line("markers", "story(*ids): links a test to backlog story IDs")
-    config.addinivalue_line("markers", "live: needs a running HearthOS stack (use --live)")
+    config.addinivalue_line("markers", "live: needs a running Hauskraft stack (use --live)")
     config.addinivalue_line("markers", "meta: validates the docs and the suite itself")
 
 
@@ -62,7 +62,7 @@ def pytest_collection_modifyitems(config: pytest.Config, items: list[pytest.Item
     registry = story_registry.load()
     wanted = set(config.getoption("--story"))
     raw = config.getoption("--raw") or bool(wanted)
-    live = config.getoption("--live") or os.environ.get("HEARTHOS_LIVE") == "1"
+    live = config.getoption("--live") or os.environ.get("HAUSKRAFT_LIVE") == "1"
     unknown_wanted = wanted - registry.keys()
     if unknown_wanted:
         raise pytest.UsageError(f"Unknown story id(s): {', '.join(sorted(unknown_wanted))}")
@@ -130,7 +130,7 @@ def pytest_terminal_summary(terminalreporter, exitstatus, config) -> None:  # ty
     if not (flip or broken):
         return
     tr = terminalreporter
-    tr.section("HearthOS story status")
+    tr.section("Hauskraft story status")
     for sid in flip:
         tr.write_line(f"READY  {sid}: all its tests pass. Set it to \"green\" in tests/story-status.json.")
     for sid in broken:

@@ -2,7 +2,7 @@
 
 # Content Security Policy notes for the web shell
 
-`index.html` carries one inline script: it applies the device's colour mode (`localStorage["hearthos.mode"]`,
+`index.html` carries one inline script: it applies the device's colour mode (`localStorage["hauskraft.mode"]`,
 falling back to `prefers-color-scheme`) before first paint, so a dark device never flashes light (M0S-E08-02).
 
 A strict CSP (E11-01) allows exactly this script by hash:

@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 // Test harness for the tasks plugin: a stubbed API (no server), i18n with the plugin's strings, React Query.
-import { client } from "@hearthos/sdk-ts";
+import { client } from "@hauskraft/sdk-ts";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { act, render } from "@testing-library/react";
 import i18next from "i18next";
@@ -28,7 +28,7 @@ function normalise(key: string): string {
 export function fakeApi(routes: Record<string, Handler>): Request[] {
   const seen: Request[] = [];
   const table = Object.fromEntries(Object.entries(routes).map(([key, handler]) => [normalise(key), handler]));
-  client.setConfig({ baseUrl: "http://hearthos.test" });
+  client.setConfig({ baseUrl: "http://hauskraft.test" });
   vi.stubGlobal(
     "fetch",
     vi.fn(async (request: Request) => {

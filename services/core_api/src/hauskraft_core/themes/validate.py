@@ -13,15 +13,15 @@ from collections.abc import Callable
 from pathlib import Path
 from typing import Any
 
-from hearthos_core import schemas
-from hearthos_core.themes import dtcg
-from hearthos_core.themes.compile import compile_css
-from hearthos_core.themes.model import ThemeReport
-from hearthos_core.themes.svg_sanitize import problems as svg_problems
-from hearthos_core.themes.svg_sanitize import symbol_ids
+from hauskraft_core import schemas
+from hauskraft_core.themes import dtcg
+from hauskraft_core.themes.compile import compile_css
+from hauskraft_core.themes.model import ThemeReport
+from hauskraft_core.themes.svg_sanitize import problems as svg_problems
+from hauskraft_core.themes.svg_sanitize import symbol_ids
 
-MANIFEST_SCHEMA = "manifest/hearthos.plugin.schema.json"
-THEME_SCHEMA = "theme/hearthos.theme.schema.json"
+MANIFEST_SCHEMA = "manifest/hauskraft.plugin.schema.json"
+THEME_SCHEMA = "theme/hauskraft.theme.schema.json"
 MODES = ("light", "dark")
 MAGIC: dict[str, Callable[[bytes], bool]] = {
     ".woff2": lambda b: b[:4] == b"wOF2",
@@ -90,7 +90,7 @@ def _load_json(report: ThemeReport, rel: str, code: str) -> Any:
 
 
 def _check_manifest(report: ThemeReport, theme_key: str | None) -> bool:
-    manifest = _load_json(report, "hearthos.plugin.json", "manifest.invalid")
+    manifest = _load_json(report, "hauskraft.plugin.json", "manifest.invalid")
     if not isinstance(manifest, dict):
         return False
     report.manifest = manifest
@@ -99,9 +99,9 @@ def _check_manifest(report: ThemeReport, theme_key: str | None) -> bool:
     key = theme_key or (themes[0]["id"] if themes and isinstance(themes[0], dict) and "id" in themes[0] else None)
     report.theme_id = plugin_id if len(themes) <= 1 else f"{plugin_id}:{key}"
     for problem in schemas.errors(MANIFEST_SCHEMA, manifest):
-        report.error("manifest.invalid", problem, "hearthos.plugin.json")
+        report.error("manifest.invalid", problem, "hauskraft.plugin.json")
     if manifest.get("type") != ["theme"]:
-        report.error("manifest.invalid", 'a theme package must have type ["theme"]', "hearthos.plugin.json#/type")
+        report.error("manifest.invalid", 'a theme package must have type ["theme"]', "hauskraft.plugin.json#/type")
     return report.valid
 
 

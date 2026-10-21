@@ -9,7 +9,7 @@ Status: Accepted
 
 ## Context and problem statement
 
-HearthOS is built largely by coding agents working story by story. Without a written record, decisions about seams, schemas and the theme contract get relitigated or silently changed by whoever touches the code next.
+Hauskraft is built largely by coding agents working story by story. Without a written record, decisions about seams, schemas and the theme contract get relitigated or silently changed by whoever touches the code next.
 
 ## Decision drivers
 

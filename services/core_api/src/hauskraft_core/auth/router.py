@@ -7,19 +7,19 @@ import ipaddress
 
 from fastapi import APIRouter, Request, Response
 
-from hearthos_core.auth import sessions
-from hearthos_core.auth.csrf import check_origin
-from hearthos_core.auth.deps import CurrentSession, actor_for
-from hearthos_core.auth.providers import PasswordCredentials
-from hearthos_core.auth.schemas import LoginIn, SessionOut, UserOut
-from hearthos_core.uow import UnitOfWork
-from hearthos_sdk import ResourceRef
-from hearthos_sdk.errors import HearthosError
+from hauskraft_core.auth import sessions
+from hauskraft_core.auth.csrf import check_origin
+from hauskraft_core.auth.deps import CurrentSession, actor_for
+from hauskraft_core.auth.providers import PasswordCredentials
+from hauskraft_core.auth.schemas import LoginIn, SessionOut, UserOut
+from hauskraft_core.uow import UnitOfWork
+from hauskraft_sdk import ResourceRef
+from hauskraft_sdk.errors import HauskraftError
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
 
-class InvalidCredentialsError(HearthosError):
+class InvalidCredentialsError(HauskraftError):
     status = 401
     code = "invalid_credentials"
     title = "Invalid credentials"
@@ -28,7 +28,7 @@ class InvalidCredentialsError(HearthosError):
         super().__init__("The username or password is not correct.")
 
 
-class RateLimitedError(HearthosError):
+class RateLimitedError(HauskraftError):
     status = 429
     code = "rate_limited"
     title = "Too many attempts"

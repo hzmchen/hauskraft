@@ -15,10 +15,10 @@ from sqlalchemy import func, select
 from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from hearthos_core.dashboard.schemas import COLUMNS, DashboardCell
-from hearthos_core.db.models import DashboardLayout
-from hearthos_core.uow import UnitOfWork
-from hearthos_sdk import Actor, ResourceRef
+from hauskraft_core.dashboard.schemas import COLUMNS, DashboardCell
+from hauskraft_core.db.models import DashboardLayout
+from hauskraft_core.uow import UnitOfWork
+from hauskraft_sdk import Actor, ResourceRef
 
 
 async def stored_layout(session: AsyncSession, user_id: uuid.UUID, dashboard_id: str) -> list[DashboardCell] | None:

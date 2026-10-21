@@ -9,8 +9,8 @@ import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine, select, update
 
-from hearthos_core.db.models import Session
-from hearthos_core.settings import Settings
+from hauskraft_core.db.models import Session
+from hauskraft_core.settings import Settings
 from tests.integration.conftest import PASSWORD
 
 pytestmark = pytest.mark.integration
@@ -45,7 +45,7 @@ def test_login_sets_a_hardened_cookie_and_returns_the_session(
     assert r.status_code == 200, r.text
     cookie = r.headers["set-cookie"]
     low = cookie.lower()
-    assert cookie.startswith("hearthos_session=")
+    assert cookie.startswith("hauskraft_session=")
     assert "httponly" in low
     assert "samesite=lax" in low
     assert "path=/" in low
@@ -59,7 +59,7 @@ def test_login_sets_a_hardened_cookie_and_returns_the_session(
         "locale": "en",
     }
     assert len(body["csrf_token"]) >= 32
-    token = client.cookies["hearthos_session"]
+    token = client.cookies["hauskraft_session"]
     assert len(token) >= 43, "256-bit random token"
     row = _session_row(api_settings, token)
     assert row.id == hashlib.sha256(token.encode()).hexdigest(), "only the hash is stored"
@@ -69,7 +69,7 @@ def test_login_sets_a_hardened_cookie_and_returns_the_session(
 
 
 def test_secure_flag_follows_the_setting(api_settings: Settings, make_user: Callable[..., str]) -> None:
-    from hearthos_core.app import create_app
+    from hauskraft_core.app import create_app
 
     username = make_user()
     secure = api_settings.model_copy(update={"cookie_secure": True})
@@ -90,9 +90,9 @@ def test_session_logout_and_401(client: TestClient, make_user: Callable[..., str
 def test_login_rotates_the_session(client: TestClient, make_user: Callable[..., str], api_settings: Settings) -> None:
     username = make_user()
     _login(client, username)
-    first = client.cookies["hearthos_session"]
+    first = client.cookies["hauskraft_session"]
     _login(client, username)
-    second = client.cookies["hearthos_session"]
+    second = client.cookies["hauskraft_session"]
     assert first != second
     assert _session_row(api_settings, first).revoked_at is not None
 
@@ -120,7 +120,7 @@ def test_rate_limit_after_five_failures_and_reset_on_success(client: TestClient,
 
 def test_idle_sessions_expire(client: TestClient, make_user: Callable[..., str], api_settings: Settings) -> None:
     _login(client, make_user())
-    token = client.cookies["hearthos_session"]
+    token = client.cookies["hauskraft_session"]
     _age_session(api_settings, token, last_seen_at=dt.datetime.now(dt.UTC) - dt.timedelta(days=8))
     assert client.get("/api/v1/auth/session").status_code == 401
 
@@ -129,14 +129,14 @@ def test_expired_sessions_are_rejected(
     client: TestClient, make_user: Callable[..., str], api_settings: Settings
 ) -> None:
     _login(client, make_user())
-    token = client.cookies["hearthos_session"]
+    token = client.cookies["hauskraft_session"]
     _age_session(api_settings, token, expires_at=dt.datetime.now(dt.UTC) - dt.timedelta(seconds=1))
     assert client.get("/api/v1/auth/session").status_code == 401
 
 
 def test_activity_slides_the_expiry(client: TestClient, make_user: Callable[..., str], api_settings: Settings) -> None:
     _login(client, make_user())
-    token = client.cookies["hearthos_session"]
+    token = client.cookies["hauskraft_session"]
     old = dt.datetime.now(dt.UTC) - dt.timedelta(days=2)
     _age_session(api_settings, token, last_seen_at=old, expires_at=old + dt.timedelta(days=14))
     assert client.get("/api/v1/auth/session").status_code == 200

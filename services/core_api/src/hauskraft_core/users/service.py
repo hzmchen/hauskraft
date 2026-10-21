@@ -7,18 +7,18 @@ import re
 
 from sqlalchemy import func, select
 
-from hearthos_core.auth.passwords import check_password_policy, hash_password
-from hearthos_core.db.models import User, UserRole
-from hearthos_core.uow import UnitOfWork
-from hearthos_sdk import Actor, ResourceRef
-from hearthos_sdk.errors import ConflictError, HearthosError, NotFoundError
+from hauskraft_core.auth.passwords import check_password_policy, hash_password
+from hauskraft_core.db.models import User, UserRole
+from hauskraft_core.uow import UnitOfWork
+from hauskraft_sdk import Actor, ResourceRef
+from hauskraft_sdk.errors import ConflictError, HauskraftError, NotFoundError
 
 USERNAME = re.compile(r"^[a-z0-9][a-z0-9._-]{1,31}$")
 SYSTEM_ACTOR = Actor(id="system", role="owner", display_name="System", kind="system")
 """Acts for the CLI and the demo seed, which run without a signed-in user."""
 
 
-class RoleNotEnabledInM0Error(HearthosError):
+class RoleNotEnabledInM0Error(HauskraftError):
     status = 422
     code = "role_not_enabled"
     title = "Role not available"
@@ -27,7 +27,7 @@ class RoleNotEnabledInM0Error(HearthosError):
         super().__init__(f"Only adult accounts can be created in M0*, not {role!r}.")
 
 
-class InvalidUsernameError(HearthosError):
+class InvalidUsernameError(HauskraftError):
     status = 422
     code = "invalid_username"
     title = "Invalid username"

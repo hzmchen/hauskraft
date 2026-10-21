@@ -12,10 +12,10 @@
   },
   "iconLibrary": "lucide",
   "aliases": {
-    "components": "@hearthos/ui/components",
-    "utils": "@hearthos/ui/lib/utils",
-    "ui": "@hearthos/ui/components",
-    "lib": "@hearthos/ui/lib",
-    "hooks": "@hearthos/ui/hooks"
+    "components": "@hauskraft/ui/components",
+    "utils": "@hauskraft/ui/lib/utils",
+    "ui": "@hauskraft/ui/components",
+    "lib": "@hauskraft/ui/lib",
+    "hooks": "@hauskraft/ui/hooks"
   }
 }

@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
-"""Environment-driven configuration (M0S-E03-01). Every variable uses the HEARTHOS_ prefix."""
+"""Environment-driven configuration (M0S-E03-01). Every variable uses the HAUSKRAFT_ prefix."""
 
 from __future__ import annotations
 
@@ -21,10 +21,10 @@ def _split_csv(value: Any) -> Any:
 
 
 class Settings(BaseSettings):
-    model_config = SettingsConfigDict(env_prefix="HEARTHOS_", extra="ignore", validate_default=True)
+    model_config = SettingsConfigDict(env_prefix="HAUSKRAFT_", extra="ignore", validate_default=True)
 
     env: Literal["development", "test", "production"] = "development"
-    database_url: str = "postgresql+psycopg://hearthos:hearthos@localhost:5432/hearthos"
+    database_url: str = "postgresql+psycopg://hauskraft:hauskraft@localhost:5432/hauskraft"
     secret_key: SecretStr | None = None
     cookie_secure: bool = False
     allowed_origins: Annotated[list[str], NoDecode] = Field(
@@ -32,7 +32,7 @@ class Settings(BaseSettings):
     )
     plugin_paths: Annotated[list[Path], NoDecode] = Field(default_factory=lambda: [Path("plugins/official")])
     theme_paths: Annotated[list[Path], NoDecode] = Field(default_factory=lambda: [Path("themes/builtin")])
-    default_theme: str = "org.hearthos.theme.default"
+    default_theme: str = "dev.hauskraft.theme.default"
     policy: Literal["noop", "deny_all"] = "noop"
     auth_provider: Literal["local", "oidc"] = "local"
     seed_demo: bool = False
@@ -50,9 +50,9 @@ class Settings(BaseSettings):
     def _environment_rules(self) -> Self:
         if self.env == "production":
             if self.secret_key is None:
-                raise ValueError("HEARTHOS_SECRET_KEY is required when HEARTHOS_ENV=production")
+                raise ValueError("HAUSKRAFT_SECRET_KEY is required when HAUSKRAFT_ENV=production")
             if len(self.secret_key.get_secret_value()) < MIN_SECRET_LENGTH:
-                raise ValueError(f"HEARTHOS_SECRET_KEY must have at least {MIN_SECRET_LENGTH} characters")
+                raise ValueError(f"HAUSKRAFT_SECRET_KEY must have at least {MIN_SECRET_LENGTH} characters")
         elif self.secret_key is None:
             # Development and tests get an ephemeral key; sessions do not survive a restart.
             self.secret_key = SecretStr(secrets.token_urlsafe(48))

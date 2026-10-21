@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 // Due badge: always words ("Overdue", "Today", "Due 14 Oct"), colour only as a second signal.
-import { Icon, cn } from "@hearthos/ui";
+import { Icon, cn } from "@hauskraft/ui";
 import { useTranslation } from "react-i18next";
 
 import { todayIso } from "../api";

@@ -15,7 +15,7 @@ const summary = (id: string, name: string, extra: Record<string, unknown> = {}) 
   name,
   description: "",
   version: "0.1.0",
-  authors: ["HearthOS contributors"],
+  authors: ["Hauskraft contributors"],
   licence: "MIT",
   origin: "builtin",
   valid: true,
@@ -23,7 +23,7 @@ const summary = (id: string, name: string, extra: Record<string, unknown> = {}) 
   warnings: [],
   active: false,
   preview: {
-    swatches: { light: ["rgb(255 255 255)"], dark: ["rgb(0 0 0)"] }, // hearthos-allow-raw-style: theme preview data
+    swatches: { light: ["rgb(255 255 255)"], dark: ["rgb(0 0 0)"] }, // hauskraft-allow-raw-style: theme preview data
     navigation: { wide: "sidebar", narrow: "drawer" },
     density: "comfortable",
     widget_chrome: "outlined",
@@ -32,8 +32,8 @@ const summary = (id: string, name: string, extra: Record<string, unknown> = {}) 
 });
 
 const THEMES = [
-  summary("org.hearthos.theme.default", "Default", { active: true }),
-  summary("org.hearthos.theme.paper", "Paper"),
+  summary("dev.hauskraft.theme.default", "Default", { active: true }),
+  summary("dev.hauskraft.theme.paper", "Paper"),
   summary("org.example.theme.broken", "Broken", {
     origin: "installed",
     valid: false,
@@ -95,7 +95,7 @@ describe("Appearance", () => {
     expect(radio(group, "Paper").checked).toBe(true);
     const dialog = await screen.findByRole("dialog", { name: "Change the look for everyone?" });
     await userEvent.click(within(dialog).getByRole("button", { name: "Change theme" }));
-    await vi.waitFor(() => expect(puts).toEqual([{ theme_id: "org.hearthos.theme.paper" }]));
+    await vi.waitFor(() => expect(puts).toEqual([{ theme_id: "dev.hauskraft.theme.paper" }]));
   });
 
   it("cancelling keeps the current theme", async () => {

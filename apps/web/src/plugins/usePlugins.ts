@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import { pluginsListOptions, type PluginOut } from "@hearthos/sdk-ts";
+import { pluginsListOptions, type PluginOut } from "@hauskraft/sdk-ts";
 import { useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
 

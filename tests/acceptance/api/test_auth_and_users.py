@@ -29,7 +29,7 @@ def test_login_sets_hardened_cookie(anon: Api) -> None:
     r = anon.login("demo")
     assert r.status_code == 200
     cookie = r.headers.get("set-cookie", "")
-    assert cookie.startswith("hearthos_session="), cookie
+    assert cookie.startswith("hauskraft_session="), cookie
     low = cookie.lower()
     assert "httponly" in low and "samesite=lax" in low and "path=/" in low, cookie
     body = r.json()

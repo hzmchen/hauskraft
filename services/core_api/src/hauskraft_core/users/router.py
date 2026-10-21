@@ -5,12 +5,12 @@ from __future__ import annotations
 
 from fastapi import APIRouter, Request
 
-from hearthos_core.auth.deps import CurrentSession, actor_for
-from hearthos_core.auth.schemas import MePatch, UserCreate, UserOut
-from hearthos_core.db.models import User
-from hearthos_core.uow import UnitOfWork
-from hearthos_core.users.service import create_user
-from hearthos_sdk import ResourceRef
+from hauskraft_core.auth.deps import CurrentSession, actor_for
+from hauskraft_core.auth.schemas import MePatch, UserCreate, UserOut
+from hauskraft_core.db.models import User
+from hauskraft_core.uow import UnitOfWork
+from hauskraft_core.users.service import create_user
+from hauskraft_sdk import ResourceRef
 
 router = APIRouter(tags=["users"])
 

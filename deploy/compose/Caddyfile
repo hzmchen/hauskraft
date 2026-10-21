@@ -18,7 +18,7 @@
 	}
 
 	handle /api/* {
-		reverse_proxy {$HEARTHOS_API_UPSTREAM:api:8000}
+		reverse_proxy {$HAUSKRAFT_API_UPSTREAM:api:8000}
 	}
 
 	handle {

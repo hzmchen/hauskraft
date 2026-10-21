@@ -10,8 +10,8 @@ from sqlalchemy import select
 from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from hearthos_core.db.models import PluginRecord
-from hearthos_core.plugins.loader import LoadedPlugin
+from hauskraft_core.db.models import PluginRecord
+from hauskraft_core.plugins.loader import LoadedPlugin
 
 
 async def upsert_loaded(session: AsyncSession, plugins: Iterable[LoadedPlugin]) -> dict[str, bool]:

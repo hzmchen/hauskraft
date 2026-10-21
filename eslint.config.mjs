@@ -7,7 +7,7 @@ import reactHooks from "eslint-plugin-react-hooks";
 import globals from "globals";
 import tseslint from "typescript-eslint";
 
-import hearthos from "./tools/eslint-plugin-hearthos/index.js";
+import hauskraft from "./tools/eslint-plugin-hauskraft/index.js";
 
 const SCRIPTS = ["**/*.{js,mjs,cjs,ts,tsx,mts,cts}"];
 
@@ -16,8 +16,8 @@ const UI_SOURCES = ["apps/web/src", "packages/ui/src", "plugins/**/web/src"];
 
 // Plugin web code may import only these packages (spec §4.2 licence boundary, AGENTS.md rule 2).
 const PLUGIN_WEB_ALLOWED = [
-  "@hearthos/sdk-ts",
-  "@hearthos/ui",
+  "@hauskraft/sdk-ts",
+  "@hauskraft/ui",
   "react",
   "react-dom",
   "react-i18next",
@@ -60,7 +60,7 @@ export default tseslint.config(
           patterns: [
             {
               regex: "(^|/)apps/web(/|$)",
-              message: "Plugins may not import the app shell; use @hearthos/sdk-ts and @hearthos/ui.",
+              message: "Plugins may not import the app shell; use @hauskraft/sdk-ts and @hauskraft/ui.",
             },
             {
               regex: `^(?!\\.{1,2}/)(?!(${allowed})(/|$))`,
@@ -77,8 +77,8 @@ export default tseslint.config(
   },
   {
     files: UI_SOURCES.map((root) => `${root}/**/*.{ts,tsx}`),
-    plugins: { hearthos },
-    rules: { "hearthos/no-raw-styles": "error" },
+    plugins: { hauskraft },
+    rules: { "hauskraft/no-raw-styles": "error" },
   },
   {
     files: UI_SOURCES.map((root) => `${root}/**/*.css`),
@@ -86,7 +86,7 @@ export default tseslint.config(
     ignores: ["packages/ui/src/tokens/fallback.css"],
     language: "css/css",
     languageOptions: { tolerant: true }, // Tailwind at-rules (@theme, @utility, @custom-variant, …)
-    plugins: { css, hearthos },
-    rules: { "hearthos/no-raw-styles": "error" },
+    plugins: { css, hauskraft },
+    rules: { "hauskraft/no-raw-styles": "error" },
   },
 );

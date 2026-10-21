@@ -11,13 +11,13 @@ from __future__ import annotations
 from enum import StrEnum
 from typing import Protocol, runtime_checkable
 
-from hearthos_core.logging import get_logger
-from hearthos_core.settings import Settings
-from hearthos_sdk import Actor, DataClass, ResourceRef
+from hauskraft_core.logging import get_logger
+from hauskraft_core.settings import Settings
+from hauskraft_sdk import Actor, DataClass, ResourceRef
 
 __all__ = ["Actor", "Decision", "DenyAllPolicy", "NoOpPolicy", "Policy", "ResourceRef", "policy_from_settings"]
 
-_log = get_logger("hearthos.policy")
+_log = get_logger("hauskraft.policy")
 
 
 class Decision(StrEnum):
@@ -51,7 +51,7 @@ class NoOpPolicy:
 
 
 class DenyAllPolicy:
-    """Denies everything. Test-only (``HEARTHOS_POLICY=deny_all``) to prove the seam is wired."""
+    """Denies everything. Test-only (``HAUSKRAFT_POLICY=deny_all``) to prove the seam is wired."""
 
     async def authorize(
         self, actor: Actor, action: str, resource: ResourceRef, data_class: DataClass | str, capability: str

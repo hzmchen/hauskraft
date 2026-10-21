@@ -52,11 +52,11 @@ export async function isDark(page: Page): Promise<boolean> {
 
 /** Marks the current document so a later check can prove no full reload happened. */
 export async function markDocument(page: Page): Promise<void> {
-  await page.evaluate(() => ((window as unknown as { __hearthosMark?: number }).__hearthosMark = 42));
+  await page.evaluate(() => ((window as unknown as { __hauskraftMark?: number }).__hauskraftMark = 42));
 }
 
 export async function documentStillMarked(page: Page): Promise<boolean> {
-  return page.evaluate(() => (window as unknown as { __hearthosMark?: number }).__hearthosMark === 42);
+  return page.evaluate(() => (window as unknown as { __hauskraftMark?: number }).__hauskraftMark === 42);
 }
 
 /** Choose an option whether "Sort by" is a native <select> or an ARIA combobox. */

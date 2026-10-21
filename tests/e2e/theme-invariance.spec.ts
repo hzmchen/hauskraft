@@ -51,12 +51,12 @@ test.describe("function invariance across themes", () => {
           for (const mode of MODES) {
             const ctx = await browser.newContext({ viewport, colorScheme: mode });
             await ctx.addInitScript((m) => {
-              try { localStorage.setItem("hearthos.mode", m); } catch { /* storage blocked */ }
+              try { localStorage.setItem("hauskraft.mode", m); } catch { /* storage blocked */ }
             }, mode);
             const page = await ctx.newPage();
             await login(page, "demo");
             await page.goto(view);
-            await expect.poll(() => htmlAttr(page, "data-hearth-theme")).toBe(themeId);
+            await expect.poll(() => htmlAttr(page, "data-hauskraft-theme")).toBe(themeId);
             expect(await page.evaluate(() => document.documentElement.classList.contains("dark"))).toBe(mode === "dark");
 
             const got = await capture(page, view);
@@ -102,7 +102,7 @@ test.describe("visual baselines", () => {
           const page = await ctx.newPage();
           await login(page, "demo");
           await page.goto(view);
-          await expect.poll(() => htmlAttr(page, "data-hearth-theme")).toBe(themeId);
+          await expect.poll(() => htmlAttr(page, "data-hauskraft-theme")).toBe(themeId);
           await expect(page).toHaveScreenshot(`${themeId}-${mode}${view.replaceAll("/", "_")}.png`, {
             fullPage: true,
             mask: [page.getByRole("list", { name: "Open tasks" })],

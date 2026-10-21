@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: MIT
 // Spec-owned end-to-end acceptance tests. Run against a started stack:
 //   docker compose -f compose.yaml -f deploy/compose/compose.test.yaml up --wait
-//   pnpm --filter @hearthos/acceptance-e2e test
+//   pnpm --filter @hauskraft/acceptance-e2e test
 import { defineConfig, devices } from "@playwright/test";
 
-const baseURL = process.env.HEARTHOS_BASE_URL ?? "http://localhost:8080";
+const baseURL = process.env.HAUSKRAFT_BASE_URL ?? "http://localhost:8080";
 
 export default defineConfig({
   testDir: ".",

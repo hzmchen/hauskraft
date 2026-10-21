@@ -1,10 +1,10 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """pytest plugin with database fixtures for integration tests (M0S-E04-04).
 
-Registered as the ``pytest11`` entry point ``hearthos``, so core and plugin tests get it automatically:
+Registered as the ``pytest11`` entry point ``hauskraft``, so core and plugin tests get it automatically:
 
 * ``pg_url`` (session): a ``postgres:16-alpine`` Testcontainers database, started once. Set
-  ``HEARTHOS_TEST_DATABASE_URL`` to use an existing database instead (it must be disposable).
+  ``HAUSKRAFT_TEST_DATABASE_URL`` to use an existing database instead (it must be disposable).
 * ``db_settings`` (session): ``Settings`` for that database, migrated to ``heads`` (core plus every
   plugin under ``plugins/official``).
 * ``db_session`` (function): an ``AsyncSession`` inside a transaction that is rolled back after the test.
@@ -22,8 +22,8 @@ import pytest_asyncio
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.pool import NullPool
 
-from hearthos_core.db import migrations
-from hearthos_core.settings import Settings
+from hauskraft_core.db import migrations
+from hauskraft_core.settings import Settings
 
 REPO = Path(__file__).resolve().parents[4]
 POSTGRES_IMAGE = "postgres:16-alpine"
@@ -31,7 +31,7 @@ POSTGRES_IMAGE = "postgres:16-alpine"
 
 @pytest.fixture(scope="session")
 def pg_url() -> Iterator[str]:
-    external = os.environ.get("HEARTHOS_TEST_DATABASE_URL")
+    external = os.environ.get("HAUSKRAFT_TEST_DATABASE_URL")
     if external:
         yield external
         return

@@ -26,7 +26,7 @@ def _validator() -> Draft202012Validator:
         (d["$id"], Resource.from_contents(d))
         for d in (json.loads(p.read_text()) for p in SCHEMAS.rglob("*.schema.json"))
     ]
-    schema = json.loads((THEME / "hearthos.theme.schema.json").read_text())
+    schema = json.loads((THEME / "hauskraft.theme.schema.json").read_text())
     Draft202012Validator.check_schema(schema)
     return Draft202012Validator(schema, registry=Registry().with_resources(resources))
 
@@ -48,7 +48,7 @@ def test_invalid(path: Path) -> None:
 
 def test_schema_enums_match_layout_options() -> None:
     options = _load("layout-options-v1.json")
-    defs = _load("hearthos.theme.schema.json")["$defs"]
+    defs = _load("hauskraft.theme.schema.json")["$defs"]
     for key, values in options.items():
         if key.startswith("$"):
             continue
@@ -56,13 +56,13 @@ def test_schema_enums_match_layout_options() -> None:
 
 
 def test_contract_files_reference_adr_0013() -> None:
-    for name in ("tokens-v1.json", "icon-names-v1.json", "layout-options-v1.json", "hearthos.theme.schema.json"):
+    for name in ("tokens-v1.json", "icon-names-v1.json", "layout-options-v1.json", "hauskraft.theme.schema.json"):
         assert "ADR-0013" in json.dumps(_load(name)), name
 
 
 def test_font_limit_matches_tokens_v1() -> None:
     limits = _load("tokens-v1.json")["limits"]
-    assert _load("hearthos.theme.schema.json")["properties"]["fonts"]["maxItems"] == limits["max_fonts"]
+    assert _load("hauskraft.theme.schema.json")["properties"]["fonts"]["maxItems"] == limits["max_fonts"]
 
 
 def test_generated_types_are_current() -> None:
@@ -89,6 +89,6 @@ def test_generated_types_are_current() -> None:
 def test_python_literal_lists_every_icon() -> None:
     from typing import get_args
 
-    from hearthos_sdk.theme_contract import CORE_ICON_NAMES, IconName
+    from hauskraft_sdk.theme_contract import CORE_ICON_NAMES, IconName
 
     assert list(get_args(IconName)) == _load("icon-names-v1.json")["icons"] == list(CORE_ICON_NAMES)

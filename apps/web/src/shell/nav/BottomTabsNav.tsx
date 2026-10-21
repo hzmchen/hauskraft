@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import { Button, Sheet, SheetContent, SheetDescription, SheetTitle } from "@hearthos/ui";
+import { Button, Sheet, SheetContent, SheetDescription, SheetTitle } from "@hauskraft/ui";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 

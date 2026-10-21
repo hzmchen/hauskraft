@@ -9,7 +9,7 @@ Status: Accepted
 
 ## Context and problem statement
 
-M0* must prove the plugin skeleton end to end with one native plugin (`org.hearthos.tasks`) without building the full plugin host (signing, isolation tiers, registry).
+M0* must prove the plugin skeleton end to end with one native plugin (`dev.hauskraft.tasks`) without building the full plugin host (signing, isolation tiers, registry).
 
 ## Decision drivers
 
@@ -25,7 +25,7 @@ M0* must prove the plugin skeleton end to end with one native plugin (`org.heart
 
 ## Decision outcome
 
-Chosen option: "Manifest-validated in-process loader". At API start, core reads every `hearthos.plugin.json` under `HEARTHOS_PLUGIN_PATHS` and `HEARTHOS_THEME_PATHS`, validates it against the manifest schema and checks `hearthos_api` against the SDK version. `inprocess` plugins have their Python entrypoint imported, `register(ctx)` called and their router mounted under `/api/v1{api_prefix}`. `declarative` plugins of type `theme` go to the theme registry without importing anything. Other runtimes are recorded as unsupported in M0*. The web side uses a registry generated at build time from manifests with `runtime.web`. The same manifest will drive the subprocess, container and WASM runtimes in `plugin_host` later.
+Chosen option: "Manifest-validated in-process loader". At API start, core reads every `hauskraft.plugin.json` under `HAUSKRAFT_PLUGIN_PATHS` and `HAUSKRAFT_THEME_PATHS`, validates it against the manifest schema and checks `hauskraft_api` against the SDK version. `inprocess` plugins have their Python entrypoint imported, `register(ctx)` called and their router mounted under `/api/v1{api_prefix}`. `declarative` plugins of type `theme` go to the theme registry without importing anything. Other runtimes are recorded as unsupported in M0*. The web side uses a registry generated at build time from manifests with `runtime.web`. The same manifest will drive the subprocess, container and WASM runtimes in `plugin_host` later.
 
 ### Consequences
 

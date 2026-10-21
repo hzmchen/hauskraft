@@ -9,7 +9,7 @@ import en from "./locales/en/shell.json";
 
 export const LANGUAGES = ["en", "de"] as const;
 export type Language = (typeof LANGUAGES)[number];
-export const LOCALE_STORAGE_KEY = "hearthos.locale";
+export const LOCALE_STORAGE_KEY = "hauskraft.locale";
 
 export function isLanguage(value: unknown): value is Language {
   return typeof value === "string" && (LANGUAGES as readonly string[]).includes(value);

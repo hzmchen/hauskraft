@@ -13,9 +13,9 @@ from fastapi import APIRouter
 from sqlalchemy import MetaData
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from hearthos_sdk.data_classes import DataClass
+from hauskraft_sdk.data_classes import DataClass
 
-HEARTHOS_API_VERSION = "0.1.0"
+HAUSKRAFT_API_VERSION = "0.1.0"
 
 
 @dataclass(frozen=True, slots=True)
@@ -38,7 +38,7 @@ class ResourceRef:
 
 @runtime_checkable
 class PluginContext(Protocol):
-    """Everything core offers a plugin. Plugins never import ``hearthos_core``."""
+    """Everything core offers a plugin. Plugins never import ``hauskraft_core``."""
 
     plugin_id: str
     logger: logging.Logger

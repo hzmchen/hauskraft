@@ -1,16 +1,16 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://hearthos.dev/schema/plugin/1.0.json",
+  "$id": "https://hauskraft.dev/schema/plugin/1.0.json",
   "$comment": "SPDX-License-Identifier: MIT",
-  "title": "HearthOS plugin manifest",
-  "description": "HearthOS plugin manifest (hearthos.plugin.json), spec §5.3; theme rule §5.3 and §10.2.4.",
+  "title": "Hauskraft plugin manifest",
+  "description": "Hauskraft plugin manifest (hauskraft.plugin.json), spec §5.3; theme rule §5.3 and §10.2.4.",
   "type": "object",
   "required": [
     "id",
     "name",
     "version",
     "type",
-    "hearthos_api",
+    "hauskraft_api",
     "license",
     "authors",
     "source",
@@ -27,7 +27,7 @@
       "type": "string"
     },
     "id": {
-      "$ref": "https://hearthos.dev/schema/common/1.0.json#/$defs/reverseDnsId"
+      "$ref": "https://hauskraft.dev/schema/common/1.0.json#/$defs/reverseDnsId"
     },
     "name": {
       "type": "string",
@@ -35,7 +35,7 @@
       "maxLength": 80
     },
     "version": {
-      "$ref": "https://hearthos.dev/schema/common/1.0.json#/$defs/semver"
+      "$ref": "https://hauskraft.dev/schema/common/1.0.json#/$defs/semver"
     },
     "description": {
       "type": "string"
@@ -48,8 +48,8 @@
         "enum": ["connector", "domain", "skill", "workflow", "widget", "bridge", "theme"]
       }
     },
-    "hearthos_api": {
-      "description": "npm-style semver range of the HearthOS plugin API this plugin supports.",
+    "hauskraft_api": {
+      "description": "npm-style semver range of the Hauskraft plugin API this plugin supports.",
       "type": "string",
       "minLength": 1
     },
@@ -118,7 +118,7 @@
       "type": "array",
       "uniqueItems": true,
       "items": {
-        "$ref": "https://hearthos.dev/schema/common/1.0.json#/$defs/capability"
+        "$ref": "https://hauskraft.dev/schema/common/1.0.json#/$defs/capability"
       }
     },
     "data_classes": {
@@ -312,7 +312,7 @@
       "type": "array",
       "uniqueItems": true,
       "items": {
-        "$ref": "https://hearthos.dev/schema/common/1.0.json#/$defs/dataClass"
+        "$ref": "https://hauskraft.dev/schema/common/1.0.json#/$defs/dataClass"
       }
     },
     "size": {
@@ -395,7 +395,7 @@
           "type": "integer"
         },
         "icon": {
-          "$ref": "https://hearthos.dev/schema/common/1.0.json#/$defs/semanticIconName"
+          "$ref": "https://hauskraft.dev/schema/common/1.0.json#/$defs/semanticIconName"
         },
         "roles": {
           "type": "array",
@@ -444,7 +444,7 @@
           "pattern": "^[A-Z][A-Za-z0-9]*$"
         },
         "data_class": {
-          "$ref": "https://hearthos.dev/schema/common/1.0.json#/$defs/dataClass"
+          "$ref": "https://hauskraft.dev/schema/common/1.0.json#/$defs/dataClass"
         },
         "jsonld": {
           "type": "string"
@@ -457,7 +457,7 @@
       "additionalProperties": false,
       "properties": {
         "name": {
-          "$ref": "https://hearthos.dev/schema/common/1.0.json#/$defs/semanticIconName"
+          "$ref": "https://hauskraft.dev/schema/common/1.0.json#/$defs/semanticIconName"
         },
         "svg": {
           "description": "Default SVG, relative to the plugin folder.",

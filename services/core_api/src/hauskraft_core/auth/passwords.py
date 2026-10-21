@@ -10,7 +10,7 @@ from __future__ import annotations
 from anyio import to_thread
 from pwdlib import PasswordHash
 
-from hearthos_sdk.errors import HearthosError
+from hauskraft_sdk.errors import HauskraftError
 
 MIN_LENGTH = 12
 MAX_LENGTH = 128
@@ -18,7 +18,7 @@ MAX_LENGTH = 128
 _hasher = PasswordHash.recommended()
 
 
-class PasswordPolicyError(HearthosError):
+class PasswordPolicyError(HauskraftError):
     status = 422
     code = "password_policy"
     title = "Password does not meet the policy"
@@ -50,4 +50,4 @@ async def dummy_verify(password: str) -> None:
     await verify_password(password, _DUMMY_HASH)
 
 
-_DUMMY_HASH = _hasher.hash("hearthos-timing-parity-dummy")
+_DUMMY_HASH = _hasher.hash("hauskraft-timing-parity-dummy")

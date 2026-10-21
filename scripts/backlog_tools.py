@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: MIT
-"""Backlog and traceability tooling for HearthOS.
+"""Backlog and traceability tooling for Hauskraft.
 
     python scripts/backlog_tools.py check                # integrity of spec, backlog and story status
     python scripts/backlog_tools.py coverage             # print story -> acceptance tests
@@ -19,7 +19,7 @@ from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[1]
 BACKLOG = REPO / "docs" / "backlog" / "m0-star"
-SPEC = REPO / "docs" / "spec" / "hearthos-spec-v0.2.md"
+SPEC = REPO / "docs" / "spec" / "hauskraft-spec-v0.2.md"
 STATUS = REPO / "tests" / "story-status.json"
 TRACE = REPO / "docs" / "testing" / "traceability.md"
 

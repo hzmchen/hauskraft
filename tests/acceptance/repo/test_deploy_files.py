@@ -37,14 +37,14 @@ def test_test_overlay_mounts_fixture_themes() -> None:
     text = require_text("deploy/compose/compose.test.yaml", "M0S-E11-01")
     assert "tests/fixtures/themes" in text, "the test overlay must mount tests/fixtures/themes read-only"
     assert ":ro" in text
-    assert "HEARTHOS_THEME_PATHS" in text
+    assert "HAUSKRAFT_THEME_PATHS" in text
 
 
 @story("M0S-E11-01")
 def test_env_example_lists_settings() -> None:
     text = require_text("deploy/compose/.env.example", "M0S-E11-01")
-    for var in ("HEARTHOS_SECRET_KEY", "HEARTHOS_COOKIE_SECURE", "HEARTHOS_ALLOWED_ORIGINS",
-                "HEARTHOS_DEFAULT_THEME", "HEARTHOS_WEB_PORT"):
+    for var in ("HAUSKRAFT_SECRET_KEY", "HAUSKRAFT_COOKIE_SECURE", "HAUSKRAFT_ALLOWED_ORIGINS",
+                "HAUSKRAFT_DEFAULT_THEME", "HAUSKRAFT_WEB_PORT"):
         assert var in text, f".env.example lacks {var}"
 
 
@@ -59,6 +59,6 @@ def test_caddy_sets_strict_csp() -> None:
 @story("M0S-E11-03")
 def test_how_to_test_doc() -> None:
     text = require_text("docs/how-to-test.md", "M0S-E11-03")
-    for needle in ("docker compose up --wait", "docker compose down -v", "HEARTHOS_WEB_PORT",
+    for needle in ("docker compose up --wait", "docker compose down -v", "HAUSKRAFT_WEB_PORT",
                    "themes validate", "data/themes", "pytest tests", "--live"):
         assert needle in text, f"how-to-test.md should mention {needle!r}"

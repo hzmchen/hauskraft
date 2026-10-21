@@ -7,15 +7,15 @@ import {
   themesListOptions,
   themesListQueryKey,
   type ThemeSummary,
-} from "@hearthos/sdk-ts";
-import { Button, Dialog, DialogContent, DialogDescription, DialogFooter, DialogTitle, Swatch, cn } from "@hearthos/ui";
+} from "@hauskraft/sdk-ts";
+import { Button, Dialog, DialogContent, DialogDescription, DialogFooter, DialogTitle, Swatch, cn } from "@hauskraft/ui";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useId, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { ColorModeControl } from "../shell/ColorMode";
 
-export const THEMES_GUIDE_URL = "https://github.com/hearthos/hearthos/blob/main/docs/themes.md";
+export const THEMES_GUIDE_URL = "https://github.com/hzmchen/hauskraft/blob/main/docs/themes.md";
 
 export function AppearanceSettings() {
   const { t } = useTranslation();

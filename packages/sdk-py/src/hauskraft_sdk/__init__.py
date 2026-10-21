@@ -1,9 +1,9 @@
 # SPDX-License-Identifier: MIT
-"""HearthOS plugin SDK (Python). The only HearthOS package in-process plugins may import (spec §4.2)."""
+"""Hauskraft plugin SDK (Python). The only Hauskraft package in-process plugins may import (spec §4.2)."""
 
-from hearthos_sdk.data_classes import DataClass
-from hearthos_sdk.plugin import (
-    HEARTHOS_API_VERSION,
+from hauskraft_sdk.data_classes import DataClass
+from hauskraft_sdk.plugin import (
+    HAUSKRAFT_API_VERSION,
     Actor,
     Plugin,
     PluginContext,
@@ -13,7 +13,7 @@ from hearthos_sdk.plugin import (
 )
 
 __all__ = [
-    "HEARTHOS_API_VERSION",
+    "HAUSKRAFT_API_VERSION",
     "Actor",
     "DataClass",
     "Plugin",

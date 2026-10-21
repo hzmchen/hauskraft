@@ -9,7 +9,7 @@ version = 1
 [[annotations]]
 path = "**"
 precedence = "aggregate"
-SPDX-FileCopyrightText = "2026 HearthOS contributors"
+SPDX-FileCopyrightText = "2026 Hauskraft contributors"
 SPDX-License-Identifier = "AGPL-3.0-or-later"
 
 # ------------------------------------------------------------------ MIT: plugin-facing parts, docs, CI
@@ -20,7 +20,7 @@ path = [
     "README.md", "AGENTS.md", "CONTRIBUTING.md", "LICENSING.md", "SECURITY.md",
 ]
 precedence = "aggregate"
-SPDX-FileCopyrightText = "2026 HearthOS contributors"
+SPDX-FileCopyrightText = "2026 Hauskraft contributors"
 SPDX-License-Identifier = "MIT"
 
 # ------------------------------------------------------------------ Contributor Covenant 3.0
@@ -35,7 +35,7 @@ SPDX-License-Identifier = "CC-BY-SA-4.0"
 [[annotations]]
 path = "tests/**"
 precedence = "override"
-SPDX-FileCopyrightText = "2026 HearthOS contributors"
+SPDX-FileCopyrightText = "2026 Hauskraft contributors"
 SPDX-License-Identifier = "MIT"
 
 # ------------------------------------------------------------------ JSON Schemas (MIT)
@@ -43,7 +43,7 @@ SPDX-License-Identifier = "MIT"
 [[annotations]]
 path = "packages/schemas/**/*.json"
 precedence = "override"
-SPDX-FileCopyrightText = "2026 HearthOS contributors"
+SPDX-FileCopyrightText = "2026 Hauskraft contributors"
 SPDX-License-Identifier = "MIT"
 
 # ------------------------------------------------------------------ Built-in theme fonts (OFL-1.1, M0S-E13-06)

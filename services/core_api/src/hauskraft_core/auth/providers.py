@@ -14,9 +14,9 @@ from typing import Protocol, runtime_checkable
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from hearthos_core.auth.passwords import dummy_verify, verify_password
-from hearthos_core.db.models import User
-from hearthos_core.settings import Settings
+from hauskraft_core.auth.passwords import dummy_verify, verify_password
+from hauskraft_core.db.models import User
+from hauskraft_core.settings import Settings
 
 
 @dataclass(frozen=True, slots=True)
@@ -55,7 +55,7 @@ class OidcProvider:
     """Placeholder for OpenID Connect (built-in, Authelia, Authentik, Keycloak) in M1."""
 
     async def authenticate(self, session: AsyncSession, credentials: PasswordCredentials) -> UserRef | None:
-        raise NotImplementedError("OIDC login arrives in M1 (ADR-0005); use HEARTHOS_AUTH_PROVIDER=local")
+        raise NotImplementedError("OIDC login arrives in M1 (ADR-0005); use HAUSKRAFT_AUTH_PROVIDER=local")
 
 
 def provider_from_settings(settings: Settings) -> IdentityProvider:

@@ -1,6 +1,6 @@
 {
   "app": {
-    "name": "HearthOS"
+    "name": "Hauskraft"
   },
   "nav": {
     "label": "Main",
@@ -35,7 +35,7 @@
     "dark": "Dunkel"
   },
   "login": {
-    "title": "Bei HearthOS anmelden",
+    "title": "Bei Hauskraft anmelden",
     "username": "Benutzername",
     "password": "Passwort",
     "submit": "Anmelden",
@@ -81,7 +81,7 @@
     "done_editing": "Fertig"
   },
   "activity": {
-    "system": "HearthOS",
+    "system": "Hauskraft",
     "empty": "Bisher ist nichts passiert.",
     "show_older": "Ältere anzeigen",
     "unknown": "{{actor}}: {{type}}",

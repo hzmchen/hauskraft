@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
-"""The ``hearthos`` command line (M0S-E05-05, ``seed`` M0S-E11-02, ``themes`` M0S-E13-09).
+"""The ``hauskraft`` command line (M0S-E05-05, ``seed`` M0S-E11-02, ``themes`` M0S-E13-09).
 
-Configuration comes from the same ``HEARTHOS_*`` environment variables as the API.
+Configuration comes from the same ``HAUSKRAFT_*`` environment variables as the API.
 """
 
 from __future__ import annotations
@@ -16,15 +16,15 @@ import typer
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 from sqlalchemy.pool import NullPool
 
-from hearthos_core.db import migrations
-from hearthos_core.logging import configure_logging
-from hearthos_core.policy import policy_from_settings
-from hearthos_core.settings import Settings
-from hearthos_core.uow import UnitOfWork
-from hearthos_core.users import service
-from hearthos_sdk.errors import HearthosError
+from hauskraft_core.db import migrations
+from hauskraft_core.logging import configure_logging
+from hauskraft_core.policy import policy_from_settings
+from hauskraft_core.settings import Settings
+from hauskraft_core.uow import UnitOfWork
+from hauskraft_core.users import service
+from hauskraft_sdk.errors import HauskraftError
 
-app = typer.Typer(help="HearthOS administration.", no_args_is_help=True, pretty_exceptions_enable=False)
+app = typer.Typer(help="Hauskraft administration.", no_args_is_help=True, pretty_exceptions_enable=False)
 users_app = typer.Typer(help="Manage local accounts.", no_args_is_help=True)
 db_app = typer.Typer(help="Database schema.", no_args_is_help=True)
 themes_app = typer.Typer(help="Check and list theme packages.", no_args_is_help=True)
@@ -54,7 +54,7 @@ def _run[T](work: Callable[[UnitOfWork], Awaitable[T]]) -> T:
 
     try:
         return asyncio.run(_main())
-    except HearthosError as exc:
+    except HauskraftError as exc:
         typer.secho(f"error: {exc.detail}", err=True, fg=typer.colors.RED)
         raise typer.Exit(1) from None
 
@@ -107,12 +107,12 @@ def seed(
     ] = True,
     force_demo: Annotated[bool, typer.Option("--force-demo", help="Allow the demo password in production.")] = False,
 ) -> None:
-    """Create the demo household (fixtures/household/demo.json) when HEARTHOS_SEED_DEMO is on."""
-    from hearthos_core.seed import load_fixture, run_seed
+    """Create the demo household (fixtures/household/demo.json) when HAUSKRAFT_SEED_DEMO is on."""
+    from hauskraft_core.seed import load_fixture, run_seed
 
     try:
         result = asyncio.run(run_seed(Settings(), load_fixture(), force_demo=force_demo))
-    except HearthosError as exc:
+    except HauskraftError as exc:
         typer.secho(f"error: {exc.detail}", err=True, fg=typer.colors.RED)
         raise typer.Exit(1) from None
     typer.echo(result.reason)
@@ -127,12 +127,12 @@ def db_upgrade() -> None:
 
 @themes_app.command("validate")
 def themes_validate(
-    path: Annotated[Path, typer.Argument(help="Theme folder (the one with hearthos.plugin.json).")],
+    path: Annotated[Path, typer.Argument(help="Theme folder (the one with hauskraft.plugin.json).")],
     strict: Annotated[bool, typer.Option("--strict", help="Treat warnings as failures.")] = False,
     as_json: Annotated[bool, typer.Option("--json", help="Print the report as JSON.")] = False,
 ) -> None:
     """Check a theme package. Exit 0 valid, 1 invalid (or warnings with --strict), 2 usage error."""
-    from hearthos_core.themes.validate import validate_theme
+    from hauskraft_core.themes.validate import validate_theme
 
     if not path.is_dir():
         typer.secho(f"error: {path} is not a theme folder", err=True, fg=typer.colors.RED)
@@ -164,9 +164,9 @@ def themes_validate(
 
 @themes_app.command("list")
 def themes_list() -> None:
-    """Show the themes found in HEARTHOS_THEME_PATHS, whether they are valid, and which one is active (*)."""
-    from hearthos_core.plugins.manifests import discover
-    from hearthos_core.themes.registry import build_registry, stored_theme_id
+    """Show the themes found in HAUSKRAFT_THEME_PATHS, whether they are valid, and which one is active (*)."""
+    from hauskraft_core.plugins.manifests import discover
+    from hauskraft_core.themes.registry import build_registry, stored_theme_id
 
     settings = Settings()
     registry = build_registry(

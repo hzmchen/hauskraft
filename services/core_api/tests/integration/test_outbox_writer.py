@@ -8,14 +8,14 @@ import pytest
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
-from hearthos_core.db.models import OutboxEvent, User
-from hearthos_core.events.outbox import EventValidationError, OutsideUnitOfWorkError, emit
-from hearthos_core.policy import NoOpPolicy
-from hearthos_core.schemas import validator
-from hearthos_core.settings import Settings
-from hearthos_core.uow import UnitOfWork
-from hearthos_sdk import Actor, DataClass, ResourceRef
-from hearthos_sdk.events import TaskCreatedData, TaskSnapshot
+from hauskraft_core.db.models import OutboxEvent, User
+from hauskraft_core.events.outbox import EventValidationError, OutsideUnitOfWorkError, emit
+from hauskraft_core.policy import NoOpPolicy
+from hauskraft_core.schemas import validator
+from hauskraft_core.settings import Settings
+from hauskraft_core.uow import UnitOfWork
+from hauskraft_sdk import Actor, DataClass, ResourceRef
+from hauskraft_sdk.events import TaskCreatedData, TaskSnapshot
 
 pytestmark = pytest.mark.integration
 
@@ -46,18 +46,18 @@ async def test_emit_stores_a_schema_valid_envelope(
     async with _uow(db_session, db_settings) as uow:
         await uow.authorize(actor, "task.create", ResourceRef("Task", str(TASK_ID)), "household", "graph:write:Task")
         event_id = await emit(
-            "hearthos.task.created", f"task/{TASK_ID}", _created(), DataClass.HOUSEHOLD, source="org.hearthos.tasks"
+            "hauskraft.task.created", f"task/{TASK_ID}", _created(), DataClass.HOUSEHOLD, source="dev.hauskraft.tasks"
         )
     row = (await db_session.execute(select(OutboxEvent).where(OutboxEvent.id == uuid.UUID(event_id)))).scalar_one()
     env = row.envelope
     assert uuid.UUID(env["id"]).version == 7
     assert env["specversion"] == "1.0"
-    assert env["source"] == "org.hearthos.tasks"
-    assert env["type"] == "hearthos.task.created"
+    assert env["source"] == "dev.hauskraft.tasks"
+    assert env["type"] == "hauskraft.task.created"
     assert env["subject"] == f"task/{TASK_ID}"
     assert env["dataclass"] == "household"
     assert env["actorid"] == actor.id
-    assert env["dataschema"] == "https://schemas.hearthos.org/events/task.created/v1.json"
+    assert env["dataschema"] == "https://hauskraft.dev/schema/events/task.created/v1.json"
     assert dt.datetime.fromisoformat(env["time"]).tzinfo is not None
     assert env["data"]["task"]["title"] == "Buy milk"
     assert row.actor_id == uuid.UUID(actor.id)
@@ -72,7 +72,7 @@ async def test_rollback_removes_the_event(db_session: AsyncSession, db_settings:
         async with _uow(db_session, db_settings) as uow:
             await uow.authorize(actor, "task.create", ResourceRef("Task"), "household", "graph:write:Task")
             holder["id"] = await emit(
-                "hearthos.task.created", f"task/{TASK_ID}", _created(), "household", source="org.hearthos.tasks"
+                "hauskraft.task.created", f"task/{TASK_ID}", _created(), "household", source="dev.hauskraft.tasks"
             )
             raise RuntimeError("the write failed after the event was queued")
     assert (await db_session.get(OutboxEvent, uuid.UUID(holder["id"]))) is None
@@ -80,7 +80,7 @@ async def test_rollback_removes_the_event(db_session: AsyncSession, db_settings:
 
 async def test_emit_outside_a_unit_of_work_raises() -> None:
     with pytest.raises(OutsideUnitOfWorkError):
-        await emit("hearthos.task.created", "task/x", _created(), "household")
+        await emit("hauskraft.task.created", "task/x", _created(), "household")
 
 
 async def test_invalid_events_are_rejected_when_validation_is_on(
@@ -90,7 +90,7 @@ async def test_invalid_events_are_rejected_when_validation_is_on(
         async with _uow(db_session, db_settings) as uow:
             await uow.authorize(actor, "task.create", ResourceRef("Task"), "household", "graph:write:Task")
             await emit(
-                "hearthos.task.created", "task/x", {"task": {"title": ""}}, "household", source="org.hearthos.tasks"
+                "hauskraft.task.created", "task/x", {"task": {"title": ""}}, "household", source="dev.hauskraft.tasks"
             )
 
 
@@ -98,15 +98,15 @@ async def test_validation_can_be_switched_off(db_session: AsyncSession, db_setti
     settings = db_settings.model_copy(update={"validate_events": False})
     async with _uow(db_session, settings) as uow:
         await uow.authorize(actor, "probe.write", ResourceRef("Probe"), "household", "events:emit:probe")
-        await emit("hearthos.probe.unschematised", "probe/1", {"anything": True}, "household")
+        await emit("hauskraft.probe.unschematised", "probe/1", {"anything": True}, "household")
 
 
 async def test_system_events_without_an_actor(db_session: AsyncSession, db_settings: Settings) -> None:
     async with _uow(db_session, db_settings) as uow:
         event_id = await emit(
-            "hearthos.plugin.toggled",
-            "plugin/org.hearthos.tasks",
-            {"plugin_id": "org.hearthos.tasks", "enabled": True},
+            "hauskraft.plugin.toggled",
+            "plugin/dev.hauskraft.tasks",
+            {"plugin_id": "dev.hauskraft.tasks", "enabled": True},
             "household",
         )
         assert uow.actor is None
@@ -114,4 +114,4 @@ async def test_system_events_without_an_actor(db_session: AsyncSession, db_setti
     assert row is not None
     assert row.actor_id is None
     assert "actorid" not in row.envelope
-    assert row.source == "org.hearthos.core"
+    assert row.source == "dev.hauskraft.core"

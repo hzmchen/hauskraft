@@ -1,8 +1,8 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """In-process plugin loader (M0S-E06-03, ADR-0004).
 
-At app creation every ``*/hearthos.plugin.json`` under ``HEARTHOS_PLUGIN_PATHS`` and ``HEARTHOS_THEME_PATHS``
-is validated against the manifest schema and its ``hearthos_api`` range checked against the SDK.
+At app creation every ``*/hauskraft.plugin.json`` under ``HAUSKRAFT_PLUGIN_PATHS`` and ``HAUSKRAFT_THEME_PATHS``
+is validated against the manifest schema and its ``hauskraft_api`` range checked against the SDK.
 
 * ``inprocess``: the entrypoint is imported, ``register(ctx)`` called and the router mounted at
   ``/api/v1{api_prefix}`` with the plugin's short name as tag. No database is needed, so the OpenAPI export
@@ -25,16 +25,16 @@ from fastapi import APIRouter, Depends, HTTPException, Request
 from semantic_version import NpmSpec, Version
 from sqlalchemy import MetaData
 
-from hearthos_core import schemas
-from hearthos_core.logging import get_logger
-from hearthos_core.plugins.context import CorePluginContext
-from hearthos_core.plugins.manifests import DiscoveredManifest, discover
-from hearthos_sdk import HEARTHOS_API_VERSION, Plugin, PluginRegistration
+from hauskraft_core import schemas
+from hauskraft_core.logging import get_logger
+from hauskraft_core.plugins.context import CorePluginContext
+from hauskraft_core.plugins.manifests import DiscoveredManifest, discover
+from hauskraft_sdk import HAUSKRAFT_API_VERSION, Plugin, PluginRegistration
 
 if TYPE_CHECKING:
     from fastapi import FastAPI
 
-MANIFEST_SCHEMA = "manifest/hearthos.plugin.schema.json"
+MANIFEST_SCHEMA = "manifest/hauskraft.plugin.schema.json"
 UNSUPPORTED = "runtime not supported in M0*"
 CORE_PREFIXES = frozenset(
     {
@@ -52,7 +52,7 @@ CORE_PREFIXES = frozenset(
     }
 )
 
-_log = get_logger("hearthos.plugins")
+_log = get_logger("hauskraft.plugins")
 
 
 @dataclass
@@ -83,10 +83,10 @@ def _check_manifest(found: DiscoveredManifest) -> str | None:
     if problems:
         return "manifest invalid: " + "; ".join(problems[:5])
     try:
-        if not NpmSpec(str(found.manifest["hearthos_api"])).match(Version(HEARTHOS_API_VERSION)):
-            return f"hearthos_api {found.manifest['hearthos_api']!r} does not include {HEARTHOS_API_VERSION}"
+        if not NpmSpec(str(found.manifest["hauskraft_api"])).match(Version(HAUSKRAFT_API_VERSION)):
+            return f"hauskraft_api {found.manifest['hauskraft_api']!r} does not include {HAUSKRAFT_API_VERSION}"
     except ValueError as exc:
-        return f"hearthos_api is not a valid range: {exc}"
+        return f"hauskraft_api is not a valid range: {exc}"
     return None
 
 
@@ -94,7 +94,7 @@ def _import_entrypoint(entrypoint: str) -> Plugin:
     module_name, _, attribute = entrypoint.partition(":")
     obj = getattr(importlib.import_module(module_name), attribute)
     if not isinstance(obj, Plugin):
-        raise TypeError(f"{entrypoint} is not a hearthos_sdk.Plugin")
+        raise TypeError(f"{entrypoint} is not a hauskraft_sdk.Plugin")
     return obj
 
 

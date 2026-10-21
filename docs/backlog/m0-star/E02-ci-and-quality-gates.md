@@ -22,14 +22,14 @@
 - **AC:**
   - Given a PR, when the `contract` job runs, then `pytest -m "integration or contract"` uses Testcontainers Postgres 16.
   - `just gen && git diff --exit-code` fails if the OpenAPI file, generated TS client or plugin registry is stale.
-  - All `hearthos.plugin.json` files validate against the manifest schema, and all `themes/builtin/*` pass `hearthos themes validate` (once E13-09 lands).
+  - All `hauskraft.plugin.json` files validate against the manifest schema, and all `themes/builtin/*` pass `hauskraft themes validate` (once E13-09 lands).
 - **Tech:** Ubuntu runners have Docker. Keep the Testcontainers Ryuk default (enabled).
 - **Tests:** Self-verifying.
 - **Deps:** E02-01, E04-04 · **Est:** S · **Labels:** area:ci
 
 ## M0S-E02-03 · E2E job with Compose and Playwright
 - **Story:** As a maintainer, I want the demo script and the theme invariance suite executed on every PR to `main`, so that "a test user can interact" and "themes never change function" stay true.
-- **AC:** Given a PR, when `e2e.yml` runs, then it builds images, runs `docker compose -f compose.yaml -f deploy/compose/compose.test.yaml up --wait`, runs `python -m pytest tests --live --strict-status` and `pnpm --filter @hearthos/acceptance-e2e exec playwright test` (specs `demo`, `tasks`, `theme-invariance` in `tests/e2e/`) against `http://localhost:8080` with `HEARTHOS_E2E_RESTART_CMD` set, and uploads trace and report on failure.
+- **AC:** Given a PR, when `e2e.yml` runs, then it builds images, runs `docker compose -f compose.yaml -f deploy/compose/compose.test.yaml up --wait`, runs `python -m pytest tests --live --strict-status` and `pnpm --filter @hauskraft/acceptance-e2e exec playwright test` (specs `demo`, `tasks`, `theme-invariance` in `tests/e2e/`) against `http://localhost:8080` with `HAUSKRAFT_E2E_RESTART_CMD` set, and uploads trace and report on failure.
 - **Tech:** `@playwright/test@1.64.x`; `npx playwright install --with-deps chromium`; `reuseExistingServer` off in CI.
 - **Tests:** `tests/e2e/demo.spec.ts` (E11-03), `tests/e2e/theme-invariance.spec.ts` (E13-08), `tests/acceptance/api/`.
 - **Deps:** E11-01 · **Est:** M · **Labels:** area:ci

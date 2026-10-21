@@ -1,14 +1,14 @@
 # SPDX-License-Identifier: MIT
 [project]
-name = "hearthos-tasks"
+name = "hauskraft-tasks"
 version = "0.1.0"
-description = "HearthOS official tasks plugin (backend)."
+description = "Hauskraft official tasks plugin (backend)."
 license = "MIT"
 requires-python = ">=3.13"
-dependencies = ["hearthos-sdk", "sqlalchemy[asyncio]~=2.1.4", "fastapi~=0.143.0", "pydantic>=2.12,<3"]
+dependencies = ["hauskraft-sdk", "sqlalchemy[asyncio]~=2.1.4", "fastapi~=0.143.0", "pydantic>=2.12,<3"]
 
 [tool.uv.sources]
-hearthos-sdk = { workspace = true }
+hauskraft-sdk = { workspace = true }
 
 [build-system]
 requires = ["hatchling==1.32.4"]

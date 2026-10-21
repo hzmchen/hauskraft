@@ -154,7 +154,7 @@ SPRITE_SCRIPT = """<svg xmlns="http://www.w3.org/2000/svg">
 """
 MIT_FIXTURE = """MIT License
 
-Copyright (c) 2026 HearthOS contributors
+Copyright (c) 2026 Hauskraft contributors
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
 associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -176,15 +176,15 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 # --------------------------------------------------------------------------- theme packages
 def manifest(name: str) -> dict:
     return {
-        "$schema": "../../../../packages/schemas/manifest/hearthos.plugin.schema.json",
+        "$schema": "../../../../packages/schemas/manifest/hauskraft.plugin.schema.json",
         "id": f"org.example.theme.{name}",
         "name": name.replace("-", " ").title(),
         "version": "0.1.0",
         "type": ["theme"],
-        "hearthos_api": "^0.1.0",
+        "hauskraft_api": "^0.1.0",
         "license": "MIT",
-        "authors": [{"name": "HearthOS test fixtures"}],
-        "source": f"https://github.com/hearthos/hearthos/tree/main/tests/fixtures/themes/{name}",
+        "authors": [{"name": "Hauskraft test fixtures"}],
+        "source": f"https://github.com/hzmchen/hauskraft/tree/main/tests/fixtures/themes/{name}",
         "runtime": {"kind": "declarative"},
         "capabilities": [],
         "data_classes": {"reads": [], "writes": [], "emits": []},
@@ -194,7 +194,7 @@ def manifest(name: str) -> dict:
 
 def theme_json(name: str) -> dict:
     return {
-        "$schema": "../../../../packages/schemas/theme/hearthos.theme.schema.json",
+        "$schema": "../../../../packages/schemas/theme/hauskraft.theme.schema.json",
         "theme_api": "1.0",
         "name": name.replace("-", " ").title(),
         "description": "Acceptance-suite fixture. See tests/fixtures/README.md.",
@@ -230,7 +230,7 @@ def write_theme(name: str, *, light: dict | None = None, dark: dict | None = Non
         (folder / "assets" / "icons" / "sprite.svg").write_text(sprite, encoding="utf-8")
     if mutate:
         mutate(lt=lt, dk=dk, tj=tj, mf=mf)
-    write_json(folder / "hearthos.plugin.json", mf)
+    write_json(folder / "hauskraft.plugin.json", mf)
     write_json(folder / "theme.json", tj)
     write_json(folder / "tokens.light.json", lt)
     write_json(folder / "tokens.dark.json", dk)
@@ -344,7 +344,7 @@ def build_themes() -> None:
            note="Theme plugins may not request capabilities.")
 
     write_json(THEMES / "expected.json", {
-        "$comment": "Expected `hearthos themes validate --json` outcome per fixture. Each invalid fixture "
+        "$comment": "Expected `hauskraft themes validate --json` outcome per fixture. Each invalid fixture "
                     "must report at least the listed error codes; valid ones must report no errors and "
                     "exactly the listed warning codes.",
         "themes": EXPECTED,
@@ -353,13 +353,13 @@ def build_themes() -> None:
 
 # --------------------------------------------------------------------------- JSON fixtures
 TASKS_MANIFEST = {
-    "$schema": "../../../../packages/schemas/manifest/hearthos.plugin.schema.json",
-    "id": "org.hearthos.tasks", "name": "Tasks", "version": "0.1.0", "type": ["domain", "widget"],
-    "hearthos_api": "^0.1.0", "license": "MIT", "authors": [{"name": "HearthOS contributors"}],
-    "source": "https://github.com/hearthos/hearthos/tree/main/plugins/official/tasks",
-    "runtime": {"kind": "inprocess", "entrypoint": "hearthos_tasks.plugin:plugin", "api_prefix": "/tasks",
-                "migrations": "backend/migrations/versions", "web": "@hearthos/plugin-tasks"},
-    "capabilities": ["graph:read:Task", "graph:write:Task", "events:emit:hearthos.task.*"],
+    "$schema": "../../../../packages/schemas/manifest/hauskraft.plugin.schema.json",
+    "id": "dev.hauskraft.tasks", "name": "Tasks", "version": "0.1.0", "type": ["domain", "widget"],
+    "hauskraft_api": "^0.1.0", "license": "MIT", "authors": [{"name": "Hauskraft contributors"}],
+    "source": "https://github.com/hzmchen/hauskraft/tree/main/plugins/official/tasks",
+    "runtime": {"kind": "inprocess", "entrypoint": "hauskraft_tasks.plugin:plugin", "api_prefix": "/tasks",
+                "migrations": "backend/migrations/versions", "web": "@hauskraft/plugin-tasks"},
+    "capabilities": ["graph:read:Task", "graph:write:Task", "events:emit:hauskraft.task.*"],
     "data_classes": {"reads": ["household"], "writes": ["household"], "emits": ["household"]},
     "config_schema": {"type": "object", "properties": {}, "additionalProperties": False},
     "contributes": {
@@ -374,12 +374,12 @@ TASKS_MANIFEST = {
 }
 
 PAPERLESS_MANIFEST = {
-    "$schema": "../../../../packages/schemas/manifest/hearthos.plugin.schema.json",
-    "id": "org.hearthos.connector.paperless", "name": "Paperless-ngx", "version": "0.3.0",
-    "type": ["connector", "widget"], "hearthos_api": ">=1.0 <2.0", "license": "MIT",
-    "authors": [{"name": "HearthOS contributors"}],
-    "source": "https://github.com/hearthos/plugin-paperless",
-    "runtime": {"kind": "container", "image": "ghcr.io/hearthos/plugin-paperless", "digest": "sha256:" + "0" * 64},
+    "$schema": "../../../../packages/schemas/manifest/hauskraft.plugin.schema.json",
+    "id": "dev.hauskraft.connector.paperless", "name": "Paperless-ngx", "version": "0.3.0",
+    "type": ["connector", "widget"], "hauskraft_api": ">=1.0 <2.0", "license": "MIT",
+    "authors": [{"name": "Hauskraft contributors"}],
+    "source": "https://github.com/hzmchen/plugin-paperless",
+    "runtime": {"kind": "container", "image": "ghcr.io/hauskraft/plugin-paperless", "digest": "sha256:" + "0" * 64},
     "config_schema": {"type": "object", "required": ["base_url"],
                       "properties": {"base_url": {"type": "string", "format": "uri"}}},
     "secrets": ["paperless_api_token"],
@@ -387,7 +387,7 @@ PAPERLESS_MANIFEST = {
                      "llm:invoke:financial", "notify:inbox"],
     "data_classes": {"reads": ["financial", "tenant", "health"], "writes": ["financial"],
                      "emits": ["financial", "tenant", "health"]},
-    "subscribes": ["hearthos.deadline.created"],
+    "subscribes": ["hauskraft.deadline.created"],
     "contributes": {
         "tools": [{"name": "paperless.search", "annotations": {"read_only": True, "open_world": False}},
                   {"name": "paperless.tag_document",
@@ -438,12 +438,12 @@ def build_manifests() -> None:
 EVENT_BASE = {
     "specversion": "1.0",
     "id": "0199f3a2-6c1e-7b8a-9d40-2f6c1a0b7e11",
-    "source": "org.hearthos.tasks",
-    "type": "hearthos.task.created",
+    "source": "dev.hauskraft.tasks",
+    "type": "hauskraft.task.created",
     "subject": "task/0199f3a2-6c1d-7c55-8a10-3e2b9f4c0d21",
     "time": "2026-10-12T09:15:02.481Z",
     "datacontenttype": "application/json",
-    "dataschema": "https://schemas.hearthos.org/events/task.created/v1.json",
+    "dataschema": "https://hauskraft.dev/schema/events/task.created/v1.json",
     "dataclass": "household",
     "actorid": "0199f390-1111-7aaa-8bbb-cccccccccccc",
 }
@@ -451,9 +451,9 @@ TASK = {"id": "0199f3a2-6c1d-7c55-8a10-3e2b9f4c0d21", "title": "Buy milk", "done
         "due_on": None, "version": 1}
 
 
-def event(type_: str, data: dict, source: str = "org.hearthos.tasks", subject: str | None = None) -> dict:
-    e = dict(EVENT_BASE, type=f"hearthos.{type_}", data=data, source=source,
-             dataschema=f"https://schemas.hearthos.org/events/{type_}/v1.json")
+def event(type_: str, data: dict, source: str = "dev.hauskraft.tasks", subject: str | None = None) -> dict:
+    e = dict(EVENT_BASE, type=f"hauskraft.{type_}", data=data, source=source,
+             dataschema=f"https://hauskraft.dev/schema/events/{type_}/v1.json")
     if subject is not None:
         e["subject"] = subject
     return e
@@ -474,11 +474,11 @@ def build_events() -> None:
         "task": done, "completed_at": "2026-10-12T09:20:00Z"}))
     write_json(base / "valid" / "task.deleted.json", event("task.deleted", {"task": done}))
     write_json(base / "valid" / "settings.theme_changed.json", event(
-        "settings.theme_changed", {"from": "org.hearthos.theme.default", "to": "org.hearthos.theme.hackspace"},
-        source="org.hearthos.core", subject="setting/theme_id"))
+        "settings.theme_changed", {"from": "dev.hauskraft.theme.default", "to": "dev.hauskraft.theme.hackspace"},
+        source="dev.hauskraft.core", subject="setting/theme_id"))
     write_json(base / "valid" / "plugin.toggled.json", event(
-        "plugin.toggled", {"plugin_id": "org.hearthos.tasks", "enabled": True},
-        source="org.hearthos.core", subject="plugin/org.hearthos.tasks"))
+        "plugin.toggled", {"plugin_id": "dev.hauskraft.tasks", "enabled": True},
+        source="dev.hauskraft.core", subject="plugin/dev.hauskraft.tasks"))
 
     def bad(name: str, why: str, change) -> None:
         e = event("task.created", {"task": TASK})
@@ -500,7 +500,7 @@ def build_theme_json() -> None:
     if base.exists():
         shutil.rmtree(base)
     hack = {
-        "$schema": "https://hearthos.dev/schema/theme/1.0.json", "theme_api": "1.0", "name": "Hackspace",
+        "$schema": "https://hauskraft.dev/schema/theme/1.0.json", "theme_api": "1.0", "name": "Hackspace",
         "description": "Basement hackerspace look: near-black, phosphor green, monospace, pixel icons.",
         "tokens": {"light": "tokens.light.json", "dark": "tokens.dark.json"},
         "fonts": [{"family": "JetBrains Mono", "src": "assets/fonts/JetBrainsMono-Variable.woff2",

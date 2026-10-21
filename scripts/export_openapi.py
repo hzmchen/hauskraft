@@ -23,9 +23,9 @@ TARGET = REPO / "packages" / "schemas" / "openapi" / "core-api.openapi.json"
 
 
 def render() -> str:
-    os.environ.setdefault("HEARTHOS_LOG_LEVEL", "WARNING")
-    from hearthos_core.app import create_app
-    from hearthos_core.settings import Settings
+    os.environ.setdefault("HAUSKRAFT_LOG_LEVEL", "WARNING")
+    from hauskraft_core.app import create_app
+    from hauskraft_core.settings import Settings
 
     settings = Settings(
         env="test",
