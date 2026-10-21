@@ -1,5 +1,5 @@
-/* dev.hauskraft.theme.default 0.1.0 hash=bd8dcd369e202633f880661b4f0a9cbccc142e3fa3a4f49b44f0bb49ff01581e */
-@font-face { font-family: "Inter"; font-weight: 100 900; font-style: normal; font-display: swap; src: url("/api/v1/theme/assets/dev.hauskraft.theme.default/assets/fonts/Inter-Variable.woff2?h=bd8dcd369e202633") format("woff2"); }
+/* dev.hauskraft.theme.default 0.1.0 hash=c5ed4db4d971d62d9ae8e1d530c093e1798f019b1b2cd73e92029892090cce71 */
+@font-face { font-family: "Inter"; font-weight: 100 900; font-style: normal; font-display: swap; src: url("/api/v1/theme/assets/dev.hauskraft.theme.default/assets/fonts/Inter-Variable.woff2?h=c5ed4db4d971d62d") format("woff2"); }
 :root {
   color-scheme: light;
   --hauskraft-color-accent: rgb(219 234 254);

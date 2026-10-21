@@ -1,6 +1,6 @@
-/* dev.hauskraft.theme.paper 0.1.0 hash=c378d27bf58bcea11457f45791223508fdba0bf9c4d364292056bbb3879b5995 */
-@font-face { font-family: "Source Serif 4"; font-weight: 200 900; font-style: normal; font-display: swap; src: url("/api/v1/theme/assets/dev.hauskraft.theme.paper/assets/fonts/SourceSerif4-Variable.woff2?h=c378d27bf58bcea1") format("woff2"); }
-@font-face { font-family: "Atkinson Hyperlegible Next"; font-weight: 200 800; font-style: normal; font-display: swap; src: url("/api/v1/theme/assets/dev.hauskraft.theme.paper/assets/fonts/AtkinsonHyperlegibleNext-Variable.woff2?h=c378d27bf58bcea1") format("woff2"); }
+/* dev.hauskraft.theme.paper 0.1.0 hash=f7cf5bcbfaeeaed59c414a55258898928114f00ec47d2b67d7a57aa306d7eccc */
+@font-face { font-family: "Source Serif 4"; font-weight: 200 900; font-style: normal; font-display: swap; src: url("/api/v1/theme/assets/dev.hauskraft.theme.paper/assets/fonts/SourceSerif4-Variable.woff2?h=f7cf5bcbfaeeaed5") format("woff2"); }
+@font-face { font-family: "Atkinson Hyperlegible Next"; font-weight: 200 800; font-style: normal; font-display: swap; src: url("/api/v1/theme/assets/dev.hauskraft.theme.paper/assets/fonts/AtkinsonHyperlegibleNext-Variable.woff2?h=f7cf5bcbfaeeaed5") format("woff2"); }
 :root {
   color-scheme: light;
   --hauskraft-color-accent: rgb(230 223 205);

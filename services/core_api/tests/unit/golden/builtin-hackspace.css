@@ -1,6 +1,6 @@
-/* dev.hauskraft.theme.hackspace 0.1.0 hash=05318b5b9b8f795ac0c7ce971c6976649f676dd73c10417cbe67fe6da99b6a60 */
-@font-face { font-family: "VT323"; font-weight: 400; font-style: normal; font-display: swap; src: url("/api/v1/theme/assets/dev.hauskraft.theme.hackspace/assets/fonts/VT323-Regular.woff2?h=05318b5b9b8f795a") format("woff2"); }
-@font-face { font-family: "JetBrains Mono"; font-weight: 100 800; font-style: normal; font-display: swap; src: url("/api/v1/theme/assets/dev.hauskraft.theme.hackspace/assets/fonts/JetBrainsMono-Variable.woff2?h=05318b5b9b8f795a") format("woff2"); }
+/* dev.hauskraft.theme.hackspace 0.1.0 hash=6b23db0be95fcd16f61f236f474c99a4d289170cfbbb48c26705b341faaa6595 */
+@font-face { font-family: "VT323"; font-weight: 400; font-style: normal; font-display: swap; src: url("/api/v1/theme/assets/dev.hauskraft.theme.hackspace/assets/fonts/VT323-Regular.woff2?h=6b23db0be95fcd16") format("woff2"); }
+@font-face { font-family: "JetBrains Mono"; font-weight: 100 800; font-style: normal; font-display: swap; src: url("/api/v1/theme/assets/dev.hauskraft.theme.hackspace/assets/fonts/JetBrainsMono-Variable.woff2?h=6b23db0be95fcd16") format("woff2"); }
 :root {
   color-scheme: light;
   --hauskraft-color-accent: rgb(161 0 127);
@@ -204,7 +204,7 @@
   --sidebar-border: var(--hauskraft-color-border);
   --sidebar-ring: var(--hauskraft-color-ring);
   --radius: var(--hauskraft-radius-lg);
-  --hauskraft-app-bg-image: url("/api/v1/theme/assets/dev.hauskraft.theme.hackspace/assets/images/grid-dark.svg?h=05318b5b9b8f795a");
+  --hauskraft-app-bg-image: url("/api/v1/theme/assets/dev.hauskraft.theme.hackspace/assets/images/grid-dark.svg?h=6b23db0be95fcd16");
 }
 @media (prefers-reduced-motion: reduce) {
   :root, :root.dark { --hauskraft-duration-fast: 0ms; --hauskraft-duration-normal: 0ms; }

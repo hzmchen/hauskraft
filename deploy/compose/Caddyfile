@@ -11,7 +11,7 @@
 	header {
 		# One inline script (colour mode before first paint) is allowed by hash; see apps/web/CSP.md.
 		# style-src 'unsafe-inline' is needed for react-grid-layout positioning (ADR-0012).
-		Content-Security-Policy "default-src 'self'; script-src 'self' 'sha256-KIh951ASrNEqT/NFVFX9b2OTZvn5mM0OSS49tXdSf/8='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'"
+		Content-Security-Policy "default-src 'self'; script-src 'self' 'sha256-bqlbB0F9rpIX5RnbirBd62o2+iFrhp3q9fUPT9c1gVU='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'"
 		X-Content-Type-Options nosniff
 		Referrer-Policy no-referrer
 		-Server

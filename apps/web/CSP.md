@@ -8,7 +8,7 @@ falling back to `prefers-color-scheme`) before first paint, so a dark device nev
 A strict CSP (E11-01) allows exactly this script by hash:
 
 ```text
-script-src 'self' 'sha256-KIh951ASrNEqT/NFVFX9b2OTZvn5mM0OSS49tXdSf/8='
+script-src 'self' 'sha256-bqlbB0F9rpIX5RnbirBd62o2+iFrhp3q9fUPT9c1gVU='
 ```
 
 Any change to the script changes the hash; `src/shell/ColorMode.test.tsx` fails until this file is updated.

@@ -20,7 +20,7 @@ describe("plugin registry generation", () => {
       manifest("dev.hauskraft.tasks", { runtime: { kind: "inprocess", web: "@hauskraft/plugin-tasks" } }),
     ]);
     expect(out).toContain(`"dev.hauskraft.tasks": () => import("@hauskraft/plugin-tasks"),`);
-    expect(out.indexOf("org.example.zeta")).toBeLessThan(out.indexOf("dev.hauskraft.tasks"));
+    expect(out.indexOf("dev.hauskraft.tasks")).toBeLessThan(out.indexOf("org.example.zeta"));
     expect(out).toMatch(/^\/\/ GENERATED/m);
   });
 

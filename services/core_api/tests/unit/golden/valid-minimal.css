@@ -1,5 +1,5 @@
-/* org.example.theme.valid-minimal 0.1.0 hash=b9bd21373bbfb54cddd2887b8adb33fc42ddbad65758f3d94a216f669fe2de6e */
-@font-face { font-family: "Fixture Sans"; font-weight: 400; font-style: normal; font-display: swap; src: url("/api/v1/theme/assets/org.example.theme.valid-minimal/assets/fonts/FixtureSans.woff2?h=b9bd21373bbfb54c") format("woff2"); }
+/* org.example.theme.valid-minimal 0.1.0 hash=555356cb3485832512d91f69844b30d6ae2bb760a07feb54ae12f41bac3ff8c9 */
+@font-face { font-family: "Fixture Sans"; font-weight: 400; font-style: normal; font-display: swap; src: url("/api/v1/theme/assets/org.example.theme.valid-minimal/assets/fonts/FixtureSans.woff2?h=555356cb34858325") format("woff2"); }
 :root {
   color-scheme: light;
   --hauskraft-color-accent: rgb(109 40 217);
