@@ -46,6 +46,15 @@ export class Api {
     await this.ctx.patch(`tasks/${id}`, { data: body, headers: this.headers() });
   }
 
+  async findTask(title: string): Promise<{ id: string; due_on: string | null }> {
+    const r = await this.ctx.get("tasks", { params: { limit: 200 } });
+    const task = ((await r.json()).items as { id: string; title: string; due_on: string | null }[]).find(
+      (t) => t.title === title,
+    );
+    if (!task) throw new Error(`no task titled '${title}'`);
+    return task;
+  }
+
   async deleteTask(id: string): Promise<void> {
     await this.ctx.delete(`tasks/${id}`, { headers: this.headers() });
   }
