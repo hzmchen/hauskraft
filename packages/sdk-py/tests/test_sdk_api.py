@@ -123,7 +123,8 @@ def test_sdk_ships_type_information() -> None:
 
 def test_importing_the_sdk_never_imports_core() -> None:
     code = (
-        "import sys, hauskraft_sdk, hauskraft_sdk.events; print(any(m.startswith('hauskraft_core') for m in sys.modules))"
+        "import sys, hauskraft_sdk, hauskraft_sdk.events; "
+        "print(any(m.startswith('hauskraft_core') for m in sys.modules))"
     )
     out = subprocess.run([sys.executable, "-c", code], capture_output=True, text=True, check=True).stdout
     assert out.strip() == "False"

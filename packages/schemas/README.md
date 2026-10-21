@@ -4,10 +4,10 @@
 
 MIT-licensed JSON Schemas shared by core, SDKs, plugins and themes: plugin manifest (M0S-E06-01), events (M0S-E10-01), theme contract (M0S-E13-01) and the generated OpenAPI file (M0S-E03-05).
 
-| Path                                   | Schema                                                                                       | Story      |
-| -------------------------------------- | -------------------------------------------------------------------------------------------- | ---------- |
-| `common/defs.schema.json`              | Shared definitions: data classes, reverse-DNS ids, SemVer, semantic icon names, capabilities | M0S-E06-01 |
-| `manifest/hauskraft.plugin.schema.json` | Plugin manifest `hauskraft.plugin.json`, including the theme plugin rule                      | M0S-E06-01 |
+| Path                                    | Schema                                                                                       | Story      |
+| --------------------------------------- | -------------------------------------------------------------------------------------------- | ---------- |
+| `common/defs.schema.json`               | Shared definitions: data classes, reverse-DNS ids, SemVer, semantic icon names, capabilities | M0S-E06-01 |
+| `manifest/hauskraft.plugin.schema.json` | Plugin manifest `hauskraft.plugin.json`, including the theme plugin rule                     | M0S-E06-01 |
 
 ## Data classes
 
