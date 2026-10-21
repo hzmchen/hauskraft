@@ -43,7 +43,7 @@ names the story and what I did for now. Everything I chose is reversible.
 | 3 | M0S-E12-02 | ADR-0013 theme thresholds. | Confirmed unchanged (4.5:1 text, 3:1 non-text, OKLab 0.15, 2 MB / 10 MB, 8 fonts, 500 symbols). |
 | 4 | M0S-E12-03 | Licence of root-level docs and lockfiles (`LICENSING.md` lists only `docs/**`). | `REUSE.toml`: root docs MIT, lockfiles and root tooling AGPL-3.0-or-later. |
 | 5 | M0S-E12-03 | Contributor Covenant version. | 3.0 (CC-BY-SA-4.0) with its enforcement ladder. |
-| 6 | M0S-E10-01 | Two schema URL domains: `hearthos.dev/schema/…` (manifest, theme, envelope) and `schemas.hearthos.org/events/…` (event data). | Kept both as specified; pick one before publishing schemas. |
+| 6 | M0S-E10-01 | Two schema URL domains: `hearthos.dev/schema/…` (manifest, theme, envelope) and `schemas.hearthos.org/events/…` (event data). | Resolved by ADR 0015: one host, `https://hauskraft.dev/schema/…`. |
 | 7 | M0S-E10-01/E13-04 | `settings.theme_changed.data.schema.json` belongs to E13-04 per the spec. | Added in E10-01 so a cross-tagged fixture test passes; E13-04 emits it. |
 | 8 | M0S-E13-01 | "No key named css/script/style/html anywhere", but the contract defines `fonts[].style` and `components.checkbox.style`. | The schema closes every object, so such keys are rejected everywhere except those two defined fields. |
 | 9 | M0S-E07-02 | A PATCH that sets `done=true` and changes other fields. | Emits only `hearthos.task.completed` (one event per write); a PATCH that changes nothing is a no-op. |

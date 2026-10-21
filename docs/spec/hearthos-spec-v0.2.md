@@ -7,7 +7,7 @@
 | Status | Draft |
 | Version | 0.2 (supersedes 0.1) |
 | Date | 2026-10-12 |
-| Working name | HearthOS (see §14: name clash, rename before public release) |
+| Name | Hauskraft, formerly HearthOS (D10, ADR 0015) |
 | Companion docs | `docs/backlog/m0-star/` (M0* backlog), `docs/adr/` (decisions) |
 
 **Bottom line.** HearthOS is an AGPL-3.0, Python-backend / TypeScript-frontend standalone web app. Home Assistant (HA) is the event bus and device layer. Every household domain is a plugin that wraps an existing tool through MCP or REST, or a native module where no tool exists. All agent actions pass through one governed tool gateway (default-deny writes, human approval, spend limits, data-class routing). The dashboard is themeable: themes change how it looks, never what it does. Native code is written only where the ecosystem has real gaps: the German rental/Nebenkosten workflow, a cross-domain household graph and deadline engine, the approval inbox, the theming system and the cockpit UI itself.
@@ -24,6 +24,7 @@
 | C4 | **Roadmap.** M0 replaced by **M0\***: scaffolding plus one native tasks plugin plus theming, single adult role, no third-party integrations (HA counts as third-party). HA bridge moves to M1. | §13 |
 | C5 | **Shared task list.** In M0* any adult may edit or delete any task. Finer rules arrive with policy in M1+. | §13.1 |
 | C6 | **Name clash recorded.** | §14 |
+| C7 | **Renamed to Hauskraft** (formerly HearthOS): code namespace `hauskraft`, IDs `dev.hauskraft.*`, schemas on hauskraft.dev (ADR 0015). | all |
 
 ---
 
@@ -677,7 +678,7 @@ DCO sign-off; ADRs for architecture changes; plugin quality tiers mirroring HA's
 
 ## 14. Open questions and risks
 
-1. **Name clash.** Hearth (hearthdisplay.com) is a commercial family organiser in the same space: a wall-mounted touchscreen with shared calendars, chores, lists, meal planning and an AI helper. "HearthOS" stays as the working name; rename before any public release and run a trademark search (DE/EU/US) at that point. Several small unrelated open-source projects are also called Hearth.
+1. **Name clash (resolved).** Hearth (hearthdisplay.com) is a commercial family organiser in the same space: a wall-mounted touchscreen with shared calendars, chores, lists, meal planning and an AI helper. The working name HearthOS was replaced by Hauskraft before the public release (D10, ADR 0015). Several small unrelated open-source projects are also called Hearth.
 2. **Upstream fragility:** Grocy single-maintainer, Monica's rebuild, Fasten archived. Mitigation: SoR-agnostic graph, export-first, alternatives per domain.
 3. **Bank access in DE:** Enable Banking in Actual was experimental as of 26.6.0 and PSD2 consent caps sync at 90 days. FinTS needs per-user registration and TAN interaction. Design for CSV/CAMT fallback.
 4. **Nebenkosten correctness:** HeizkostenV/CO2KostAufG rules and case law change. Ship as draft-for-review with versioned rule packs, golden tests and DACH landlord/tax-adviser reviewers.
@@ -700,10 +701,11 @@ DCO sign-off; ADRs for architecture changes; plugin quality tiers mirroring HA's
 | D3 | M0* shared task list: any adult may edit or delete any task | 2026-10-12 |
 | D4 | Theming: levels A + B + limited C (navigation style, density, content width); no custom CSS; themes as packages only, no editor; built-in themes; one theme per deployment; colour mode per device | 2026-10-12 |
 | D5 | Themes never move, hide, rename or reorder functions | 2026-10-12 |
-| D6 | HearthOS stays the working name; rename before public release | 2026-10-12 |
+| D6 | HearthOS stays the working name; rename before public release. Superseded by D10 (ADR 0015) | 2026-10-12 |
 | D7 | Home Assistant counts as a third-party integration for M0*; only a `NullBridge` stub | 2026-10-12 |
 | D8 | Built-in themes: Default, Paper and Hackspace (underground hackerspace style, no third-party names or logos) | 2026-10-12 |
 | D9 | Red/green TDD with a spec-owned acceptance suite and per-story status switch (ADR-0014) | 2026-10-12 |
+| D10 | Renamed from HearthOS to Hauskraft before going public: code namespace `hauskraft`, plugin and theme IDs `dev.hauskraft.*`, schema and problem URLs on hauskraft.dev (ADR 0015) | 2026-10-21 |
 
 ## Sources (selected)
 - Design Tokens Format Module 2025.10 (first stable version): https://www.designtokens.org/ and https://www.w3.org/community/design-tokens/2025/10/28/design-tokens-specification-reaches-first-stable-version/

@@ -253,7 +253,7 @@ hearthos/
 | D4 | Theming: tokens + component styles/icons + limited layout (navigation style, density, content width). No custom CSS. Themes come as packages; no editor; three built-in themes. |
 | D5 | One theme per deployment, for everyone on every device. Colour mode (system/light/dark) is per device. |
 | D6 | Themes never move, hide, rename or reorder functions (enforced by ARIA invariance tests and contrast rules). |
-| D7 | HearthOS stays the working name; rename before public release (clash with the commercial Hearth family display). |
+| D7 | HearthOS stays the working name; rename before public release (clash with the commercial Hearth family display). Superseded: renamed to Hauskraft (ADR 0015). |
 | D8 | Home Assistant is treated as third-party in M0*: `NullBridge` only. |
 | D9 | Built-in themes are Default, Paper and Hackspace (underground hackerspace style, inspired by the Berlin scene, no third-party names or logos). |
 | D10 | Red/green TDD. A spec-owned acceptance suite (`tests/`) exists before the code; `tests/story-status.json` flips each story from red to green as its last Definition-of-Done step. |
