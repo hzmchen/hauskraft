@@ -11,8 +11,11 @@ export const ui = {
   openList: (page: Page) => page.getByRole("list", { name: "Open tasks" }),
   doneList: (page: Page) => page.getByRole("list", { name: "Done tasks" }),
   addTask: (page: Page, name = "Add a task") => page.getByRole("textbox", { name }),
+  // `has` resolves its locator inside each list item, so it must start from the page, not from `scope`.
   row: (scope: Page | Locator, title: string) =>
-    scope.getByRole("listitem").filter({ has: scope.getByRole("checkbox", { name: `Mark '${title}' as done` }) }),
+    scope.getByRole("listitem").filter({
+      has: ("page" in scope ? scope.page() : scope).getByRole("checkbox", { name: `Mark '${title}' as done` }),
+    }),
   checkbox: (scope: Page | Locator, title: string) => scope.getByRole("checkbox", { name: `Mark '${title}' as done` }),
 };
 
