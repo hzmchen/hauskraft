@@ -7,7 +7,7 @@ license = "AGPL-3.0-or-later"
 requires-python = ">=3.13"
 dependencies = [
     "hauskraft-sdk",
-    "fastapi~=0.143.0",
+    "fastapi~=0.148.0",
     "uvicorn[standard]~=0.54.0",
     "pydantic>=2.12,<3",
     "pydantic-settings~=2.15",
