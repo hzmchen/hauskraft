@@ -4,35 +4,15 @@ All 61 M0* stories are implemented and marked green. This page lists what needs 
 the spec owner should confirm, and the few things only a repo admin or the spec owner can change. Each entry
 names the story and what I did for now. Everything I chose is reversible.
 
-## Needs action first
+## Needed action first (resolved)
 
-1. **Spec-owned e2e helper bug (blocks the e2e workflow).** In `tests/e2e/support/ui.ts`, `ui.row(scope, title)`
-   is `scope.getByRole("listitem").filter({ has: scope.getByRole("checkbox", …) })`. Playwright evaluates the inner
-   `has` locator relative to each `listitem`, so when `scope` is a locator (the tasks widget) it searches for the
-   widget region *inside* the row and never matches. Demo steps 2 and 4 can never pass, and step 2 stops the serial
-   demo. Suggested one-line fix:
-
-   ```ts
-   has: ("page" in scope ? scope.page() : scope).getByRole("checkbox", { name: `Mark '${title}' as done` }),
-   ```
-
-   I confirmed this on a minimal page (0 vs 1 match). With the fix in an uncommitted copy, all 11 demo steps pass
-   against the Compose stack, including step 11's restart. In CI (`e2e.yml`, PR #69), everything else passes: the
-   live API suite, `tasks.spec.ts`, theme invariance and the visual baselines (29 tests). AGENTS rule 6 forbids me
-   from editing `tests/e2e`.
-2. **Visual baselines depend on the date.** The "visual baselines" tests in `tests/e2e/theme-invariance.spec.ts`
-   screenshot `/p/tasks`, which shows the seeded "Take out recycling" due date (seed `due_in_days: 1`) in its badge
-   and in the native date input. The baselines (regenerated against the Compose stack on 2026-10-13 in the
-   plugin-page prefetch fix; the first set from E11-01 had captured some views mid-load) will differ on any later
-   day. Suggest `await page.clock.setFixedTime(…)` before navigating (plus a fixed seed date), or masking the
-   due-date cells. The suite also screenshots as soon as the theme attribute is set; the app now prefetches each
-   view's data in its route loader so pages render complete, but waiting for network idle in the spec would
-   make it sturdier.
-3. **Repo admin settings** (my token has no Administration permission):
-   - Branch protection on `main` with required checks: `lint`, `typecheck`, `unit-py`, `unit-web`, `acceptance`,
-     `links`, `contract`, `dco`, `licences`, `supply-chain`, and `e2e` once item 1 is fixed (M0S-E02-01).
-   - Private vulnerability reporting (Settings → Code security), which `SECURITY.md` and `CODE_OF_CONDUCT.md` point
-     to (M0S-E12-03). Consider a contact address for code-of-conduct reports before going public.
+1. **Spec-owned e2e helper bug** in `ui.row` (`tests/e2e/support/ui.ts`), which stopped the demo at step 2:
+   resolved. The spec owner approved the fix; it was merged with #76 on 2026-10-22.
+2. **Visual baselines depended on the date:** resolved in #76. The visual tests freeze the browser clock and pin
+   the seeded due date.
+3. **Repo admin settings:** done by the spec owner on 2026-10-22. A ruleset on `main` requires a PR and all 11
+   checks, including `e2e`, and private vulnerability reporting is on. Still open: a contact address for
+   code-of-conduct reports, since `CODE_OF_CONDUCT.md` sends reports about a maintainer to "the others".
 
 ## Decisions to confirm
 
