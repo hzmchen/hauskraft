@@ -42,18 +42,8 @@ This file lives only on the `admin` branch and is never merged into `main`. Clau
 
 ## Spec decisions (you)
 
-- [ ] **Account menu name.** It blocks the axe-core 4.14 update (see Dependabot below).
-  - **The problem:** the button at the top right shows the user's name, "Demo Adult", next to an icon. Its
-    accessible name is "Account menu", which is what screen readers read out and what voice control listens for
-    (`docs/testing/ui-contract.md`, de "Kontomenü"). WCAG 2.5.3 "Label in Name" requires the visible text to be
-    part of that name. A voice-control user who sees "Demo Adult" and says "click Demo Adult" gets no match.
-    axe-core 4.14 reports this as serious (`label-content-name-mismatch`) on every page, so `e2e` fails.
-  - **Option A (recommended):** name the button with its visible text plus its purpose, for example
-    "Demo Adult, account menu" (de "Demo Adult, Kontomenü"). Of the spec-owned files, only the ui-contract row
-    changes. The spec-owned tests keep passing, because Playwright matches names by substring.
-  - **Option B:** an icon-only button named "Account menu", with the name shown inside the menu ("Signed in as
-    Demo Adult"). The ui-contract stays as it is, but the top bar loses the name and the visual baselines must be
-    regenerated.
+- [x] **Account menu name.** Decided 2026-10-22: the button shows "Account menu", not the user's name. Fixed in
+      #84 (one-off permission for the ui-contract note and the visual baselines).
 - [ ] **14 decisions to confirm** in `docs/handoff/m0-star-open-questions.md` (#6 is already resolved):
   1. E01-01: acceptance pins mirrored into the root `dev` group; `tests/requirements.txt` kept.
   2. E01-02/03: spec-owned tests and `scripts/backlog_tools.py` excluded from ruff and Prettier (91 findings).
@@ -88,7 +78,7 @@ Merged today: #80 (config: Playwright's packages update together, axe-core on it
 - [ ] **Playwright 1.64.1 and axe-core 4.14** come back as two new PRs with Dependabot's next full run, on Monday
       2026-10-26. To get them sooner: Insights → Dependency graph → Dependabot, then "Check for updates" for npm.
   - Playwright (`playwright` and `@playwright/test` together): Claude merges it when green.
-  - axe-core 4.14 fails `e2e` until the account menu name is fixed (see above). Its PR stays open until then.
+  - axe-core 4.14: passes with the #84 fix (checked locally). Claude merges it when green.
 
 ## On Claude's side
 
