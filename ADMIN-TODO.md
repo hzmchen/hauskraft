@@ -79,18 +79,16 @@ This file lives only on the `admin` branch and is never merged into `main`. Clau
       header, a Hackspace heading scale and the devcontainer check. Decide which go into M1.
 - [ ] **M1 backlog** (Governed gateway + HA bridge): Claude drafts it, you review it.
 
-## Dependabot (status 2026-10-22)
+## Dependabot (status 2026-10-22, 15:30 UTC)
 
-- [x] #80, the config change: Playwright's packages now update together, and axe-core gets its own PR. Merged.
-- [x] #75, Python (FastAPI 0.147, Schemathesis 4.32, Ruff 0.17.1). Merged. None of FastAPI's breaking changes
-      apply to us.
-- [ ] #83, runtime libraries (React 19.3.1, TanStack, i18next, Lucide 1.59, Vitest 4.1.12): passed every check
-      once. Waiting for a rerun after GitHub's Actions incident on 2026-10-22, then Claude merges it.
-      None of its TanStack versions is on the GHSA-g7cv-rxg3-hmpx list.
-- [ ] #82, lint tools (`@eslint/css`, `typescript-eslint`): passed. Claude merges it after #83.
-- [ ] Playwright 1.64.1 (`playwright` and `@playwright/test` together): Dependabot opens it in its next run.
-      Claude merges it when green.
-- [ ] axe-core 4.14: fails `e2e` until the account menu name is fixed (see above). Its PR stays open.
+Merged today: #80 (config: Playwright's packages update together, axe-core on its own), #75 (Python: FastAPI
+0.147, Schemathesis 4.32, Ruff 0.17.1), #83 (React 19.3.1, TanStack, i18next, Lucide 1.59, Vitest 4.1.12) and
+#82 (`@eslint/css`, `typescript-eslint`). No open Dependabot PRs are left.
+
+- [ ] **Playwright 1.64.1 and axe-core 4.14** come back as two new PRs with Dependabot's next full run, on Monday
+      2026-10-26. To get them sooner: Insights → Dependency graph → Dependabot, then "Check for updates" for npm.
+  - Playwright (`playwright` and `@playwright/test` together): Claude merges it when green.
+  - axe-core 4.14 fails `e2e` until the account menu name is fixed (see above). Its PR stays open until then.
 
 ## On Claude's side
 
