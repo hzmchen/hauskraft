@@ -19,7 +19,7 @@ Hauskraft records architecture decisions as [MADR 4](https://adr.github.io/madr/
 | [0012](0012-widget-grid.md) | Widget grid: react-grid-layout v2 | Accepted |
 | [0013](0013-theming.md) | Theming: data-only theme packages and validator thresholds | Accepted |
 | [0014](0014-tdd-spec-owned-acceptance-tests.md) | Test-driven development with spec-owned acceptance tests | Accepted |
-| [0015](0015-rename-to-hauskraft.md) | Rename HearthOS to Hauskraft | Proposed |
+| [0015](0015-rename-to-hauskraft.md) | Rename HearthOS to Hauskraft | Accepted |
 
 ## Writing a new ADR
 
