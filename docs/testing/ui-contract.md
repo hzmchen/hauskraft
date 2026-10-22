@@ -31,7 +31,7 @@ Changing a name is a contract change: update this file and the e2e tests togethe
 | navigation | Main | items in this order: **Today, Tasks, Activity, Settings** (de: Heute, Aufgaben, Aktivität, Einstellungen) |
 | button | Open menu | only when the navigation style is `drawer` |
 | main | | one per page |
-| button | Account menu | opens a menu |
+| button | Account menu | opens a menu; shows this name as its label, not the user's name (WCAG 2.5.3) |
 | menuitem | Sign out | in the account menu |
 | menuitemradio | English, Deutsch | language choice in the account menu |
 | heading (level 1) | (text) Page not found | for unknown `/p/<id>` routes |

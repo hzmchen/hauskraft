@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // The account menu (ui-contract: button "Account menu"; menuitemradio English/Deutsch; menuitem "Sign out").
+// The button shows its name as its label (WCAG 2.5.3, label in name).
 import {
   Button,
   DropdownMenu,
@@ -12,18 +13,17 @@ import {
   DropdownMenuTrigger,
   Icon,
 } from "@hauskraft/ui";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 
 import { LANGUAGES, isLanguage } from "../i18n";
 import { useLanguage } from "../i18n/useLanguage";
-import { sessionQuery, signOut } from "../session";
+import { signOut } from "../session";
 
 export function AccountMenu() {
   const { t } = useTranslation();
   const { language, changeLanguage } = useLanguage();
-  const { data: session } = useQuery(sessionQuery);
   const queryClient = useQueryClient();
   const router = useRouter();
 
@@ -35,9 +35,9 @@ export function AccountMenu() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" aria-label={t("account.menu")}>
+        <Button variant="ghost">
           <Icon name="user.menu" />
-          <span aria-hidden="true">{session?.user.display_name}</span>
+          <span>{t("account.menu")}</span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
