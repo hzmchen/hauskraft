@@ -182,7 +182,7 @@ test("11 · everything survives a restart", story(DEMO, "M0S-E11-01"), async () 
   execSync(restart!, { stdio: "inherit", timeout: 300_000 });
   await page.goto("/today");
   if (/\/login/.test(page.url())) await login(page, "demo");
-  expect(await htmlAttr(page, "data-hearth-theme")).toBe(THEMES.hackspace);
+  await expect.poll(() => htmlAttr(page, "data-hearth-theme")).toBe(THEMES.hackspace);
   await expect(ui.nav(page).getByRole("link", { name: "Heute" })).toBeVisible();
   await expect(page.getByRole("checkbox", { name: new RegExp(persistTitle) })).toBeVisible();
   const api = await Api.login("demo");
