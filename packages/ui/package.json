@@ -16,7 +16,7 @@
   "dependencies": {
     "class-variance-authority": "0.7.1",
     "clsx": "2.1.1",
-    "lucide-react": "1.56.0",
+    "lucide-react": "1.59.0",
     "radix-ui": "1.8.1",
     "react-day-picker": "10.0.2",
     "sonner": "2.0.8",
