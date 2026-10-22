@@ -106,3 +106,12 @@ describe("sign out", () => {
     expect(calls.find((r) => r.url.endsWith("/auth/logout"))!.headers.get("X-CSRF-Token")).toBe("csrf-123");
   });
 });
+
+describe("account menu", () => {
+  it("shows its accessible name as its label, not the user's name (WCAG 2.5.3, label in name)", async () => {
+    fakeApi({ "GET /api/v1/auth/session": () => json(DEMO_SESSION) });
+    start("/today");
+    const button = await screen.findByRole("button", { name: "Account menu" });
+    expect(button.textContent).toBe("Account menu");
+  });
+});
