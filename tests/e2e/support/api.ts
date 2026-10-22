@@ -68,9 +68,11 @@ export class Api {
   }
 }
 
+/** Today plus `offsetDays` in Europe/Berlin, the browser time zone set in playwright.config.ts. */
 export function isoDate(offsetDays: number): string {
-  const d = new Date();
-  d.setDate(d.getDate() + offsetDays);
+  const today = new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Berlin" }).format(new Date());
+  const d = new Date(`${today}T00:00:00Z`);
+  d.setUTCDate(d.getUTCDate() + offsetDays);
   return d.toISOString().slice(0, 10);
 }
 
