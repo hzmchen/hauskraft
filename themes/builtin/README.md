@@ -2,7 +2,7 @@
 
 # Built-in themes
 
-Default, Paper and Hackspace live here (M0S-E13-06). Themes are data only: see `docs/spec/hauskraft-spec-v0.2.md` §10.2
+Default, Paper and Hackspace live here (M0S-E13-06). Themes are data only: see `docs/spec/hauskraft-spec-v0.3.md` §10.2
 and the "Built-in themes" table in `docs/backlog/m0-star/E13-theming-system.md`.
 
 | Theme     | Folder       | Fonts (OFL-1.1)                                              | Icons                      |

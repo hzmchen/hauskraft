@@ -1,20 +1,32 @@
-# Hauskraft Specification v0.2
+# Hauskraft Specification v0.3
 
 **A Home Assistant–centred, plugin-first household cockpit**
 
 | | |
 |---|---|
 | Status | Draft |
-| Version | 0.2 (supersedes 0.1) |
-| Date | 2026-10-12 |
+| Version | 0.3 (supersedes 0.2) |
+| Date | 2026-10-22 |
 | Name | Hauskraft, formerly HearthOS (D10, ADR 0015) |
-| Companion docs | `docs/backlog/m0-star/` (M0* backlog), `docs/adr/` (decisions) |
+| Companion docs | `docs/backlog/m1-star/` (M1* backlog), `docs/backlog/m0-star/` (M0* backlog, done), `docs/adr/` (decisions) |
 
 **Bottom line.** Hauskraft is an AGPL-3.0, Python-backend / TypeScript-frontend standalone web app. Home Assistant (HA) is the event bus and device layer. Every household domain is a plugin that wraps an existing tool through MCP or REST, or a native module where no tool exists. All agent actions pass through one governed tool gateway (default-deny writes, human approval, spend limits, data-class routing). The dashboard is themeable: themes change how it looks, never what it does. Native code is written only where the ecosystem has real gaps: the German rental/Nebenkosten workflow, a cross-domain household graph and deadline engine, the approval inbox, the theming system and the cockpit UI itself.
 
 ---
 
-## 0. Changes since v0.1
+## 0. Changes
+
+### 0.1 Changes in v0.3 (since v0.2)
+
+| # | Change | Sections |
+|---|---|---|
+| C8 | **Roadmap: basics first.** The next milestone is **M1\* Household basics**, not the governed gateway. Capability work (gateway, policy engine, approvals, LLM routing, HA, OIDC) moves to a capability ladder that is re-planned milestone by milestone. Elsewhere in this spec, "M1" and "M1+" mean that governed-gateway milestone, not M1\*. | §13.1, §14 |
+| C9 | **Two roles enabled.** `owner` and `adult`. Permissions come from a static table behind `authorize()` (ADR 0016); Cedar stays the later policy engine. | §2.1, §2.3, §8.3 |
+| C10 | **Household accounts.** First-run setup in the browser (the first visitor wins, ADR 0017), members managed by owners, forced password change after a new account or reset, sessions per device. | §2.2, §2.3 |
+| C11 | **Household settings.** Name, time zone and default language are deployment settings. The household time zone decides what "today" means. | §2.3, §9.1, §10.1 |
+| C12 | **Account events.** Changes to members and passwords are CloudEvents shown in Activity (ADR 0018). | §2.3, §3.2 |
+
+### 0.2 Changes in v0.2 (since v0.1)
 
 | # | Change | Sections |
 |---|---|---|
@@ -66,7 +78,7 @@
 | `tenant` | Rental tenant | Own unit: tickets, statements, shared documents | Open ticket, submit meter reading | None (portal non-agentic in v1) |
 | `guest` | Visitor | Wi-Fi card, house manual | None | None |
 
-M0* creates the full role enum but enables only `adult`. Cockpit identity is local accounts in M0* and OIDC (built-in, or Authelia/Authentik/Keycloak) from M1; roles map to HA users where an HA identity is needed. `tenant` and `property_manager` are served from a separate, optionally internet-exposed **portal** surface with its own reverse-proxy route and rate limits, never the main cockpit.
+M0* creates the full role enum but enables only `adult`. M1* enables `owner` and `adult` (§2.3); the other six roles stay in the enum and cannot be created. Cockpit identity is local accounts in M0* and M1*, and OIDC (built-in, or Authelia/Authentik/Keycloak) later; roles map to HA users where an HA identity is needed. `tenant` and `property_manager` are served from a separate, optionally internet-exposed **portal** surface with its own reverse-proxy route and rate limits, never the main cockpit.
 
 ### 2.2 Key journeys (acceptance-level)
 
@@ -80,7 +92,38 @@ M0* creates the full role enum but enables only `adult`. Cockpit identity is loc
 8. **Kid development and school.** Baby Buddy logs, milestones, school ICS, activities, vaccination dates. *AC:* all `child` data local-only; caregiver access expires automatically.
 9. **Tenant maintenance ticket.** Portal ticket (photo + text) → reader model classifies urgency, suggests contractor → owner approves dispatch email. *AC:* ticket text is untrusted; the actor sees only typed `{category, urgency, unit_id}`.
 10. **Vehicle and home maintenance.** LubeLogger reminders and Homebox/Grocy maintenance items appear in the briefing and as HA todo items.
-11. **Make it ours (theming).** An adult installs a theme package (drops a folder into the themes volume), restarts, picks it in Settings → Appearance; every device shows the new look within a minute; each device keeps its own light/dark/system mode. *AC:* the accessibility tree of every view is identical before and after the switch.
+11. **Make it ours (theming).** An adult installs a theme package (drops a folder into the themes volume), restarts, picks it in Settings → Appearance; every device shows the new look within a minute; each device keeps its own light/dark/system mode. *AC:* the accessibility tree of every view is identical before and after the switch. (From M1*, picking the household theme needs the `owner` role.)
+12. **Set up our household (M1*).** A parent installs Hauskraft without demo data, opens it in the browser, names the household, picks language and time zone and creates the first account, which becomes `owner`. *AC:* no CLI step is needed; once an account exists, setup can never run again.
+13. **Bring the family in (M1*).** The owner adds a partner as `adult` with a temporary password; the partner signs in, must choose their own password, and manages their own name, language, password and devices. The owner can reset a forgotten password or deactivate an account. *AC:* the household always keeps at least one active owner; every change to a member shows in Activity; no password or hash ever appears in an event, a log line or the UI.
+
+### 2.3 Household accounts and permissions (M1*)
+
+**First run.** While no account exists, the API reports `setup required` and the web app shows a setup wizard instead of the login page. The wizard asks for the household name, default language, time zone and the first account (display name, username, password). Submitting it creates the household settings and an `owner` account in one transaction and signs that account in. Whoever completes the wizard first becomes the owner (ADR 0017): the operation is serialised so that two concurrent visitors cannot both succeed, and every later attempt gets 409 `setup_done`. The demo seed (`HAUSKRAFT_SEED_DEMO`) is the only other way to fill an empty database; the CLI can still create accounts at any time.
+
+**Permissions (normative for M1*).** Every write still goes through `authorize()` (ADR-0006). The M1* policy is a static role table (ADR 0016); a denied action returns 403 `policy_denied` and leaves no row and no event.
+
+| Action | `owner` | `adult` |
+|---|---|---|
+| Tasks: create, edit, complete, delete any task (shared list, D3) | yes | yes |
+| Own dashboard layout, own profile (display name, language), own password, own sessions | yes | yes |
+| Read household settings (name, time zone, default language) | yes | yes |
+| Change household settings | yes | no |
+| Change the household theme | yes | no |
+| Enable or disable plugins | yes | no |
+| List members; add, edit, deactivate, reactivate a member; reset a member's password | yes | no |
+
+**Account lifecycle.**
+- Usernames are fixed after creation; display names can change.
+- Owners add members with a role (`owner` or `adult`) and a temporary password. A new account, and an account whose password an owner has reset, must choose a new password at the next sign-in. Until then, the API answers every other authenticated request with 403 `password_change_required`.
+- A member changes their own password by giving the current one. This ends their other sessions; the current one stays.
+- Deactivating an account ends all its sessions at once and blocks sign-in (403 `account_deactivated`, given only after a correct password, so the response reveals nothing to someone without it). Accounts are never deleted in M1*, so tasks and Activity keep their authors. Owners can reactivate an account.
+- The household always has at least one active `owner`: demoting or deactivating the last one fails with 409 `last_owner`.
+- A member sees their own sessions (device description, created, last seen, which one is current), can end any of them and can sign out everywhere. IP addresses are stored for rate limiting but not shown.
+- Recovery when no owner can sign in: the CLI (`hauskraft users set-password`) on the server.
+
+**Household settings.** `household.name`, `household.timezone` (an IANA name) and `household.locale` (default language for new members) are deployment settings (§9.1). The household time zone decides what "today" means for due dates on every device. The name appears in the browser title.
+
+**Account events.** Account changes are domain writes (AGENTS.md rule 1): each emits exactly one CloudEvent from `dev.hauskraft.core` with `dataclass` `personal` (ADR 0018). The events are `hauskraft.user.created`, `hauskraft.user.updated` (display name or role), `hauskraft.user.deactivated`, `hauskraft.user.reactivated`, `hauskraft.user.password_reset` (by an owner) and `hauskraft.user.password_changed` (by the member). Household settings changes emit `hauskraft.settings.household_changed` with `dataclass` `household`. Language preference changes and session bookkeeping (sign-in, sign-out, ending sessions) call `authorize()` but emit no event. Event data never contains a password, a hash, a session ID or an IP address.
 
 ## 3. System architecture
 
@@ -373,7 +416,7 @@ Defaults:
 4. `money:propose` allowed up to weekly cap per category, above → approval; `money:execute` → deny (v1).
 5. Kids/teens write only own chores/lists; quiet hours 21:00–07:00, no outbound messages.
 6. External messages (tenant/contractor email) always need approval with diff preview.
-7. Changing the deployment theme or installing a theme: `owner` only once RBAC lands (any adult in M0*).
+7. Changing the deployment theme or installing a theme: `owner` only (from M1*, through the static role table of §2.3; any adult in M0*).
 
 Effects: `allow`, `deny`, `require_approval{approvers, quorum, expires}`, `allow_with_limits{rate, amount}`. **Spend limits live in the gateway ledger, never the LLM**; LLM cost budgets are enforced in LiteLLM per virtual key. The M0* `authorize()` no-op hook in the service layer is the seam where this policy plugs in.
 
@@ -414,7 +457,7 @@ SOPS+age for small installs, OpenBao/Vault optional; plugins get only declared s
 
 Typed edges: `owns`, `located_in`, `about`, `evidences`, `pays`, `party_to`, `assigned_to`, `due_for`, `measured_by`. Storage: Postgres tables per core type plus a generic `edge` table. JSON-LD export uses schema.org where it fits (Person, Place, Residence, Product, DigitalDocument, Event, Invoice, MonetaryAmount) and a `hauskraft:` vocabulary for the rest (Lease, CostAllocationKey, BetrKVCategory).
 
-Configuration entities (not part of the graph): `DeploymentSetting` (key/value, e.g. `theme_id`), `DashboardLayout` (per user), `PluginRecord`, `ThemeRecord` (discovered theme packages and validation results).
+Configuration entities (not part of the graph): `DeploymentSetting` (key/value, e.g. `theme_id`, `household.name`, `household.timezone`, `household.locale`), `DashboardLayout` (per user), `PluginRecord`, `ThemeRecord` (discovered theme packages and validation results). Accounts (`User`, `Session`) live in core tables; from M1* a user also carries `must_change_password`.
 
 ### 9.2 System of record vs cache
 - **External SoR:** store `external_ref {plugin, id, etag, synced_at}` plus a minimal projection for search/joins; scheduled pull + webhooks; writes go to the SoR via tools, then re-sync.
@@ -430,7 +473,7 @@ Hybrid Postgres full-text + pgvector (sqlite-vec on the add-on tier) with local 
 ## 10. Dashboard and UI specification
 
 ### 10.1 Information architecture
-*Today* (default), *Inbox* (approvals, documents to classify, extractions to confirm; M1+), domain pages (Home & Assets, Rentals, Money, Family, Food, Projects, Documents, Vehicles), *Activity*, global *Search*/command palette, *Settings* (Appearance, Plugins, Account). One navigation model (`NavModel`) defines the items, their order, labels and icons; every navigation style renders that same model.
+*Today* (default), *Inbox* (approvals, documents to classify, extractions to confirm; M1+), domain pages (Home & Assets, Rentals, Money, Family, Food, Projects, Documents, Vehicles), *Activity*, global *Search*/command palette, *Settings* (in this order: Appearance, Account, Household, Members, later Plugins; Household and Members only for owners, §2.3). One navigation model (`NavModel`) defines the items, their order, labels and icons; every navigation style renders that same model.
 
 ### 10.2 Theming system
 
@@ -632,7 +675,9 @@ LAN-only by default; remote access via WireGuard/Tailscale (HA Cloud for HA). If
 
 ### 13.1 Milestones
 
-- **M0\* Scaffolding MVP** (replaces M0). Monorepo, CI, Compose; core-api with local session auth (OIDC seam) and the role enum (only `adult` enabled); migrations; in-process plugin loader; native `tasks` plugin (shared list: title, done, optional due date; any adult may edit or delete any task); web shell with Today grid, All tasks page and Activity feed; CloudEvents outbox; `authorize()` no-op seam; theming system with three built-in themes, deployment-wide theme and per-device colour mode; en/de. **No** third-party integrations (HA counts as one; `NullBridge` only), gateway, agents, approvals, registry or signing. *AC:* the demo script in `docs/backlog/m0-star/README.md` (12 steps, automated in Playwright) and green CI. Detailed in 13 epics / 61 stories.
+- **M0\* Scaffolding MVP** (replaces M0). Monorepo, CI, Compose; core-api with local session auth (OIDC seam) and the role enum (only `adult` enabled); migrations; in-process plugin loader; native `tasks` plugin (shared list: title, done, optional due date; any adult may edit or delete any task); web shell with Today grid, All tasks page and Activity feed; CloudEvents outbox; `authorize()` no-op seam; theming system with three built-in themes, deployment-wide theme and per-device colour mode; en/de. **No** third-party integrations (HA counts as one; `NullBridge` only), gateway, agents, approvals, registry or signing. *AC:* the demo script in `docs/backlog/m0-star/README.md` (12 steps, automated in Playwright) and green CI. Detailed in 13 epics / 61 stories. **Done 2026-10-22.**
+- **M1\* Household basics** (C8). A real household installs Hauskraft without demo data, sets it up in the browser, brings in its members and runs its own accounts: first-run wizard; `owner` and `adult` roles through a static permission table behind `authorize()`; My account (profile, password, sessions); member management for owners; household settings (name, time zone, default language); sign-in polish; a settings area; account events in Activity (§2.3). **No** policy engine, approvals, gateway, MCP or agent skills, LLM routing, HA, OIDC, teen/kid roles, email, backup or release images. *AC:* the demo script in `docs/backlog/m1-star/README.md` (automated in Playwright), the M0* demo still passing, and green CI.
+- **Capability ladder (after M1\*).** The milestones below remain the direction. Their order and cut are re-planned one milestone at a time from the project backlog, starting with the open question of how plugins reach agents (§14).
 - **M1 Governed gateway + HA bridge (3–5 wks):** MCP aggregation, Cedar behind `authorize()`, audit chain fed from the outbox, LiteLLM class routing, verify hooks; ha-bridge v0 replacing `NullBridge`; OIDC `IdentityProvider`; RBAC for owner/adult/teen/kid. *AC:* unpermitted write denied; approval calls appear in the inbox; tampering any audit row fails `hauskraft audit verify`; a `child` prompt with no local model fails closed; HA entity widget live.
 - **M2 MVP domains (4–6 wks):** Vikunja, Donetick, Paperless, Actual, Mealie, Grocy, CalDAV connectors; weekly briefing; HA integration v0. *AC:* Journey 1 runs end-to-end on a fixture household; approval via HA notification works; every item links to its source.
 - **M3 Deadlines + documents (3–4 wks):** reader extraction with provenance; contract deadlines; Wallos; HA calendar/todo publication. *AC:* ≥90% of notice dates correct across 20 fixture contracts after the confirmation UI; zero deadlines scheduled without confirmation.
@@ -689,8 +734,10 @@ DCO sign-off; ADRs for architecture changes; plugin quality tiers mirroring HA's
 9. **Licensing of closed in-process plugins** is unsettled: keep the SDK minimal and MIT; prefer out-of-process for closed plugins.
 10. **Theme expressiveness vs safety:** without custom CSS, some designs are impossible. Watch demand; any future custom-CSS tier needs sandboxing, a review tier and invariance tests.
 11. **Per-user/per-device themes** are deferred; the data model (`deployment_settings`) should not block adding `user_preferences.theme_id` later.
-12. **Scope creep:** hold the line on M0*, then gateway and HA, then M2 domains, rentals and governance.
+12. **Scope creep:** hold the line on M0*, then the household basics (M1*), then gateway and HA, then M2 domains, rentals and governance.
 13. **Unverified items:** A2UI-style declarative UI standards; long-term stability of OpenProperty forks.
+14. **How plugins reach agents (open).** One Hauskraft MCP gateway that aggregates every plugin's tools, one MCP server per plugin behind the gateway, or agent skills (declarative prompt and tool bundles) on top of a smaller tool surface. To be decided in an ADR before any gateway work starts.
+15. **First visitor wins at setup.** Between `docker compose up` and finishing the wizard, anyone who can reach the port can claim the install (ADR 0017). The docs tell operators to finish setup right after starting the stack and to keep it on localhost or a trusted LAN until then.
 
 ## Appendix: decision log (since v0.1)
 
@@ -706,6 +753,10 @@ DCO sign-off; ADRs for architecture changes; plugin quality tiers mirroring HA's
 | D8 | Built-in themes: Default, Paper and Hackspace (underground hackerspace style, no third-party names or logos) | 2026-10-12 |
 | D9 | Red/green TDD with a spec-owned acceptance suite and per-story status switch (ADR-0014) | 2026-10-12 |
 | D10 | Renamed from HearthOS to Hauskraft before going public: code namespace `hauskraft`, plugin and theme IDs `dev.hauskraft.*`, schema and problem URLs on hauskraft.dev (ADR 0015) | 2026-10-21 |
+| D11 | The milestone after M0* is M1* Household basics; capability work (gateway, MCP or agent skills, Cedar, approvals, LLM routing, HA, OIDC) is deferred and re-planned afterwards | 2026-10-22 |
+| D12 | M1* enables `owner` and `adult` through a static permission table behind `authorize()`; Cedar later (ADR 0016) | 2026-10-22 |
+| D13 | First-run setup is a web wizard; the first visitor becomes owner, with no setup code (ADR 0017) | 2026-10-22 |
+| D14 | Changes to members and passwords are CloudEvents shown in Activity (ADR 0018) | 2026-10-22 |
 
 ## Sources (selected)
 - Design Tokens Format Module 2025.10 (first stable version): https://www.designtokens.org/ and https://www.w3.org/community/design-tokens/2025/10/28/design-tokens-specification-reaches-first-stable-version/
