@@ -25,10 +25,21 @@ updates:
       - dependency-name: typescript
         versions: [">=6.1.0"]
     groups:
+      # Playwright's packages require each other's exact version, so they move in one PR. Without this group
+      # they split: Dependabot counts the pnpm catalog entries (`playwright`) as production dependencies and
+      # `@playwright/test` as a development one, and either PR alone fails typecheck and e2e.
+      playwright:
+        patterns: ["playwright", "playwright-core", "@playwright/*"]
+      # New axe-core releases can add accessibility rules that fail the e2e suite. Review them on their own,
+      # so they don't hold back the rest of the dev tooling.
+      axe:
+        patterns: ["axe-core", "@axe-core/*"]
       npm-dev-tooling:
         dependency-type: development
+        exclude-patterns: ["playwright", "playwright-core", "@playwright/*", "axe-core", "@axe-core/*"]
       npm-runtime:
         dependency-type: production
+        exclude-patterns: ["playwright", "playwright-core", "@playwright/*", "axe-core", "@axe-core/*"]
 
   - package-ecosystem: github-actions
     directories: ["/", "/.github/actions/*"]
