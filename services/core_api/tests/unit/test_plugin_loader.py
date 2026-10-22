@@ -12,17 +12,17 @@ from typing import Any
 import pytest
 from fastapi.testclient import TestClient
 
-from hearthos_core.app import create_app
-from hearthos_core.plugins.context import CorePluginContext
-from hearthos_core.plugins.loader import CORE_PREFIXES
-from hearthos_core.settings import Settings
-from hearthos_sdk import PluginContext
+from hauskraft_core.app import create_app
+from hauskraft_core.plugins.context import CorePluginContext
+from hauskraft_core.plugins.loader import CORE_PREFIXES
+from hauskraft_core.settings import Settings
+from hauskraft_sdk import PluginContext
 
 pytestmark = pytest.mark.unit
 
 PLUGIN_CODE = """
 from fastapi import APIRouter, Depends
-from hearthos_sdk import Actor, PluginRegistration
+from hauskraft_sdk import Actor, PluginRegistration
 
 class _Plugin:
     id = "{plugin_id}"
@@ -50,7 +50,7 @@ def _manifest(plugin_id: str, **overrides: Any) -> dict[str, Any]:
         "name": "Probe",
         "version": "0.1.0",
         "type": ["domain"],
-        "hearthos_api": "^0.1.0",
+        "hauskraft_api": "^0.1.0",
         "license": "MIT",
         "authors": [{"name": "t"}],
         "source": "x",
@@ -83,7 +83,7 @@ def plugin_dir(tmp_path: Path) -> Iterator[Callable[..., str]]:
             manifest["runtime"] = {**manifest["runtime"], "entrypoint": f"{module}:plugin", "api_prefix": prefix}
         folder = root / plugin_id
         folder.mkdir()
-        (folder / "hearthos.plugin.json").write_text(json.dumps(manifest))
+        (folder / "hauskraft.plugin.json").write_text(json.dumps(manifest))
         return plugin_id
 
     yield _make
@@ -133,8 +133,8 @@ def test_invalid_manifest_is_recorded(tmp_path: Path, plugin_dir: Callable[..., 
 
 
 def test_incompatible_api_range(tmp_path: Path, plugin_dir: Callable[..., str]) -> None:
-    pid = plugin_dir(hearthos_api=">=2.0.0")
-    assert "hearthos_api" in (_app(tmp_path).state.plugins[pid].load_error or "")
+    pid = plugin_dir(hauskraft_api=">=2.0.0")
+    assert "hauskraft_api" in (_app(tmp_path).state.plugins[pid].load_error or "")
 
 
 def test_unsupported_runtime(tmp_path: Path, plugin_dir: Callable[..., str]) -> None:
@@ -161,7 +161,7 @@ def test_theme_manifests_go_to_the_theme_registry_without_imports(tmp_path: Path
         data_classes={"reads": [], "writes": [], "emits": []},
         contributes={"themes": [{"id": "probe", "file": "theme.json"}]},
     )
-    (folder / "hearthos.plugin.json").write_text(json.dumps(manifest))
+    (folder / "hauskraft.plugin.json").write_text(json.dumps(manifest))
     app = _app(tmp_path, theme_paths=[tmp_path / "themes"])
     loaded = app.state.plugins["org.example.theme.probe"]
     assert loaded.kind == "declarative"

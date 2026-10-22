@@ -1,25 +1,25 @@
 {
-  "id": "org.hearthos.tasks",
+  "id": "dev.hauskraft.tasks",
   "name": "Tasks",
   "version": "0.1.0",
   "type": [
     "domain",
     "widget"
   ],
-  "hearthos_api": "^0.1.0",
+  "hauskraft_api": "^0.1.0",
   "license": "MIT",
   "authors": [
     {
-      "name": "HearthOS contributors"
+      "name": "Hauskraft contributors"
     }
   ],
   "source": "https://example.org/tasks",
   "runtime": {
     "kind": "inprocess",
-    "entrypoint": "hearthos_tasks.plugin:plugin",
+    "entrypoint": "hauskraft_tasks.plugin:plugin",
     "api_prefix": "/tasks",
     "migrations": "backend/migrations/versions",
-    "web": "@hearthos/plugin-tasks"
+    "web": "@hauskraft/plugin-tasks"
   },
   "capabilities": [
     "net:egress:paperless.lan:8000",

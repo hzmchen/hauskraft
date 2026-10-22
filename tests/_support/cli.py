@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: MIT
-"""Run the `hearthos` CLI (M0S-E05-05, M0S-E13-09) as a black box.
+"""Run the `hauskraft` CLI (M0S-E05-05, M0S-E13-09) as a black box.
 
-Override the command with HEARTHOS_CLI, e.g. HEARTHOS_CLI="uv run hearthos".
+Override the command with HAUSKRAFT_CLI, e.g. HAUSKRAFT_CLI="uv run hauskraft".
 """
 
 from __future__ import annotations
@@ -33,14 +33,14 @@ class CliResult:
 
 
 def _base_command() -> list[str]:
-    configured = os.environ.get("HEARTHOS_CLI")
+    configured = os.environ.get("HAUSKRAFT_CLI")
     if configured:
         return shlex.split(configured)
-    if shutil.which("hearthos"):
-        return ["hearthos"]
+    if shutil.which("hauskraft"):
+        return ["hauskraft"]
     if shutil.which("uv") and (REPO / "pyproject.toml").exists():
-        return ["uv", "run", "--quiet", "hearthos"]
-    pytest.fail("RED: no `hearthos` CLI found (set HEARTHOS_CLI or implement M0S-E05-05/M0S-E13-09)",
+        return ["uv", "run", "--quiet", "hauskraft"]
+    pytest.fail("RED: no `hauskraft` CLI found (set HAUSKRAFT_CLI or implement M0S-E05-05/M0S-E13-09)",
                 pytrace=False)
 
 

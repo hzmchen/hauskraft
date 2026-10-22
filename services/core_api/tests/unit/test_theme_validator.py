@@ -9,7 +9,7 @@ from typing import Any
 
 import pytest
 
-from hearthos_core.themes.validate import validate_theme
+from hauskraft_core.themes.validate import validate_theme
 
 pytestmark = pytest.mark.unit
 
@@ -192,10 +192,10 @@ def test_valid_theme_compiles_to_safe_css(tmp_path: Path) -> None:
     )
     root, dark = css.split(":root.dark", 1)
     assert "color-scheme: light;" in root
-    assert "--hearth-color-background: rgb(255 255 255);" in root
-    assert "--background: var(--hearth-color-background);" in root
-    assert "--hearth-density: 1;" in root
-    assert "--hearth-grid-row:" in root
+    assert "--hauskraft-color-background: rgb(255 255 255);" in root
+    assert "--background: var(--hauskraft-color-background);" in root
+    assert "--hauskraft-density: 1;" in root
+    assert "--hauskraft-grid-row:" in root
     assert "color-scheme: dark;" in dark
     for forbidden in ("<", "}body", "url(http", "javascript:", "@import", "expression("):
         assert forbidden not in css.replace(" ", "")

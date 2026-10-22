@@ -32,7 +32,7 @@ Chosen option: "Data-only theme packages".
 * Tokens use the DTCG Format 2025.10, one file for light and one for dark, and are compiled server-side into one stylesheet. Component variants and limited layout options (navigation style, density, content width) are fixed enums applied through data attributes. No custom CSS, no scripts, no editor.
 * Function invariance is enforced by ARIA-snapshot comparison across themes in CI plus hard contrast rules.
 
-**Validator thresholds (normative, used by `hearthos themes validate`, the theme registry and the acceptance suite):**
+**Validator thresholds (normative, used by `hauskraft themes validate`, the theme registry and the acceptance suite):**
 
 | Rule | Threshold | Issue code |
 |---|---|---|

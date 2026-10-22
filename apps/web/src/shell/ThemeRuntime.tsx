@@ -3,8 +3,8 @@
 // it current: GET /theme every 60 s and on focus, and when the hash changes it loads the new stylesheet
 // next to the old one and removes the old one only once the new one has loaded (no unstyled frame, no
 // reload, form input kept). It also sets the variant hooks on <html> and feeds icons and layout.
-import { themesActiveOptions, type ActiveTheme } from "@hearthos/sdk-ts";
-import { IconProvider } from "@hearthos/ui";
+import { themesActiveOptions, type ActiveTheme } from "@hauskraft/sdk-ts";
+import { IconProvider } from "@hauskraft/ui";
 import { useQuery } from "@tanstack/react-query";
 import { createContext, useContext, useEffect, type ReactNode } from "react";
 
@@ -33,7 +33,7 @@ export function useThemeLayout(): ThemeLayout {
   return useContext(LayoutContext);
 }
 
-const LINK_SELECTOR = "link[data-hearth-theme-css]";
+const LINK_SELECTOR = "link[data-hauskraft-theme-css]";
 
 /** Point the page at `cssUrl`, keeping the old sheet until the new one has loaded. */
 function swapStylesheet(theme: ActiveTheme): void {
@@ -48,7 +48,7 @@ function swapStylesheet(theme: ActiveTheme): void {
   const next = document.createElement("link");
   next.rel = "stylesheet";
   next.href = theme.css_url;
-  next.dataset.hearthThemeCss = "";
+  next.dataset.hauskraftThemeCss = "";
   next.dataset.hash = theme.hash;
   const done = () => {
     for (const old of current) old.remove();
@@ -60,13 +60,13 @@ function swapStylesheet(theme: ActiveTheme): void {
 
 function applyAttributes(theme: ActiveTheme): void {
   const html = document.documentElement.dataset;
-  html.hearthTheme = theme.theme_id;
-  html.hearthChrome = theme.components.widget.chrome;
-  html.hearthHeader = theme.components.widget.header;
-  html.hearthButton = theme.components.button.primary;
-  html.hearthCheckbox = theme.components.checkbox.style;
-  html.hearthDensity = theme.layout.density;
-  html.hearthContent = theme.layout.content_width;
+  html.hauskraftTheme = theme.theme_id;
+  html.hauskraftChrome = theme.components.widget.chrome;
+  html.hauskraftHeader = theme.components.widget.header;
+  html.hauskraftButton = theme.components.button.primary;
+  html.hauskraftCheckbox = theme.components.checkbox.style;
+  html.hauskraftDensity = theme.layout.density;
+  html.hauskraftContent = theme.layout.content_width;
 }
 
 export function ThemeRuntime({ children }: { children: ReactNode }) {

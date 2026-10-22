@@ -1,0 +1,34 @@
+{
+  "$schema": "../../../../packages/schemas/manifest/hauskraft.plugin.schema.json",
+  "id": "org.example.theme.warn-no-preview",
+  "name": "Warn No Preview",
+  "version": "0.1.0",
+  "type": [
+    "theme"
+  ],
+  "hauskraft_api": "^0.1.0",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Hauskraft test fixtures"
+    }
+  ],
+  "source": "https://github.com/hzmchen/hauskraft/tree/main/tests/fixtures/themes/warn-no-preview",
+  "runtime": {
+    "kind": "declarative"
+  },
+  "capabilities": [],
+  "data_classes": {
+    "reads": [],
+    "writes": [],
+    "emits": []
+  },
+  "contributes": {
+    "themes": [
+      {
+        "id": "warn-no-preview",
+        "file": "theme.json"
+      }
+    ]
+  }
+}

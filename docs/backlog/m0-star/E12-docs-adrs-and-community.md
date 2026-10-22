@@ -23,7 +23,7 @@
 - **Story:** As a maintainer, I want licences and community health files, so that contributions are legally clean and welcoming.
 - **AC:** Given the repo, then:
   - Root `LICENSE` is the AGPL-3.0 text and covers `services/**` and `apps/**`.
-  - `packages/sdk-py`, `packages/sdk-ts`, `packages/ui`, `packages/schemas`, `plugins/official/tasks`, `themes/builtin/*`, `themes/template` and `integrations/ha-hearthos` each have an MIT `LICENSE`.
+  - `packages/sdk-py`, `packages/sdk-ts`, `packages/ui`, `packages/schemas`, `plugins/official/tasks`, `themes/builtin/*`, `themes/template` and `integrations/ha-hauskraft` each have an MIT `LICENSE`.
   - Bundled fonts ship with their `OFL-1.1` licence texts under each theme's `LICENSES/`; icon packs ship their own licence (Lucide ISC, Pixelarticons MIT).
   - `LICENSING.md` explains the split in plain words: core AGPL; everything plugin-facing MIT; third-party plugins and themes choose their own licence; in-process plugins may import only the MIT packages; out-of-process plugins and declarative themes are separate works; not legal advice.
   - SPDX headers are present and `REUSE.toml` covers generated and binary files.
@@ -31,8 +31,8 @@
   - `SECURITY.md` has a private reporting route and supported versions (`main` only).
   - `CODE_OF_CONDUCT.md` is Contributor Covenant (current version, confirm at implementation).
   - Issue forms (`bug.yml`, `feature.yml`, `story.yml` mirroring the story template, `theme.yml` for theme submissions) and `pull_request_template.md` (story ID, AC checklist, tests run, screenshots in all built-in themes for UI changes, sign-off) exist.
-  - `integrations/ha-hearthos/README.md` and `services/*/README.md` placeholders state "M1+, do not implement in M0*".
-  - `hearthos_core/integrations/ha.py` defines a `HomeAssistantBridge` Protocol with a `NullBridge` (no network).
+  - `integrations/ha-hauskraft/README.md` and `services/*/README.md` placeholders state "M1+, do not implement in M0*".
+  - `hauskraft_core/integrations/ha.py` defines a `HomeAssistantBridge` Protocol with a `NullBridge` (no network).
 - **Tech:** `reuse download --all` fetches licence texts into `LICENSES/`. `LICENSE`, `LICENSES/`, `LICENSING.md` and a first `CONTRIBUTING.md` are already committed with the hand-off and only need completing.
 - **Tests:** `tests/acceptance/repo/test_docs_and_licensing.py`; `reuse lint`; licence-map check (E02-04); unit test that `NullBridge` performs no I/O.
 - **Deps:** E01-01 · **Est:** M · **Labels:** area:docs, legal

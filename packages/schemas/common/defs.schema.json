@@ -1,9 +1,9 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://hearthos.dev/schema/common/1.0.json",
+  "$id": "https://hauskraft.dev/schema/common/1.0.json",
   "$comment": "SPDX-License-Identifier: MIT",
-  "title": "HearthOS shared definitions",
-  "description": "Shared definitions for HearthOS schemas (spec §5.3, §5.5, §10.2.6).",
+  "title": "Hauskraft shared definitions",
+  "description": "Shared definitions for Hauskraft schemas (spec §5.3, §5.5, §10.2.6).",
   "$defs": {
     "dataClass": {
       "description": "Data classes in ascending sensitivity: public < household < personal < financial < tenant < child < health < secret (spec §5.5, ADR-0008).",

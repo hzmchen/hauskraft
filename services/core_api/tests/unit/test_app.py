@@ -6,8 +6,8 @@ from fastapi import FastAPI
 from fastapi.testclient import TestClient
 from starlette.routing import Route
 
-from hearthos_core.app import create_app
-from hearthos_core.settings import Settings
+from hauskraft_core.app import create_app
+from hauskraft_core.settings import Settings
 
 pytestmark = pytest.mark.unit
 

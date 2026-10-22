@@ -10,11 +10,11 @@ from fastapi.testclient import TestClient
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 from sqlalchemy.pool import NullPool
 
-from hearthos_core.app import create_app
-from hearthos_core.policy import NoOpPolicy
-from hearthos_core.settings import Settings
-from hearthos_core.uow import UnitOfWork
-from hearthos_core.users.service import SYSTEM_ACTOR, create_user
+from hauskraft_core.app import create_app
+from hauskraft_core.policy import NoOpPolicy
+from hauskraft_core.settings import Settings
+from hauskraft_core.uow import UnitOfWork
+from hauskraft_core.users.service import SYSTEM_ACTOR, create_user
 
 PASSWORD = "correct-horse-battery"
 

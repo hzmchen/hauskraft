@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // The one navigation model (M0S-E08-05, AGENTS.md rule 13). Every renderer gets these items; none may
 // filter, reorder, rename or relabel them.
-import type { PluginOut } from "@hearthos/sdk-ts";
+import type { PluginOut } from "@hauskraft/sdk-ts";
 
 export interface NavItem {
   id: string;

@@ -12,9 +12,9 @@ from sqlalchemy import create_engine, select, text
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 from sqlalchemy.pool import NullPool
 
-from hearthos_core.db.models import OutboxEvent
-from hearthos_core.events.relay import publish_batch
-from hearthos_core.settings import Settings
+from hauskraft_core.db.models import OutboxEvent
+from hauskraft_core.events.relay import publish_batch
+from hauskraft_core.settings import Settings
 from tests.integration.conftest import PASSWORD
 
 pytestmark = pytest.mark.integration
@@ -63,7 +63,7 @@ def test_activity_newest_first_with_actor_and_pagination(client: TestClient, mak
     client.patch(f"/api/v1/tasks/{task['id']}", json={"done": True}, headers=h)
     items = client.get("/api/v1/activity", params={"limit": 50}).json()
     mine = [i for i in items if i["subject"] == f"task/{task['id']}"]
-    assert [i["type"] for i in mine] == ["hearthos.task.completed", "hearthos.task.created"]
+    assert [i["type"] for i in mine] == ["hauskraft.task.completed", "hauskraft.task.created"]
     entry = mine[-1]
     assert set(entry) == {"id", "type", "time", "actor", "subject", "summary_key", "data"}
     assert entry["actor"]["display_name"] == "Activity Adult"

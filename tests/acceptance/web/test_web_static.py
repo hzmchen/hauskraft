@@ -29,7 +29,7 @@ def test_ui_package_has_component(component: str) -> None:
 @story("M0S-E08-01")
 def test_ui_package_identity() -> None:
     pkg = jsonc("packages/ui/package.json", "M0S-E08-01")
-    assert pkg.get("name") == "@hearthos/ui" and pkg.get("license") == "MIT"
+    assert pkg.get("name") == "@hauskraft/ui" and pkg.get("license") == "MIT"
     require_file("packages/ui/components.json", "M0S-E08-01")
 
 
@@ -46,8 +46,8 @@ def test_router_plugin_runs_before_react_plugin() -> None:
 @story("M0S-E06-06")
 def test_generated_registry_lists_tasks_plugin_only() -> None:
     text = require_text("apps/web/src/plugins/registry.gen.ts", "M0S-E06-06")
-    assert "org.hearthos.tasks" in text and "@hearthos/plugin-tasks" in text
-    assert "org.hearthos.theme" not in text, "theme plugins have no web code and must not be in the registry"
+    assert "dev.hauskraft.tasks" in text and "@hauskraft/plugin-tasks" in text
+    assert "dev.hauskraft.theme" not in text, "theme plugins have no web code and must not be in the registry"
 
 
 # ---------------------------------------------------------------- M0S-E08-04 / M0S-E09-03 i18n
@@ -105,7 +105,7 @@ PALETTE = re.compile(
 ARBITRARY = re.compile(r"\b[a-z][a-z-]*-\[[^\]\s]+\]")
 COLOUR_FN = re.compile(r"\b(?:rgba?|hsla?|oklch|oklab|hwb|lab|lch)\(")
 HEX = re.compile(r"(?<![\w&/])#(?:[0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})\b(?![\w-])")
-ALLOW = re.compile(r"hearthos-allow-raw-style")
+ALLOW = re.compile(r"hauskraft-allow-raw-style")
 
 
 def _ui_sources() -> list[Path]:
@@ -133,7 +133,7 @@ def test_ui_code_has_no_raw_styles() -> None:
                              ("colour function", COLOUR_FN), ("hex colour", HEX)):
                 if rx.search(line):
                     offences.append(f"{path.relative_to(REPO)}:{no}: {name}: {line.strip()[:100]}")
-    assert not offences, "raw styles found (use @hearthos/ui and semantic tokens):\n" + "\n".join(offences[:50])
+    assert not offences, "raw styles found (use @hauskraft/ui and semantic tokens):\n" + "\n".join(offences[:50])
 
 
 @story("M0S-E13-08")
@@ -144,7 +144,7 @@ def test_lint_rule_flags_raw_style_probe(probe: str) -> None:
 
     src = (FIXTURES / "lint" / f"{probe}.tsx").read_text()
     msgs = eslint_on_stdin(src, "plugins/official/tasks/web/src/_probe.tsx", "M0S-E13-08")
-    assert any(m.get("ruleId") == "hearthos/no-raw-styles" for m in msgs), msgs
+    assert any(m.get("ruleId") == "hauskraft/no-raw-styles" for m in msgs), msgs
 
 
 @story("M0S-E13-08")
@@ -154,4 +154,4 @@ def test_lint_rule_accepts_semantic_probe() -> None:
 
     src = (FIXTURES / "lint" / "semantic-ok.tsx").read_text()
     msgs = eslint_on_stdin(src, "plugins/official/tasks/web/src/_probe.tsx", "M0S-E13-08")
-    assert not [m for m in msgs if m.get("ruleId") == "hearthos/no-raw-styles"], msgs
+    assert not [m for m in msgs if m.get("ruleId") == "hauskraft/no-raw-styles"], msgs

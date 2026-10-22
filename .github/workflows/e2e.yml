@@ -18,7 +18,7 @@ permissions:
   contents: read
 
 env:
-  HEARTHOS_BASE_URL: http://localhost:8080
+  HAUSKRAFT_BASE_URL: http://localhost:8080
   COMPOSE: docker compose -f compose.yaml -f deploy/compose/compose.test.yaml
 
 jobs:
@@ -37,14 +37,14 @@ jobs:
       - name: Live API acceptance suite
         run: uv run python -m pytest tests --live --strict-status -ra
       - name: Install Chromium
-        run: pnpm --filter @hearthos/acceptance-e2e exec playwright install --with-deps chromium
+        run: pnpm --filter @hauskraft/acceptance-e2e exec playwright install --with-deps chromium
       - name: Playwright (demo, tasks, theme invariance)
         env:
           # Step 11 of the demo restarts the whole stack and checks that everything survived.
-          HEARTHOS_E2E_RESTART_CMD: >-
+          HAUSKRAFT_E2E_RESTART_CMD: >-
             docker compose -f ${{ github.workspace }}/compose.yaml -f ${{ github.workspace }}/deploy/compose/compose.test.yaml down &&
             docker compose -f ${{ github.workspace }}/compose.yaml -f ${{ github.workspace }}/deploy/compose/compose.test.yaml up --wait
-        run: pnpm --filter @hearthos/acceptance-e2e exec playwright test
+        run: pnpm --filter @hauskraft/acceptance-e2e exec playwright test
       - name: Web shell checks (CSP in every built-in theme)
         run: pnpm --filter web exec playwright test
 

@@ -9,20 +9,20 @@ import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine, func, select, text
 
-from hearthos_core.app import create_app
-from hearthos_core.db.models import DeploymentSetting, OutboxEvent, User
-from hearthos_core.policy import DenyAllPolicy
-from hearthos_core.settings import Settings
-from hearthos_core.settings_store.service import set_theme
-from hearthos_core.themes.registry import BUILTIN_DEFAULT
-from hearthos_core.uow import UnitOfWork
-from hearthos_sdk import Actor
-from hearthos_sdk.errors import PolicyDeniedError
+from hauskraft_core.app import create_app
+from hauskraft_core.db.models import DeploymentSetting, OutboxEvent, User
+from hauskraft_core.policy import DenyAllPolicy
+from hauskraft_core.settings import Settings
+from hauskraft_core.settings_store.service import set_theme
+from hauskraft_core.themes.registry import BUILTIN_DEFAULT
+from hauskraft_core.uow import UnitOfWork
+from hauskraft_sdk import Actor
+from hauskraft_sdk.errors import PolicyDeniedError
 from tests.integration.conftest import PASSWORD
 from tests.theme_helpers import FIXTURES, builtin_default
 
 pytestmark = pytest.mark.integration
-CHANGED = "hearthos.settings.theme_changed"
+CHANGED = "hauskraft.settings.theme_changed"
 OK = "org.example.theme.valid-minimal"
 BAD = "org.example.theme.invalid-low-contrast"
 
@@ -42,7 +42,7 @@ def _stored(url: str) -> tuple[object, int]:
             events = conn.scalar(
                 select(func.count())
                 .select_from(OutboxEvent)
-                .where(OutboxEvent.type == "hearthos.settings.theme_changed")
+                .where(OutboxEvent.type == "hauskraft.settings.theme_changed")
             )
             return value, int(events or 0)
     finally:
@@ -137,7 +137,7 @@ def test_event_carries_from_and_to(themed: TestClient, h: dict[str, str], theme_
         )
     engine.dispose()
     assert envelope["data"] == {"from": BUILTIN_DEFAULT, "to": OK}
-    assert envelope["source"] == "org.hearthos.core"
+    assert envelope["source"] == "dev.hauskraft.core"
     assert envelope["dataclass"] == "household"
     assert envelope["actorid"]
 
@@ -171,7 +171,7 @@ def test_assets_are_served_with_safe_headers(themed: TestClient) -> None:
 
 
 @pytest.mark.parametrize(
-    "path", ["tokens.light.json", "hearthos.plugin.json", "..%2Fhearthos.plugin.json", "assets/../theme.json"]
+    "path", ["tokens.light.json", "hauskraft.plugin.json", "..%2Fhauskraft.plugin.json", "assets/../theme.json"]
 )
 def test_only_referenced_assets_are_served(themed: TestClient, path: str) -> None:
     assert themed.get(f"/api/v1/theme/assets/{OK}/{path}").status_code in (400, 404)

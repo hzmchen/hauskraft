@@ -5,16 +5,16 @@
 members = ["services/core_api", "packages/sdk-py", "plugins/official/tasks/backend"]
 
 [tool.uv.sources]
-hearthos-core = { workspace = true }
-hearthos-sdk = { workspace = true }
-hearthos-tasks = { workspace = true }
+hauskraft-core = { workspace = true }
+hauskraft-sdk = { workspace = true }
+hauskraft-tasks = { workspace = true }
 
 [dependency-groups]
 # The acceptance suite pins (mirrors tests/requirements.txt, which stays for pip-only runs).
 dev = [
-    "hearthos-core",
-    "hearthos-sdk",
-    "hearthos-tasks",
+    "hauskraft-core",
+    "hauskraft-sdk",
+    "hauskraft-tasks",
     "pytest==9.1.1",
     "jsonschema==4.26.0",
     "httpx==0.28.1",
@@ -45,11 +45,11 @@ extend-exclude = [
 select = ["E", "F", "I", "UP", "B", "S", "ASYNC", "PT", "RUF", "TID"]
 
 [tool.ruff.lint.isort]
-known-first-party = ["hearthos_core", "hearthos_sdk", "hearthos_tasks"]
+known-first-party = ["hauskraft_core", "hauskraft_sdk", "hauskraft_tasks"]
 
 [tool.ruff.lint.flake8-tidy-imports.banned-api]
-# Licence boundary (spec §4.2): plugins import only hearthos_sdk, never core internals.
-"hearthos_core".msg = "Plugins may import only hearthos_sdk, never hearthos_core (spec §4.2)."
+# Licence boundary (spec §4.2): plugins import only hauskraft_sdk, never core internals.
+"hauskraft_core".msg = "Plugins may import only hauskraft_sdk, never hauskraft_core (spec §4.2)."
 
 [tool.ruff.lint.per-file-ignores]
 # The ban applies to plugin code only; everything outside plugins/ may import core.

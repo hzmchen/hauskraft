@@ -8,8 +8,8 @@ from sqlalchemy import delete, text, update
 from sqlalchemy.exc import DBAPIError
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from hearthos_core.db.ids import new_id
-from hearthos_core.db.models import OutboxEvent
+from hauskraft_core.db.ids import new_id
+from hauskraft_core.db.models import OutboxEvent
 
 pytestmark = pytest.mark.integration
 NOW = dt.datetime(2026, 10, 12, 9, 0, tzinfo=dt.UTC)
@@ -19,8 +19,8 @@ async def _event(db_session: AsyncSession) -> OutboxEvent:
     event_id = new_id()
     event = OutboxEvent(
         id=event_id,
-        type="hearthos.task.created",
-        source="org.hearthos.tasks",
+        type="hauskraft.task.created",
+        source="dev.hauskraft.tasks",
         subject="task/x",
         data_class="household",
         time=NOW,

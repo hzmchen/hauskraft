@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 // The Today widget (M0S-E09-01): quick add, open tasks first, "Show done (n)", link to All tasks.
-import { useHost, type WidgetProps } from "@hearthos/sdk-ts";
-import { Button, Icon, Input } from "@hearthos/ui";
+import { useHost, type WidgetProps } from "@hauskraft/sdk-ts";
+import { Button, Icon, Input } from "@hauskraft/ui";
 import { useState, type FormEvent } from "react";
 import { useTranslation } from "react-i18next";
 

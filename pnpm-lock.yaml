@@ -262,13 +262,13 @@ importers:
 
   apps/web:
     dependencies:
-      '@hearthos/plugin-tasks':
+      '@hauskraft/plugin-tasks':
         specifier: workspace:*
         version: link:../../plugins/official/tasks/web
-      '@hearthos/sdk-ts':
+      '@hauskraft/sdk-ts':
         specifier: workspace:*
         version: link:../../packages/sdk-ts
-      '@hearthos/ui':
+      '@hauskraft/ui':
         specifier: workspace:*
         version: link:../../packages/ui
       '@tanstack/react-query':
@@ -442,10 +442,10 @@ importers:
 
   plugins/official/tasks/web:
     dependencies:
-      '@hearthos/sdk-ts':
+      '@hauskraft/sdk-ts':
         specifier: workspace:*
         version: link:../../../../packages/sdk-ts
-      '@hearthos/ui':
+      '@hauskraft/ui':
         specifier: workspace:*
         version: link:../../../../packages/ui
     devDependencies:
@@ -507,7 +507,7 @@ importers:
         specifier: ~6.0.3
         version: 6.0.3
 
-  tools/eslint-plugin-hearthos:
+  tools/eslint-plugin-hauskraft:
     devDependencies:
       vitest:
         specifier: 'catalog:'

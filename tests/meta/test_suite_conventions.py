@@ -45,7 +45,7 @@ def test_theme_fixture_index_matches_folders() -> None:
     folders = {p.name for p in (FIXTURES / "themes").iterdir() if p.is_dir()}
     assert set(expected) == folders
     for name, e in expected.items():
-        manifest = json.loads((FIXTURES / "themes" / name / "hearthos.plugin.json").read_text())
+        manifest = json.loads((FIXTURES / "themes" / name / "hauskraft.plugin.json").read_text())
         assert manifest["id"] == e["id"]
         assert name.startswith("valid") or name.startswith("warn") or name.startswith("invalid")
         assert e["valid"] == (not name.startswith("invalid"))

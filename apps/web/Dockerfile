@@ -9,9 +9,9 @@ RUN pnpm install --frozen-lockfile --filter "web..." \
  && pnpm --filter web build
 
 FROM caddy:2-alpine
-RUN adduser -S -D -H -u 10001 hearthos
+RUN adduser -S -D -H -u 10001 hauskraft
 ENV XDG_CONFIG_HOME=/tmp/caddy-config XDG_DATA_HOME=/tmp/caddy-data
 COPY deploy/compose/Caddyfile /etc/caddy/Caddyfile
 COPY --from=build /repo/apps/web/dist /srv
-USER hearthos
+USER hauskraft
 EXPOSE 8080

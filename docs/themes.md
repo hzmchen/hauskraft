@@ -1,12 +1,12 @@
 <!-- SPDX-License-Identifier: MIT -->
 
-# Making a HearthOS theme
+# Making a Hauskraft theme
 
-A theme changes how HearthOS looks: colours, type, shapes, spacing, a few component styles and the navigation
-layout. It never changes what HearthOS does. This guide takes you from a copy of the template to your theme being
+A theme changes how Hauskraft looks: colours, type, shapes, spacing, a few component styles and the navigation
+layout. It never changes what Hauskraft does. This guide takes you from a copy of the template to your theme being
 active in the household, in an evening, without reading any source code.
 
-Contract details live in the [spec, §10.2](spec/hearthos-spec-v0.2.md#102-theming-system) and
+Contract details live in the [spec, §10.2](spec/hauskraft-spec-v0.2.md#102-theming-system) and
 [ADR-0013](adr/0013-theming.md). The machine-readable contract is in
 [`packages/schemas/theme/`](../packages/schemas/theme/).
 
@@ -19,7 +19,7 @@ Contract details live in the [spec, §10.2](spec/hearthos-spec-v0.2.md#102-themi
 | **C. Layout (limited)** | Navigation style on wide and narrow screens, density, content width | `theme.json` → `layout` (fixed choices) |
 | **D. Custom CSS or scripts** | **Not allowed** | There is no custom CSS, no JavaScript, no HTML and no external URL anywhere in a theme |
 
-A theme is data. HearthOS reads it, checks it and compiles it into one stylesheet itself; nothing from your files is
+A theme is data. Hauskraft reads it, checks it and compiles it into one stylesheet itself; nothing from your files is
 copied into CSS as raw text. A key called `css`, `script`, `style` or `html` anywhere makes the theme invalid.
 
 ### Function invariance
@@ -41,7 +41,7 @@ dark), so a wall tablet can go dark at night while a phone stays light. Your the
 
 ```text
 mytheme/
-  hearthos.plugin.json     # who you are: id, name, version, licence (type ["theme"], declarative)
+  hauskraft.plugin.json     # who you are: id, name, version, licence (type ["theme"], declarative)
   theme.json               # components, layout, fonts, icons, background, preview
   tokens.light.json        # design tokens for light mode (DTCG 2025.10)
   tokens.dark.json         # design tokens for dark mode
@@ -55,7 +55,7 @@ mytheme/
 Start from [`themes/template/`](../themes/template/): a complete, valid copy of the Default theme with the
 placeholder id `org.example.theme.mytheme`.
 
-### `hearthos.plugin.json`
+### `hauskraft.plugin.json`
 
 Change `id`, `name`, `description`, `authors` and `source`. The id is a reverse domain name you control, for example
 `io.github.yourname.theme.mytheme`. Keep `type`, `runtime`, `capabilities` and `data_classes` exactly as they are:
@@ -69,7 +69,7 @@ themes cannot ask for capabilities or data.
   "version": "0.1.0",
   "description": "Warm evening colours with rounded corners.",
   "authors": [{ "name": "Your Name" }],
-  "source": "https://github.com/yourname/hearthos-mytheme"
+  "source": "https://github.com/yourname/hauskraft-mytheme"
 }
 ```
 
@@ -280,10 +280,10 @@ file. Screen-reader names come from the app, never from the sprite. The Hackspac
 ## Check your theme
 
 ```text
-hearthos themes validate ./data/themes/mytheme            # errors make it exit 1
-hearthos themes validate --strict ./data/themes/mytheme   # warnings fail too
-hearthos themes validate --json ./data/themes/mytheme     # machine-readable report
-hearthos themes list                                      # every theme found, valid or not, and the active one
+hauskraft themes validate ./data/themes/mytheme            # errors make it exit 1
+hauskraft themes validate --strict ./data/themes/mytheme   # warnings fail too
+hauskraft themes validate --json ./data/themes/mytheme     # machine-readable report
+hauskraft themes list                                      # every theme found, valid or not, and the active one
 ```
 
 Each issue shows a fixed code, the file and the place in it, then a message:
@@ -302,7 +302,7 @@ Errors: `manifest.invalid`, `schema.invalid`, `token.missing`, `token.invalid_va
 ## Install and select it
 
 1. Put the folder in the themes volume: `./data/themes/<folder>` on the host (`/data/themes` in the container,
-   configured by `HEARTHOS_THEME_PATHS`).
+   configured by `HAUSKRAFT_THEME_PATHS`).
 2. Restart the `api` service: `docker compose restart api`. Themes are discovered at start.
 3. Open Settings → Appearance. Your theme is listed with its validation result; invalid themes are shown with their
    reasons but cannot be selected. Choose it, and it applies to everyone in the household.
@@ -315,6 +315,6 @@ Because the token files are standard DTCG JSON, you can design in a tool and exp
 - **Penpot**: export the design tokens as JSON in DTCG format.
 - **Figma variables**: export with a plugin or script that writes DTCG JSON, one file per mode.
 
-Then rename your tokens to the HearthOS names above (`color.primary`, `font-size.base`, …), keep `$type` and
+Then rename your tokens to the Hauskraft names above (`color.primary`, `font-size.base`, …), keep `$type` and
 `$value`, split light and dark into `tokens.light.json` and `tokens.dark.json`, and run the validator. Extra tokens
 that are not in the contract are ignored.

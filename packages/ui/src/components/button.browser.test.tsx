@@ -10,7 +10,7 @@ import { Button } from "../index";
 it("paints the primary button with the theme's primary token", () => {
   const { getByRole } = render(<Button>Save</Button>);
   const style = getComputedStyle(getByRole("button", { name: "Save" }));
-  const primary = getComputedStyle(document.documentElement).getPropertyValue("--hearth-color-primary").trim();
+  const primary = getComputedStyle(document.documentElement).getPropertyValue("--hauskraft-color-primary").trim();
   expect(primary).not.toBe("");
   expect(style.backgroundColor.replace(/,\s*/g, " ")).toContain(primary.replace(/^rgb\(|\)$/g, ""));
 });

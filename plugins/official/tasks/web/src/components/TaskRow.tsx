@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
-import type { TaskOut } from "@hearthos/sdk-ts";
-import { Checkbox } from "@hearthos/ui";
+import type { TaskOut } from "@hauskraft/sdk-ts";
+import { Checkbox } from "@hauskraft/ui";
 import { useState, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 

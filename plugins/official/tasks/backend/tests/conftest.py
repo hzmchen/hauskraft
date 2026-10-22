@@ -15,13 +15,13 @@ import pytest
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from hearthos_sdk import Actor, DataClass, ResourceRef
+from hauskraft_sdk import Actor, DataClass, ResourceRef
 
 
 @dataclass
 class FakeContext:
     session: AsyncSession
-    plugin_id: str = "org.hearthos.tasks"
+    plugin_id: str = "dev.hauskraft.tasks"
     authorized: list[tuple[str, str, ResourceRef, str, str]] = field(default_factory=list)
     events: list[dict[str, Any]] = field(default_factory=list)
     fail_emit: bool = False

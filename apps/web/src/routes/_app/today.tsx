@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import { dashboardGetOptions } from "@hearthos/sdk-ts";
+import { dashboardGetOptions } from "@hauskraft/sdk-ts";
 import { createFileRoute } from "@tanstack/react-router";
 
 import { TodayDashboard } from "../../dashboard/Today";

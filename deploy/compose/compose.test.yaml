@@ -5,7 +5,7 @@
 services:
   api:
     environment:
-      HEARTHOS_THEME_PATHS: /app/themes/builtin,/data/themes,/fixtures/themes
+      HAUSKRAFT_THEME_PATHS: /app/themes/builtin,/data/themes,/fixtures/themes
     volumes:
       # Relative to the project directory (the repository root), where `-f` overlays resolve paths.
       - ./tests/fixtures/themes:/fixtures/themes:ro

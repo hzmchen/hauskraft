@@ -1,5 +1,5 @@
 {
-  "$comment": "Expected `hearthos themes validate --json` outcome per fixture. Each invalid fixture must report at least the listed error codes; valid ones must report no errors and exactly the listed warning codes.",
+  "$comment": "Expected `hauskraft themes validate --json` outcome per fixture. Each invalid fixture must report at least the listed error codes; valid ones must report no errors and exactly the listed warning codes.",
   "themes": {
     "valid-minimal": {
       "id": "org.example.theme.valid-minimal",

@@ -24,13 +24,13 @@ import tempfile
 from pathlib import Path
 from typing import Any
 
-from hearthos_core.themes.validate import validate_theme
+from hauskraft_core.themes.validate import validate_theme
 
 REPO = Path(__file__).resolve().parents[1]
 TEMPLATE = REPO / "themes" / "template"
 BLOCK = re.compile(r"(?:<!--\s*example:\s*(?P<marker>[^>]*?)\s*-->\s*\n)?```json\n(?P<body>.*?)\n```", re.S)
 TARGETS = {
-    "manifest": ["hearthos.plugin.json"],
+    "manifest": ["hauskraft.plugin.json"],
     "theme": ["theme.json"],
     "tokens.light": ["tokens.light.json"],
     "tokens.dark": ["tokens.dark.json"],

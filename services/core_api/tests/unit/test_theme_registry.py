@@ -9,9 +9,9 @@ from pathlib import Path
 import pytest
 from fastapi import FastAPI
 
-from hearthos_core.app import create_app
-from hearthos_core.settings import Settings
-from hearthos_core.themes.registry import BUILTIN_DEFAULT
+from hauskraft_core.app import create_app
+from hauskraft_core.settings import Settings
+from hauskraft_core.themes.registry import BUILTIN_DEFAULT
 from tests.theme_helpers import FIXTURES
 from tests.theme_helpers import builtin_default as _builtin_default
 
@@ -111,7 +111,7 @@ def test_readiness_fails_without_builtin_default(tmp_path: Path) -> None:
 
 def test_fallback_is_logged_once_per_choice(tmp_path: Path, caplog: pytest.LogCaptureFixture) -> None:
     registry = _app(tmp_path, [_builtin_default(tmp_path), FIXTURES]).state.themes
-    caplog.set_level(logging.WARNING, logger="hearthos.themes")
+    caplog.set_level(logging.WARNING, logger="hauskraft.themes")
     for _ in range(3):
         registry.resolve("org.example.theme.invalid-alias-cycle")
     registry.resolve("org.example.theme.not-installed")

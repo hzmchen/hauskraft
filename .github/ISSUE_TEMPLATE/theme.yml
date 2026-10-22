@@ -7,7 +7,7 @@ body:
     attributes:
       value: |
         Themes are data only: tokens, component variants, a few layout options and bundled assets. No CSS, no scripts, no external URLs.
-        See docs/themes.md and run `hearthos themes validate --strict <folder>` before submitting.
+        See docs/themes.md and run `hauskraft themes validate --strict <folder>` before submitting.
   - type: input
     id: id
     attributes:
@@ -25,7 +25,7 @@ body:
   - type: textarea
     id: validate
     attributes:
-      label: Output of `hearthos themes validate --strict --json`
+      label: Output of `hauskraft themes validate --strict --json`
       render: json
     validations:
       required: true

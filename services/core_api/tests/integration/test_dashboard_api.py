@@ -9,17 +9,17 @@ import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine, func, select
 
-from hearthos_core.dashboard.service import save_layout
-from hearthos_core.db.models import DashboardLayout, User
-from hearthos_core.policy import DenyAllPolicy
-from hearthos_core.settings import Settings
-from hearthos_core.uow import UnitOfWork
-from hearthos_sdk import Actor
-from hearthos_sdk.errors import PolicyDeniedError
+from hauskraft_core.dashboard.service import save_layout
+from hauskraft_core.db.models import DashboardLayout, User
+from hauskraft_core.policy import DenyAllPolicy
+from hauskraft_core.settings import Settings
+from hauskraft_core.uow import UnitOfWork
+from hauskraft_sdk import Actor
+from hauskraft_sdk.errors import PolicyDeniedError
 from tests.integration.conftest import PASSWORD
 
 pytestmark = pytest.mark.integration
-CELL = {"i": "org.hearthos.tasks/tasks.list", "plugin_id": "org.hearthos.tasks", "widget_id": "tasks.list"}
+CELL = {"i": "dev.hauskraft.tasks/tasks.list", "plugin_id": "dev.hauskraft.tasks", "widget_id": "tasks.list"}
 
 
 def _login(client: TestClient, username: str) -> dict[str, str]:

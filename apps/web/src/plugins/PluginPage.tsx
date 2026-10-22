@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // /p/$pageId (M0S-E08-05): the page component an enabled plugin contributes, or "Page not found".
-import type { PluginOut } from "@hearthos/sdk-ts";
+import type { PluginOut } from "@hauskraft/sdk-ts";
 import { Suspense, use } from "react";
 import { useTranslation } from "react-i18next";
 

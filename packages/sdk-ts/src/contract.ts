@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// What a plugin's web package gives the shell (spec §5, M0S-E06-05). UI primitives come from @hearthos/ui.
+// What a plugin's web package gives the shell (spec §5, M0S-E06-05). UI primitives come from @hauskraft/ui.
 import type { QueryClient } from "@tanstack/react-query";
 import type { ComponentType } from "react";
 

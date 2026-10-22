@@ -11,7 +11,7 @@ COPY pyproject.toml uv.lock ./
 COPY services/core_api/pyproject.toml services/core_api/
 COPY packages/sdk-py/pyproject.toml packages/sdk-py/
 COPY plugins/official/tasks/backend/pyproject.toml plugins/official/tasks/backend/
-RUN mkdir -p services/core_api/src/hearthos_core packages/sdk-py/src/hearthos_sdk plugins/official/tasks/backend/src/hearthos_tasks \
+RUN mkdir -p services/core_api/src/hauskraft_core packages/sdk-py/src/hauskraft_sdk plugins/official/tasks/backend/src/hauskraft_tasks \
  && uv sync --frozen --no-dev --all-packages --no-install-workspace
 COPY services/core_api services/core_api
 COPY packages/sdk-py packages/sdk-py
@@ -22,14 +22,14 @@ COPY fixtures fixtures
 RUN uv sync --frozen --no-dev --all-packages
 
 FROM python:3.13-slim
-RUN useradd --system --uid 10001 --home-dir /app hearthos
+RUN useradd --system --uid 10001 --home-dir /app hauskraft
 WORKDIR /app
-COPY --from=build --chown=hearthos:hearthos /app /app
+COPY --from=build --chown=hauskraft:hauskraft /app /app
 ENV PATH=/app/.venv/bin:$PATH \
     PYTHONUNBUFFERED=1 \
-    HEARTHOS_SCHEMAS_DIR=/app/packages/schemas \
-    HEARTHOS_PLUGIN_PATHS=/app/plugins/official \
-    HEARTHOS_THEME_PATHS=/app/themes/builtin
-USER hearthos
+    HAUSKRAFT_SCHEMAS_DIR=/app/packages/schemas \
+    HAUSKRAFT_PLUGIN_PATHS=/app/plugins/official \
+    HAUSKRAFT_THEME_PATHS=/app/themes/builtin
+USER hauskraft
 EXPOSE 8000
-CMD ["uvicorn", "hearthos_core.app:create_app", "--factory", "--host", "0.0.0.0", "--port", "8000", "--proxy-headers"]
+CMD ["uvicorn", "hauskraft_core.app:create_app", "--factory", "--host", "0.0.0.0", "--port", "8000", "--proxy-headers"]

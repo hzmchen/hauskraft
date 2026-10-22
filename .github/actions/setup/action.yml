@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: MIT
-name: Set up HearthOS workspace
+name: Set up Hauskraft workspace
 description: Install the uv workspace and/or the pnpm workspace with caching.
 inputs:
   python:

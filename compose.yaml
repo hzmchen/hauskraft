@@ -1,4 +1,6 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # Root Compose file. The stack itself lives in deploy/compose (M0S-E11-01 completes it).
+# Name the project here: Compose ignores `name` in included files and would use the folder name.
+name: hauskraft
 include:
   - deploy/compose/compose.yaml

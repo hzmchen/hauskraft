@@ -9,10 +9,10 @@ from conftest import FakeContext, make_adult
 from pydantic import ValidationError
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from hearthos_sdk.errors import ConflictError, NotFoundError
-from hearthos_tasks import service
-from hearthos_tasks.models import Task
-from hearthos_tasks.schemas import TaskCreate, TaskPatch
+from hauskraft_sdk.errors import ConflictError, NotFoundError
+from hauskraft_tasks import service
+from hauskraft_tasks.models import Task
+from hauskraft_tasks.schemas import TaskCreate, TaskPatch
 
 pytestmark = pytest.mark.integration
 
@@ -24,7 +24,7 @@ async def test_create(ctx: FakeContext, db_session: AsyncSession) -> None:
     assert task.version == 1
     assert ctx.authorized == [(demo.id, "task.create", ctx.authorized[0][2], "household", "graph:write:Task")]
     assert ctx.authorized[0][2].type == "Task"
-    assert [e["type"] for e in ctx.events] == ["hearthos.task.created"]
+    assert [e["type"] for e in ctx.events] == ["hauskraft.task.created"]
     assert ctx.events[0]["subject"] == f"task/{task.id}"
     assert ctx.events[0]["data"]["task"]["title"] == "Buy milk"
     assert ctx.events[0]["actorid"] == demo.id
@@ -40,7 +40,7 @@ async def test_update_records_changes(ctx: FakeContext, db_session: AsyncSession
     updated = await service.update_task(ctx, demo, task.id, TaskPatch(title="Buy oat milk", due_on=tomorrow))
     assert updated.version == 2
     event = ctx.events[-1]
-    assert event["type"] == "hearthos.task.updated"
+    assert event["type"] == "hauskraft.task.updated"
     assert event["data"]["changes"] == {"title": ["Buy milk", "Buy oat milk"], "due_on": [None, tomorrow.isoformat()]}
 
 
@@ -50,11 +50,11 @@ async def test_complete_and_reopen(ctx: FakeContext, db_session: AsyncSession) -
     done = await service.update_task(ctx, demo, task.id, TaskPatch(done=True))
     assert done.done is True
     assert done.done_at is not None
-    assert ctx.events[-1]["type"] == "hearthos.task.completed"
+    assert ctx.events[-1]["type"] == "hauskraft.task.completed"
     assert ctx.events[-1]["data"]["completed_at"]
     reopened = await service.update_task(ctx, demo, task.id, TaskPatch(done=False))
     assert reopened.done_at is None
-    assert ctx.events[-1]["type"] == "hearthos.task.updated"
+    assert ctx.events[-1]["type"] == "hauskraft.task.updated"
     assert ctx.events[-1]["data"]["changes"] == {"done": [True, False]}
 
 
@@ -92,7 +92,7 @@ async def test_delete_emits_a_snapshot(ctx: FakeContext, db_session: AsyncSessio
     task = await service.create_task(ctx, demo, TaskCreate(title="Gone"))
     await service.delete_task(ctx, demo, task.id)
     assert await db_session.get(Task, task.id) is None
-    assert ctx.events[-1]["type"] == "hearthos.task.deleted"
+    assert ctx.events[-1]["type"] == "hauskraft.task.deleted"
     assert ctx.events[-1]["data"]["task"]["title"] == "Gone"
     with pytest.raises(NotFoundError):
         await service.delete_task(ctx, demo, task.id)

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// Gives plugin web code navigation and the page's search parameters through @hearthos/sdk-ts (useHost),
+// Gives plugin web code navigation and the page's search parameters through @hauskraft/sdk-ts (useHost),
 // backed by the router, so plugins never import it.
-import { HostProvider, type Host } from "@hearthos/sdk-ts";
+import { HostProvider, type Host } from "@hauskraft/sdk-ts";
 import { useNavigate, useRouterState } from "@tanstack/react-router";
 import { useMemo, type ReactNode } from "react";
 

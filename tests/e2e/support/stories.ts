@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 // Story gate: tests tagged with a red story are expected to fail (test.fail), so the suite stays usable
 // while work is in progress. If a red story's test passes, Playwright reports it as a failure, which
-// tells you to flip the story to "green" in tests/story-status.json. Set HEARTHOS_TDD_RAW=1 to see
+// tells you to flip the story to "green" in tests/story-status.json. Set HAUSKRAFT_TDD_RAW=1 to see
 // the real failures while you work on a story.
 import { test as base, expect } from "@playwright/test";
 import { readFileSync } from "node:fs";
@@ -14,7 +14,7 @@ const here = dirname(fileURLToPath(import.meta.url));
 const registry: Record<string, Status> = JSON.parse(
   readFileSync(resolve(here, "..", "..", "story-status.json"), "utf-8"),
 ).stories;
-const RAW = process.env.HEARTHOS_TDD_RAW === "1";
+const RAW = process.env.HAUSKRAFT_TDD_RAW === "1";
 
 /** `story("M0S-E09-01", "M0S-E11-03")` -> tag list for `test(title, { tag }, fn)`. */
 export function story(...ids: string[]): { tag: string[] } {

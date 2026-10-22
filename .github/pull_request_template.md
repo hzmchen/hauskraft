@@ -24,7 +24,7 @@ Story: **M0S-Exx-yy** · <title> (<link to the epic file>)
 ## UI changes only
 
 - [ ] Screenshots in Default, Paper and Hackspace, light and dark
-- [ ] Only `@hearthos/ui` primitives and semantic tokens (no raw styles)
+- [ ] Only `@hauskraft/ui` primitives and semantic tokens (no raw styles)
 
 ## Sign-off
 

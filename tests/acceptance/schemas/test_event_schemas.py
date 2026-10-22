@@ -34,7 +34,7 @@ def test_invalid_envelope_fails(path) -> None:
 @pytest.mark.parametrize("path", [pytest.param(p, marks=_data_schema_story(p), id=p.stem) for p in VALID])
 def test_event_data_matches_its_schema(path) -> None:
     event = load_json(path)
-    suffix = event["type"].removeprefix("hearthos.")
+    suffix = event["type"].removeprefix("hauskraft.")
     v = validator(f"events/{suffix}.data.schema.json", "M0S-E10-01")
     assert not errors(v, event["data"])
 

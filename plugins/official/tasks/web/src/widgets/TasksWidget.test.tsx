@@ -6,7 +6,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { fakeApi, json, page, renderWithPlugin, task } from "../test/harness";
 import { TasksWidget } from "./TasksWidget";
 
-const props = { instanceId: "w1", pluginId: "org.hearthos.tasks", size: { w: 4, h: 6 }, config: {} };
+const props = { instanceId: "w1", pluginId: "dev.hauskraft.tasks", size: { w: 4, h: 6 }, config: {} };
 const OPEN = "GET /api/v1/tasks?status=open&sort=-created_at&limit=50";
 const DONE = "GET /api/v1/tasks?status=done&sort=-created_at&limit=50";
 

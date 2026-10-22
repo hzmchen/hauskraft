@@ -9,10 +9,10 @@ from fastapi.testclient import TestClient
 from sqlalchemy import create_engine, text
 from sqlalchemy.engine import make_url
 
-from hearthos_core.app import create_app
-from hearthos_core.db import migrations
-from hearthos_core.health import register_check
-from hearthos_core.settings import Settings
+from hauskraft_core.app import create_app
+from hauskraft_core.db import migrations
+from hauskraft_core.health import register_check
+from hauskraft_core.settings import Settings
 from tests.theme_helpers import builtin_default
 
 pytestmark = pytest.mark.integration

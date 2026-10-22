@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
-"""M0S-E11-02: `hearthos seed` creates the demo household once."""
+"""M0S-E11-02: `hauskraft seed` creates the demo household once."""
 
 from collections.abc import Iterator
 
@@ -9,11 +9,11 @@ from sqlalchemy import create_engine, func, select, text
 from sqlalchemy.engine import make_url
 from typer.testing import CliRunner
 
-from hearthos_core.app import create_app
-from hearthos_core.cli import app as cli
-from hearthos_core.db import migrations
-from hearthos_core.db.models import OutboxEvent, User
-from hearthos_core.settings import Settings
+from hauskraft_core.app import create_app
+from hauskraft_core.cli import app as cli
+from hauskraft_core.db import migrations
+from hauskraft_core.db.models import OutboxEvent, User
+from hauskraft_core.settings import Settings
 
 pytestmark = pytest.mark.integration
 
@@ -27,10 +27,10 @@ def empty_db(pg_url: str, db_settings: Settings, monkeypatch: pytest.MonkeyPatch
     url = make_url(pg_url).set(database="seed_probe").render_as_string(hide_password=False)
     settings = db_settings.model_copy(update={"database_url": url, "allowed_origins": ["http://testserver"]})
     migrations.upgrade(settings)
-    monkeypatch.setenv("HEARTHOS_DATABASE_URL", url)
-    monkeypatch.setenv("HEARTHOS_PLUGIN_PATHS", ",".join(str(p) for p in settings.plugin_paths))
-    monkeypatch.setenv("HEARTHOS_THEME_PATHS", "")
-    monkeypatch.setenv("HEARTHOS_SEED_DEMO", "true")
+    monkeypatch.setenv("HAUSKRAFT_DATABASE_URL", url)
+    monkeypatch.setenv("HAUSKRAFT_PLUGIN_PATHS", ",".join(str(p) for p in settings.plugin_paths))
+    monkeypatch.setenv("HAUSKRAFT_THEME_PATHS", "")
+    monkeypatch.setenv("HAUSKRAFT_SEED_DEMO", "true")
     yield settings
     with admin.connect() as conn:
         conn.execute(text("DROP DATABASE IF EXISTS seed_probe WITH (FORCE)"))
@@ -60,7 +60,7 @@ def test_seed_creates_the_household_once(empty_db: Settings) -> None:
 
     with TestClient(create_app(empty_db), headers={"Origin": "http://testserver"}) as client:
         for username, display in (("demo", "Demo Adult"), ("alex", "Alex Adult")):
-            r = client.post("/api/v1/auth/login", json={"username": username, "password": "hearthos-demo"})
+            r = client.post("/api/v1/auth/login", json={"username": username, "password": "hauskraft-demo"})
             assert r.status_code == 200, r.text
             assert r.json()["user"]["display_name"] == display
         titles = {t["title"]: t for t in client.get("/api/v1/tasks").json()["items"]}
@@ -70,7 +70,7 @@ def test_seed_creates_the_household_once(empty_db: Settings) -> None:
 
 
 def test_seed_disabled_by_setting(empty_db: Settings, monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setenv("HEARTHOS_SEED_DEMO", "false")
+    monkeypatch.setenv("HAUSKRAFT_SEED_DEMO", "false")
     result = CliRunner().invoke(cli, ["seed", "--if-empty"])
     assert result.exit_code == 0, result.output
     assert "disabled" in result.output
@@ -78,8 +78,8 @@ def test_seed_disabled_by_setting(empty_db: Settings, monkeypatch: pytest.Monkey
 
 
 def test_production_refuses_demo_passwords(empty_db: Settings, monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setenv("HEARTHOS_ENV", "production")
-    monkeypatch.setenv("HEARTHOS_SECRET_KEY", "p" * 40)
+    monkeypatch.setenv("HAUSKRAFT_ENV", "production")
+    monkeypatch.setenv("HAUSKRAFT_SECRET_KEY", "p" * 40)
     refused = CliRunner().invoke(cli, ["seed"])
     assert refused.exit_code == 1
     assert "--force-demo" in refused.output

@@ -34,7 +34,7 @@ Theme and colour mode are **not** user properties in M0* (theme is deployment-wi
 ## M0S-E05-02 · Login, logout and session cookie
 - **Story:** As an adult household member, I want to log in once and stay logged in, so that I can use the dashboard.
 - **AC:**
-  - Given valid credentials, when I POST `/auth/login`, then a 256-bit random token is set as cookie `hearthos_session` (HttpOnly, SameSite=Lax, Path=/, `Secure` when `HEARTHOS_COOKIE_SECURE=true`). Only `sha256(token)` is stored; expiry 14 days sliding (idle 7 days); the session ID rotates on login.
+  - Given valid credentials, when I POST `/auth/login`, then a 256-bit random token is set as cookie `hauskraft_session` (HttpOnly, SameSite=Lax, Path=/, `Secure` when `HAUSKRAFT_COOKIE_SECURE=true`). Only `sha256(token)` is stored; expiry 14 days sliding (idle 7 days); the session ID rotates on login.
   - Invalid credentials return a generic 401 after the same dummy-hash work (timing parity).
   - Logout revokes the row.
 - **Tech:** `auth/router.py`, `auth/sessions.py`, and a `current_actor` FastAPI dependency returning `Actor`. In-memory rate limit of 5 failures per username+IP per 15 min.
@@ -44,7 +44,7 @@ Theme and colour mode are **not** user properties in M0* (theme is deployment-wi
 ## M0S-E05-03 · CSRF protection
 - **Story:** As an operator, I want state-changing requests protected against CSRF, so that a malicious site can't add or delete tasks or change the theme.
 - **AC:**
-  - Given an authenticated session, when a POST/PUT/PATCH/DELETE omits a valid `X-CSRF-Token` (equal to `sessions.csrf_token`, constant-time compare) or carries an `Origin` not in `HEARTHOS_ALLOWED_ORIGINS`, then the response is 403 `csrf_failed`.
+  - Given an authenticated session, when a POST/PUT/PATCH/DELETE omits a valid `X-CSRF-Token` (equal to `sessions.csrf_token`, constant-time compare) or carries an `Origin` not in `HAUSKRAFT_ALLOWED_ORIGINS`, then the response is 403 `csrf_failed`.
   - GET is never state-changing. Login is exempt from the token check but subject to the Origin check (login-CSRF).
 - **Tech:** Synchronizer token pattern, delivered in the `Session` JSON. The web client attaches it via a hey-api request interceptor.
 - **Tests:** Integration: missing, wrong and cross-origin cases → 403; happy path → 2xx.
@@ -52,7 +52,7 @@ Theme and colour mode are **not** user properties in M0* (theme is deployment-wi
 
 ## M0S-E05-04 · `IdentityProvider` seam
 - **Story:** As the M1 implementer, I want auth behind an interface, so that OIDC plugs in without touching routers.
-- **AC:** Given `HEARTHOS_AUTH_PROVIDER=local`, then login uses `LocalPasswordProvider`, which implements `IdentityProvider.authenticate(credentials) -> UserRef`. An `OidcProvider` stub raises `NotImplementedError` and is documented in ADR-0005.
+- **AC:** Given `HAUSKRAFT_AUTH_PROVIDER=local`, then login uses `LocalPasswordProvider`, which implements `IdentityProvider.authenticate(credentials) -> UserRef`. An `OidcProvider` stub raises `NotImplementedError` and is documented in ADR-0005.
 - **Tech:** `auth/providers.py`. `users.external_subject` is reserved.
 - **Tests:** Unit: provider selection.
 - **Deps:** E05-02 · **Est:** S · **Labels:** area:auth
@@ -61,8 +61,8 @@ Theme and colour mode are **not** user properties in M0* (theme is deployment-wi
 - **Story:** As an operator, I want to create another adult account, so that two household members can share the list.
 - **AC:**
   - Given an authenticated adult, when I POST `/api/v1/users`, then a new adult is created.
-  - `uv run hearthos users create --username anna` prompts for a password.
-  - `hearthos users set-password` exists.
-- **Tech:** Typer CLI `hearthos_core/cli.py` (entry point `hearthos`; later also hosts `themes` and `seed` commands).
+  - `uv run hauskraft users create --username anna` prompts for a password.
+  - `hauskraft users set-password` exists.
+- **Tech:** Typer CLI `hauskraft_core/cli.py` (entry point `hauskraft`; later also hosts `themes` and `seed` commands).
 - **Tests:** Integration API test; CLI unit test with CliRunner.
 - **Deps:** E05-01 · **Est:** S · **Labels:** area:auth

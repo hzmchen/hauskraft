@@ -1,16 +1,16 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
-"""M0S-E05-04: login goes through an IdentityProvider chosen by HEARTHOS_AUTH_PROVIDER."""
+"""M0S-E05-04: login goes through an IdentityProvider chosen by HAUSKRAFT_AUTH_PROVIDER."""
 
 import pytest
 
-from hearthos_core.auth.providers import (
+from hauskraft_core.auth.providers import (
     IdentityProvider,
     LocalPasswordProvider,
     OidcProvider,
     PasswordCredentials,
     provider_from_settings,
 )
-from hearthos_core.settings import Settings
+from hauskraft_core.settings import Settings
 
 pytestmark = pytest.mark.unit
 

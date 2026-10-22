@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import { getCsrfToken, setCsrfToken } from "@hearthos/sdk-ts";
+import { getCsrfToken, setCsrfToken } from "@hauskraft/sdk-ts";
 import { QueryClient } from "@tanstack/react-query";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -65,12 +65,12 @@ describe("login", () => {
     });
     const { router } = start("/login?redirect=%2Ftoday");
     await userEvent.type(await screen.findByRole("textbox", { name: "Username" }), "demo");
-    await userEvent.type(screen.getByLabelText("Password"), "hearthos-demo");
+    await userEvent.type(screen.getByLabelText("Password"), "hauskraft-demo");
     await userEvent.click(screen.getByRole("button", { name: "Sign in" }));
     await screen.findByRole("heading", { level: 1, name: "Today" });
     expect(router.state.location.pathname).toBe("/today");
     const login = calls.find((r) => r.url.endsWith("/auth/login"))!;
-    expect(await login.clone().json()).toEqual({ username: "demo", password: "hearthos-demo" });
+    expect(await login.clone().json()).toEqual({ username: "demo", password: "hauskraft-demo" });
   });
 
   it("never redirects off-site after sign-in", async () => {

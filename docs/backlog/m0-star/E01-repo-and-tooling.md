@@ -10,7 +10,7 @@
 - **Story:** As a contributor, I want the spec directory layout with uv and pnpm workspaces, so that every package resolves from one lockfile per ecosystem.
 - **AC:**
   - Given a fresh clone, when I run `uv sync --all-packages` and `pnpm install --frozen-lockfile`, then both succeed.
-  - `uv run python -c "import hearthos_core, hearthos_sdk, hearthos_tasks"` works.
+  - `uv run python -c "import hauskraft_core, hauskraft_sdk, hauskraft_tasks"` works.
   - `pnpm -r exec tsc --noEmit` succeeds for `apps/web`, `packages/sdk-ts`, `packages/ui` and `plugins/official/tasks/web`.
 - **Tech:**
   - Root `pyproject.toml` `[tool.uv.workspace] members = ["services/core_api","packages/sdk-py","plugins/official/tasks/backend"]`; `.python-version` = `3.13`.
@@ -25,7 +25,7 @@
 - **Story:** As a coding agent, I want ruff, mypy and pytest configured once at the root, so that I get consistent feedback in every package.
 - **AC:** Given any Python package, when I run `just lint` and `just typecheck`, then ruff (check + format --check) and mypy `--strict` run over all members with zero findings on the skeleton.
 - **Tech:**
-  - ruff `0.17.x`: rules `E,F,I,UP,B,S,ASYNC,PT,RUF,TID`. Use `flake8-tidy-imports.banned-api` to ban `hearthos_core` imports from `plugins/**`.
+  - ruff `0.17.x`: rules `E,F,I,UP,B,S,ASYNC,PT,RUF,TID`. Use `flake8-tidy-imports.banned-api` to ban `hauskraft_core` imports from `plugins/**`.
   - mypy `2.4.x` with the `pydantic.mypy` plugin. pytest `9.1` with `asyncio_mode=auto` (pytest-asyncio 1.4) and markers `unit`, `integration`, `contract`.
   - Optional: a non-blocking `ty check` job.
 - **Tests:** A deliberately bad import in a fixture file is caught by a ruff test (`tests/tooling/test_banned_imports.py` runs ruff via subprocess).
@@ -36,7 +36,7 @@
 - **AC:**
   - Given the web workspace, when I run `pnpm lint && pnpm typecheck`, then ESLint 9 flat config (typescript-eslint, react-hooks, jsx-a11y) and `tsc --noEmit` pass.
   - An import from `apps/web/**` inside `plugins/**/web` fails lint.
-  - Inside `plugins/**/web`, imports are allowed only from `@hearthos/sdk-ts`, `@hearthos/ui`, `react`, `react-dom`, `react-i18next` and `@tanstack/react-query`.
+  - Inside `plugins/**/web`, imports are allowed only from `@hauskraft/sdk-ts`, `@hauskraft/ui`, `react`, `react-dom`, `react-i18next` and `@tanstack/react-query`.
 - **Tech:**
   - Pin `typescript@~6.0` (ADR-0011). Root `tsconfig.base.json` with `strict`, `moduleResolution: bundler` and `verbatimModuleSyntax`.
   - ESLint `no-restricted-imports` implements the allowlist. The raw-style lint rule is added in E13-08.
@@ -47,9 +47,9 @@
 - **Story:** As a contributor, I want one task runner, so that I don't need to memorise per-package commands.
 - **AC:** Given the repo, when I run `just --list`, then I see `setup, dev, db, lint, fmt, typecheck, test, test-int, contract, gen, e2e, invariance, acceptance, demo, themes-validate, check`. `pre-commit run -a` passes.
 - **Tech:**
-  - `just dev` runs `docker compose up db -d`, then `uvicorn hearthos_core.app:create_app --factory --reload` and `pnpm --filter web dev`; Vite proxies `/api` to `:8000`.
+  - `just dev` runs `docker compose up db -d`, then `uvicorn hauskraft_core.app:create_app --factory --reload` and `pnpm --filter web dev`; Vite proxies `/api` to `:8000`.
   - `just acceptance` runs `python -m pytest tests --strict-status` (add `--live` with the stack running).
-  - `just themes-validate` runs `hearthos themes validate` over `themes/builtin/*` (wired up in E13-09).
+  - `just themes-validate` runs `hauskraft themes validate` over `themes/builtin/*` (wired up in E13-09).
   - `.pre-commit-config.yaml`: ruff, ruff-format, prettier, check-json/yaml, end-of-file-fixer, `reuse lint`.
 - **Tests:** A CI job runs `pre-commit run -a`.
 - **Deps:** E01-02, E01-03 · **Est:** S · **Labels:** area:repo

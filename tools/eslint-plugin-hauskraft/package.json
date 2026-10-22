@@ -1,0 +1,14 @@
+{
+  "name": "eslint-plugin-hauskraft",
+  "version": "0.1.0",
+  "private": true,
+  "license": "MIT",
+  "type": "module",
+  "main": "./index.js",
+  "scripts": {
+    "test": "vitest"
+  },
+  "devDependencies": {
+    "vitest": "catalog:"
+  }
+}

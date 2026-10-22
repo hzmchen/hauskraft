@@ -11,8 +11,11 @@ export const ui = {
   openList: (page: Page) => page.getByRole("list", { name: "Open tasks" }),
   doneList: (page: Page) => page.getByRole("list", { name: "Done tasks" }),
   addTask: (page: Page, name = "Add a task") => page.getByRole("textbox", { name }),
+  // `has` resolves its locator inside each list item, so it must start from the page, not from `scope`.
   row: (scope: Page | Locator, title: string) =>
-    scope.getByRole("listitem").filter({ has: scope.getByRole("checkbox", { name: `Mark '${title}' as done` }) }),
+    scope.getByRole("listitem").filter({
+      has: ("page" in scope ? scope.page() : scope).getByRole("checkbox", { name: `Mark '${title}' as done` }),
+    }),
   checkbox: (scope: Page | Locator, title: string) => scope.getByRole("checkbox", { name: `Mark '${title}' as done` }),
 };
 
@@ -49,11 +52,11 @@ export async function isDark(page: Page): Promise<boolean> {
 
 /** Marks the current document so a later check can prove no full reload happened. */
 export async function markDocument(page: Page): Promise<void> {
-  await page.evaluate(() => ((window as unknown as { __hearthosMark?: number }).__hearthosMark = 42));
+  await page.evaluate(() => ((window as unknown as { __hauskraftMark?: number }).__hauskraftMark = 42));
 }
 
 export async function documentStillMarked(page: Page): Promise<boolean> {
-  return page.evaluate(() => (window as unknown as { __hearthosMark?: number }).__hearthosMark === 42);
+  return page.evaluate(() => (window as unknown as { __hauskraftMark?: number }).__hauskraftMark === 42);
 }
 
 /** Choose an option whether "Sort by" is a native <select> or an ARIA combobox. */

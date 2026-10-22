@@ -8,6 +8,6 @@ import pytest
 pytestmark = pytest.mark.unit
 
 
-@pytest.mark.parametrize("module", ["hearthos_core", "hearthos_sdk", "hearthos_tasks"])
+@pytest.mark.parametrize("module", ["hauskraft_core", "hauskraft_sdk", "hauskraft_tasks"])
 def test_workspace_package_imports(module: str) -> None:
     assert importlib.import_module(module).__name__ == module

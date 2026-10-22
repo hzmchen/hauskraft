@@ -9,7 +9,7 @@ from sqlalchemy import text
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from hearthos_tasks.models import Task, metadata
+from hauskraft_tasks.models import Task, metadata
 
 pytestmark = pytest.mark.integration
 
@@ -70,14 +70,14 @@ def test_plugin_owns_its_metadata() -> None:
 
 
 def test_entrypoint_registers(db_settings: Any) -> None:
-    from hearthos_sdk import Plugin, PluginRegistration
-    from hearthos_tasks.plugin import plugin
+    from hauskraft_sdk import Plugin, PluginRegistration
+    from hauskraft_tasks.plugin import plugin
 
     assert isinstance(plugin, Plugin)
-    assert plugin.id == "org.hearthos.tasks"
+    assert plugin.id == "dev.hauskraft.tasks"
 
     class Ctx:
-        plugin_id = "org.hearthos.tasks"
+        plugin_id = "dev.hauskraft.tasks"
 
         async def current_actor(self) -> None:
             return None

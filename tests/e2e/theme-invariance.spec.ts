@@ -51,12 +51,12 @@ test.describe("function invariance across themes", () => {
           for (const mode of MODES) {
             const ctx = await browser.newContext({ viewport, colorScheme: mode });
             await ctx.addInitScript((m) => {
-              try { localStorage.setItem("hearthos.mode", m); } catch { /* storage blocked */ }
+              try { localStorage.setItem("hauskraft.mode", m); } catch { /* storage blocked */ }
             }, mode);
             const page = await ctx.newPage();
             await login(page, "demo");
             await page.goto(view);
-            await expect.poll(() => htmlAttr(page, "data-hearth-theme")).toBe(themeId);
+            await expect.poll(() => htmlAttr(page, "data-hauskraft-theme")).toBe(themeId);
             expect(await page.evaluate(() => document.documentElement.classList.contains("dark"))).toBe(mode === "dark");
 
             const got = await capture(page, view);
@@ -76,11 +76,18 @@ test.describe("function invariance across themes", () => {
 });
 
 test.describe("visual baselines", () => {
+  // /p/tasks shows the seeded due date. Pin it and the browser clock so the baselines don't change every day.
+  const FIXED_NOW = new Date("2026-10-13T10:00:00+02:00");
+  const FIXED_DUE = "2026-10-14";
   let api: Api;
+  let dated: { id: string; due_on: string | null } | undefined;
   test.beforeAll(async () => {
     api = await Api.login("demo").catch(() => undefined as unknown as Api);
+    dated = await api?.findTask("Take out recycling").catch(() => undefined);
+    if (dated) await api.patchTask(dated.id, { due_on: FIXED_DUE });
   });
   test.afterAll(async () => {
+    if (dated) await api?.patchTask(dated.id, { due_on: dated.due_on }).catch(() => undefined);
     await api?.setTheme(THEMES.default).catch(() => undefined);
     await api?.dispose();
   });
@@ -91,10 +98,11 @@ test.describe("visual baselines", () => {
         test(`${themeId} ${mode} ${view}`, story("M0S-E13-08", "M0S-E13-06"), async ({ browser }) => {
           await api.setTheme(themeId);
           const ctx = await browser.newContext({ viewport: VIEWPORTS.wide, colorScheme: mode });
+          await ctx.clock.setFixedTime(FIXED_NOW);
           const page = await ctx.newPage();
           await login(page, "demo");
           await page.goto(view);
-          await expect.poll(() => htmlAttr(page, "data-hearth-theme")).toBe(themeId);
+          await expect.poll(() => htmlAttr(page, "data-hauskraft-theme")).toBe(themeId);
           await expect(page).toHaveScreenshot(`${themeId}-${mode}${view.replaceAll("/", "_")}.png`, {
             fullPage: true,
             mask: [page.getByRole("list", { name: "Open tasks" })],

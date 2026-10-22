@@ -1,16 +1,16 @@
 {
   "specversion": "1.0",
   "id": "0199f3a2-6c1e-7b8a-9d40-2f6c1a0b7e11",
-  "source": "org.hearthos.core",
-  "type": "hearthos.plugin.toggled",
-  "subject": "plugin/org.hearthos.tasks",
+  "source": "dev.hauskraft.core",
+  "type": "hauskraft.plugin.toggled",
+  "subject": "plugin/dev.hauskraft.tasks",
   "time": "2026-10-12T09:15:02.481Z",
   "datacontenttype": "application/json",
-  "dataschema": "https://schemas.hearthos.org/events/plugin.toggled/v1.json",
+  "dataschema": "https://hauskraft.dev/schema/events/plugin.toggled/v1.json",
   "dataclass": "household",
   "actorid": "0199f390-1111-7aaa-8bbb-cccccccccccc",
   "data": {
-    "plugin_id": "org.hearthos.tasks",
+    "plugin_id": "dev.hauskraft.tasks",
     "enabled": true
   }
 }

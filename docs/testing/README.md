@@ -1,6 +1,6 @@
 # Testing and validation
 
-HearthOS is built test-first: **red, green, refactor**, one story at a time (ADR-0014). This page explains the suite that already exists before any product code, how to run it, and how a story moves from red to green.
+Hauskraft is built test-first: **red, green, refactor**, one story at a time (ADR-0014). This page explains the suite that already exists before any product code, how to run it, and how a story moves from red to green.
 
 ## What is in `tests/`
 
@@ -9,8 +9,8 @@ HearthOS is built test-first: **red, green, refactor**, one story at a time (ADR
 | Meta (docs validation) | `tests/meta/` | spec, backlog, the suite itself | Python only | backlog IDs, deps, counts, spec `§` refs, links, traceability |
 | Static contract | `tests/acceptance/{repo,schemas,web}` | files in the repo | Python only | manifest schema vs fixtures, CI workflow shape, i18n key parity |
 | Tooling black box | `tests/acceptance/repo`, `web` | ruff, eslint, node scripts via stdin/CLI | workspace installed | plugins may not import core; no raw styles |
-| CLI black box | `tests/acceptance/themes` | `hearthos themes validate --json` | `hearthos` CLI | every fixture theme gives its expected codes |
-| Live API | `tests/acceptance/api` | HTTP at `HEARTHOS_BASE_URL` | running stack + `--live` | tasks CRUD, CSRF, theme switching |
+| CLI black box | `tests/acceptance/themes` | `hauskraft themes validate --json` | `hauskraft` CLI | every fixture theme gives its expected codes |
+| Live API | `tests/acceptance/api` | HTTP at `HAUSKRAFT_BASE_URL` | running stack + `--live` | tasks CRUD, CSRF, theme switching |
 | End to end | `tests/e2e/*.spec.ts` | the browser | running stack, Playwright | the 11-step demo script, theme invariance |
 | Unit / integration | inside each package | code | written by the story | `services/core_api/tests/`, Vitest in `apps/web` |
 
@@ -37,7 +37,7 @@ python -m pip install -r tests/requirements.txt
 # 1. RED: see the spec-owned tests fail for the right reason (raw mode, no xfail)
 python -m pytest tests --story M0S-E07-03            # static + CLI tests
 python -m pytest tests --story M0S-E07-03 --live     # plus live API tests (stack running)
-HEARTHOS_TDD_RAW=1 pnpm --filter @hearthos/acceptance-e2e exec playwright test --grep @M0S-E07-03
+HAUSKRAFT_TDD_RAW=1 pnpm --filter @hauskraft/acceptance-e2e exec playwright test --grep @M0S-E07-03
 
 #    then write the unit/integration tests for your code and watch them fail too
 #    commit: test(M0S-E07-03): red ...
@@ -68,10 +68,10 @@ python -m pytest tests --strict-status       # what CI runs on every PR
 
 docker compose -f compose.yaml -f deploy/compose/compose.test.yaml up --wait
 python -m pytest tests --live --strict-status
-pnpm --filter @hearthos/acceptance-e2e exec playwright test
+pnpm --filter @hauskraft/acceptance-e2e exec playwright test
 ```
 
-The test overlay (`deploy/compose/compose.test.yaml`, M0S-E11-01) mounts `tests/fixtures/themes` so the live tests can select fixture themes. Environment variables: `HEARTHOS_BASE_URL` (default `http://localhost:8080`), `HEARTHOS_DEMO_PASSWORD` (default `hearthos-demo`), `HEARTHOS_CLI`, `HEARTHOS_RUFF`, `HEARTHOS_ESLINT`, `HEARTHOS_E2E_RESTART_CMD` (step 11 of the demo), `HEARTHOS_TDD_RAW=1` (Playwright raw mode).
+The test overlay (`deploy/compose/compose.test.yaml`, M0S-E11-01) mounts `tests/fixtures/themes` so the live tests can select fixture themes. Environment variables: `HAUSKRAFT_BASE_URL` (default `http://localhost:8080`), `HAUSKRAFT_DEMO_PASSWORD` (default `hauskraft-demo`), `HAUSKRAFT_CLI`, `HAUSKRAFT_RUFF`, `HAUSKRAFT_ESLINT`, `HAUSKRAFT_E2E_RESTART_CMD` (step 11 of the demo), `HAUSKRAFT_TDD_RAW=1` (Playwright raw mode).
 
 ## Validating the docs
 

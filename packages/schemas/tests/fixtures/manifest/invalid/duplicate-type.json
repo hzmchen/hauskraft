@@ -1,31 +1,31 @@
 {
   "$comment": "type entries are unique",
-  "id": "org.hearthos.tasks",
+  "id": "dev.hauskraft.tasks",
   "name": "Tasks",
   "version": "0.1.0",
   "type": [
     "domain",
     "domain"
   ],
-  "hearthos_api": "^0.1.0",
+  "hauskraft_api": "^0.1.0",
   "license": "MIT",
   "authors": [
     {
-      "name": "HearthOS contributors"
+      "name": "Hauskraft contributors"
     }
   ],
   "source": "https://example.org/tasks",
   "runtime": {
     "kind": "inprocess",
-    "entrypoint": "hearthos_tasks.plugin:plugin",
+    "entrypoint": "hauskraft_tasks.plugin:plugin",
     "api_prefix": "/tasks",
     "migrations": "backend/migrations/versions",
-    "web": "@hearthos/plugin-tasks"
+    "web": "@hauskraft/plugin-tasks"
   },
   "capabilities": [
     "graph:read:Task",
     "graph:write:Task",
-    "events:emit:hearthos.task.*"
+    "events:emit:hauskraft.task.*"
   ],
   "data_classes": {
     "reads": [

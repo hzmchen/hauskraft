@@ -4,19 +4,19 @@
 import pytest
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
-from hearthos_core.db.models import User, UserRole
-from hearthos_core.policy import Decision
-from hearthos_core.settings import Settings
-from hearthos_core.uow import UnitOfWork
-from hearthos_core.users.service import (
+from hauskraft_core.db.models import User, UserRole
+from hauskraft_core.policy import Decision
+from hauskraft_core.settings import Settings
+from hauskraft_core.uow import UnitOfWork
+from hauskraft_core.users.service import (
     SYSTEM_ACTOR,
     RoleNotEnabledInM0Error,
     UsernameTakenError,
     create_user,
     set_password,
 )
-from hearthos_sdk import Actor, DataClass, ResourceRef
-from hearthos_sdk.errors import HearthosError
+from hauskraft_sdk import Actor, DataClass, ResourceRef
+from hauskraft_sdk.errors import HauskraftError
 
 pytestmark = pytest.mark.integration
 
@@ -73,7 +73,7 @@ async def test_only_adults_can_be_created(db_session: AsyncSession, db_settings:
 
 @pytest.mark.parametrize("username", ["a", "has space", "x" * 33, "ümlaut", "-dash-first"])
 async def test_username_rules(db_session: AsyncSession, db_settings: Settings, username: str) -> None:
-    with pytest.raises(HearthosError) as err:
+    with pytest.raises(HauskraftError) as err:
         async with _uow(db_session, db_settings) as uow:
             await create_user(uow, SYSTEM_ACTOR, username=username, display_name="X", password="correct-horse-battery")
     assert err.value.status == 422

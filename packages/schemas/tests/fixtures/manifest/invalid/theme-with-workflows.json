@@ -6,11 +6,11 @@
   "type": [
     "theme"
   ],
-  "hearthos_api": "^0.1.0",
+  "hauskraft_api": "^0.1.0",
   "license": "MIT",
   "authors": [
     {
-      "name": "HearthOS tests"
+      "name": "Hauskraft tests"
     }
   ],
   "source": "https://example.org/probe",

@@ -1,6 +1,6 @@
 # Contributing
 
-Thanks for helping. HearthOS is built story by story from the backlog, test-first. Please also read the [code of conduct](CODE_OF_CONDUCT.md); security problems go through [SECURITY.md](SECURITY.md), never a public issue.
+Thanks for helping. Hauskraft is built story by story from the backlog, test-first. Please also read the [code of conduct](CODE_OF_CONDUCT.md); security problems go through [SECURITY.md](SECURITY.md), never a public issue.
 
 ## The workflow
 1. Pick a story from [docs/backlog/m0-star/](docs/backlog/m0-star/README.md) whose dependencies are merged.
@@ -37,7 +37,7 @@ Without `just`, the same commands are in the `justfile`.
 
 ## Rules that save review time
 - Spec-owned tests under `tests/acceptance/`, `tests/e2e/` and `tests/fixtures/` are not changed in story PRs. If one looks wrong, say so in the PR.
-- No raw styles in UI code: use `@hearthos/ui` primitives and semantic tokens only (no colour literals, palette classes or arbitrary values). The lint rule `hearthos/no-raw-styles` enforces it.
+- No raw styles in UI code: use `@hauskraft/ui` primitives and semantic tokens only (no colour literals, palette classes or arbitrary values). The lint rule `hauskraft/no-raw-styles` enforces it.
 - Themes are data only and never change functions: no added, removed, renamed or reordered controls (spec §10.2.2).
 - User-facing strings exist in English and German.
 - New dependencies come with a lockfile update and a reason in the PR.

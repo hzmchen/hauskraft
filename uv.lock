@@ -9,16 +9,16 @@ resolution-markers = [
 
 [manifest]
 members = [
-    "hearthos-core",
-    "hearthos-sdk",
-    "hearthos-tasks",
+    "hauskraft-core",
+    "hauskraft-sdk",
+    "hauskraft-tasks",
 ]
 
 [manifest.dependency-groups]
 dev = [
-    { name = "hearthos-core", editable = "services/core_api" },
-    { name = "hearthos-sdk", editable = "packages/sdk-py" },
-    { name = "hearthos-tasks", editable = "plugins/official/tasks/backend" },
+    { name = "hauskraft-core", editable = "services/core_api" },
+    { name = "hauskraft-sdk", editable = "packages/sdk-py" },
+    { name = "hauskraft-tasks", editable = "plugins/official/tasks/backend" },
     { name = "httpx", specifier = "==0.28.1" },
     { name = "jsonschema", specifier = "==4.26.0" },
     { name = "mypy", specifier = "==2.4.0" },
@@ -555,7 +555,7 @@ wheels = [
 ]
 
 [[package]]
-name = "hearthos-core"
+name = "hauskraft-core"
 version = "0.1.0"
 source = { editable = "services/core_api" }
 dependencies = [
@@ -563,7 +563,7 @@ dependencies = [
     { name = "coloraide" },
     { name = "defusedxml" },
     { name = "fastapi" },
-    { name = "hearthos-sdk" },
+    { name = "hauskraft-sdk" },
     { name = "jsonschema" },
     { name = "psycopg", extra = ["binary"] },
     { name = "pwdlib", extra = ["argon2"] },
@@ -583,7 +583,7 @@ requires-dist = [
     { name = "coloraide", specifier = "~=8.13" },
     { name = "defusedxml", specifier = "~=0.7.1" },
     { name = "fastapi", specifier = "~=0.143.0" },
-    { name = "hearthos-sdk", editable = "packages/sdk-py" },
+    { name = "hauskraft-sdk", editable = "packages/sdk-py" },
     { name = "jsonschema", specifier = "~=4.26" },
     { name = "psycopg", extras = ["binary"], specifier = "~=3.3" },
     { name = "pwdlib", extras = ["argon2"], specifier = "~=0.3.1" },
@@ -598,7 +598,7 @@ requires-dist = [
 ]
 
 [[package]]
-name = "hearthos-sdk"
+name = "hauskraft-sdk"
 version = "0.1.0"
 source = { editable = "packages/sdk-py" }
 dependencies = [
@@ -615,12 +615,12 @@ requires-dist = [
 ]
 
 [[package]]
-name = "hearthos-tasks"
+name = "hauskraft-tasks"
 version = "0.1.0"
 source = { editable = "plugins/official/tasks/backend" }
 dependencies = [
     { name = "fastapi" },
-    { name = "hearthos-sdk" },
+    { name = "hauskraft-sdk" },
     { name = "pydantic" },
     { name = "sqlalchemy", extra = ["asyncio"] },
 ]
@@ -628,7 +628,7 @@ dependencies = [
 [package.metadata]
 requires-dist = [
     { name = "fastapi", specifier = "~=0.143.0" },
-    { name = "hearthos-sdk", editable = "packages/sdk-py" },
+    { name = "hauskraft-sdk", editable = "packages/sdk-py" },
     { name = "pydantic", specifier = ">=2.12,<3" },
     { name = "sqlalchemy", extras = ["asyncio"], specifier = "~=2.1.4" },
 ]
