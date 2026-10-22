@@ -44,30 +44,20 @@ This file lives only on the `admin` branch and is never merged into `main`. Clau
 
 - [x] **Account menu name.** Decided 2026-10-22: the button shows "Account menu", not the user's name. Fixed in
       #84 (one-off permission for the ui-contract note and the visual baselines).
-- [ ] **14 decisions to confirm** in `docs/handoff/m0-star-open-questions.md` (#6 is already resolved):
-  1. E01-01: acceptance pins mirrored into the root `dev` group; `tests/requirements.txt` kept.
-  2. E01-02/03: spec-owned tests and `scripts/backlog_tools.py` excluded from ruff and Prettier (91 findings).
-  3. E12-02: ADR-0013 theme thresholds unchanged.
-  4. E12-03: root docs MIT, lockfiles and root tooling AGPL (`REUSE.toml`).
-  5. E12-03: Contributor Covenant 3.0.
-  6. (resolved by ADR 0015)
-  7. E10-01/E13-04: the `settings.theme_changed` schema added early, in E10-01.
-  8. E13-01: `style` keys allowed only in the two fields the contract defines.
-  9. E07-02: a PATCH that sets `done=true` emits only `hauskraft.task.completed`.
-  10. E08-06: dashboard layout saves call `authorize()` but emit no event.
-  11. E08-04: the navigation landmark stays "Main" in German.
-  12. E13-02: `data-hauskraft-button` as in ui-contract; `packages/ui/AGENTS.md` to be aligned.
-  13. E06-05: plugin contract additions (`prefetch`, `useHost()`, `toast`).
-  14. E09-01: widget tests use a fetch stub instead of MSW.
-  15. E06-06: `pnpm gen:plugins` runs through `just gen`.
-- [ ] **`unit-web` hits its 8-minute limit when Ubuntu's package mirror is slow.** Its browser setup installs
-      fonts through apt. On 2026-10-22 the mirror ran at about 40 KB/s, and GitHub cancelled the job four times
-      (#75, #80, #81, #83), each time costing a ~10-minute rerun. The E02 acceptance criterion says these jobs finish in under 8 minutes, so the fix is your call. Options:
-      run the job in Playwright's container image, which has the browser and fonts preinstalled, or allow more
-      time.
-- [ ] **Notes for later** in the same file: eight follow-ups, such as the full TanStack denylist, the 405 `Allow`
-      header, a Hackspace heading scale and the devcontainer check. Decide which go into M1.
-- [ ] **M1 backlog** (Governed gateway + HA bridge): Claude drafts it, you review it.
+- [ ] **Review and merge PR #85: M1\* Household basics** (spec v0.3, ADRs 0016–0018, backlog of 35 stories, red
+      acceptance tests). It's spec-owned, so you merge it. Please also:
+  - set ADRs 0016–0018 from *Proposed* to *Accepted* if you agree (decisions D11–D14 from 2026-10-22);
+  - confirm the two narrowed M0\* assertions listed in the PR (`demo` becomes owner, `owner` becomes creatable).
+  After the merge, Claude creates the Linear project "Hauskraft M1\*" (one issue per story) and fixes the spec link
+  in the M0\* project description, which still points at `hauskraft-spec-v0.2.md`.
+- [ ] **14 M0\* decisions to confirm:** now Linear NIE-79 (assigned to you), with the list from
+      `docs/handoff/m0-star-open-questions.md`.
+- [ ] **`unit-web` 8-minute limit** when Ubuntu's package mirror is slow: now Linear NIE-87 (your call: Playwright's
+      container image, or more time).
+- [x] **Notes for later** from the M0\* hand-off: moved to Linear "Hauskraft Backlog", NIE-80 to NIE-86. Nothing of
+      it is in M1\*.
+- [x] **Next milestone decided** (2026-10-22): M1\* Household basics instead of "Governed gateway + HA bridge". The
+      deferred topics are in Linear "Hauskraft Backlog" (P-NIE-2), NIE-66 to NIE-78.
 
 ## Dependabot (status 2026-10-22, 15:30 UTC)
 
