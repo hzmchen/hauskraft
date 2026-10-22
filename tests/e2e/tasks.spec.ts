@@ -80,9 +80,10 @@ test.describe("All tasks page", () => {
     await login(page, "demo");
     await page.goto("/p/tasks?status=open");
     await chooseOption(page, "Sort by", "Due date");
-    const names = (await page.getByRole("checkbox").evaluateAll((els) =>
+    // The old order stays on screen until the re-sorted list arrives, so poll.
+    const names = async () => (await page.getByRole("checkbox").evaluateAll((els) =>
       els.map((e) => e.getAttribute("aria-label") ?? ""))).filter((n) => n.includes(tag));
-    expect(names).toEqual([
+    await expect.poll(names).toEqual([
       `Mark '${tag} overdue' as done`, `Mark '${tag} today' as done`, `Mark '${tag} later' as done`,
       `Mark '${tag} none' as done`,
     ]);
