@@ -1,0 +1,15 @@
+{
+  "$comment": "SPDX-License-Identifier: MIT. Why each invalid fixture must fail its data schema (envelopes are valid).",
+  "invalid": {
+    "user.created-password-in-user.json": "a user reference never carries a password",
+    "user.password_reset-hash.json": "no hashes in event data",
+    "user.updated-empty-changes.json": "an update lists at least one change",
+    "user.updated-username-change.json": "usernames are fixed; only display_name and role can change",
+    "user.created-kid-role.json": "only owner and adult exist in M1*",
+    "user.deactivated-missing-user.json": "the user reference is required",
+    "user.created-bad-id.json": "user ids are UUIDs",
+    "settings.household_changed-empty.json": "a change lists at least one field",
+    "settings.household_changed-unknown-field.json": "only name, timezone and locale are household settings",
+    "settings.household_changed-no-from.json": "every change has from and to"
+  }
+}

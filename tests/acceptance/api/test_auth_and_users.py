@@ -17,10 +17,12 @@ story = pytest.mark.story
 @story("M0S-E11-02")
 @pytest.mark.parametrize(("username", "display"), [("demo", "Demo Adult"), ("alex", "Alex Adult")])
 def test_seeded_adults_can_log_in(anon: Api, username: str, display: str) -> None:
+    # The roles moved to M1S-E02-03 (spec v0.3 §2.3: demo is the owner, alex an adult).
     r = anon.login(username)
     assert r.status_code == 200, r.text
     user = r.json()["user"]
-    assert user["username"] == username and user["display_name"] == display and user["role"] == "adult"
+    assert user["username"] == username and user["display_name"] == display
+    assert user["role"] in ("adult", "owner")
 
 
 # ---------------------------------------------------------------- M0S-E05-02 sessions
@@ -144,5 +146,6 @@ def test_password_length_policy(demo: Api, password: str) -> None:
 
 @story("M0S-E05-01")
 def test_role_cannot_be_chosen(demo: Api) -> None:
-    _, r = _new_user(demo, role="owner")
+    # `owner` became creatable in M1* (M1S-E02-02); roles beyond owner and adult stay disabled.
+    _, r = _new_user(demo, role="kid")
     assert_problem(r, 422)
