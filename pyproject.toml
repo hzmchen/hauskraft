@@ -20,13 +20,13 @@ dev = [
     "httpx==0.28.1",
     "PyYAML==6.0.3",
     # Python tooling (M0S-E01-02)
-    "ruff==0.17.0",
+    "ruff==0.17.1",
     "mypy==2.4.0",
     "pytest-asyncio==1.4.0",
     "pydantic>=2.12",  # loaded by the pydantic.mypy plugin
     "testcontainers[postgres]~=4.15",  # integration tests (M0S-E04-01, M0S-E04-04)
     "types-jsonschema~=4.26",
-    "schemathesis~=4.31",  # API fuzzing in the contract job (M0S-E03-05)
+    "schemathesis~=4.32",  # API fuzzing in the contract job (M0S-E03-05)
     "types-defusedxml~=0.7.0",
 ]
 

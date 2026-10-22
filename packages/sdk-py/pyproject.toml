@@ -5,7 +5,7 @@ version = "0.1.0"
 description = "Hauskraft plugin SDK for Python. The only Hauskraft package plugins may import."
 license = "MIT"
 requires-python = ">=3.13"
-dependencies = ["pydantic>=2.12,<3", "fastapi~=0.143.0", "sqlalchemy[asyncio]~=2.1.4"]
+dependencies = ["pydantic>=2.12,<3", "fastapi~=0.148.0", "sqlalchemy[asyncio]~=2.1.4"]
 
 [build-system]
 requires = ["hatchling==1.32.4"]
