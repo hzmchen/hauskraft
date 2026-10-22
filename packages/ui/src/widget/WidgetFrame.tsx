@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 // The frame every dashboard widget renders in (M0S-E13-02). The theme decides the chrome
-// (data-hearth-chrome) and the title bar (data-hearth-header); the region, heading level and
+// (data-hauskraft-chrome) and the title bar (data-hauskraft-header); the region, heading level and
 // accessible name are the same in every variant.
 import { useId, type ReactNode } from "react";
 

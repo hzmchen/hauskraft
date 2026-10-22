@@ -6,11 +6,11 @@ import uuid
 import pytest
 from sqlalchemy import select
 
-from hearthos_core.app import create_app
-from hearthos_core.db.models import DeploymentSetting, OutboxEvent
-from hearthos_core.plugins.context import CorePluginContext
-from hearthos_core.settings import Settings
-from hearthos_sdk import Actor, ResourceRef
+from hauskraft_core.app import create_app
+from hauskraft_core.db.models import DeploymentSetting, OutboxEvent
+from hauskraft_core.plugins.context import CorePluginContext
+from hauskraft_core.settings import Settings
+from hauskraft_sdk import Actor, ResourceRef
 
 pytestmark = pytest.mark.integration
 
@@ -31,7 +31,7 @@ async def test_context_writes_and_emits_in_one_transaction(db_settings: Settings
             )
             session.add(DeploymentSetting(key=key, value="v"))
             event_id = await ctx.emit(
-                "hearthos.plugin.toggled",
+                "hauskraft.plugin.toggled",
                 "plugin/org.example.ctx",
                 {"plugin_id": "org.example.ctx", "enabled": True},
                 "household",

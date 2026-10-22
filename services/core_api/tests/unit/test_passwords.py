@@ -6,7 +6,7 @@ import re
 import pytest
 from pwdlib.hashers.argon2 import Argon2Hasher
 
-from hearthos_core.auth.passwords import (
+from hauskraft_core.auth.passwords import (
     PasswordPolicyError,
     check_password_policy,
     hash_password,

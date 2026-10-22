@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
-# HearthOS task runner. `just --list` shows every recipe; `just check` before every push.
+# Hauskraft task runner. `just --list` shows every recipe; `just check` before every push.
 
 set shell := ["bash", "-euo", "pipefail", "-c"]
 
@@ -19,7 +19,7 @@ setup:
 # Start Postgres, the API with reload and the Vite dev server (Ctrl+C stops both)
 dev: db
     trap 'kill 0' EXIT; \
-    uv run uvicorn hearthos_core.app:create_app --factory --reload --port 8000 & \
+    uv run uvicorn hauskraft_core.app:create_app --factory --reload --port 8000 & \
     pnpm --filter web dev & \
     wait
 
@@ -48,7 +48,7 @@ typecheck:
 # Unit tests (Python: -m unit; web: Vitest)
 test:
     @just _pytest unit
-    pnpm -r --if-present --filter '!@hearthos/acceptance-e2e' test
+    pnpm -r --if-present --filter '!@hauskraft/acceptance-e2e' test
 
 # Integration tests against Testcontainers Postgres (needs Docker)
 test-int:
@@ -67,7 +67,7 @@ gen-openapi:
 
 # Generate the TypeScript API client (M0S-E06-05)
 gen-client:
-    {{ if path_exists("packages/sdk-ts/openapi-ts.config.ts") == "true" { "pnpm --filter @hearthos/sdk-ts gen" } else { "echo 'gen-client: not implemented yet (M0S-E06-05)'" } }}
+    {{ if path_exists("packages/sdk-ts/openapi-ts.config.ts") == "true" { "pnpm --filter @hauskraft/sdk-ts gen" } else { "echo 'gen-client: not implemented yet (M0S-E06-05)'" } }}
 
 # Generate the build-time web plugin registry (M0S-E06-06)
 gen-plugins:
@@ -77,17 +77,17 @@ gen-plugins:
 gen-theme-types:
     {{ if path_exists("scripts/gen-theme-types.mjs") == "true" { "node scripts/gen-theme-types.mjs && uv run python scripts/gen_theme_types.py" } else { "echo 'gen-theme-types: not implemented yet (M0S-E13-01)'" } }}
 
-# Default theme tokens as @hearthos/ui's fallback stylesheet (M0S-E08-01)
+# Default theme tokens as @hauskraft/ui's fallback stylesheet (M0S-E08-01)
 gen-theme-fallback:
     uv run python scripts/gen_fallback_css.py
 
 # Playwright end-to-end tests against a running stack (just demo)
 e2e *args:
-    pnpm --filter @hearthos/acceptance-e2e exec playwright test {{ args }}
+    pnpm --filter @hauskraft/acceptance-e2e exec playwright test {{ args }}
 
 # Theme function-invariance suite
 invariance:
-    pnpm --filter @hearthos/acceptance-e2e exec playwright test theme-invariance.spec.ts
+    pnpm --filter @hauskraft/acceptance-e2e exec playwright test theme-invariance.spec.ts
 
 # Spec-owned acceptance suite as CI runs it (add --live with the stack running)
 acceptance *args:
@@ -100,7 +100,7 @@ demo:
 
 # Validate the built-in themes and the template, and doc-test the authoring guide (M0S-E13-09)
 themes-validate *args:
-    for theme in themes/builtin/*/ themes/template/; do uv run hearthos themes validate --strict {{ args }} "$theme" || exit 1; done
+    for theme in themes/builtin/*/ themes/template/; do uv run hauskraft themes validate --strict {{ args }} "$theme" || exit 1; done
     uv run python scripts/check-theme-docs.py
 
 # lint + typecheck + unit tests

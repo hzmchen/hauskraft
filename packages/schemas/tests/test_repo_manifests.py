@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: MIT
-"""M0S-E02-02: every hearthos.plugin.json in the repository validates against the manifest schema."""
+"""M0S-E02-02: every hauskraft.plugin.json in the repository validates against the manifest schema."""
 
 from __future__ import annotations
 
@@ -16,7 +16,7 @@ SCHEMAS = Path(__file__).resolve().parents[1]
 REPO = SCHEMAS.parents[1]
 MANIFEST_ROOTS = ["plugins", "themes"]
 MANIFESTS = sorted(
-    p for root in MANIFEST_ROOTS for p in (REPO / root).rglob("hearthos.plugin.json") if "node_modules" not in p.parts
+    p for root in MANIFEST_ROOTS for p in (REPO / root).rglob("hauskraft.plugin.json") if "node_modules" not in p.parts
 )
 
 
@@ -25,7 +25,7 @@ def _validator() -> Draft202012Validator:
         (d["$id"], Resource.from_contents(d))
         for d in (json.loads(p.read_text()) for p in SCHEMAS.rglob("*.schema.json"))
     ]
-    schema = json.loads((SCHEMAS / "manifest" / "hearthos.plugin.schema.json").read_text())
+    schema = json.loads((SCHEMAS / "manifest" / "hauskraft.plugin.schema.json").read_text())
     return Draft202012Validator(schema, registry=Registry().with_resources(resources))
 
 

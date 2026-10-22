@@ -21,8 +21,8 @@ describe.each(Object.keys(THEMES) as ThemeName[])("variants in %s", (theme) => {
     await userEvent.keyboard("{Enter}");
     expect(clicks).toBe(1);
     const bg = sameColour(getComputedStyle(el).backgroundColor);
-    if (button === "solid") expect(bg).toBe(sameColour(cssVar("--hearth-color-primary")));
-    if (button === "soft") expect(bg).toBe(sameColour(cssVar("--hearth-color-accent")));
+    if (button === "solid") expect(bg).toBe(sameColour(cssVar("--hauskraft-color-primary")));
+    if (button === "soft") expect(bg).toBe(sameColour(cssVar("--hauskraft-color-accent")));
     if (button === "outline") expect(getComputedStyle(el).borderTopWidth).not.toBe("0px");
   });
 
@@ -41,8 +41,8 @@ describe.each(Object.keys(THEMES) as ThemeName[])("variants in %s", (theme) => {
   it("density scales p-density", () => {
     applyTheme(theme);
     render(<div data-testid="box" className="p-density" />);
-    const unit = parseFloat(cssVar("--hearth-space-unit"));
-    const density = parseFloat(cssVar("--hearth-density"));
+    const unit = parseFloat(cssVar("--hauskraft-space-unit"));
+    const density = parseFloat(cssVar("--hauskraft-density"));
     expect(parseFloat(getComputedStyle(screen.getByTestId("box")).paddingTop)).toBeCloseTo(4 * unit * density, 1);
   });
 });

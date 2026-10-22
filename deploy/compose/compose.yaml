@@ -1,34 +1,34 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
-# The HearthOS stack (M0S-E11-01): `docker compose up --wait` from the repository root.
+# The Hauskraft stack (M0S-E11-01): `docker compose up --wait` from the repository root.
 #   db       Postgres 16
 #   migrate  one-shot: schema upgrade and demo seed (only into an empty database)
 #   api      core API (FastAPI) with the built-in themes and ./data/themes
-#   web      Caddy: the SPA and /api/* on one origin, published on HEARTHOS_WEB_PORT (8080)
-name: hearthos
+#   web      Caddy: the SPA and /api/* on one origin, published on HAUSKRAFT_WEB_PORT (8080)
+name: hauskraft
 
 x-api-env: &api-env
-  HEARTHOS_DATABASE_URL: postgresql+psycopg://hearthos:hearthos@db:5432/hearthos
-  HEARTHOS_ENV: ${HEARTHOS_ENV:-development}
-  HEARTHOS_SECRET_KEY: ${HEARTHOS_SECRET_KEY:-}
-  HEARTHOS_COOKIE_SECURE: ${HEARTHOS_COOKIE_SECURE:-false}
-  HEARTHOS_ALLOWED_ORIGINS: ${HEARTHOS_ALLOWED_ORIGINS:-http://localhost:8080}
-  HEARTHOS_DEFAULT_THEME: ${HEARTHOS_DEFAULT_THEME:-org.hearthos.theme.default}
-  HEARTHOS_THEME_PATHS: /app/themes/builtin,/data/themes
-  HEARTHOS_SEED_DEMO: ${HEARTHOS_SEED_DEMO:-true}
+  HAUSKRAFT_DATABASE_URL: postgresql+psycopg://hauskraft:hauskraft@db:5432/hauskraft
+  HAUSKRAFT_ENV: ${HAUSKRAFT_ENV:-development}
+  HAUSKRAFT_SECRET_KEY: ${HAUSKRAFT_SECRET_KEY:-}
+  HAUSKRAFT_COOKIE_SECURE: ${HAUSKRAFT_COOKIE_SECURE:-false}
+  HAUSKRAFT_ALLOWED_ORIGINS: ${HAUSKRAFT_ALLOWED_ORIGINS:-http://localhost:8080}
+  HAUSKRAFT_DEFAULT_THEME: ${HAUSKRAFT_DEFAULT_THEME:-dev.hauskraft.theme.default}
+  HAUSKRAFT_THEME_PATHS: /app/themes/builtin,/data/themes
+  HAUSKRAFT_SEED_DEMO: ${HAUSKRAFT_SEED_DEMO:-true}
 
 services:
   db:
     image: postgres:16-alpine
     environment:
-      POSTGRES_USER: hearthos
-      POSTGRES_PASSWORD: hearthos
-      POSTGRES_DB: hearthos
+      POSTGRES_USER: hauskraft
+      POSTGRES_PASSWORD: hauskraft
+      POSTGRES_DB: hauskraft
     ports:
       - "127.0.0.1:5432:5432"
     volumes:
-      - hearthos_pg:/var/lib/postgresql/data
+      - hauskraft_pg:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U hearthos -d hearthos"]
+      test: ["CMD-SHELL", "pg_isready -U hauskraft -d hauskraft"]
       interval: 2s
       timeout: 3s
       retries: 30
@@ -37,8 +37,8 @@ services:
     build:
       context: ../..
       dockerfile: services/core_api/Dockerfile
-    image: hearthos/core-api:dev
-    command: ["sh", "-c", "hearthos db upgrade && hearthos seed --if-empty"]
+    image: hauskraft/core-api:dev
+    command: ["sh", "-c", "hauskraft db upgrade && hauskraft seed --if-empty"]
     environment: *api-env
     depends_on:
       db:
@@ -46,7 +46,7 @@ services:
     restart: "no"
 
   api:
-    image: hearthos/core-api:dev
+    image: hauskraft/core-api:dev
     environment: *api-env
     volumes:
       - ../../data/themes:/data/themes:ro
@@ -71,9 +71,9 @@ services:
     build:
       context: ../..
       dockerfile: apps/web/Dockerfile
-    image: hearthos/web:dev
+    image: hauskraft/web:dev
     ports:
-      - "${HEARTHOS_WEB_PORT:-8080}:8080"
+      - "${HAUSKRAFT_WEB_PORT:-8080}:8080"
     depends_on:
       api:
         condition: service_healthy
@@ -85,4 +85,4 @@ services:
     restart: unless-stopped
 
 volumes:
-  hearthos_pg:
+  hauskraft_pg:

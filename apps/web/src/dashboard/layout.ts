@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Dashboard layout helpers (M0S-E08-06). The API stores cells {i, plugin_id, widget_id, x, y, w, h} on a
 // 12-column grid; react-grid-layout works with {i, x, y, w, h, minW?, minH?}.
-import type { DashboardCell } from "@hearthos/sdk-ts";
+import type { DashboardCell } from "@hauskraft/sdk-ts";
 
 export const COLUMNS = 12;
 
@@ -47,7 +47,7 @@ export interface GridMetrics {
 export const DEFAULT_METRICS: GridMetrics = { rowHeight: 40, gap: 16 };
 
 /**
- * Row height and gutter come from the active theme (--hearth-grid-row, --hearth-grid-gap; density
+ * Row height and gutter come from the active theme (--hauskraft-grid-row, --hauskraft-grid-gap; density
  * scales both). They are calc() expressions, so a hidden probe lets the browser resolve them.
  */
 export function readGridMetrics(root: HTMLElement): GridMetrics {
@@ -55,8 +55,8 @@ export function readGridMetrics(root: HTMLElement): GridMetrics {
   probe.setAttribute("aria-hidden", "true");
   probe.style.position = "absolute";
   probe.style.visibility = "hidden";
-  probe.style.height = "var(--hearth-grid-row)";
-  probe.style.width = "var(--hearth-grid-gap)";
+  probe.style.height = "var(--hauskraft-grid-row)";
+  probe.style.width = "var(--hauskraft-grid-gap)";
   root.append(probe);
   const style = window.getComputedStyle(probe);
   const rowHeight = parseFloat(style.height);

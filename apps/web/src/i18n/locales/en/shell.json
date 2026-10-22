@@ -1,6 +1,6 @@
 {
   "app": {
-    "name": "HearthOS"
+    "name": "Hauskraft"
   },
   "nav": {
     "label": "Main",
@@ -35,7 +35,7 @@
     "dark": "Dark"
   },
   "login": {
-    "title": "Sign in to HearthOS",
+    "title": "Sign in to Hauskraft",
     "username": "Username",
     "password": "Password",
     "submit": "Sign in",
@@ -81,7 +81,7 @@
     "done_editing": "Done editing"
   },
   "activity": {
-    "system": "HearthOS",
+    "system": "Hauskraft",
     "empty": "Nothing has happened yet.",
     "show_older": "Show older",
     "unknown": "{{actor}}: {{type}}",

@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Every page behind sign-in (M0S-E08-03) inside the shell (M0S-E08-05): skip link, navigation from the
 // NavModel, account menu and one main landmark.
-import { pluginsListOptions } from "@hearthos/sdk-ts";
-import { cn } from "@hearthos/ui";
+import { pluginsListOptions } from "@hauskraft/sdk-ts";
+import { cn } from "@hauskraft/ui";
 import { Outlet, createFileRoute, redirect } from "@tanstack/react-router";
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";

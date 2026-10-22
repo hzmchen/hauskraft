@@ -1,5 +1,5 @@
 {
-  "$schema": "../../../packages/schemas/theme/hearthos.theme.schema.json",
+  "$schema": "../../../packages/schemas/theme/hauskraft.theme.schema.json",
   "theme_api": "1.0",
   "name": "Hackspace",
   "description": "Underground hackerspace: near-black with phosphor green and magenta, square corners, monospace type and pixel icons; a green-ink printout in light mode.",

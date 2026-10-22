@@ -9,7 +9,7 @@ Status: Accepted
 
 ## Context and problem statement
 
-HearthOS is a network service whose improvements should flow back, but plugin and theme authors must be able to build on its SDKs without inheriting the core's copyleft. Spec §4.2 sets the split.
+Hauskraft is a network service whose improvements should flow back, but plugin and theme authors must be able to build on its SDKs without inheriting the core's copyleft. Spec §4.2 sets the split.
 
 ## Decision drivers
 

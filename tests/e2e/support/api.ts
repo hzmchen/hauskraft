@@ -2,12 +2,12 @@
 // Thin API helper for e2e setup and clean-up (login with CSRF, theme switching, tasks).
 import { request, type APIRequestContext } from "@playwright/test";
 
-export const BASE_URL = process.env.HEARTHOS_BASE_URL ?? "http://localhost:8080";
-export const PASSWORD = process.env.HEARTHOS_DEMO_PASSWORD ?? "hearthos-demo";
+export const BASE_URL = process.env.HAUSKRAFT_BASE_URL ?? "http://localhost:8080";
+export const PASSWORD = process.env.HAUSKRAFT_DEMO_PASSWORD ?? "hauskraft-demo";
 export const THEMES = {
-  default: "org.hearthos.theme.default",
-  paper: "org.hearthos.theme.paper",
-  hackspace: "org.hearthos.theme.hackspace",
+  default: "dev.hauskraft.theme.default",
+  paper: "dev.hauskraft.theme.paper",
+  hackspace: "dev.hauskraft.theme.hackspace",
 } as const;
 
 export class Api {
@@ -46,6 +46,15 @@ export class Api {
     await this.ctx.patch(`tasks/${id}`, { data: body, headers: this.headers() });
   }
 
+  async findTask(title: string): Promise<{ id: string; due_on: string | null }> {
+    const r = await this.ctx.get("tasks", { params: { limit: 200 } });
+    const task = ((await r.json()).items as { id: string; title: string; due_on: string | null }[]).find(
+      (t) => t.title === title,
+    );
+    if (!task) throw new Error(`no task titled '${title}'`);
+    return task;
+  }
+
   async deleteTask(id: string): Promise<void> {
     await this.ctx.delete(`tasks/${id}`, { headers: this.headers() });
   }
@@ -59,9 +68,11 @@ export class Api {
   }
 }
 
+/** Today plus `offsetDays` in Europe/Berlin, the browser time zone set in playwright.config.ts. */
 export function isoDate(offsetDays: number): string {
-  const d = new Date();
-  d.setDate(d.getDate() + offsetDays);
+  const today = new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Berlin" }).format(new Date());
+  const d = new Date(`${today}T00:00:00Z`);
+  d.setUTCDate(d.getUTCDate() + offsetDays);
   return d.toISOString().slice(0, 10);
 }
 

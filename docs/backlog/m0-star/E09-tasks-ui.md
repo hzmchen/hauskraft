@@ -1,11 +1,11 @@
 # E09 · Tasks UI
 
-**Goal:** The tasks widget and page, built only on `@hearthos/sdk-ts` and `@hearthos/ui`, working identically in every theme.
+**Goal:** The tasks widget and page, built only on `@hauskraft/sdk-ts` and `@hauskraft/ui`, working identically in every theme.
 **Dependencies:** E07, E08, E13-02.
 **UI contract:** the accessible names and test hooks in `docs/testing/ui-contract.md` are part of every UI story's AC; the spec-owned e2e tests in `tests/e2e/` rely on them.
 
 All stories in this epic share these extra acceptance criteria:
-- Only `@hearthos/ui` primitives, semantic utility classes and `<Icon name>` are used; `hearthos/no-raw-styles` lint passes (E13-08).
+- Only `@hauskraft/ui` primitives, semantic utility classes and `<Icon name>` are used; `hauskraft/no-raw-styles` lint passes (E13-08).
 - The view passes the theme invariance suite in all three built-in themes, light and dark (E13-08).
 
 ---
@@ -27,7 +27,7 @@ All stories in this epic share these extra acceptance criteria:
 - **AC:**
   - Given `/p/tasks`, I can filter Open / Done / All and sort by Created or Due. Filter state lives in URL search params, validated by the route's `validateSearch`.
   - Pagination shows 50 per page.
-  - I can set or clear a due date with a labelled date input (`Due date for '<title>'`, a native `input type="date"` styled by `@hearthos/ui`) and a `Clear due date for '<title>'` button. Overdue open tasks show a badge using `color.destructive`; due today uses `color.warning`. Badges carry text ("Overdue", "Today"), never colour alone.
+  - I can set or clear a due date with a labelled date input (`Due date for '<title>'`, a native `input type="date"` styled by `@hauskraft/ui`) and a `Clear due date for '<title>'` button. Overdue open tasks show a badge using `color.destructive`; due today uses `color.warning`. Badges carry text ("Overdue", "Today"), never colour alone.
   - Delete asks for confirmation in a Dialog and then removes the row. Any adult can delete any task (D3).
   - An empty state is shown when there are no tasks (illustration from the theme if provided, text always).
 - **Tech:** `pages/TasksPage.tsx`, `components/{TaskRow,DueDatePicker,DeleteTaskDialog}.tsx`. Dates sent as `YYYY-MM-DD`, no timezone conversion. Icons: `action.edit`, `action.delete`, `status.overdue`.

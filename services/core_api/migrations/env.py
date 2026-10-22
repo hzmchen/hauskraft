@@ -9,8 +9,8 @@ from alembic import context
 from sqlalchemy import Connection, pool
 from sqlalchemy.ext.asyncio import async_engine_from_config
 
-from hearthos_core.db.migrations import target_metadata
-from hearthos_core.settings import Settings
+from hauskraft_core.db.migrations import target_metadata
+from hauskraft_core.settings import Settings
 
 config = context.config
 settings: Settings = config.attributes.get("settings") or Settings()
@@ -21,7 +21,7 @@ if not config.get_main_option("sqlalchemy.url"):
 def _include_object(obj: object, name: str | None, type_: str, reflected: bool, compare_to: object) -> bool:
     """Skip tables a plugin declares only so its foreign keys resolve (core owns them)."""
     info = getattr(obj, "info", {}) or {}
-    return not (type_ == "table" and info.get("hearthos_reference_only"))
+    return not (type_ == "table" and info.get("hauskraft_reference_only"))
 
 
 def _configure(connection: Connection | None = None) -> None:

@@ -5,11 +5,11 @@ import logging
 
 import pytest
 
-from hearthos_core.policy import Decision, DenyAllPolicy, NoOpPolicy, Policy, policy_from_settings
-from hearthos_core.settings import Settings
-from hearthos_core.uow import UnitOfWork, current_uow
-from hearthos_sdk import Actor, DataClass, ResourceRef
-from hearthos_sdk.errors import PolicyDeniedError
+from hauskraft_core.policy import Decision, DenyAllPolicy, NoOpPolicy, Policy, policy_from_settings
+from hauskraft_core.settings import Settings
+from hauskraft_core.uow import UnitOfWork, current_uow
+from hauskraft_sdk import Actor, DataClass, ResourceRef
+from hauskraft_sdk.errors import PolicyDeniedError
 
 pytestmark = pytest.mark.unit
 
@@ -64,10 +64,10 @@ def test_policy_chosen_by_setting(name: str, cls: type) -> None:
 
 
 async def test_noop_allows_and_logs_at_debug(caplog: pytest.LogCaptureFixture) -> None:
-    caplog.set_level(logging.DEBUG, logger="hearthos.policy")
+    caplog.set_level(logging.DEBUG, logger="hauskraft.policy")
     decision = await NoOpPolicy().authorize(ACTOR, "task.create", ResourceRef("Task"), "household", "graph:write:Task")
     assert decision is Decision.ALLOW
-    assert any("policy.allow" in str(r.msg) for r in caplog.records if r.name == "hearthos.policy")
+    assert any("policy.allow" in str(r.msg) for r in caplog.records if r.name == "hauskraft.policy")
 
 
 async def test_unit_of_work_forwards_to_the_policy_and_remembers_the_actor() -> None:

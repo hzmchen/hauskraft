@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Activity (M0S-E10-03, web): who did what, newest first. Summaries are i18n keys from the API
 // (summary_key) filled with the actor's name and the task title or theme name.
-import { activityList, themesListOptions, type ActivityItem } from "@hearthos/sdk-ts";
-import { Button } from "@hearthos/ui";
+import { activityList, themesListOptions, type ActivityItem } from "@hauskraft/sdk-ts";
+import { Button } from "@hauskraft/ui";
 import { infiniteQueryOptions, useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import type { TFunction } from "i18next";
 import { useTranslation } from "react-i18next";
@@ -41,7 +41,7 @@ export function summarise(item: ActivityItem, t: TFunction, themeName: (id: stri
     title: data.task?.title ?? "",
     theme: data.to ? themeName(data.to) : "",
     plugin: data.plugin_id ?? "",
-    ...(item.type === "hearthos.plugin.toggled" ? { context: data.enabled ? "on" : "off" } : {}),
+    ...(item.type === "hauskraft.plugin.toggled" ? { context: data.enabled ? "on" : "off" } : {}),
     defaultValue: t("activity.unknown", { actor, type: item.type }),
   });
 }

@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import type { PluginWebModule } from "@hearthos/sdk-ts";
+import type { PluginWebModule } from "@hauskraft/sdk-ts";
 import type { i18n as I18n } from "i18next";
 
 import { addPluginLocales, LANGUAGES } from "../i18n";
 
-/** A plugin's i18n namespace is the last segment of its id: org.hearthos.tasks → "tasks". */
+/** A plugin's i18n namespace is the last segment of its id: dev.hauskraft.tasks → "tasks". */
 export function pluginNamespace(pluginId: string): string {
   return pluginId.slice(pluginId.lastIndexOf(".") + 1);
 }

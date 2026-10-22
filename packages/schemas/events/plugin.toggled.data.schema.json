@@ -1,14 +1,14 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://schemas.hearthos.org/events/plugin.toggled/v1.json",
+  "$id": "https://hauskraft.dev/schema/events/plugin.toggled/v1.json",
   "$comment": "SPDX-License-Identifier: MIT",
-  "title": "hearthos.plugin.toggled data",
+  "title": "hauskraft.plugin.toggled data",
   "type": "object",
   "required": ["plugin_id", "enabled"],
   "additionalProperties": false,
   "properties": {
     "plugin_id": {
-      "$ref": "https://hearthos.dev/schema/common/1.0.json#/$defs/reverseDnsId"
+      "$ref": "https://hauskraft.dev/schema/common/1.0.json#/$defs/reverseDnsId"
     },
     "enabled": {
       "type": "boolean"

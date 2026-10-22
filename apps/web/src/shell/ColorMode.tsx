@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Colour mode per device (M0S-E08-02): system (default), light or dark. Stored only in this browser
-// (localStorage "hearthos.mode"), never sent to the server, and independent of the household theme.
+// (localStorage "hauskraft.mode"), never sent to the server, and independent of the household theme.
 // index.html applies the same rule before first paint; this provider keeps it in sync afterwards.
 import {
   createContext,
@@ -17,7 +17,7 @@ import { useTranslation } from "react-i18next";
 
 export const MODES = ["system", "light", "dark"] as const;
 export type ColorMode = (typeof MODES)[number];
-export const MODE_STORAGE_KEY = "hearthos.mode";
+export const MODE_STORAGE_KEY = "hauskraft.mode";
 const DARK_QUERY = "(prefers-color-scheme: dark)";
 
 function readMode(): ColorMode {

@@ -12,16 +12,16 @@ import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine, select
 
-from hearthos_core.app import create_app
-from hearthos_core.db.models import OutboxEvent, PluginRecord
-from hearthos_core.settings import Settings
+from hauskraft_core.app import create_app
+from hauskraft_core.db.models import OutboxEvent, PluginRecord
+from hauskraft_core.settings import Settings
 from tests.integration.conftest import PASSWORD
 
 pytestmark = pytest.mark.integration
 
 CODE = """
 from fastapi import APIRouter
-from hearthos_sdk import PluginRegistration
+from hauskraft_sdk import PluginRegistration
 
 class _P:
     id = "{pid}"
@@ -42,7 +42,7 @@ def _manifest(pid: str, **extra: object) -> dict[str, object]:
         "name": "Probe",
         "version": "0.2.0",
         "type": ["domain", "widget"],
-        "hearthos_api": "^0.1.0",
+        "hauskraft_api": "^0.1.0",
         "license": "MIT",
         "authors": [{"name": "t"}],
         "source": "x",
@@ -65,7 +65,7 @@ def paths(tmp_path: Path) -> Iterator[tuple[str, str, Settings]]:
     sys.path.insert(0, str(tmp_path / "py"))
     plugin = tmp_path / "plugins" / "probe"
     plugin.mkdir(parents=True)
-    (plugin / "hearthos.plugin.json").write_text(
+    (plugin / "hauskraft.plugin.json").write_text(
         json.dumps(
             _manifest(
                 pid,
@@ -80,7 +80,7 @@ def paths(tmp_path: Path) -> Iterator[tuple[str, str, Settings]]:
     theme_id = f"org.example.theme.t{uuid.uuid4().hex[:6]}"
     theme = tmp_path / "themes" / "t"
     theme.mkdir(parents=True)
-    (theme / "hearthos.plugin.json").write_text(
+    (theme / "hauskraft.plugin.json").write_text(
         json.dumps(
             _manifest(
                 theme_id,

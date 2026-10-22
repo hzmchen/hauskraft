@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 // A native date input (labelled per task) plus a clear button. Dates are plain YYYY-MM-DD, no time zone.
-import type { TaskOut } from "@hearthos/sdk-ts";
-import { Button, Icon, Input } from "@hearthos/ui";
+import type { TaskOut } from "@hauskraft/sdk-ts";
+import { Button, Icon, Input } from "@hauskraft/ui";
 import { useTranslation } from "react-i18next";
 
 import { useUpdateTask } from "../api";

@@ -1,0 +1,286 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hauskraft.dev/schema/theme/1.0.json",
+  "$comment": "SPDX-License-Identifier: MIT",
+  "title": "Hauskraft theme definition (theme.json)",
+  "description": "Theme API 1.0 (spec §10.2.4). Themes are data only: every object is closed, so unknown keys (including any css, script, html or style key outside the defined font and checkbox styles) are rejected, as are remote or absolute asset paths and '..'. Enums mirror layout-options-v1.json; limits follow ADR-0013.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["theme_api", "name", "tokens", "components", "layout"],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "$comment": {
+      "type": "string"
+    },
+    "theme_api": {
+      "const": "1.0"
+    },
+    "name": {
+      "description": "A proper noun; not translated.",
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 60
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 500
+    },
+    "tokens": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["light", "dark"],
+      "properties": {
+        "light": {
+          "type": "string",
+          "allOf": [
+            {
+              "pattern": "^(?![A-Za-z][A-Za-z0-9+.-]*:)(?!/)(?!.*(^|/)\\.\\.(/|$))[A-Za-z0-9._/-]+$"
+            },
+            {
+              "pattern": "\\.(json)$"
+            }
+          ]
+        },
+        "dark": {
+          "type": "string",
+          "allOf": [
+            {
+              "pattern": "^(?![A-Za-z][A-Za-z0-9+.-]*:)(?!/)(?!.*(^|/)\\.\\.(/|$))[A-Za-z0-9._/-]+$"
+            },
+            {
+              "pattern": "\\.(json)$"
+            }
+          ]
+        }
+      }
+    },
+    "fonts": {
+      "type": "array",
+      "maxItems": 8,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["family", "src"],
+        "properties": {
+          "family": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9 .-]{1,60}$"
+          },
+          "src": {
+            "type": "string",
+            "allOf": [
+              {
+                "pattern": "^(?![A-Za-z][A-Za-z0-9+.-]*:)(?!/)(?!.*(^|/)\\.\\.(/|$))[A-Za-z0-9._/-]+$"
+              },
+              {
+                "pattern": "\\.(woff2)$"
+              }
+            ]
+          },
+          "weight": {
+            "type": "string",
+            "pattern": "^[1-9]00( [1-9]00)?$"
+          },
+          "style": {
+            "enum": ["normal", "italic"]
+          }
+        }
+      }
+    },
+    "components": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["widget", "button", "checkbox"],
+      "properties": {
+        "widget": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["chrome", "header"],
+          "properties": {
+            "chrome": {
+              "$ref": "#/$defs/enum.widget.chrome"
+            },
+            "header": {
+              "$ref": "#/$defs/enum.widget.header"
+            }
+          }
+        },
+        "button": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["primary"],
+          "properties": {
+            "primary": {
+              "$ref": "#/$defs/enum.button.primary"
+            }
+          }
+        },
+        "checkbox": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["style"],
+          "properties": {
+            "style": {
+              "$ref": "#/$defs/enum.checkbox.style"
+            }
+          }
+        }
+      }
+    },
+    "layout": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["navigation", "density", "content_width"],
+      "properties": {
+        "navigation": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["wide", "narrow"],
+          "properties": {
+            "wide": {
+              "$ref": "#/$defs/enum.navigation.wide"
+            },
+            "narrow": {
+              "$ref": "#/$defs/enum.navigation.narrow"
+            }
+          }
+        },
+        "density": {
+          "$ref": "#/$defs/enum.density"
+        },
+        "content_width": {
+          "$ref": "#/$defs/enum.content_width"
+        }
+      }
+    },
+    "icons": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["pack"],
+      "properties": {
+        "pack": {
+          "type": "string",
+          "allOf": [
+            {
+              "pattern": "^(?![A-Za-z][A-Za-z0-9+.-]*:)(?!/)(?!.*(^|/)\\.\\.(/|$))[A-Za-z0-9._/-]+$"
+            },
+            {
+              "pattern": "\\.(svg)$"
+            }
+          ]
+        },
+        "fallback": {
+          "const": "default"
+        }
+      }
+    },
+    "background": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [],
+      "properties": {
+        "light": {
+          "$ref": "#/$defs/background"
+        },
+        "dark": {
+          "$ref": "#/$defs/background"
+        }
+      }
+    },
+    "preview": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["swatches"],
+      "properties": {
+        "swatches": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 6,
+          "items": {
+            "description": "A token alias like {color.background} or a plain CSS colour (no declarations).",
+            "type": "string",
+            "pattern": "^(\\{[a-z0-9-]+(\\.[a-z0-9-]+)+\\}|[#A-Za-z0-9(),.%\\s/+-]+)$",
+            "maxLength": 80
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "background": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [],
+      "properties": {
+        "color": {
+          "description": "A token alias like {color.background} or a plain CSS colour (no declarations).",
+          "type": "string",
+          "pattern": "^(\\{[a-z0-9-]+(\\.[a-z0-9-]+)+\\}|[#A-Za-z0-9(),.%\\s/+-]+)$",
+          "maxLength": 80
+        },
+        "gradient": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["from", "to"],
+          "properties": {
+            "from": {
+              "description": "A token alias like {color.background} or a plain CSS colour (no declarations).",
+              "type": "string",
+              "pattern": "^(\\{[a-z0-9-]+(\\.[a-z0-9-]+)+\\}|[#A-Za-z0-9(),.%\\s/+-]+)$",
+              "maxLength": 80
+            },
+            "to": {
+              "description": "A token alias like {color.background} or a plain CSS colour (no declarations).",
+              "type": "string",
+              "pattern": "^(\\{[a-z0-9-]+(\\.[a-z0-9-]+)+\\}|[#A-Za-z0-9(),.%\\s/+-]+)$",
+              "maxLength": 80
+            },
+            "angle": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 360
+            }
+          }
+        },
+        "image": {
+          "type": "string",
+          "allOf": [
+            {
+              "pattern": "^(?![A-Za-z][A-Za-z0-9+.-]*:)(?!/)(?!.*(^|/)\\.\\.(/|$))[A-Za-z0-9._/-]+$"
+            },
+            {
+              "pattern": "\\.(png|webp|avif|jpg|jpeg|svg)$"
+            }
+          ]
+        }
+      },
+      "maxProperties": 1
+    },
+    "enum.navigation.wide": {
+      "enum": ["sidebar", "topbar"]
+    },
+    "enum.navigation.narrow": {
+      "enum": ["bottom-tabs", "drawer"]
+    },
+    "enum.density": {
+      "enum": ["compact", "comfortable", "spacious"]
+    },
+    "enum.content_width": {
+      "enum": ["full", "contained"]
+    },
+    "enum.widget.chrome": {
+      "enum": ["flat", "outlined", "elevated", "tinted"]
+    },
+    "enum.widget.header": {
+      "enum": ["inline", "banner"]
+    },
+    "enum.button.primary": {
+      "enum": ["solid", "soft", "outline"]
+    },
+    "enum.checkbox.style": {
+      "enum": ["square", "round"]
+    }
+  }
+}

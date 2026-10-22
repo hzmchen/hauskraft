@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
-"""M0S-E05-05: create another adult through the API and the `hearthos` CLI."""
+"""M0S-E05-05: create another adult through the API and the `hauskraft` CLI."""
 
 import uuid
 from collections.abc import Callable
@@ -8,9 +8,9 @@ import pytest
 from fastapi.testclient import TestClient
 from typer.testing import CliRunner
 
-from hearthos_core.app import create_app
-from hearthos_core.cli import app as cli
-from hearthos_core.settings import Settings
+from hauskraft_core.app import create_app
+from hauskraft_core.cli import app as cli
+from hauskraft_core.settings import Settings
 from tests.integration.conftest import PASSWORD
 
 pytestmark = pytest.mark.integration
@@ -81,7 +81,7 @@ def test_creating_users_needs_a_session(client: TestClient) -> None:
 def test_cli_create_prompts_for_the_password(
     api_settings: Settings, monkeypatch: pytest.MonkeyPatch, client: TestClient
 ) -> None:
-    monkeypatch.setenv("HEARTHOS_DATABASE_URL", api_settings.database_url)
+    monkeypatch.setenv("HAUSKRAFT_DATABASE_URL", api_settings.database_url)
     username = "cli" + uuid.uuid4().hex[:6]
     result = CliRunner().invoke(
         cli,
@@ -100,14 +100,14 @@ def test_cli_create_prompts_for_the_password(
 
 
 def test_cli_reports_errors_without_a_traceback(api_settings: Settings, monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setenv("HEARTHOS_DATABASE_URL", api_settings.database_url)
+    monkeypatch.setenv("HAUSKRAFT_DATABASE_URL", api_settings.database_url)
     result = CliRunner().invoke(cli, ["users", "create", "--username", "x y"], input="short\nshort\n")
     assert result.exit_code == 1
     assert "Traceback" not in result.output
 
 
 def test_cli_db_upgrade_is_idempotent(api_settings: Settings, monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setenv("HEARTHOS_DATABASE_URL", api_settings.database_url)
-    monkeypatch.setenv("HEARTHOS_PLUGIN_PATHS", ",".join(str(p) for p in api_settings.plugin_paths))
+    monkeypatch.setenv("HAUSKRAFT_DATABASE_URL", api_settings.database_url)
+    monkeypatch.setenv("HAUSKRAFT_PLUGIN_PATHS", ",".join(str(p) for p in api_settings.plugin_paths))
     result = CliRunner().invoke(cli, ["db", "upgrade"])
     assert result.exit_code == 0, result.output

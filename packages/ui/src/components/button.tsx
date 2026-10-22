@@ -8,7 +8,7 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        // Primary intent. The theme picks solid (default), soft or outline via data-hearth-button.
+        // Primary intent. The theme picks solid (default), soft or outline via data-hauskraft-button.
         default:
           "bg-primary text-primary-foreground hover:bg-primary/90 button-soft:bg-accent button-soft:text-accent-foreground button-soft:hover:bg-accent/80 button-outline:border button-outline:border-primary button-outline:bg-background button-outline:text-foreground button-outline:hover:bg-accent button-outline:hover:text-accent-foreground",
         destructive:

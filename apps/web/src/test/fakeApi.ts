@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Test helper: answer the generated client's requests from a table instead of a server.
-import { client } from "@hearthos/sdk-ts";
+import { client } from "@hauskraft/sdk-ts";
 import { vi } from "vitest";
 
 export type Handler = (request: Request) => Response | Promise<Response>;
@@ -19,7 +19,7 @@ export function problem(status: number, code: string): Response {
 /** Routes like "GET /api/v1/auth/session". Unknown routes answer 404. Returns the request log. */
 export function fakeApi(routes: Record<string, Handler>): Request[] {
   const seen: Request[] = [];
-  client.setConfig({ baseUrl: "http://hearthos.test" });
+  client.setConfig({ baseUrl: "http://hauskraft.test" });
   vi.stubGlobal(
     "fetch",
     vi.fn(async (request: Request) => {

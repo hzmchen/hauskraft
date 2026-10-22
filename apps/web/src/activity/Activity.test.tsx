@@ -16,29 +16,29 @@ const item = (n: number, type: string, data: unknown, actor: typeof demo | null 
   time: `2026-10-13T10:${String(59 - n).padStart(2, "0")}:00Z`,
   actor,
   subject: "task/1",
-  summary_key: `activity.${type.replace("hearthos.", "")}`,
+  summary_key: `activity.${type.replace("hauskraft.", "")}`,
   data,
 });
 const task = (title: string) => ({ task: { id: "1", title, done: false, due_on: null, version: 1 } });
 
 async function show(lng: "en" | "de" = "en", extraPage: unknown[] = []) {
   const first = [
-    item(1, "hearthos.task.created", task("Buy milk")),
-    item(2, "hearthos.task.updated", {
+    item(1, "hauskraft.task.created", task("Buy milk")),
+    item(2, "hauskraft.task.updated", {
       ...task("Buy oat milk"),
       changes: { title: { from: "Buy milk", to: "Buy oat milk" } },
     }),
-    item(3, "hearthos.task.completed", { ...task("Buy oat milk"), completed_at: "2026-10-13T10:00:00Z" }),
-    item(4, "hearthos.task.deleted", task("Buy oat milk")),
-    item(5, "hearthos.settings.theme_changed", {
-      from: "org.hearthos.theme.default",
-      to: "org.hearthos.theme.hackspace",
+    item(3, "hauskraft.task.completed", { ...task("Buy oat milk"), completed_at: "2026-10-13T10:00:00Z" }),
+    item(4, "hauskraft.task.deleted", task("Buy oat milk")),
+    item(5, "hauskraft.settings.theme_changed", {
+      from: "dev.hauskraft.theme.default",
+      to: "dev.hauskraft.theme.hackspace",
     }),
-    item(6, "hearthos.plugin.toggled", { plugin_id: "org.example.x", enabled: false }, null),
+    item(6, "hauskraft.plugin.toggled", { plugin_id: "org.example.x", enabled: false }, null),
   ];
   const calls = fakeApi({
     "GET /api/v1/activity": (r) => json(new URL(r.url).searchParams.has("before") ? extraPage : first),
-    "GET /api/v1/themes": () => json([{ theme_id: "org.hearthos.theme.hackspace", name: "Hackspace" }]),
+    "GET /api/v1/themes": () => json([{ theme_id: "dev.hauskraft.theme.hackspace", name: "Hackspace" }]),
   });
   await act(async () => {
     render(
@@ -72,7 +72,7 @@ describe("Activity", () => {
         "Demo Adult switched the theme to Hackspace",
       ),
     );
-    expect(texts[5]).toContain("HearthOS turned off org.example.x");
+    expect(texts[5]).toContain("Hauskraft turned off org.example.x");
     expect(within(feed).getAllByRole("listitem")[0]!.textContent).toMatch(/Oct 13, 2026/);
   });
 
@@ -85,7 +85,7 @@ describe("Activity", () => {
   });
 
   it("loads older entries on request", async () => {
-    const calls = await show("en", [item(9, "hearthos.task.created", task("Ancient"))]);
+    const calls = await show("en", [item(9, "hauskraft.task.created", task("Ancient"))]);
     await userEvent.click(await screen.findByRole("button", { name: "Show older" }));
     expect(await screen.findByText(/added 'Ancient'/)).toBeDefined();
     const older = calls.find((r) => new URL(r.url).searchParams.has("before"))!;

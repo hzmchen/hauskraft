@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
-"""M0S-E13-09: ``hearthos themes validate`` and ``hearthos themes list`` (CliRunner, no database)."""
+"""M0S-E13-09: ``hauskraft themes validate`` and ``hauskraft themes list`` (CliRunner, no database)."""
 
 import json
 from pathlib import Path
@@ -7,7 +7,7 @@ from pathlib import Path
 import pytest
 from typer.testing import CliRunner
 
-from hearthos_core.cli import app
+from hauskraft_core.cli import app
 from tests.theme_helpers import FIXTURES
 
 pytestmark = pytest.mark.unit
@@ -59,14 +59,14 @@ def test_missing_or_non_theme_path_is_a_usage_error(path: str) -> None:
 
 
 def test_list_shows_validity_and_the_active_theme(monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setenv("HEARTHOS_THEME_PATHS", f"{REPO / 'themes' / 'builtin'},{FIXTURES}")
-    monkeypatch.setenv("HEARTHOS_DATABASE_URL", "postgresql+psycopg://x:y@127.0.0.1:9/nowhere")
+    monkeypatch.setenv("HAUSKRAFT_THEME_PATHS", f"{REPO / 'themes' / 'builtin'},{FIXTURES}")
+    monkeypatch.setenv("HAUSKRAFT_DATABASE_URL", "postgresql+psycopg://x:y@127.0.0.1:9/nowhere")
     result = runner.invoke(app, ["themes", "list"])
     assert result.exit_code == 0, result.output
     rows = [line for line in result.stdout.splitlines() if line[:2] in ("* ", "  ")]
     lines = {line[2:].split()[0]: line for line in rows}
-    assert lines["org.hearthos.theme.default"].startswith("*"), "Default is active without a stored choice"
-    assert "valid" in lines["org.hearthos.theme.paper"]
+    assert lines["dev.hauskraft.theme.default"].startswith("*"), "Default is active without a stored choice"
+    assert "valid" in lines["dev.hauskraft.theme.paper"]
     assert "invalid" in lines["org.example.theme.invalid-alias-cycle"]
     assert "database" in result.stdout.lower(), "say that the stored choice could not be read"
     assert "theme.loaded" not in result.stdout, "logs go to stderr, not into the listing"

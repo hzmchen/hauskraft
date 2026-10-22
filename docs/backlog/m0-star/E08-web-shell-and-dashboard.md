@@ -7,20 +7,20 @@
 
 ---
 
-## M0S-E08-01 · Vite + React + TanStack scaffold and `@hearthos/ui` package
+## M0S-E08-01 · Vite + React + TanStack scaffold and `@hauskraft/ui` package
 - **Story:** As a frontend agent, I want the shell and a shared UI package scaffolded with the chosen stack, so that features and plugins drop into known places.
 - **AC:**
   - Given `apps/web`, when I run `pnpm --filter web dev`, then Vite 8 serves the shell with TanStack Router file-based routing (`@tanstack/router-plugin/vite` placed before `@vitejs/plugin-react`, `autoCodeSplitting: true`, generated `routeTree.gen.ts` committed), a QueryClient provider and Tailwind 4 via `@tailwindcss/vite`.
-  - `packages/ui` (`@hearthos/ui`, MIT) is initialised with shadcn/ui on Radix (`components.json` points into `packages/ui/src/components`) and contains `button, input, checkbox, card, dialog, dropdown-menu, popover, calendar, sonner, tabs, sheet`. `apps/web` and plugin web packages import components only from `@hearthos/ui`.
+  - `packages/ui` (`@hauskraft/ui`, MIT) is initialised with shadcn/ui on Radix (`components.json` points into `packages/ui/src/components`) and contains `button, input, checkbox, card, dialog, dropdown-menu, popover, calendar, sonner, tabs, sheet`. `apps/web` and plugin web packages import components only from `@hauskraft/ui`.
   - Components reference only CSS variables (shadcn's variable names); no colour literals. Token wiring and variants come in E13-02.
 - **Tech:** React `^19.3`, `@tanstack/react-router@1.170.x`, `@tanstack/react-query@5.104.x`. Vitest 4 jsdom project for units plus a `browser` project via `@vitest/browser-playwright`. A temporary `packages/ui/src/tokens/fallback.css` holds the default theme's values until E13-03 serves compiled themes.
-- **Tests:** Vitest render smoke test of the shell and one `@hearthos/ui` component.
+- **Tests:** Vitest render smoke test of the shell and one `@hauskraft/ui` component.
 - **Deps:** E01-03 · **Est:** M · **Labels:** area:web
 
 ## M0S-E08-02 · Colour mode per device (system, light, dark)
 - **Story:** As an adult household member, I want each device to choose system, light or dark mode, so that the kitchen tablet can go dark at night while my phone stays light, all in the same household theme.
 - **AC:**
-  - Given the mode control in Settings → Appearance and in the user menu, when I pick Dark, then the `.dark` class is set on `<html>` and the choice persists in `localStorage("hearthos.mode")` on this device only. Other devices are unaffected.
+  - Given the mode control in Settings → Appearance and in the user menu, when I pick Dark, then the `.dark` class is set on `<html>` and the choice persists in `localStorage("hauskraft.mode")` on this device only. Other devices are unaffected.
   - `system` (default) follows `prefers-color-scheme` and reacts live to OS changes.
   - The mode is applied before first paint by an inline script in `index.html` (no light flash on a dark device). The script's SHA-256 hash is documented for the CSP in E11-01.
   - If `localStorage` is unavailable (private mode), the control still works for the session and falls back to `system` on reload.
@@ -70,8 +70,8 @@
   - When I drag or resize it in Edit mode and click Done, `PUT /api/v1/dashboard/today {layout}` persists the change, and it survives a reload.
   - On widths under 768 px widgets stack in one column.
   - `PUT` rejects cells outside the 12-column grid with 422.
-  - The grid has 12 columns in every theme. Row height and gutter come from the active theme's density (CSS variables `--hearth-grid-row`, `--hearth-grid-gap`), so switching theme never invalidates a saved layout.
-  - Each widget is wrapped in `@hearthos/ui`'s `WidgetFrame` (chrome variant from the theme, E13-02) and an error boundary.
+  - The grid has 12 columns in every theme. Row height and gutter come from the active theme's density (CSS variables `--hauskraft-grid-row`, `--hauskraft-grid-gap`), so switching theme never invalidates a saved layout.
+  - Each widget is wrapped in `@hauskraft/ui`'s `WidgetFrame` (chrome variant from the theme, E13-02) and an error boundary.
 - **Tech:**
   - react-grid-layout `^2` (`ResponsiveGridLayout` + `useContainerWidth`, explicit `layout` prop; import its CSS), 12 cols.
   - Backend `dashboard/router.py` stores `[{i, plugin_id, widget_id, x, y, w, h}]` in `dashboard_layouts` via a service with `authorize()`; `GET` returns the default when no row exists.

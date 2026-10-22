@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Sign-in (M0S-E08-03). One message for every credential failure, so it never reveals which field was wrong.
-import { authLogin } from "@hearthos/sdk-ts";
-import { Button, Card, CardContent, CardHeader, CardTitle, Input } from "@hearthos/ui";
+import { authLogin } from "@hauskraft/sdk-ts";
+import { Button, Card, CardContent, CardHeader, CardTitle, Input } from "@hauskraft/ui";
 import { createFileRoute, redirect, useRouter } from "@tanstack/react-router";
 import { useId, useState, type FormEvent } from "react";
 import { useTranslation } from "react-i18next";

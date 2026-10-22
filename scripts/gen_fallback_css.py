@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: AGPL-3.0-or-later
-"""Generate @hearthos/ui's fallback tokens from the built-in Default theme (M0S-E08-01).
+"""Generate @hauskraft/ui's fallback tokens from the built-in Default theme (M0S-E08-01).
 
     uv run python scripts/gen_fallback_css.py            write packages/ui/src/tokens/fallback.css
     uv run python scripts/gen_fallback_css.py --check    exit 1 if the file is stale
@@ -15,7 +15,7 @@ from __future__ import annotations
 import sys
 from pathlib import Path
 
-from hearthos_core.themes.validate import validate_theme
+from hauskraft_core.themes.validate import validate_theme
 
 REPO = Path(__file__).resolve().parents[1]
 OUT = REPO / "packages" / "ui" / "src" / "tokens" / "fallback.css"
@@ -34,7 +34,7 @@ def render() -> str:
     lines = [line for line in report.css.splitlines() if not line.startswith(("@font-face", "/* "))]
     # A cascade layer, so the active theme's (unlayered) stylesheet always wins, whatever the link order.
     body = "\n".join("  " + line for line in lines)
-    return HEADER + "@layer hearthos-fallback {\n" + body + "\n}\n"
+    return HEADER + "@layer hauskraft-fallback {\n" + body + "\n}\n"
 
 
 def main() -> int:

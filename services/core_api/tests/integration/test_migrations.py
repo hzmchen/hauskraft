@@ -10,8 +10,8 @@ import pytest
 from sqlalchemy import create_engine, inspect, text
 from testcontainers.community.postgres import PostgresContainer
 
-from hearthos_core.db import migrations
-from hearthos_core.settings import Settings
+from hauskraft_core.db import migrations
+from hauskraft_core.settings import Settings
 
 pytestmark = pytest.mark.integration
 
@@ -51,7 +51,7 @@ def probe_plugin(tmp_path: Path) -> Path:
         "name": "Probe",
         "version": "0.1.0",
         "type": ["domain"],
-        "hearthos_api": "^0.1.0",
+        "hauskraft_api": "^0.1.0",
         "license": "MIT",
         "authors": [{"name": "t"}],
         "source": "x",
@@ -59,7 +59,7 @@ def probe_plugin(tmp_path: Path) -> Path:
         "capabilities": [],
         "data_classes": {"reads": [], "writes": [], "emits": []},
     }
-    (plugin / "hearthos.plugin.json").write_text(json.dumps(manifest))
+    (plugin / "hauskraft.plugin.json").write_text(json.dumps(manifest))
     return plugin.parent
 
 
@@ -120,6 +120,6 @@ def test_core_only_check_reports_no_drift(pg: str) -> None:
 
 
 def test_naming_convention_is_set() -> None:
-    from hearthos_core.db.base import metadata
+    from hauskraft_core.db.base import metadata
 
     assert {"ix", "uq", "ck", "fk", "pk"} <= set(metadata.naming_convention)

@@ -9,17 +9,17 @@ export const THEMES = { default: defaultCss, paper: paperCss, hackspace: hackspa
 export type ThemeName = keyof typeof THEMES;
 
 export function applyTheme(name: ThemeName, attributes: Record<string, string> = {}, dark = false): void {
-  let style = document.getElementById("hearth-theme-under-test");
+  let style = document.getElementById("hauskraft-theme-under-test");
   if (!style) {
     style = document.createElement("style");
-    style.id = "hearth-theme-under-test";
+    style.id = "hauskraft-theme-under-test";
     document.head.append(style);
   }
   // Fonts are served by the API; tests use the fallback stacks.
   style.textContent = THEMES[name].replace(/^@font-face.*$/gm, "");
   const html = document.documentElement;
-  for (const attr of [...html.attributes]) if (attr.name.startsWith("data-hearth-")) html.removeAttribute(attr.name);
-  for (const [key, value] of Object.entries(attributes)) html.setAttribute(`data-hearth-${key}`, value);
+  for (const attr of [...html.attributes]) if (attr.name.startsWith("data-hauskraft-")) html.removeAttribute(attr.name);
+  for (const [key, value] of Object.entries(attributes)) html.setAttribute(`data-hauskraft-${key}`, value);
   html.classList.toggle("dark", dark);
 }
 

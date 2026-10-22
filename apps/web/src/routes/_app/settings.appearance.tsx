@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import { themesListOptions } from "@hearthos/sdk-ts";
+import { themesListOptions } from "@hauskraft/sdk-ts";
 import { createFileRoute } from "@tanstack/react-router";
 
 import { AppearanceSettings } from "../../settings/Appearance";

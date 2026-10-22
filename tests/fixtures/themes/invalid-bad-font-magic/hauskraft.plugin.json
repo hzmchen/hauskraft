@@ -1,0 +1,34 @@
+{
+  "$schema": "../../../../packages/schemas/manifest/hauskraft.plugin.schema.json",
+  "id": "org.example.theme.invalid-bad-font-magic",
+  "name": "Invalid Bad Font Magic",
+  "version": "0.1.0",
+  "type": [
+    "theme"
+  ],
+  "hauskraft_api": "^0.1.0",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Hauskraft test fixtures"
+    }
+  ],
+  "source": "https://github.com/hzmchen/hauskraft/tree/main/tests/fixtures/themes/invalid-bad-font-magic",
+  "runtime": {
+    "kind": "declarative"
+  },
+  "capabilities": [],
+  "data_classes": {
+    "reads": [],
+    "writes": [],
+    "emits": []
+  },
+  "contributes": {
+    "themes": [
+      {
+        "id": "invalid-bad-font-magic",
+        "file": "theme.json"
+      }
+    ]
+  }
+}

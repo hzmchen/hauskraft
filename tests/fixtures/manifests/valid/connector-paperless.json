@@ -1,23 +1,23 @@
 {
-  "$schema": "../../../../packages/schemas/manifest/hearthos.plugin.schema.json",
-  "id": "org.hearthos.connector.paperless",
+  "$schema": "../../../../packages/schemas/manifest/hauskraft.plugin.schema.json",
+  "id": "dev.hauskraft.connector.paperless",
   "name": "Paperless-ngx",
   "version": "0.3.0",
   "type": [
     "connector",
     "widget"
   ],
-  "hearthos_api": ">=1.0 <2.0",
+  "hauskraft_api": ">=1.0 <2.0",
   "license": "MIT",
   "authors": [
     {
-      "name": "HearthOS contributors"
+      "name": "Hauskraft contributors"
     }
   ],
-  "source": "https://github.com/hearthos/plugin-paperless",
+  "source": "https://github.com/hzmchen/plugin-paperless",
   "runtime": {
     "kind": "container",
-    "image": "ghcr.io/hearthos/plugin-paperless",
+    "image": "ghcr.io/hauskraft/plugin-paperless",
     "digest": "sha256:0000000000000000000000000000000000000000000000000000000000000000"
   },
   "config_schema": {
@@ -58,7 +58,7 @@
     ]
   },
   "subscribes": [
-    "hearthos.deadline.created"
+    "hauskraft.deadline.created"
   ],
   "contributes": {
     "tools": [

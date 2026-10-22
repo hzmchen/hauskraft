@@ -43,7 +43,7 @@ Notes:
 ## M0S-E04-01 · Alembic setup with plugin version locations
 - **Story:** As a plugin author, I want my plugin's migrations to live with the plugin, so that core and plugins evolve independently.
 - **AC:**
-  - Given core and the tasks plugin, when I run `alembic upgrade heads`, then the core branch (`core`) and plugin branch (`org.hearthos.tasks`) both apply.
+  - Given core and the tasks plugin, when I run `alembic upgrade heads`, then the core branch (`core`) and plugin branch (`dev.hauskraft.tasks`) both apply.
   - `alembic check` reports no drift. A naming convention for constraints is set.
 - **Tech:**
   - Alembic `~=1.20` with async `env.py` (psycopg 3). `version_locations` is built from core plus each manifest's `runtime.migrations` path.
@@ -53,7 +53,7 @@ Notes:
 
 ## M0S-E04-02 · Core tables migration
 - **Story:** As a developer, I want users, sessions, plugins, deployment_settings and dashboard_layouts tables, so that auth, the shell and theming have storage.
-- **AC:** Given an empty DB, when migrated, then the tables, `user_role` enum, constraints and indexes match the contract above. The ORM models in `hearthos_core/db/models.py` use SQLAlchemy 2.x `Mapped[]` typing.
+- **AC:** Given an empty DB, when migrated, then the tables, `user_role` enum, constraints and indexes match the contract above. The ORM models in `hauskraft_core/db/models.py` use SQLAlchemy 2.x `Mapped[]` typing.
 - **Tech:** UUIDv7 generated in Python (`uuid6` package or equivalent; Python 3.13 lacks `uuid.uuid7`), so Postgres 16 is fine.
 - **Tests:** Integration: insert/select per table; enum contains all 8 roles; `deployment_settings` upsert by key.
 - **Deps:** E04-01 · **Est:** S · **Labels:** area:db
@@ -68,6 +68,6 @@ Notes:
 ## M0S-E04-04 · Testcontainers fixtures
 - **Story:** As a coding agent, I want ready-made DB fixtures, so that integration tests are one decorator away.
 - **AC:** Given `pytest -m integration`, then a session-scoped `postgres:16-alpine` container starts once, migrations run to `heads`, and each test gets a transactional `AsyncSession` rolled back after the test.
-- **Tech:** `services/core_api/tests/conftest.py`, exposed as pytest plugin `hearthos_core.testing` so plugin tests reuse it. testcontainers `~=4.15`.
+- **Tech:** `services/core_api/tests/conftest.py`, exposed as pytest plugin `hauskraft_core.testing` so plugin tests reuse it. testcontainers `~=4.15`.
 - **Tests:** A sample test proves isolation (row is gone in the next test).
 - **Deps:** E04-01 · **Est:** S · **Labels:** area:db, type:test

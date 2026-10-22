@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: MIT
 """The theme contract v1 as the acceptance suite expects it.
 
-Source of truth for humans: docs/spec/hearthos-spec-v0.2.md §10.2 and
+Source of truth for humans: docs/spec/hauskraft-spec-v0.2.md §10.2 and
 docs/backlog/m0-star/E13-theming-system.md ("Contracts"). The machine-readable files
 in packages/schemas/theme/ (M0S-E13-01) must agree with this module; a test checks that.
 """
@@ -89,7 +89,7 @@ LAYOUT_OPTIONS = {
     "checkbox.style": ["square", "round"],
 }
 
-# Issue codes reported by `hearthos themes validate --json` and GET /api/v1/themes.
+# Issue codes reported by `hauskraft themes validate --json` and GET /api/v1/themes.
 ERROR_CODES = {
     "manifest.invalid",        # plugin manifest or theme plugin rules violated
     "schema.invalid",          # theme.json fails the theme schema (incl. URL schemes, '..', css keys)

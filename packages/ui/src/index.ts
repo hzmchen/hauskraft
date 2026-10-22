@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// @hearthos/ui: themed primitives (M0S-E08-01, M0S-E13-02). Apps and plugins import components only from here.
+// @hauskraft/ui: themed primitives (M0S-E08-01, M0S-E13-02). Apps and plugins import components only from here.
 export { cn } from "./lib/utils";
 export * from "./components/button";
 export * from "./components/calendar";

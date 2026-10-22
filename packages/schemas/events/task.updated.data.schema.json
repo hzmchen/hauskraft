@@ -1,14 +1,14 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://schemas.hearthos.org/events/task.updated/v1.json",
+  "$id": "https://hauskraft.dev/schema/events/task.updated/v1.json",
   "$comment": "SPDX-License-Identifier: MIT",
-  "title": "hearthos.task.updated data",
+  "title": "hauskraft.task.updated data",
   "type": "object",
   "required": ["task", "changes"],
   "additionalProperties": false,
   "properties": {
     "task": {
-      "$ref": "https://schemas.hearthos.org/events/task.created/v1.json#/$defs/task"
+      "$ref": "https://hauskraft.dev/schema/events/task.created/v1.json#/$defs/task"
     },
     "changes": {
       "description": "Changed fields as [old, new]; reopening appears as done: [true, false].",

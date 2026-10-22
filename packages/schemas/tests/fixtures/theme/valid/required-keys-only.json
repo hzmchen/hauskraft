@@ -1,5 +1,5 @@
 {
-  "$schema": "https://hearthos.dev/schema/theme/1.0.json",
+  "$schema": "https://hauskraft.dev/schema/theme/1.0.json",
   "theme_api": "1.0",
   "name": "Hackspace",
   "tokens": {

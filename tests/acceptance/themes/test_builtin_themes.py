@@ -50,10 +50,10 @@ def tokens(name: str, mode: str):
 @pytest.mark.parametrize("name", TABLE)
 def test_package_files(name: str) -> None:
     f = folder(name)
-    for rel in ("hearthos.plugin.json", "theme.json", "tokens.light.json", "tokens.dark.json", "LICENSE"):
+    for rel in ("hauskraft.plugin.json", "theme.json", "tokens.light.json", "tokens.dark.json", "LICENSE"):
         assert (f / rel).is_file(), f"{name}: {rel} missing"
-    manifest = json.loads((f / "hearthos.plugin.json").read_text())
-    assert manifest["id"] == f"org.hearthos.theme.{name}"
+    manifest = json.loads((f / "hauskraft.plugin.json").read_text())
+    assert manifest["id"] == f"dev.hauskraft.theme.{name}"
     assert manifest["type"] == ["theme"] and manifest["runtime"]["kind"] == "declarative"
 
 

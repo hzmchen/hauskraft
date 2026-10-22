@@ -34,7 +34,7 @@ def ruff_on_stdin(source: str, as_path: str, story: str) -> list[dict[str, Any]]
     """Lint `source` as if it lived at `as_path` (so per-file config applies)."""
     if not (REPO / "pyproject.toml").exists():
         pytest.fail(f"RED ({story}): no root pyproject.toml with ruff config yet", pytrace=False)
-    base = _cmd("HEARTHOS_RUFF", [["ruff"], ["uv", "run", "--quiet", "ruff"]], story)
+    base = _cmd("HAUSKRAFT_RUFF", [["ruff"], ["uv", "run", "--quiet", "ruff"]], story)
     proc = run([*base, "check", "--no-cache", "--output-format", "json", "--stdin-filename", as_path, "-"], stdin=source)
     if proc.returncode not in (0, 1):
         pytest.fail(f"ruff failed ({proc.returncode}): {proc.stderr[:500]}", pytrace=False)
@@ -45,7 +45,7 @@ def eslint_on_stdin(source: str, as_path: str, story: str) -> list[dict[str, Any
     """Lint `source` as if it lived at `as_path`; returns ESLint messages."""
     if not (REPO / "node_modules").exists():
         pytest.fail(f"RED ({story}): run `pnpm install` first (no node_modules)", pytrace=False)
-    base = _cmd("HEARTHOS_ESLINT", [["pnpm", "exec", "eslint"]], story)
+    base = _cmd("HAUSKRAFT_ESLINT", [["pnpm", "exec", "eslint"]], story)
     proc = run([*base, "--format", "json", "--stdin", "--stdin-filename", as_path], stdin=source)
     if proc.returncode not in (0, 1):
         pytest.fail(f"eslint failed ({proc.returncode}): {proc.stderr[:500]}", pytrace=False)

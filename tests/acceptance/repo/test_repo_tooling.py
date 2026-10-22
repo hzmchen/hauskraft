@@ -81,14 +81,14 @@ def test_ruff_mypy_pytest_configured() -> None:
 @story("M0S-E01-02")
 def test_plugins_cannot_import_core_internals() -> None:
     src = (FIXTURES / "python" / "plugin_imports_core.py").read_text()
-    findings = ruff_on_stdin(src, "plugins/official/tasks/backend/src/hearthos_tasks/_probe.py", "M0S-E01-02")
+    findings = ruff_on_stdin(src, "plugins/official/tasks/backend/src/hauskraft_tasks/_probe.py", "M0S-E01-02")
     assert any(f["code"] == "TID251" for f in findings), f"expected TID251, got {findings}"
 
 
 @story("M0S-E01-02")
 def test_core_may_import_itself() -> None:
     src = (FIXTURES / "python" / "core_imports_core.py").read_text()
-    findings = ruff_on_stdin(src, "services/core_api/src/hearthos_core/_probe.py", "M0S-E01-02")
+    findings = ruff_on_stdin(src, "services/core_api/src/hauskraft_core/_probe.py", "M0S-E01-02")
     assert not any(f["code"] == "TID251" for f in findings), findings
 
 

@@ -13,9 +13,9 @@
     "e2e": "playwright test"
   },
   "dependencies": {
-    "@hearthos/plugin-tasks": "workspace:*",
-    "@hearthos/sdk-ts": "workspace:*",
-    "@hearthos/ui": "workspace:*",
+    "@hauskraft/plugin-tasks": "workspace:*",
+    "@hauskraft/sdk-ts": "workspace:*",
+    "@hauskraft/ui": "workspace:*",
     "@tanstack/react-query": "catalog:",
     "@tanstack/react-router": "catalog:",
     "i18next": "catalog:",

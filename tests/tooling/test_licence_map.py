@@ -33,7 +33,7 @@ def test_headers_in_the_right_places_pass(tmp_path: Path) -> None:
     _write(tmp_path, "apps/web/src/main.ts", "// SPDX-License-Identifier: AGPL-3.0-or-later\n")
     _write(tmp_path, "packages/sdk-py/sdk.py", "# SPDX-License-Identifier: MIT\n")
     _write(tmp_path, "plugins/official/tasks/web/x.tsx", "// SPDX-License-Identifier: MIT\n")
-    _write(tmp_path, "integrations/ha-hearthos/README.md", "<!-- SPDX-License-Identifier: MIT -->\n")
+    _write(tmp_path, "integrations/ha-hauskraft/README.md", "<!-- SPDX-License-Identifier: MIT -->\n")
     _write(tmp_path, "docs/anything.md", "no rule here\n")
     proc = _run(tmp_path)
     assert proc.returncode == 0, proc.stdout + proc.stderr

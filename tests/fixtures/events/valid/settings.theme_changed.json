@@ -1,16 +1,16 @@
 {
   "specversion": "1.0",
   "id": "0199f3a2-6c1e-7b8a-9d40-2f6c1a0b7e11",
-  "source": "org.hearthos.core",
-  "type": "hearthos.settings.theme_changed",
+  "source": "dev.hauskraft.core",
+  "type": "hauskraft.settings.theme_changed",
   "subject": "setting/theme_id",
   "time": "2026-10-12T09:15:02.481Z",
   "datacontenttype": "application/json",
-  "dataschema": "https://schemas.hearthos.org/events/settings.theme_changed/v1.json",
+  "dataschema": "https://hauskraft.dev/schema/events/settings.theme_changed/v1.json",
   "dataclass": "household",
   "actorid": "0199f390-1111-7aaa-8bbb-cccccccccccc",
   "data": {
-    "from": "org.hearthos.theme.default",
-    "to": "org.hearthos.theme.hackspace"
+    "from": "dev.hauskraft.theme.default",
+    "to": "dev.hauskraft.theme.hackspace"
   }
 }

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // The signed-in session (M0S-E08-03). GET /auth/session answers 401 when signed out; the CSRF token
-// from the session is kept in memory by @hearthos/sdk-ts and sent on every unsafe request.
-import { authLogout, authSession, setCsrfToken, type SessionOut } from "@hearthos/sdk-ts";
+// from the session is kept in memory by @hauskraft/sdk-ts and sent on every unsafe request.
+import { authLogout, authSession, setCsrfToken, type SessionOut } from "@hauskraft/sdk-ts";
 import { queryOptions, type QueryClient } from "@tanstack/react-query";
 
 export const sessionQuery = queryOptions({

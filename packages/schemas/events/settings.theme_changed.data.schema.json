@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://schemas.hearthos.org/events/settings.theme_changed/v1.json",
+  "$id": "https://hauskraft.dev/schema/events/settings.theme_changed/v1.json",
   "$comment": "SPDX-License-Identifier: MIT",
-  "title": "hearthos.settings.theme_changed data",
+  "title": "hauskraft.settings.theme_changed data",
   "type": "object",
   "required": ["from", "to"],
   "additionalProperties": false,

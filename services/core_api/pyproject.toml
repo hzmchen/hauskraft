@@ -1,12 +1,12 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 [project]
-name = "hearthos-core"
+name = "hauskraft-core"
 version = "0.1.0"
-description = "HearthOS core API (FastAPI)."
+description = "Hauskraft core API (FastAPI)."
 license = "AGPL-3.0-or-later"
 requires-python = ">=3.13"
 dependencies = [
-    "hearthos-sdk",
+    "hauskraft-sdk",
     "fastapi~=0.143.0",
     "uvicorn[standard]~=0.54.0",
     "pydantic>=2.12,<3",
@@ -25,14 +25,14 @@ dependencies = [
 ]
 
 [project.scripts]
-hearthos = "hearthos_core.cli:app"
+hauskraft = "hauskraft_core.cli:app"
 
 [project.entry-points.pytest11]
 # Database fixtures for integration tests in core and plugins (M0S-E04-04).
-hearthos = "hearthos_core.testing"
+hauskraft = "hauskraft_core.testing"
 
 [tool.uv.sources]
-hearthos-sdk = { workspace = true }
+hauskraft-sdk = { workspace = true }
 
 [build-system]
 requires = ["hatchling==1.32.4"]

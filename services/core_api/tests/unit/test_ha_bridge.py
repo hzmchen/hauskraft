@@ -6,7 +6,7 @@ from typing import Any
 
 import pytest
 
-from hearthos_core.integrations.ha import (
+from hauskraft_core.integrations.ha import (
     HomeAssistantBridge,
     HomeAssistantUnavailableError,
     NullBridge,

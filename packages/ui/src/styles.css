@@ -1,5 +1,5 @@
 /* SPDX-License-Identifier: MIT */
-/* @hearthos/ui styles (M0S-E08-01). Import once from the app: `@import "@hearthos/ui/styles.css";`
+/* @hauskraft/ui styles (M0S-E08-01). Import once from the app: `@import "@hauskraft/ui/styles.css";`
    Components use only these semantic utilities. Colours come from the active theme's stylesheet
    (/api/v1/theme/active.css); tokens/fallback.css holds the Default theme's values until it loads. */
 @import "tailwindcss";
@@ -41,15 +41,15 @@
 /* Theme variants (M0S-E13-02). The shell sets these attributes on <html> from the active theme
    (M0S-E13-05); without them components show the Default theme's variants. Variants change
    presentation only: roles, names, focus order and keyboard behaviour stay the same. */
-@custom-variant chrome-flat (&:where([data-hearth-chrome="flat"] *));
-@custom-variant chrome-elevated (&:where([data-hearth-chrome="elevated"] *));
-@custom-variant chrome-tinted (&:where([data-hearth-chrome="tinted"] *));
-@custom-variant header-banner (&:where([data-hearth-header="banner"] *));
-@custom-variant button-soft (&:where([data-hearth-button="soft"] *));
-@custom-variant button-outline (&:where([data-hearth-button="outline"] *));
-@custom-variant checkbox-round (&:where([data-hearth-checkbox="round"] *));
+@custom-variant chrome-flat (&:where([data-hauskraft-chrome="flat"] *));
+@custom-variant chrome-elevated (&:where([data-hauskraft-chrome="elevated"] *));
+@custom-variant chrome-tinted (&:where([data-hauskraft-chrome="tinted"] *));
+@custom-variant header-banner (&:where([data-hauskraft-header="banner"] *));
+@custom-variant button-soft (&:where([data-hauskraft-button="soft"] *));
+@custom-variant button-outline (&:where([data-hauskraft-button="outline"] *));
+@custom-variant checkbox-round (&:where([data-hauskraft-checkbox="round"] *));
 
-/* Density: spacing already scales with --hearth-density (tokens/theme.css); these name the common steps. */
+/* Density: spacing already scales with --hauskraft-density (tokens/theme.css); these name the common steps. */
 @utility p-density {
   padding: calc(var(--spacing) * 4);
 }
@@ -103,8 +103,8 @@
   }
   body {
     @apply bg-background font-sans text-foreground;
-    background-color: var(--hearth-app-bg-color, var(--background));
-    background-image: var(--hearth-app-bg-image, none);
+    background-color: var(--hauskraft-app-bg-color, var(--background));
+    background-image: var(--hauskraft-app-bg-image, none);
   }
   h1,
   h2,

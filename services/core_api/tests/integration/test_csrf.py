@@ -38,7 +38,7 @@ def test_wrong_token(client: TestClient, make_user: Callable[..., str]) -> None:
 
 
 def test_another_sessions_token(client: TestClient, make_user: Callable[..., str], api_settings) -> None:  # type: ignore[no-untyped-def]
-    from hearthos_core.app import create_app
+    from hauskraft_core.app import create_app
 
     with TestClient(create_app(api_settings), headers={"Origin": "http://testserver"}) as other:
         other_token = _login(other, make_user())

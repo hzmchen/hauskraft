@@ -3,12 +3,12 @@
 | | |
 |---|---|
 | Milestone | M0* (replaces M0 in spec v0.1) |
-| Spec | `docs/spec/hearthos-spec-v0.2.md` |
+| Spec | `docs/spec/hauskraft-spec-v0.2.md` |
 | Version | Backlog v0.2, 2026-10-12 |
 | Size | 13 epics, 61 stories (all S or M) |
 
 ## Goal
-Turn the M0 "Skeleton" into a usable MVP. A test user can log in, land on **Today** with a **Tasks** widget, and manage a single shared household to-do list. The list is the **first native plugin** (`org.hearthos.tasks`, `runtime.kind: inprocess`), loaded from `hearthos.plugin.json`, which proves the plugin skeleton end to end. The dashboard is **themeable**: an adult can switch the whole deployment between built-in or installed theme packages that change the look but never the functions.
+Turn the M0 "Skeleton" into a usable MVP. A test user can log in, land on **Today** with a **Tasks** widget, and manage a single shared household to-do list. The list is the **first native plugin** (`dev.hauskraft.tasks`, `runtime.kind: inprocess`), loaded from `hauskraft.plugin.json`, which proves the plugin skeleton end to end. The dashboard is **themeable**: an adult can switch the whole deployment between built-in or installed theme packages that change the look but never the functions.
 
 ## In scope
 - Monorepo and tooling, CI gates, Docker Compose demo.
@@ -17,7 +17,7 @@ Turn the M0 "Skeleton" into a usable MVP. A test user can log in, land on **Toda
 - Tasks plugin (backend and web): title, done, optional due date. Shared list: any adult may edit or delete any task.
 - Web shell with login, navigation, Today widget grid, All tasks page, Activity feed.
 - CloudEvents outbox and activity feed.
-- **Theming system:** theme contract (DTCG tokens + component styles + limited layout options), `@hearthos/ui` themed primitives, theme loader/validator/compiler, three built-in themes, deployment-wide theme setting, per-device light/dark/system mode, function-invariance tests, theme authoring kit.
+- **Theming system:** theme contract (DTCG tokens + component styles + limited layout options), `@hauskraft/ui` themed primitives, theme loader/validator/compiler, three built-in themes, deployment-wide theme setting, per-device light/dark/system mode, function-invariance tests, theme authoring kit.
 - en/de i18n, ADRs, AGENTS.md, community files.
 
 ## Explicitly out of scope
@@ -34,12 +34,12 @@ Turn the M0 "Skeleton" into a usable MVP. A test user can log in, land on **Toda
 Automated as Playwright `tests/e2e/demo.spec.ts` (already written, red until implemented). The API-level checks behind each step live in `tests/acceptance/api/`; see `docs/testing/README.md`.
 
 1. Given a clean clone with Docker installed, when I run `docker compose up --wait`, then http://localhost:8080 serves the login page within 120 s and `GET /api/v1/readyz` returns 200.
-2. When I log in as `demo` / `hearthos-demo` (a second adult, `alex`, uses the same demo password), then I land on `/today` and see a **Tasks** widget with 3 seeded tasks (1 done, 1 with a due date), in the **Default** theme.
+2. When I log in as `demo` / `hauskraft-demo` (a second adult, `alex`, uses the same demo password), then I land on `/today` and see a **Tasks** widget with 3 seeded tasks (1 done, 1 with a due date), in the **Default** theme.
 3. When I type "Buy milk" in the widget and press Enter, the task appears at the top without a page reload.
 4. When I click the task title in the widget, change it to "Buy oat milk" and press Enter, then set its due date to tomorrow on **All tasks**, the widget shows the new title and a due badge.
 5. When I tick its checkbox, it shows as done. When I untick it, it shows as open again.
 6. When I open **All tasks** (`/p/tasks`), I see every task with filters Open / Done / All and sort by Created / Due. Deleting a task (with a confirmation) removes it.
-7. When I open **Activity** (`/activity`), I see `hearthos.task.created/updated/completed/deleted` entries with my display name.
+7. When I open **Activity** (`/activity`), I see `hauskraft.task.created/updated/completed/deleted` entries with my display name.
 8. When I open **Settings → Appearance** and switch the household theme to **Hackspace**, then colours, fonts, card style, icons and navigation style change, and every button, link and label I used in steps 3–7 is still there, in the same order, with the same names. A second browser session, logged in as the second seeded adult `alex`, shows Hackspace within 60 s without a reload.
 9. When I set **This device** to Dark, only this browser turns dark. The second browser (left on System, light OS setting) stays light. After a reload, each browser keeps its own mode.
 10. When I switch the language to Deutsch, UI strings change and the setting persists after a reload. Theme names are not translated.
@@ -113,7 +113,7 @@ Agent lanes: **A** backend (E03, E04, E05, E07, E10), **B** web shell and tasks 
 
 Lane A picks up E13-04 (theme API) and E10-03 (activity feed) because they are backend-heavy. Lane B is light in wave 2; it can take E13-02 polish or E10-03's web route early against a mock API.
 
-- **Synchronisation points:** `packages/schemas/openapi/core-api.openapi.json` (backend regenerates, frontend consumes) and `packages/schemas/theme/` (token contract that both the compiler and `@hearthos/ui` depend on). Merge contract PRs first.
+- **Synchronisation points:** `packages/schemas/openapi/core-api.openapi.json` (backend regenerates, frontend consumes) and `packages/schemas/theme/` (token contract that both the compiler and `@hauskraft/ui` depend on). Merge contract PRs first.
 
 ## Conventions
 - **Story ID:** `M0S-E<epic>-<nn>`, e.g. `M0S-E07-02`. Branch: `m0s/e07-02-tasks-crud`. PR title: `[M0S-E07-02] Tasks CRUD endpoints`.
@@ -123,7 +123,7 @@ Lane A picks up E13-04 (theme API) and E10-03 (activity feed) because they are b
 ## How we work: red, green, refactor
 Every story is built test-first.
 
-1. **Red.** Run the story's spec-owned acceptance tests: `python -m pytest tests --story M0S-Exx-yy` (add `--live` with the stack running) and, for UI stories, `HEARTHOS_TDD_RAW=1 pnpm --filter @hearthos/acceptance-e2e exec playwright test --grep @M0S-Exx-yy`. They must fail for the right reason. Then write the unit and integration tests for the code you are about to write, and watch them fail too. Commit: `test(M0S-Exx-yy): red …`.
+1. **Red.** Run the story's spec-owned acceptance tests: `python -m pytest tests --story M0S-Exx-yy` (add `--live` with the stack running) and, for UI stories, `HAUSKRAFT_TDD_RAW=1 pnpm --filter @hauskraft/acceptance-e2e exec playwright test --grep @M0S-Exx-yy`. They must fail for the right reason. Then write the unit and integration tests for the code you are about to write, and watch them fail too. Commit: `test(M0S-Exx-yy): red …`.
 2. **Green.** Write the least code that makes all of them pass. Commit: `feat(M0S-Exx-yy): …`.
 3. **Refactor.** Clean up with every test still green. Commit: `refactor(M0S-Exx-yy): …`.
 4. **Flip.** Set the story to `"green"` in `tests/story-status.json` and run `python scripts/backlog_tools.py coverage --write`. From now on its tests are hard gates in CI.
@@ -141,16 +141,16 @@ Acceptance tests and fixtures under `tests/` belong to the spec, not to the stor
 - Regenerated artefacts are committed (`just gen` leaves a clean `git diff`).
 - No new lint suppressions without a comment. mypy strict and `tsc --noEmit` are clean.
 - User-facing strings exist in `en` and `de`.
-- **UI stories:** only `@hearthos/ui` primitives and semantic tokens are used (no raw styles); the view renders correctly and passes the invariance check in all three built-in themes, light and dark.
+- **UI stories:** only `@hauskraft/ui` primitives and semantic tokens are used (no raw styles); the view renders correctly and passes the invariance check in all three built-in themes, light and dark.
 - Docs are updated (README/ADR/AGENTS.md if conventions changed). The CHANGELOG entry is under `Unreleased`.
 - No dependency is added without an exact or compatible pin in the lockfile (`uv.lock` / `pnpm-lock.yaml`).
 
 ## Handing a story to an AI coding agent (prompt template)
 
 ```text
-You are implementing story {ID} "{title}" in the HearthOS monorepo.
+You are implementing story {ID} "{title}" in the Hauskraft monorepo.
 Read first: AGENTS.md, docs/backlog/m0-star/README.md, docs/backlog/m0-star/{epic file} (story {ID}),
-spec sections: {docs/spec/hearthos-spec-v0.2.md §…}, ADRs: {list},
+spec sections: {docs/spec/hauskraft-spec-v0.2.md §…}, ADRs: {list},
 contracts: {packages/schemas/... | openapi paths | theme tokens}.
 Files you may touch: {paths}. Files you must NOT touch: anything outside these, and lockfiles unless adding a listed dependency.
 Acceptance criteria: {paste Given/When/Then}.
@@ -158,9 +158,9 @@ Work test-first (README "How we work"): run `python -m pytest tests --story {ID}
 write the unit/integration tests {unit/contract list} and confirm red; implement until green; refactor; flip the story to green
 in tests/story-status.json; run `just check` and `python scripts/backlog_tools.py check` before finishing.
 Never edit files under tests/acceptance, tests/e2e or tests/fixtures to make them pass.
-Constraints: no new dependencies beyond {list}; plugins import only hearthos_sdk / @hearthos/sdk-ts / @hearthos/ui;
+Constraints: no new dependencies beyond {list}; plugins import only hauskraft_sdk / @hauskraft/sdk-ts / @hauskraft/ui;
 all writes go through a service that calls authorize() and emits an outbox event in the same transaction;
-UI uses only @hearthos/ui primitives and semantic tokens (no colour literals, palette classes or arbitrary values).
+UI uses only @hauskraft/ui primitives and semantic tokens (no colour literals, palette classes or arbitrary values).
 Deliver: one PR, conventional commit messages with `Signed-off-by` (git commit -s), PR template filled, regenerated artefacts committed.
 If an AC is ambiguous, stop and write the question in the PR description instead of guessing.
 ```
@@ -198,7 +198,7 @@ Re-check with `uv lock --upgrade` / `pnpm outdated` when implementation starts. 
 Only what is created now; `(placeholder)` = README only.
 
 ```text
-hearthos/
+hauskraft/
   AGENTS.md  README.md  LICENSE (AGPL-3.0-or-later)  LICENSING.md  CONTRIBUTING.md  SECURITY.md
   CODE_OF_CONDUCT.md  CHANGELOG.md  justfile  compose.yaml (include: deploy/compose)
   pyproject.toml (uv workspace)  uv.lock  .python-version  package.json  pnpm-workspace.yaml
@@ -212,26 +212,26 @@ hearthos/
          plugins/registry.gen.ts,i18n/,lib/}
     vite.config.ts  vitest.config.ts
   services/core_api/                         # AGPL
-    src/hearthos_core/{app.py,settings.py,logging.py,errors.py,cli.py,db/,auth/,users/,plugins/,
+    src/hauskraft_core/{app.py,settings.py,logging.py,errors.py,cli.py,db/,auth/,users/,plugins/,
                        themes/,settings_store/,events/,activity/,policy/,health/,dashboard/,
                        integrations/ha.py,seed/}
     migrations/ (alembic env + core versions)  tests/{unit,integration,contract}  Dockerfile
   services/{gateway,agents,workflows,plugin_host}/README.md   (placeholder)
-  packages/sdk-py/  src/hearthos_sdk/ (MIT)
+  packages/sdk-py/  src/hauskraft_sdk/ (MIT)
   packages/sdk-ts/  src/ (MIT; generated client in src/client)
-  packages/ui/      src/{components/,icons/,tokens/,widget/} (MIT; @hearthos/ui)
-  packages/schemas/ (MIT) manifest/hearthos.plugin.schema.json  theme/{hearthos.theme.schema.json,
+  packages/ui/      src/{components/,icons/,tokens/,widget/} (MIT; @hauskraft/ui)
+  packages/schemas/ (MIT) manifest/hauskraft.plugin.schema.json  theme/{hauskraft.theme.schema.json,
                     tokens-v1.json,icon-names-v1.json}  events/cloudevent.schema.json
                     events/{task.*,settings.theme_changed}.data.schema.json  openapi/core-api.openapi.json
-  plugins/official/tasks/  hearthos.plugin.json  LICENSE (MIT)
-    backend/src/hearthos_tasks/{plugin.py,models.py,schemas.py,service.py,router.py,events.py}
+  plugins/official/tasks/  hauskraft.plugin.json  LICENSE (MIT)
+    backend/src/hauskraft_tasks/{plugin.py,models.py,schemas.py,service.py,router.py,events.py}
     backend/migrations/versions/  backend/tests/
     web/src/{widgets/TasksWidget.tsx,pages/TasksPage.tsx,components/,locales/{en,de}/tasks.json}
-  themes/builtin/{default,paper,hackspace}/   hearthos.plugin.json theme.json tokens.{light,dark}.json assets/ LICENSES/
+  themes/builtin/{default,paper,hackspace}/   hauskraft.plugin.json theme.json tokens.{light,dark}.json assets/ LICENSES/
   themes/template/                           # authoring starting point
-  integrations/ha-hearthos/README.md          (placeholder)
+  integrations/ha-hauskraft/README.md          (placeholder)
   deploy/compose/{compose.yaml,compose.test.yaml,Caddyfile,.env.example}   deploy/ha-addon/README.md (placeholder)
-  docs/spec/hearthos-spec-v0.2.md  docs/adr/0001-…md … 0013-…md  docs/backlog/m0-star/*.md
+  docs/spec/hauskraft-spec-v0.2.md  docs/adr/0001-…md … 0013-…md  docs/backlog/m0-star/*.md
   docs/how-to-test.md  docs/themes.md
   fixtures/household/demo.json
   tests/                                     # spec-owned acceptance suite (MIT), committed before the code
@@ -239,7 +239,7 @@ hearthos/
     acceptance/{repo,schemas,themes,web,api}/  fixtures/  e2e/{demo,tasks,theme-invariance}.spec.ts
   docs/testing/{README.md,ui-contract.md,traceability.md}
   scripts/                                   # backlog_tools.py, export_openapi.py, gen-plugin-registry.mjs, gen-theme-types.*, check-*.{py,mjs}, subset-fonts.py
-  tools/eslint-plugin-hearthos/              # no-raw-styles rule (MIT)
+  tools/eslint-plugin-hauskraft/              # no-raw-styles rule (MIT)
   data/themes/README.txt                     # compose volume for installed themes (gitignored except README)
 ```
 
@@ -248,12 +248,12 @@ hearthos/
 | ID | Decision |
 |---|---|
 | D1 | CloudEvents extension attributes are `dataclass` and `actorid`. JSON bodies and DB columns keep `data_class`. |
-| D2 | Licences: core AGPL-3.0-or-later. SDKs, schemas, `@hearthos/ui`, official plugins and built-in themes MIT. Bundled fonts OFL-1.1. MPL-2.0 dropped. |
+| D2 | Licences: core AGPL-3.0-or-later. SDKs, schemas, `@hauskraft/ui`, official plugins and built-in themes MIT. Bundled fonts OFL-1.1. MPL-2.0 dropped. |
 | D3 | Shared list: any adult may edit or delete any task. |
 | D4 | Theming: tokens + component styles/icons + limited layout (navigation style, density, content width). No custom CSS. Themes come as packages; no editor; three built-in themes. |
 | D5 | One theme per deployment, for everyone on every device. Colour mode (system/light/dark) is per device. |
 | D6 | Themes never move, hide, rename or reorder functions (enforced by ARIA invariance tests and contrast rules). |
-| D7 | HearthOS stays the working name; rename before public release (clash with the commercial Hearth family display). |
+| D7 | HearthOS stays the working name; rename before public release (clash with the commercial Hearth family display). Superseded: renamed to Hauskraft (ADR 0015). |
 | D8 | Home Assistant is treated as third-party in M0*: `NullBridge` only. |
 | D9 | Built-in themes are Default, Paper and Hackspace (underground hackerspace style, inspired by the Berlin scene, no third-party names or logos). |
 | D10 | Red/green TDD. A spec-owned acceptance suite (`tests/`) exists before the code; `tests/story-status.json` flips each story from red to green as its last Definition-of-Done step. |
@@ -270,6 +270,6 @@ hearthos/
 
 ## What M1 picks up next
 - MCP tool-gateway behind `authorize()`, with Cedar policies and hash-chained audit fed from `outbox_events`.
-- ha-bridge and `integrations/ha-hearthos` replace `NullBridge`; OIDC `IdentityProvider`; RBAC for owner/adult/teen/kid (theme switching becomes owner-only).
+- ha-bridge and `integrations/ha-hauskraft` replace `NullBridge`; OIDC `IdentityProvider`; RBAC for owner/adult/teen/kid (theme switching becomes owner-only).
 - First external connector plugin (e.g. Vikunja or Donetick), following "tool of record wins" against the native list, starting the plugin_host subprocess runtime.
 - Outbox consumers (DBOS workflows) and `subscribes[]` delivery; live theme push.

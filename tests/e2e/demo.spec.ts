@@ -48,7 +48,7 @@ test("1 · stack starts and serves the login page", story(DEMO, "M0S-E11-01", "M
 test("2 · demo logs in and sees seeded tasks in the Default theme",
   story(DEMO, "M0S-E11-02", "M0S-E08-03", "M0S-E08-06", "M0S-E07-04", "M0S-E09-01"), async () => {
     await login(page, "demo");
-    expect(await htmlAttr(page, "data-hearth-theme")).toBe(THEMES.default);
+    expect(await htmlAttr(page, "data-hauskraft-theme")).toBe(THEMES.default);
     const widget = ui.tasksWidget(page);
     await expect(widget).toBeVisible();
     await expect(ui.checkbox(widget, "Water the plants")).toBeVisible();
@@ -138,7 +138,7 @@ test("8 · switching the household theme changes the look, not the functions",
     await household.getByRole("radio", { name: "Hackspace" }).check();
     await page.getByRole("dialog", { name: "Change the look for everyone?" })
       .getByRole("button", { name: "Change theme" }).click();
-    await expect.poll(() => htmlAttr(page, "data-hearth-theme")).toBe(THEMES.hackspace);
+    await expect.poll(() => htmlAttr(page, "data-hauskraft-theme")).toBe(THEMES.hackspace);
     expect(await ui.nav(page).getAttribute("data-nav-style")).toBe("topbar");
 
     await goNav(page, "Today");
@@ -146,7 +146,7 @@ test("8 · switching the household theme changes the look, not the functions",
     await expect(ui.addTask(page)).toBeVisible();
     await expect(ui.tasksWidget(page).getByRole("link", { name: "All tasks" })).toBeVisible();
 
-    await expect.poll(() => htmlAttr(alexPage, "data-hearth-theme"), { timeout: 65_000 }).toBe(THEMES.hackspace);
+    await expect.poll(() => htmlAttr(alexPage, "data-hauskraft-theme"), { timeout: 65_000 }).toBe(THEMES.hackspace);
     expect(await documentStillMarked(alexPage)).toBe(true);
   });
 
@@ -174,15 +174,15 @@ test("10 · German UI, theme names unchanged", story(DEMO, "M0S-E08-04", "M0S-E0
 });
 
 test("11 · everything survives a restart", story(DEMO, "M0S-E11-01"), async () => {
-  const restart = process.env.HEARTHOS_E2E_RESTART_CMD;
-  test.skip(!restart, "set HEARTHOS_E2E_RESTART_CMD (CI: 'docker compose ... down && ... up --wait')");
+  const restart = process.env.HAUSKRAFT_E2E_RESTART_CMD;
+  test.skip(!restart, "set HAUSKRAFT_E2E_RESTART_CMD (CI: 'docker compose ... down && ... up --wait')");
   const input = ui.addTask(page, "Aufgabe hinzufügen");
   await input.fill(persistTitle);
   await input.press("Enter");
   execSync(restart!, { stdio: "inherit", timeout: 300_000 });
   await page.goto("/today");
   if (/\/login/.test(page.url())) await login(page, "demo");
-  expect(await htmlAttr(page, "data-hearth-theme")).toBe(THEMES.hackspace);
+  await expect.poll(() => htmlAttr(page, "data-hauskraft-theme")).toBe(THEMES.hackspace);
   await expect(ui.nav(page).getByRole("link", { name: "Heute" })).toBeVisible();
   await expect(page.getByRole("checkbox", { name: new RegExp(persistTitle) })).toBeVisible();
   const api = await Api.login("demo");

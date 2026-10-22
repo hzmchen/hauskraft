@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import type { PluginWebModule } from "@hearthos/sdk-ts";
+import type { PluginWebModule } from "@hauskraft/sdk-ts";
 import { act, render, screen } from "@testing-library/react";
 import { I18nextProvider } from "react-i18next";
 import { afterEach, describe, expect, it, vi } from "vitest";
@@ -22,7 +22,7 @@ async function show(loaders: PluginLoaders, enabled: string[], widgetId = "tasks
         <PluginWidget
           loaders={loaders}
           enabled={new Set(enabled)}
-          pluginId="org.hearthos.tasks"
+          pluginId="dev.hauskraft.tasks"
           widgetId={widgetId}
           instanceId="w1"
           size={{ w: 4, h: 6 }}
@@ -37,18 +37,18 @@ afterEach(() => vi.restoreAllMocks());
 
 describe("PluginWidget", () => {
   it("renders an enabled plugin's widget and registers its strings", async () => {
-    const i18n = await show({ "org.hearthos.tasks": async () => ({ default: ok }) }, ["org.hearthos.tasks"]);
+    const i18n = await show({ "dev.hauskraft.tasks": async () => ({ default: ok }) }, ["dev.hauskraft.tasks"]);
     expect(await screen.findByText("widget w1")).toBeDefined();
     expect(i18n.t("tasks:title")).toBe("Tasks");
   });
 
   it.each([
-    ["the plugin is not in the registry", {}, ["org.hearthos.tasks"], "tasks.list"],
-    ["the plugin is disabled", { "org.hearthos.tasks": async () => ({ default: ok }) }, [], "tasks.list"],
+    ["the plugin is not in the registry", {}, ["dev.hauskraft.tasks"], "tasks.list"],
+    ["the plugin is disabled", { "dev.hauskraft.tasks": async () => ({ default: ok }) }, [], "tasks.list"],
     [
       "the widget id is unknown",
-      { "org.hearthos.tasks": async () => ({ default: ok }) },
-      ["org.hearthos.tasks"],
+      { "dev.hauskraft.tasks": async () => ({ default: ok }) },
+      ["dev.hauskraft.tasks"],
       "nope",
     ],
   ] as const)("shows 'Widget unavailable' when %s", async (_, loaders, enabled, widgetId) => {
@@ -66,7 +66,7 @@ describe("PluginWidget", () => {
         },
       },
     };
-    await show({ "org.hearthos.tasks": async () => ({ default: broken }) }, ["org.hearthos.tasks"]);
+    await show({ "dev.hauskraft.tasks": async () => ({ default: broken }) }, ["dev.hauskraft.tasks"]);
     expect(await screen.findByRole("region", { name: "Widget unavailable" })).toBeDefined();
   });
 });

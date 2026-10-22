@@ -1,12 +1,12 @@
 {
-  "name": "@hearthos/acceptance-e2e",
+  "name": "@hauskraft/acceptance-e2e",
   "private": true,
   "license": "MIT",
   "type": "module",
   "description": "Spec-owned end-to-end acceptance tests (demo script, tasks, theme invariance). See docs/testing/README.md.",
   "scripts": {
     "test": "playwright test",
-    "test:raw": "HEARTHOS_TDD_RAW=1 playwright test",
+    "test:raw": "HAUSKRAFT_TDD_RAW=1 playwright test",
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {

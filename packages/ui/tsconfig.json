@@ -1,7 +1,7 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "paths": { "@hearthos/ui/*": ["./src/*"] },
+    "paths": { "@hauskraft/ui/*": ["./src/*"] },
     "types": ["vitest/globals", "vite/client"]
   },
   "include": ["src", "vitest.config.ts"]

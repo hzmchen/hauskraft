@@ -1,10 +1,10 @@
-# AGENTS.md — rules for AI coding agents (and humans) in HearthOS
+# AGENTS.md — rules for AI coding agents (and humans) in Hauskraft
 
 ## Project in one paragraph
-HearthOS is a plugin-first, themeable household cockpit centred on Home Assistant. Core (AGPL-3.0-or-later):
+Hauskraft is a plugin-first, themeable household cockpit centred on Home Assistant. Core (AGPL-3.0-or-later):
 `services/core_api` (FastAPI) and `apps/web` (React). Everything plugin-facing is MIT: `packages/sdk-py`,
 `packages/sdk-ts`, `packages/ui`, `packages/schemas`, `plugins/official/*`, `themes/*`.
-Spec: [docs/spec/hearthos-spec-v0.2.md](docs/spec/hearthos-spec-v0.2.md).
+Spec: [docs/spec/hauskraft-spec-v0.2.md](docs/spec/hauskraft-spec-v0.2.md).
 Current milestone: M0* — [docs/backlog/m0-star/README.md](docs/backlog/m0-star/README.md).
 Testing: [docs/testing/README.md](docs/testing/README.md). Decisions: [docs/adr/](docs/adr/README.md).
 Nested `AGENTS.md` files in `apps/web`, `packages/ui`, `plugins/official/tasks` and `themes` add local rules.
@@ -14,7 +14,7 @@ Do not implement anything listed as out of scope.
 1. Pick one story. Read its epic file, the spec sections it cites and the ADRs.
 2. **Red.** Run its spec-owned acceptance tests in raw mode and watch them fail for the right reason:
    `python -m pytest tests --story M0S-Exx-yy` (add `--live` with the stack running) and, for UI stories,
-   `HEARTHOS_TDD_RAW=1 pnpm --filter @hearthos/acceptance-e2e exec playwright test --grep @M0S-Exx-yy`.
+   `HAUSKRAFT_TDD_RAW=1 pnpm --filter @hauskraft/acceptance-e2e exec playwright test --grep @M0S-Exx-yy`.
    Then write the unit/integration tests for your code and watch them fail. Commit `test(M0S-Exx-yy): red …`.
 3. **Green.** Write the least code that makes every one of those tests pass. Commit `feat(M0S-Exx-yy): …`.
 4. **Refactor** with everything green. Commit `refactor(M0S-Exx-yy): …`.
@@ -36,8 +36,8 @@ Do not implement anything listed as out of scope.
 1. Every write to a domain entity or deployment setting goes through a service function that calls `authorize()`
    first and emits exactly one CloudEvent in the same transaction. No direct ORM writes from routers.
    (Account and session bookkeeping calls `authorize()` but emits no event in M0*.)
-2. Plugins import only `hearthos_sdk` (Python) and `@hearthos/sdk-ts` / `@hearthos/ui` (web).
-   Never `hearthos_core` or `apps/web`.
+2. Plugins import only `hauskraft_sdk` (Python) and `@hauskraft/sdk-ts` / `@hauskraft/ui` (web).
+   Never `hauskraft_core` or `apps/web`.
 3. API contract = OpenAPI 3.1 generated from FastAPI. Change Pydantic models → run `just gen` → commit both.
 4. New tables: Alembic migration in the owning branch (core or plugin). Never `create_all()` outside tests.
 5. Every entity and event carries `data_class` (the CloudEvents attribute is spelled `dataclass`; actor is `actorid`).
@@ -49,7 +49,7 @@ Do not implement anything listed as out of scope.
 ## Theming rules (non-negotiable)
 10. Function is fixed, presentation is swappable. A theme may never add, remove, reorder, rename, relabel or hide
     a function. If your change makes any view's accessibility tree differ between themes, it is wrong.
-11. UI code uses only `@hearthos/ui` primitives and semantic utility classes. No colour literals, no Tailwind palette
+11. UI code uses only `@hauskraft/ui` primitives and semantic utility classes. No colour literals, no Tailwind palette
     classes (`bg-red-500`), no arbitrary values (`p-[13px]`), no inline colour/font/spacing styles.
 12. Icons only via `<Icon name="…">` with semantic names (`packages/schemas/theme/icon-names-v1.json`).
 13. Navigation items come only from the `NavModel`. Renderers may differ in look, never in items, order or names.
@@ -61,7 +61,7 @@ Do not implement anything listed as out of scope.
 
 ## Style
 - Python: ruff + mypy --strict, async SQLAlchemy 2.x `Mapped[]`, Pydantic v2 `model_config = ConfigDict(extra="forbid")`.
-- TS: strict, function components, TanStack Query via generated options (no ad-hoc fetch), `@hearthos/ui` only.
+- TS: strict, function components, TanStack Query via generated options (no ad-hoc fetch), `@hauskraft/ui` only.
 - Tests next to scope: unit (no I/O), integration (DB), contract (schemas/OpenAPI), e2e and invariance (Playwright).
 
 ## PR rules

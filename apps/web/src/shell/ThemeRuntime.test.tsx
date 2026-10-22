@@ -20,7 +20,7 @@ const theme = (id: string, hash: string, extra: Record<string, unknown> = {}) =>
   icons: { sprite_url: null, names: [] },
   ...extra,
 });
-const HACKSPACE = theme("org.hearthos.theme.hackspace", "b".repeat(64), {
+const HACKSPACE = theme("dev.hauskraft.theme.hackspace", "b".repeat(64), {
   components: {
     widget: { chrome: "tinted", header: "banner" },
     button: { primary: "solid" },
@@ -34,11 +34,11 @@ function Probe() {
   return <p>nav {layout.navigation.wide}</p>;
 }
 
-const links = () => [...document.head.querySelectorAll<HTMLLinkElement>("link[data-hearth-theme-css]")];
+const links = () => [...document.head.querySelectorAll<HTMLLinkElement>("link[data-hauskraft-theme-css]")];
 const html = document.documentElement;
 
 beforeEach(() => {
-  document.head.innerHTML = '<link rel="stylesheet" href="/api/v1/theme/active.css" data-hearth-theme-css />';
+  document.head.innerHTML = '<link rel="stylesheet" href="/api/v1/theme/active.css" data-hauskraft-theme-css />';
 });
 afterEach(() => vi.unstubAllGlobals());
 
@@ -53,17 +53,17 @@ describe("ThemeRuntime", () => {
       </QueryClientProvider>,
     );
     await screen.findByText("nav topbar");
-    expect(html.dataset.hearthTheme).toBe("org.hearthos.theme.hackspace");
-    expect(html.dataset.hearthChrome).toBe("tinted");
-    expect(html.dataset.hearthHeader).toBe("banner");
-    expect(html.dataset.hearthButton).toBe("solid");
-    expect(html.dataset.hearthCheckbox).toBe("square");
-    expect(html.dataset.hearthDensity).toBe("compact");
-    expect(html.dataset.hearthContent).toBe("contained");
+    expect(html.dataset.hauskraftTheme).toBe("dev.hauskraft.theme.hackspace");
+    expect(html.dataset.hauskraftChrome).toBe("tinted");
+    expect(html.dataset.hauskraftHeader).toBe("banner");
+    expect(html.dataset.hauskraftButton).toBe("solid");
+    expect(html.dataset.hauskraftCheckbox).toBe("square");
+    expect(html.dataset.hauskraftDensity).toBe("compact");
+    expect(html.dataset.hauskraftContent).toBe("contained");
   });
 
   it("swaps the stylesheet when the hash changes, only after the new one has loaded", async () => {
-    let current: ReturnType<typeof theme> = theme("org.hearthos.theme.default", "a".repeat(64));
+    let current: ReturnType<typeof theme> = theme("dev.hauskraft.theme.default", "a".repeat(64));
     fakeApi({ "GET /api/v1/theme": () => json(current) });
     const queryClient = new QueryClient();
     render(
@@ -73,7 +73,7 @@ describe("ThemeRuntime", () => {
         </ThemeRuntime>
       </QueryClientProvider>,
     );
-    await vi.waitFor(() => expect(html.dataset.hearthTheme).toBe("org.hearthos.theme.default"));
+    await vi.waitFor(() => expect(html.dataset.hauskraftTheme).toBe("dev.hauskraft.theme.default"));
     expect(links()).toHaveLength(1);
 
     current = HACKSPACE;
@@ -86,7 +86,7 @@ describe("ThemeRuntime", () => {
       next!.dispatchEvent(new Event("load"));
     });
     expect(links()).toEqual([next]);
-    expect(html.dataset.hearthTheme).toBe("org.hearthos.theme.hackspace");
+    expect(html.dataset.hauskraftTheme).toBe("dev.hauskraft.theme.hackspace");
     expect((screen.getByLabelText("draft") as HTMLInputElement).value).toBe("keep me");
   });
 

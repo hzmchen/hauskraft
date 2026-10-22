@@ -1,5 +1,5 @@
 {
-  "name": "@hearthos/plugin-tasks",
+  "name": "@hauskraft/plugin-tasks",
   "version": "0.1.0",
   "private": true,
   "license": "MIT",
@@ -12,8 +12,8 @@
     "test": "vitest"
   },
   "dependencies": {
-    "@hearthos/sdk-ts": "workspace:*",
-    "@hearthos/ui": "workspace:*"
+    "@hauskraft/sdk-ts": "workspace:*",
+    "@hauskraft/ui": "workspace:*"
   },
   "peerDependencies": {
     "@tanstack/react-query": "^5.104.0",
