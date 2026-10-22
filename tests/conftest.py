@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: MIT
 """Story-aware red/green plumbing for the Hauskraft acceptance suite.
 
-Every test carries ``@pytest.mark.story("M0S-Exx-yy", ...)`` (or ``@pytest.mark.meta``).
+Every test carries ``@pytest.mark.story("M<N>S-Exx-yy", ...)`` (or ``@pytest.mark.meta``), e.g. M1S-E06-03.
 tests/story-status.json says whether each story is red or green:
 
 * green story  -> its tests are hard gates (must pass).
@@ -12,7 +12,8 @@ Options:
   --story ID     run only tests for these stories, in raw mode (real failures shown).
                  This is the TDD loop for an agent working on one story.
   --raw          disable the red -> xfail mapping for all tests.
-  --live         also run tests that need a running stack (HAUSKRAFT_BASE_URL).
+  --live         also run tests that need a running stack (HAUSKRAFT_BASE_URL). Tests marked ``fresh`` also
+                 need the unseeded stack (HAUSKRAFT_FRESH_BASE_URL); without that variable they are skipped.
   --strict-status  fail the run if a red story has every one of its tests passing,
                  i.e. the story is green and tests/story-status.json must be flipped.
 """
@@ -48,6 +49,7 @@ def pytest_addoption(parser: pytest.Parser) -> None:
 def pytest_configure(config: pytest.Config) -> None:
     config.addinivalue_line("markers", "story(*ids): links a test to backlog story IDs")
     config.addinivalue_line("markers", "live: needs a running Hauskraft stack (use --live)")
+    config.addinivalue_line("markers", "fresh: needs the unseeded stack at HAUSKRAFT_FRESH_BASE_URL (M1S-E01-01)")
     config.addinivalue_line("markers", "meta: validates the docs and the suite itself")
 
 
@@ -85,6 +87,9 @@ def pytest_collection_modifyitems(config: pytest.Config, items: list[pytest.Item
         if item.get_closest_marker("live") and not live:
             item.add_marker(pytest.mark.skip(
                 reason="live test: start the stack, then run with --live (see tests/README.md)"))
+        elif item.get_closest_marker("fresh") and not os.environ.get("HAUSKRAFT_FRESH_BASE_URL"):
+            item.add_marker(pytest.mark.skip(
+                reason="fresh-stack test: start it with `just fresh-up` and set HAUSKRAFT_FRESH_BASE_URL"))
         red = [i for i in ids if registry[i]["status"] == "red"]
         if red and not raw:
             item.add_marker(pytest.mark.xfail(

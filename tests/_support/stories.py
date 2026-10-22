@@ -13,7 +13,7 @@ import re
 
 from . import STATUS_FILE
 
-STORY_ID = re.compile(r"^M0S-E\d{2}-\d{2}$")
+STORY_ID = re.compile(r"^M\d+S-E\d{2}-\d{2}$")  # M0S-E07-02, M1S-E06-03, ...
 STATUSES = {"red", "green"}
 ACCEPTANCE_KINDS = {"suite", "in-story"}
 

@@ -6,6 +6,6 @@ from pathlib import Path
 REPO = Path(__file__).resolve().parents[2]
 TESTS = REPO / "tests"
 FIXTURES = TESTS / "fixtures"
-BACKLOG = REPO / "docs" / "backlog" / "m0-star"
-SPEC = REPO / "docs" / "spec" / "hauskraft-spec-v0.2.md"
+BACKLOG_ROOT = REPO / "docs" / "backlog"  # one m<N>-star folder per milestone
+SPEC = REPO / "docs" / "spec" / "hauskraft-spec-v0.3.md"
 STATUS_FILE = TESTS / "story-status.json"

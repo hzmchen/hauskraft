@@ -16,7 +16,7 @@ const registry: Record<string, Status> = JSON.parse(
 ).stories;
 const RAW = process.env.HAUSKRAFT_TDD_RAW === "1";
 
-/** `story("M0S-E09-01", "M0S-E11-03")` -> tag list for `test(title, { tag }, fn)`. */
+/** `story("M1S-E06-05", "M1S-E10-02")` -> tag list for `test(title, { tag }, fn)`. */
 export function story(...ids: string[]): { tag: string[] } {
   for (const id of ids) {
     if (!registry[id]) throw new Error(`Unknown story id ${id} (not in tests/story-status.json)`);
@@ -27,7 +27,7 @@ export function story(...ids: string[]): { tag: string[] } {
 export const test = base.extend<{ storyGate: void }>({
   storyGate: [
     async ({}, use, testInfo) => {
-      const ids = testInfo.tags.map((t) => t.replace(/^@/, "")).filter((t) => t.startsWith("M0S-"));
+      const ids = testInfo.tags.map((t) => t.replace(/^@/, "")).filter((t) => /^M\d+S-/.test(t));
       if (ids.length === 0) throw new Error(`${testInfo.title}: every e2e test needs story(...) tags`);
       const red = ids.filter((id) => registry[id]?.status === "red");
       if (red.length && !RAW) testInfo.fail(true, `RED: ${red.join(", ")} not implemented yet`);
