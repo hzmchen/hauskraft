@@ -54,6 +54,28 @@ describe("login", () => {
     expect((await screen.findByRole("alert")).textContent).toBe("Wrong username or password");
   });
 
+  it("explains a deactivated account, but keeps one message for wrong credentials (M1S-E07-04)", async () => {
+    let deactivated = true;
+    fakeApi({
+      "GET /api/v1/auth/session": () => problem(401, "unauthenticated"),
+      "POST /api/v1/auth/login": () =>
+        deactivated ? problem(403, "account_deactivated") : problem(401, "invalid_credentials"),
+    });
+    start("/login");
+    const username = await screen.findByRole("textbox", { name: "Username" });
+    expect(username.getAttribute("autocomplete")).toBe("username");
+    expect(screen.getByLabelText("Password").getAttribute("autocomplete")).toBe("current-password");
+    await userEvent.type(username, "gone");
+    await userEvent.type(screen.getByLabelText("Password"), "correct-horse-battery");
+    await userEvent.click(screen.getByRole("button", { name: "Sign in" }));
+    expect((await screen.findByRole("alert")).textContent).toBe(
+      "This account is deactivated. Ask an owner of your household.",
+    );
+    deactivated = false;
+    await userEvent.click(screen.getByRole("button", { name: "Sign in" }));
+    await waitFor(() => expect(screen.getByRole("alert").textContent).toBe("Wrong username or password"));
+  });
+
   it("signs in and goes to the requested page", async () => {
     let signedIn = false;
     const calls = fakeApi({
