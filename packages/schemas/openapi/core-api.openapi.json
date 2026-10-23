@@ -1042,6 +1042,10 @@
             "title": "Password",
             "type": "string"
           },
+          "role": {
+            "$ref": "#/components/schemas/UserRole",
+            "default": "adult"
+          },
           "username": {
             "maxLength": 64,
             "minLength": 1,
@@ -1115,6 +1119,21 @@
         ],
         "title": "UserRef",
         "type": "object"
+      },
+      "UserRole": {
+        "description": "The full role enum (spec §2.1). Only ``owner`` and ``adult`` can be created (M1*, ADR 0016).",
+        "enum": [
+          "owner",
+          "adult",
+          "teen",
+          "kid",
+          "caregiver",
+          "property_manager",
+          "tenant",
+          "guest"
+        ],
+        "title": "UserRole",
+        "type": "string"
       },
       "ValidationError": {
         "properties": {
@@ -2092,7 +2111,7 @@
     },
     "/api/v1/users": {
       "post": {
-        "description": "Create another adult account (M0S-E05-05). Only ``adult`` exists in M0*.",
+        "description": "Create an owner or adult account (M0S-E05-05, M1S-E02-02). Owners only (``user.create``).",
         "operationId": "users_users_create",
         "requestBody": {
           "content": {

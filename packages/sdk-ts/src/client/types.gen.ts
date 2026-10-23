@@ -632,6 +632,7 @@ export type UserCreate = {
      * Password
      */
     password: string;
+    role?: UserRole;
     /**
      * Username
      */
@@ -677,6 +678,13 @@ export type UserRef = {
      */
     id: string;
 };
+
+/**
+ * UserRole
+ *
+ * The full role enum (spec §2.1). Only ``owner`` and ``adult`` can be created (M1*, ADR 0016).
+ */
+export type UserRole = 'owner' | 'adult' | 'teen' | 'kid' | 'caregiver' | 'property_manager' | 'tenant' | 'guest';
 
 /**
  * ValidationError

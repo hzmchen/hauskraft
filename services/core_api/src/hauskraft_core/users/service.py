@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
-"""User service (M0S-E05-01). Writes go through ``authorize()``; account bookkeeping emits no events in M0*."""
+"""User service (M0S-E05-01). Writes go through ``authorize()``; account events follow in M1* (ADR 0018)."""
 
 from __future__ import annotations
 
@@ -18,13 +18,17 @@ SYSTEM_ACTOR = Actor(id="system", role="owner", display_name="System", kind="sys
 """Acts for the CLI and the demo seed, which run without a signed-in user."""
 
 
-class RoleNotEnabledInM0Error(HauskraftError):
+ENABLED_ROLES = frozenset({UserRole.OWNER, UserRole.ADULT})
+"""The roles accounts can have in M1* (ADR 0016); the other six exist in the enum only."""
+
+
+class RoleNotEnabledError(HauskraftError):
     status = 422
     code = "role_not_enabled"
     title = "Role not available"
 
     def __init__(self, role: str) -> None:
-        super().__init__(f"Only adult accounts can be created in M0*, not {role!r}.")
+        super().__init__(f"Accounts can be owners or adults, not {role!r}.")
 
 
 class InvalidUsernameError(HauskraftError):
@@ -60,8 +64,8 @@ async def create_user(
     role: str = UserRole.ADULT,
     locale: str = "en",
 ) -> User:
-    if role != UserRole.ADULT:
-        raise RoleNotEnabledInM0Error(role)
+    if role not in ENABLED_ROLES:
+        raise RoleNotEnabledError(role)
     name = normalise_username(username)
     check_password_policy(password)
     await uow.authorize(actor, "user.create", ResourceRef("User"), "personal", "graph:write:User")
@@ -72,7 +76,7 @@ async def create_user(
         username=name,
         display_name=display_name.strip(),
         password_hash=await hash_password(password),
-        role=UserRole.ADULT,
+        role=UserRole(role),
         locale=locale,
     )
     uow.session.add(user)

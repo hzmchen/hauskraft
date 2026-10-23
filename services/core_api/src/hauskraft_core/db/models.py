@@ -17,7 +17,7 @@ from hauskraft_core.db.ids import new_id
 
 
 class UserRole(enum.StrEnum):
-    """The full role enum (spec §2.1). Only ``adult`` can be created in M0*."""
+    """The full role enum (spec §2.1). Only ``owner`` and ``adult`` can be created (M1*, ADR 0016)."""
 
     OWNER = "owner"
     ADULT = "adult"

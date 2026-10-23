@@ -9,7 +9,7 @@ from typing import Annotated, Literal
 
 from pydantic import BaseModel, ConfigDict, Field, StringConstraints
 
-from hauskraft_core.db.models import User
+from hauskraft_core.db.models import User, UserRole
 
 Locale = Literal["en", "de"]
 NO_NUL = r"^[^\x00]*$"  # PostgreSQL text cannot hold NUL bytes: 422 instead of a failed query
@@ -56,3 +56,4 @@ class UserCreate(_Model):
     username: Username
     display_name: DisplayName
     password: Annotated[str, Field(min_length=1, max_length=1024)]
+    role: UserRole = UserRole.ADULT

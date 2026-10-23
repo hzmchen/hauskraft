@@ -41,10 +41,15 @@ async def me_update(body: MePatch, request: Request, resolved: CurrentSession) -
 
 @router.post("/users", status_code=201, responses={401: {}, 403: {}, 409: {}, 422: {}})
 async def users_create(body: UserCreate, request: Request, resolved: CurrentSession) -> UserOut:
-    """Create another adult account (M0S-E05-05). Only ``adult`` exists in M0*."""
+    """Create an owner or adult account (M0S-E05-05, M1S-E02-02). Owners only (``user.create``)."""
     async with UnitOfWork(request.app.state.sessionmaker, request.app.state.policy, request.app.state.settings) as uow:
         user = await create_user(
-            uow, actor_for(resolved[1]), username=body.username, display_name=body.display_name, password=body.password
+            uow,
+            actor_for(resolved[1]),
+            username=body.username,
+            display_name=body.display_name,
+            password=body.password,
+            role=body.role,
         )
         out = UserOut.of(user)
     return out

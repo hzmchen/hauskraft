@@ -184,7 +184,7 @@ export const themesList = <ThrowOnError extends boolean = false>(options?: Optio
 /**
  * Users Create
  *
- * Create another adult account (M0S-E05-05). Only ``adult`` exists in M0*.
+ * Create an owner or adult account (M0S-E05-05, M1S-E02-02). Owners only (``user.create``).
  */
 export const usersUsersCreate = <ThrowOnError extends boolean = false>(options: Options<UsersUsersCreateData, ThrowOnError>): RequestResult<UsersUsersCreateResponses, UsersUsersCreateErrors, ThrowOnError> => (options.client ?? client).post<UsersUsersCreateResponses, UsersUsersCreateErrors, ThrowOnError>({
     url: '/api/v1/users',

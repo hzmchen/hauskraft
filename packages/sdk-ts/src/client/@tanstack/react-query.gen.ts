@@ -522,7 +522,7 @@ export const themesListOptions = (options?: Options<ThemesListData>) => queryOpt
 /**
  * Users Create
  *
- * Create another adult account (M0S-E05-05). Only ``adult`` exists in M0*.
+ * Create an owner or adult account (M0S-E05-05, M1S-E02-02). Owners only (``user.create``).
  */
 export const usersUsersCreateMutation = (options?: Partial<Options<UsersUsersCreateData>>): UseMutationOptions<UsersUsersCreateResponse, DefaultError, Options<UsersUsersCreateData>> => {
     const mutationOptions: UseMutationOptions<UsersUsersCreateResponse, DefaultError, Options<UsersUsersCreateData>> = {
