@@ -48,7 +48,10 @@ jobs:
 
   unit-web:
     runs-on: ubuntu-latest
-    timeout-minutes: 8
+    # 15, not 8 (spec §13.3, D15): `playwright install --with-deps` waits on the runner's apt mirror, which at times
+    # serves ~40 KB/s and needs over 8 min for the browser's system packages. The tests take ~20 s. NIE-87 has the
+    # sturdier fix (run in the Playwright image or cache the packages).
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v7.0.1
       - uses: ./.github/actions/setup

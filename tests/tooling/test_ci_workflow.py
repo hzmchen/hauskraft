@@ -22,9 +22,14 @@ def test_jobs_run_in_parallel() -> None:
         assert "needs" not in _ci()["jobs"][name], f"{name} must not wait for another job"
 
 
-def test_every_job_has_a_timeout_under_eight_minutes() -> None:
+# unit-web may take 15: its browser install waits on a slow apt mirror at times (spec §13.3, D15).
+LIMITS = {"unit-web": 15}
+
+
+def test_every_job_has_a_timeout_within_its_budget() -> None:
     for name, job in _ci()["jobs"].items():
-        assert 0 < job.get("timeout-minutes", 0) <= 8, f"{name}: timeout-minutes must be set and <= 8"
+        limit = LIMITS.get(name, 8)
+        assert 0 < job.get("timeout-minutes", 0) <= limit, f"{name}: timeout-minutes must be set and <= {limit}"
 
 
 def test_actions_are_pinned_to_exact_versions() -> None:
