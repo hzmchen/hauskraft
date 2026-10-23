@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
-"""M1S-E06-01: owners list the household's members and see each one; new accounts are user.created events."""
+"""M1S-E06-01..02: owners list, see and edit members; there is always an active owner (spec §2.3)."""
 
 import uuid
 from collections.abc import Callable, Iterator
@@ -7,9 +7,11 @@ from typing import Any
 
 import pytest
 from fastapi.testclient import TestClient
-from sqlalchemy import create_engine, select, update
+from sqlalchemy import create_engine, select, text, update
+from sqlalchemy.engine import make_url
 
 from hauskraft_core.app import create_app
+from hauskraft_core.db import migrations
 from hauskraft_core.db.models import OutboxEvent, User
 from hauskraft_core.settings import Settings
 from tests.integration.conftest import PASSWORD
@@ -123,3 +125,124 @@ def test_created_member_takes_the_household_language_and_is_an_event(
     assert event["type"] == "hauskraft.user.created"
     assert event["dataclass"] == "personal"
     assert event["data"] == {"user": {k: member[k] for k in ("id", "username", "display_name", "role")}}
+
+
+# ---------------------------------------------------------------- M1S-E06-02 edit a member, keep an owner
+def _member(owner: TestClient, username: str) -> dict[str, Any]:
+    return next(m for m in owner.get("/api/v1/users").json() if m["username"] == username)
+
+
+def _events_for(settings: Settings, user_id: str) -> list[dict[str, Any]]:
+    rows = _sql(
+        settings,
+        select(OutboxEvent.envelope).where(OutboxEvent.subject == f"user/{user_id}").order_by(OutboxEvent.time),
+    )
+    return [row[0] for row in rows if row[0]["type"] != "hauskraft.user.created"]
+
+
+def test_owner_renames_and_promotes_a_member(
+    signed_in: Callable[..., TestClient], make_user: Callable[..., str], api_settings: Settings
+) -> None:
+    username = make_user("Robin")
+    member_client = signed_in(username=username)
+    owner = signed_in()
+    member = _member(owner, username)
+    r = owner.patch(f"/api/v1/users/{member['id']}", json={"display_name": "Robin K.", "role": "owner"})
+    assert r.status_code == 200, r.text
+    assert (r.json()["display_name"], r.json()["role"]) == ("Robin K.", "owner")
+    assert "user.create" in member_client.get("/api/v1/auth/session").json()["permissions"], "applies at once"
+    [event] = _events_for(api_settings, member["id"])
+    assert event["type"] == "hauskraft.user.updated"
+    assert event["data"]["user"]["role"] == "owner"
+    assert event["data"]["changes"] == {
+        "display_name": {"from": "Robin", "to": "Robin K."},
+        "role": {"from": "adult", "to": "owner"},
+    }
+    assert owner.patch(f"/api/v1/users/{member['id']}", json={"role": "owner"}).status_code == 200
+    assert len(_events_for(api_settings, member["id"])) == 1, "an unchanged PATCH emits nothing"
+
+
+@pytest.mark.parametrize(
+    ("body", "status", "code"),
+    [
+        ({"username": "renamed"}, 422, None),
+        ({"role": "kid"}, 422, "role_not_enabled"),
+        ({"display_name": ""}, 422, None),
+    ],
+)
+def test_invalid_member_edits(
+    signed_in: Callable[..., TestClient],
+    make_user: Callable[..., str],
+    body: dict[str, str],
+    status: int,
+    code: str | None,
+) -> None:
+    owner = signed_in()
+    member = _member(owner, make_user())
+    r = owner.patch(f"/api/v1/users/{member['id']}", json=body)
+    assert r.status_code == status, r.text
+    if code:
+        assert r.json()["code"] == code
+
+
+def test_member_edits_need_an_owner_and_a_member(
+    signed_in: Callable[..., TestClient], make_user: Callable[..., str]
+) -> None:
+    username = make_user()
+    owner = signed_in()
+    member = _member(owner, username)
+    missing = owner.patch(f"/api/v1/users/{uuid.uuid4()}", json={"display_name": "Nobody"})
+    assert missing.status_code == 404
+    denied = signed_in("adult").patch(f"/api/v1/users/{member['id']}", json={"display_name": "Nope"})
+    assert denied.status_code == 403
+    assert denied.json()["code"] == "policy_denied"
+
+
+@pytest.fixture
+def one_owner(pg_url: str, db_settings: Settings) -> Iterator[Callable[[], TestClient]]:
+    """A fresh household whose only owner is Mia, set up through POST /setup."""
+    admin = create_engine(pg_url, isolation_level="AUTOCOMMIT")
+    with admin.connect() as conn:
+        conn.execute(text("DROP DATABASE IF EXISTS members_probe WITH (FORCE)"))
+        conn.execute(text("CREATE DATABASE members_probe"))
+    url = make_url(pg_url).set(database="members_probe").render_as_string(hide_password=False)
+    settings = db_settings.model_copy(update={"database_url": url, "allowed_origins": ["http://testserver"]})
+    migrations.upgrade(settings)
+    opened: list[TestClient] = []
+
+    def _mia() -> TestClient:
+        c = TestClient(create_app(settings), headers={"Origin": "http://testserver"})
+        c.__enter__()
+        opened.append(c)
+        body = {
+            "household": {"name": "H", "timezone": "Europe/Berlin", "locale": "en"},
+            "owner": {"username": "mia", "display_name": "Mia", "password": PASSWORD},
+        }
+        r = c.post("/api/v1/setup", json=body)
+        if r.status_code == 409:
+            r = c.post("/api/v1/auth/login", json={"username": "mia", "password": PASSWORD})
+        c.headers["X-CSRF-Token"] = r.json()["csrf_token"]
+        return c
+
+    yield _mia
+    for c in opened:
+        c.__exit__(None, None, None)
+    with admin.connect() as conn:
+        conn.execute(text("DROP DATABASE IF EXISTS members_probe WITH (FORCE)"))
+    admin.dispose()
+
+
+def test_the_last_owner_cannot_step_down(one_owner: Callable[[], TestClient]) -> None:
+    mia = one_owner()
+    me = mia.get("/api/v1/me").json()
+    r = mia.patch(f"/api/v1/users/{me['id']}", json={"role": "adult"})
+    assert r.status_code == 409
+    assert r.json()["code"] == "last_owner"
+    assert mia.get("/api/v1/me").json()["role"] == "owner"
+    jonas = mia.post(
+        "/api/v1/users",
+        json={"username": "jonas", "display_name": "Jonas", "password": PASSWORD, "role": "owner"},
+    ).json()
+    assert mia.patch(f"/api/v1/users/{me['id']}", json={"role": "adult"}).status_code == 200, "a second owner exists"
+    assert mia.get("/api/v1/me").json()["role"] == "adult"
+    assert jonas["role"] == "owner"
