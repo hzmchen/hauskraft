@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hauskraft.dev/schema/events/settings.household_changed/v1.json",
+  "$comment": "SPDX-License-Identifier: MIT",
+  "title": "hauskraft.settings.household_changed data",
+  "type": "object",
+  "required": ["changes"],
+  "additionalProperties": false,
+  "properties": {
+    "changes": {
+      "type": "object",
+      "description": "Changed household settings only.",
+      "minProperties": 1,
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "object",
+          "required": ["from", "to"],
+          "additionalProperties": false,
+          "properties": {
+            "from": {
+              "$ref": "#/$defs/name"
+            },
+            "to": {
+              "$ref": "#/$defs/name"
+            }
+          }
+        },
+        "timezone": {
+          "type": "object",
+          "required": ["from", "to"],
+          "additionalProperties": false,
+          "properties": {
+            "from": {
+              "$ref": "#/$defs/timezone"
+            },
+            "to": {
+              "$ref": "#/$defs/timezone"
+            }
+          }
+        },
+        "locale": {
+          "type": "object",
+          "required": ["from", "to"],
+          "additionalProperties": false,
+          "properties": {
+            "from": {
+              "$ref": "#/$defs/locale"
+            },
+            "to": {
+              "$ref": "#/$defs/locale"
+            }
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 80
+    },
+    "timezone": {
+      "type": "string",
+      "description": "An IANA time zone name.",
+      "pattern": "^[A-Za-z0-9_+-]+(/[A-Za-z0-9_+-]+)*$"
+    },
+    "locale": {
+      "enum": ["en", "de"]
+    }
+  }
+}

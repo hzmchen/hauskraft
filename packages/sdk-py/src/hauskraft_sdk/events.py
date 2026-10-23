@@ -12,12 +12,27 @@ import datetime as dt
 from typing import Annotated, Any, Literal
 from uuid import UUID
 
-from pydantic import BaseModel, ConfigDict, Field, SerializerFunctionWrapHandler, StringConstraints, model_serializer
+from pydantic import (
+    BaseModel,
+    ConfigDict,
+    Field,
+    SerializerFunctionWrapHandler,
+    StringConstraints,
+    model_serializer,
+    model_validator,
+)
 
 from hauskraft_sdk.data_classes import DataClass
 
 ReverseDnsId = Annotated[str, StringConstraints(pattern=r"^[a-z0-9]+(\.[a-z0-9-]+)+$")]
 ThemeId = Annotated[str, StringConstraints(pattern=r"^[a-z0-9]+(\.[a-z0-9-]+)+(:[a-z0-9-]+)?$")]
+Username = Annotated[str, StringConstraints(pattern=r"^[a-z0-9][a-z0-9._-]{1,31}$")]
+DisplayName = Annotated[str, Field(min_length=1, max_length=80)]
+Role = Literal["owner", "adult"]
+"""The roles that exist in M1* (ADR 0016)."""
+HouseholdName = Annotated[str, Field(min_length=1, max_length=80)]
+TimeZoneName = Annotated[str, StringConstraints(pattern=r"^[A-Za-z0-9_+-]+(/[A-Za-z0-9_+-]+)*$")]
+Locale = Literal["en", "de"]
 CORE_SOURCE = "dev.hauskraft.core"
 
 
@@ -91,6 +106,62 @@ class ThemeChangedData(_Strict):
     model_config = ConfigDict(extra="forbid", frozen=True, populate_by_name=True, serialize_by_alias=True)
 
 
+class UserRef(_Strict):
+    """An account after the change (ADR 0018). Never carries a password, hash or session."""
+
+    id: UUID
+    username: Username
+    display_name: DisplayName
+    role: Role
+
+
+class Change[T](_Strict):
+    from_: Annotated[T, Field(alias="from")]
+    to: T
+
+    model_config = ConfigDict(extra="forbid", frozen=True, populate_by_name=True, serialize_by_alias=True)
+
+
+class _Changes(_Strict):
+    """Changed fields only: at least one, and unchanged fields are omitted when serialised."""
+
+    @model_validator(mode="after")
+    def _at_least_one(self) -> _Changes:
+        if all(getattr(self, name) is None for name in type(self).model_fields):
+            raise ValueError("at least one change is required")
+        return self
+
+    @model_serializer(mode="wrap")
+    def _omit_unchanged(self, handler: SerializerFunctionWrapHandler) -> dict[str, Any]:
+        return {k: v for k, v in handler(self).items() if v is not None}
+
+
+class UserChanges(_Changes):
+    display_name: Change[DisplayName] | None = None
+    role: Change[Role] | None = None
+
+
+class UserData(_Strict):
+    """Data of hauskraft.user.created, .deactivated, .reactivated, .password_reset and .password_changed."""
+
+    user: UserRef
+
+
+class UserUpdatedData(_Strict):
+    user: UserRef
+    changes: UserChanges
+
+
+class HouseholdChanges(_Changes):
+    name: Change[HouseholdName] | None = None
+    timezone: Change[TimeZoneName] | None = None
+    locale: Change[Locale] | None = None
+
+
+class HouseholdChangedData(_Strict):
+    changes: HouseholdChanges
+
+
 DATA_MODELS: dict[str, type[BaseModel]] = {
     "hauskraft.task.created": TaskCreatedData,
     "hauskraft.task.updated": TaskUpdatedData,
@@ -98,6 +169,13 @@ DATA_MODELS: dict[str, type[BaseModel]] = {
     "hauskraft.task.deleted": TaskDeletedData,
     "hauskraft.plugin.toggled": PluginToggledData,
     "hauskraft.settings.theme_changed": ThemeChangedData,
+    "hauskraft.user.created": UserData,
+    "hauskraft.user.updated": UserUpdatedData,
+    "hauskraft.user.deactivated": UserData,
+    "hauskraft.user.reactivated": UserData,
+    "hauskraft.user.password_reset": UserData,
+    "hauskraft.user.password_changed": UserData,
+    "hauskraft.settings.household_changed": HouseholdChangedData,
 }
 
 DATA_SCHEMA_URL = "https://hauskraft.dev/schema/events/{suffix}/v1.json"

@@ -1,0 +1,80 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hauskraft.dev/schema/events/user.updated/v1.json",
+  "$comment": "SPDX-License-Identifier: MIT",
+  "title": "hauskraft.user.updated data",
+  "type": "object",
+  "required": ["user", "changes"],
+  "additionalProperties": false,
+  "properties": {
+    "user": {
+      "$ref": "#/$defs/userRef"
+    },
+    "changes": {
+      "type": "object",
+      "description": "Changed fields only; usernames are fixed after creation.",
+      "minProperties": 1,
+      "additionalProperties": false,
+      "properties": {
+        "display_name": {
+          "type": "object",
+          "required": ["from", "to"],
+          "additionalProperties": false,
+          "properties": {
+            "from": {
+              "$ref": "#/$defs/displayName"
+            },
+            "to": {
+              "$ref": "#/$defs/displayName"
+            }
+          }
+        },
+        "role": {
+          "type": "object",
+          "required": ["from", "to"],
+          "additionalProperties": false,
+          "properties": {
+            "from": {
+              "$ref": "#/$defs/role"
+            },
+            "to": {
+              "$ref": "#/$defs/role"
+            }
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "userRef": {
+      "type": "object",
+      "description": "The account after the change. Never carries a password, hash or session.",
+      "required": ["id", "username", "display_name", "role"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+        },
+        "username": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9._-]{1,31}$"
+        },
+        "display_name": {
+          "$ref": "#/$defs/displayName"
+        },
+        "role": {
+          "$ref": "#/$defs/role"
+        }
+      }
+    },
+    "displayName": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 80
+    },
+    "role": {
+      "enum": ["owner", "adult"]
+    }
+  }
+}
