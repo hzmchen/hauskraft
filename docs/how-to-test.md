@@ -1,9 +1,9 @@
 <!-- SPDX-License-Identifier: MIT -->
 
-# How to test Hauskraft M0*
+# How to test Hauskraft
 
-This page gets you from a clean clone to the M0* demo in a few minutes, then walks through the twelve milestone steps
-by hand. Everything here is also automated (see [Run the acceptance suites](#run-the-acceptance-suites)).
+This page gets you from a clean clone to the demo in a few minutes, then walks through the milestone steps of M0* and
+M1* by hand. Everything here is also automated (see [Run the acceptance suites](#run-the-acceptance-suites)).
 
 ## Prerequisites
 
@@ -19,15 +19,15 @@ cd hauskraft
 docker compose up --wait
 ```
 
-Open <http://localhost:8080> and sign in as **demo** / **hauskraft-demo**. A second adult, **alex**, uses the same
-password. The first start builds the images and seeds the demo household; later starts reuse both.
+Open <http://localhost:8080> and sign in as **demo** / **hauskraft-demo**, the household's owner. An adult, **alex**,
+uses the same password. The first start builds the images and seeds the demo household; later starts reuse both.
 
 Settings come from environment variables with demo defaults. To change them, copy
 [`deploy/compose/.env.example`](../deploy/compose/.env.example) to `.env` in the repository root and edit it. Before
 anyone else on your network can reach the stack, set `HAUSKRAFT_ENV=production`, a random `HAUSKRAFT_SECRET_KEY` and
 put it behind HTTPS (`HAUSKRAFT_COOKIE_SECURE=true`).
 
-## The milestone steps
+## The M0* milestone steps
 
 1. `docker compose up --wait` finishes; <http://localhost:8080> shows the login page and
    <http://localhost:8080/api/v1/readyz> returns 200.
@@ -50,6 +50,45 @@ put it behind HTTPS (`HAUSKRAFT_COOKIE_SECURE=true`).
 11. Run `docker compose down && docker compose up --wait` and sign in again: tasks, the Hackspace theme and the
     language are all still there.
 12. CI is green on `main` (lint, typecheck, unit, contract, invariance, e2e, DCO).
+
+## The M1* milestone steps (household basics)
+
+M1* starts from an empty install, so it runs on the **fresh stack**: a second, unseeded stack on port 8081 next to the
+demo stack (`HAUSKRAFT_SEED_DEMO=false`, no database port, its own volume).
+
+```bash
+just fresh-up      # start it: http://localhost:8081
+just fresh-reset   # empty it again (removes its volume) and start it
+```
+
+Use two browsers (or a normal and a private window), one for Mia and one for Alex.
+
+1. Open <http://localhost:8081>: you get **Set up your household**, not the login page.
+2. Set up "Familie Müller" in Deutsch, time zone Europe/Berlin, account "Mia" (`mia`). You land on **Heute**, signed
+   in; the browser title is "Heute · Familie Müller". `/setup` now redirects away. Switch Mia to English in the
+   account menu.
+3. **Settings** shows Appearance, Account, Household, Members. In **Members**, add "Alex" (`alex`) as an adult with a
+   temporary password. **Activity** says "Mia added Alex to the household".
+4. In the second browser, sign in as `alex` with the temporary password: Alex must choose a new password first (the
+   page is German, the household language), then lands on Today. Switch to English and add "Plan the garden".
+5. Alex's Settings show Appearance and Account only; the household theme can't be changed, the colour mode can.
+6. Alex changes the display name to "Alex M." and the password. In a third window signed in as Alex, **Account →
+   Devices** lists two devices; sign out the other one.
+7. Mia resets Alex's password: Alex's next action says "Your session has ended. Please sign in again.", and Alex must
+   choose a new password after signing in with the new temporary one.
+8. Mia deactivates Alex (after confirming): Alex is signed out and sign-in says the account is deactivated. Activity
+   still shows Alex's task with Alex's name. Reactivate Alex: Alex can sign in again.
+9. Mia tries to deactivate herself or make herself an adult: "The household needs at least one active owner."
+10. Mia renames the household to "Familie Müller-Schmidt" and sets the time zone to Pacific/Kiritimati: the title
+    follows, and a task due today in Kiritimati shows "Today" even where it is still yesterday.
+11. From another browser, Mia signs out everywhere: the first window's next action shows the "session ended" message,
+    and signing in returns to the same page.
+12. CI is green on `main`, including the fresh-stack suites and the M0* demo.
+
+`tests/e2e/basics.spec.ts` automates steps 1–11 on the fresh stack; steps 12 and the invariance checks are in
+`tests/e2e/settings.spec.ts` and CI. To run it locally, start both stacks and set the fresh-stack variables (see
+[Run the acceptance suites](#run-the-acceptance-suites)). Running the household for real is in
+[household-admin.md](household-admin.md).
 
 ## Try a theme package
 
@@ -95,6 +134,9 @@ pnpm --filter @hauskraft/acceptance-e2e exec playwright install --with-deps chro
 HAUSKRAFT_BASE_URL=http://localhost:8080 pnpm --filter @hauskraft/acceptance-e2e test
 ```
 
-`tests/e2e/demo.spec.ts` automates steps 1–11 with two browser sessions for steps 8–9. Step 11 restarts the stack
+For the M1* suites, also start the fresh stack (`just fresh-up`) and set
+`HAUSKRAFT_FRESH_BASE_URL=http://localhost:8081` and `HAUSKRAFT_FRESH_RESET_CMD="just fresh-reset"` for both commands.
+
+`tests/e2e/demo.spec.ts` automates the M0* steps 1–11 with two browser sessions for steps 8–9. Step 11 restarts the stack
 when `HAUSKRAFT_E2E_RESTART_CMD` is set, for example
 `HAUSKRAFT_E2E_RESTART_CMD="docker compose -f compose.yaml -f deploy/compose/compose.test.yaml down && docker compose -f compose.yaml -f deploy/compose/compose.test.yaml up --wait"`.
