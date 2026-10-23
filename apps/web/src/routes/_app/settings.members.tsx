@@ -10,7 +10,9 @@ export const Route = createFileRoute("/_app/settings/members")({
   beforeLoad: ({ context }) => {
     if (!mayOpen("members", context.session.permissions)) throw redirect({ to: "/settings/appearance" });
   },
-  // Render with the members list, not an empty list that fills in later; prefetch only.
-  loader: ({ context }) => context.queryClient.ensureQueryData(usersUsersListOptions()).catch(() => undefined),
+  // Render with the current members list: fetched on every visit (another owner or the member may just have
+  // changed it), so the page never starts from a stale cache. A failure must not replace the page.
+  loader: ({ context }) =>
+    context.queryClient.fetchQuery({ ...usersUsersListOptions(), staleTime: 0 }).catch(() => undefined),
   component: MembersSettings,
 });

@@ -10,7 +10,7 @@ export const Route = createFileRoute("/_app/settings/household")({
   beforeLoad: ({ context }) => {
     if (!mayOpen("household", context.session.permissions)) throw redirect({ to: "/settings/appearance" });
   },
-  // Render with the form filled in, not an empty page that fills in later; prefetch only.
-  loader: ({ context }) => context.queryClient.ensureQueryData(householdQuery()).catch(() => undefined),
+  // Render the form with the current values, fetched on every visit (another owner may just have changed them).
+  loader: ({ context }) => context.queryClient.fetchQuery({ ...householdQuery(), staleTime: 0 }).catch(() => undefined),
   component: HouseholdSettings,
 });
