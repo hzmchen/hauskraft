@@ -119,7 +119,14 @@
     "username": "Benutzername",
     "display_name": "Anzeigename",
     "save_profile": "Profil speichern",
-    "profile_saved": "Profil gespeichert"
+    "profile_saved": "Profil gespeichert",
+    "devices": "Geräte",
+    "devices_list": "Angemeldete Geräte",
+    "this_device": "Dieses Gerät",
+    "last_active": "Zuletzt aktiv {{when}}",
+    "sign_out_everywhere": "Überall abmelden",
+    "sign_out_everywhere_title": "Überall abmelden?",
+    "sign_out_everywhere_body": "Jedes Gerät, auch dieses, muss sich neu anmelden."
   },
   "password": {
     "heading": "Passwort",

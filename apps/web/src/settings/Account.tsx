@@ -1,14 +1,23 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// Settings → Account (M1S-E05-03): my profile (display name, language; the username is fixed) and my password.
-import { usersMePassword, usersMeUpdate } from "@hauskraft/sdk-ts";
-import { Button } from "@hauskraft/ui";
-import { useQueryClient } from "@tanstack/react-query";
+// Settings → Account: my profile (display name, language; the username is fixed) and my password (M1S-E05-03), and
+// the devices I'm signed in on (M1S-E05-04).
+import {
+  usersMePassword,
+  usersMeSessionEnd,
+  usersMeSessionsOptions,
+  usersMeSessionsQueryKey,
+  usersMeUpdate,
+  type SessionInfo,
+} from "@hauskraft/sdk-ts";
+import { Button, Dialog, DialogContent, DialogDescription, DialogFooter, DialogTitle } from "@hauskraft/ui";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "@tanstack/react-router";
 import { useId, useState, type FormEvent } from "react";
 import { useTranslation } from "react-i18next";
 
 import { problemCode, SelectField, TextField } from "../forms/fields";
 import { LANGUAGES, isLanguage, setLanguage, type Language } from "../i18n";
-import { sessionQuery, useSession } from "../session";
+import { sessionQuery, signOut, useSession } from "../session";
 
 export function AccountSettings() {
   const { t } = useTranslation();
@@ -17,6 +26,7 @@ export function AccountSettings() {
       <h1 className="text-2xl font-bold">{t("settings.account")}</h1>
       <ProfileSection />
       <PasswordSection />
+      <DevicesSection />
     </div>
   );
 }
@@ -166,6 +176,74 @@ function PasswordSection() {
           <p role="status">{changed ? t("password.changed") : ""}</p>
         </div>
       </form>
+    </section>
+  );
+}
+
+function DevicesSection() {
+  const { t, i18n } = useTranslation();
+  const queryClient = useQueryClient();
+  const router = useRouter();
+  const heading = useId();
+  const { data: devices = [] } = useQuery(usersMeSessionsOptions());
+  const [confirming, setConfirming] = useState(false);
+  const when = new Intl.DateTimeFormat(i18n.resolvedLanguage === "de" ? "de-DE" : "en-US", {
+    dateStyle: "medium",
+    timeStyle: "short",
+  });
+
+  async function end(device: SessionInfo) {
+    await usersMeSessionEnd({ path: { session_id: device.id } });
+    await queryClient.invalidateQueries({ queryKey: usersMeSessionsQueryKey() });
+  }
+
+  async function everywhere() {
+    setConfirming(false);
+    await signOut(queryClient, { everywhere: true });
+    await router.navigate({ to: "/login" });
+  }
+
+  return (
+    <section aria-labelledby={heading} className="flex max-w-xl flex-col gap-3">
+      <h2 id={heading} className="text-lg font-bold">
+        {t("account_page.devices")}
+      </h2>
+      <ul aria-label={t("account_page.devices_list")} className="flex flex-col divide-y rounded-md border">
+        {devices.map((device) => (
+          <li key={device.id} className="flex flex-wrap items-center justify-between gap-2 p-density">
+            <span className="flex flex-col">
+              <span className="font-medium">{device.device}</span>
+              <span className="text-sm text-muted-foreground">
+                {t("account_page.last_active", { when: when.format(new Date(device.last_seen_at)) })}
+              </span>
+            </span>
+            {device.current ? (
+              <span className="text-sm font-medium">{t("account_page.this_device")}</span>
+            ) : (
+              <Button variant="outline" size="sm" onClick={() => void end(device)}>
+                {t("account.sign_out")}
+              </Button>
+            )}
+          </li>
+        ))}
+      </ul>
+      <Button variant="outline" className="self-start" onClick={() => setConfirming(true)}>
+        {t("account_page.sign_out_everywhere")}
+      </Button>
+      <Dialog open={confirming} onOpenChange={setConfirming}>
+        <DialogContent role="alertdialog" showCloseButton={false}>
+          <DialogTitle>{t("account_page.sign_out_everywhere_title")}</DialogTitle>
+          <DialogDescription>{t("account_page.sign_out_everywhere_body")}</DialogDescription>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setConfirming(false)}>
+              {t("settings.cancel")}
+            </Button>
+            <Button variant="destructive" onClick={() => void everywhere()}>
+              {t("account_page.sign_out_everywhere")}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </section>
   );
 }

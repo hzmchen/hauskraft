@@ -119,7 +119,14 @@
     "username": "Username",
     "display_name": "Display name",
     "save_profile": "Save profile",
-    "profile_saved": "Profile saved"
+    "profile_saved": "Profile saved",
+    "devices": "Devices",
+    "devices_list": "Signed-in devices",
+    "this_device": "This device",
+    "last_active": "Last active {{when}}",
+    "sign_out_everywhere": "Sign out everywhere",
+    "sign_out_everywhere_title": "Sign out everywhere?",
+    "sign_out_everywhere_body": "Every device, this one included, will have to sign in again."
   },
   "password": {
     "heading": "Password",

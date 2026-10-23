@@ -1,7 +1,14 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // The signed-in session (M0S-E08-03). GET /auth/session answers 401 when signed out; the CSRF token
 // from the session is kept in memory by @hauskraft/sdk-ts and sent on every unsafe request.
-import { authLogout, authSession, client, setCsrfToken, type SessionOut } from "@hauskraft/sdk-ts";
+import {
+  authLogout,
+  authLogoutEverywhere,
+  authSession,
+  client,
+  setCsrfToken,
+  type SessionOut,
+} from "@hauskraft/sdk-ts";
 import { queryOptions, useQuery, type QueryClient } from "@tanstack/react-query";
 
 export const sessionQuery = queryOptions({
@@ -43,11 +50,12 @@ export function rememberSession(queryClient: QueryClient, session: SessionOut): 
 
 let signingOut = false;
 
-/** End the session, forget every cached query and the CSRF token. */
-export async function signOut(queryClient: QueryClient): Promise<void> {
+/** End the session (or, with `everywhere`, all of the member's sessions), forget every cached query and the CSRF
+ * token. Signing out on purpose is not an ended session, so no "session ended" message follows. */
+export async function signOut(queryClient: QueryClient, { everywhere = false } = {}): Promise<void> {
   signingOut = true;
   try {
-    await authLogout();
+    await (everywhere ? authLogoutEverywhere() : authLogout());
     setCsrfToken(null);
     queryClient.clear();
   } finally {
