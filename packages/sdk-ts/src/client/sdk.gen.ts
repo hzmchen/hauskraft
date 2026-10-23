@@ -2,7 +2,7 @@
 
 import type { Client, ClientMeta, Options as Options2, RequestResult, TDataShape } from './client';
 import { client } from './client.gen';
-import type { ActivityListData, ActivityListErrors, ActivityListResponses, AuthLoginData, AuthLoginErrors, AuthLoginResponses, AuthLogoutData, AuthLogoutErrors, AuthLogoutEverywhereData, AuthLogoutEverywhereErrors, AuthLogoutEverywhereResponses, AuthLogoutResponses, AuthSessionData, AuthSessionErrors, AuthSessionResponses, DashboardGetData, DashboardGetErrors, DashboardGetResponses, DashboardPutData, DashboardPutErrors, DashboardPutResponses, HealthHealthzData, HealthHealthzResponses, HealthReadyzData, HealthReadyzErrors, HealthReadyzResponses, HouseholdReadData, HouseholdReadErrors, HouseholdReadResponses, HouseholdUpdateData, HouseholdUpdateErrors, HouseholdUpdateResponses, PluginsListData, PluginsListErrors, PluginsListResponses, PluginsUpdateData, PluginsUpdateErrors, PluginsUpdateResponses, SettingsThemeSetData, SettingsThemeSetErrors, SettingsThemeSetResponses, TasksCreateData, TasksCreateErrors, TasksCreateResponses, TasksDeleteData, TasksDeleteErrors, TasksDeleteResponses, TasksGetData, TasksGetErrors, TasksGetResponses, TasksListData, TasksListErrors, TasksListResponses, TasksUpdateData, TasksUpdateErrors, TasksUpdateResponses, ThemesActiveCssData, ThemesActiveCssErrors, ThemesActiveCssResponses, ThemesActiveData, ThemesActiveErrors, ThemesActiveResponses, ThemesAssetData, ThemesAssetErrors, ThemesAssetResponses, ThemesListData, ThemesListErrors, ThemesListResponses, UsersMeGetData, UsersMeGetErrors, UsersMeGetResponses, UsersMePasswordData, UsersMePasswordErrors, UsersMePasswordResponses, UsersMeSessionEndData, UsersMeSessionEndErrors, UsersMeSessionEndResponses, UsersMeSessionsData, UsersMeSessionsErrors, UsersMeSessionsResponses, UsersMeUpdateData, UsersMeUpdateErrors, UsersMeUpdateResponses, UsersUsersCreateData, UsersUsersCreateErrors, UsersUsersCreateResponses, UsersUsersGetData, UsersUsersGetErrors, UsersUsersGetResponses, UsersUsersListData, UsersUsersListErrors, UsersUsersListResponses } from './types.gen';
+import type { ActivityListData, ActivityListErrors, ActivityListResponses, AuthLoginData, AuthLoginErrors, AuthLoginResponses, AuthLogoutData, AuthLogoutErrors, AuthLogoutEverywhereData, AuthLogoutEverywhereErrors, AuthLogoutEverywhereResponses, AuthLogoutResponses, AuthSessionData, AuthSessionErrors, AuthSessionResponses, DashboardGetData, DashboardGetErrors, DashboardGetResponses, DashboardPutData, DashboardPutErrors, DashboardPutResponses, HealthHealthzData, HealthHealthzResponses, HealthReadyzData, HealthReadyzErrors, HealthReadyzResponses, HouseholdReadData, HouseholdReadErrors, HouseholdReadResponses, HouseholdUpdateData, HouseholdUpdateErrors, HouseholdUpdateResponses, PluginsListData, PluginsListErrors, PluginsListResponses, PluginsUpdateData, PluginsUpdateErrors, PluginsUpdateResponses, SettingsThemeSetData, SettingsThemeSetErrors, SettingsThemeSetResponses, SetupCompleteData, SetupCompleteErrors, SetupCompleteResponses, SetupStatusData, SetupStatusResponses, TasksCreateData, TasksCreateErrors, TasksCreateResponses, TasksDeleteData, TasksDeleteErrors, TasksDeleteResponses, TasksGetData, TasksGetErrors, TasksGetResponses, TasksListData, TasksListErrors, TasksListResponses, TasksUpdateData, TasksUpdateErrors, TasksUpdateResponses, ThemesActiveCssData, ThemesActiveCssErrors, ThemesActiveCssResponses, ThemesActiveData, ThemesActiveErrors, ThemesActiveResponses, ThemesAssetData, ThemesAssetErrors, ThemesAssetResponses, ThemesListData, ThemesListErrors, ThemesListResponses, UsersMeGetData, UsersMeGetErrors, UsersMeGetResponses, UsersMePasswordData, UsersMePasswordErrors, UsersMePasswordResponses, UsersMeSessionEndData, UsersMeSessionEndErrors, UsersMeSessionEndResponses, UsersMeSessionsData, UsersMeSessionsErrors, UsersMeSessionsResponses, UsersMeUpdateData, UsersMeUpdateErrors, UsersMeUpdateResponses, UsersUsersCreateData, UsersUsersCreateErrors, UsersUsersCreateResponses, UsersUsersDeactivateData, UsersUsersDeactivateErrors, UsersUsersDeactivateResponses, UsersUsersGetData, UsersUsersGetErrors, UsersUsersGetResponses, UsersUsersListData, UsersUsersListErrors, UsersUsersListResponses, UsersUsersReactivateData, UsersUsersReactivateErrors, UsersUsersReactivateResponses, UsersUsersResetPasswordData, UsersUsersResetPasswordErrors, UsersUsersResetPasswordResponses, UsersUsersUpdateData, UsersUsersUpdateErrors, UsersUsersUpdateResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean, TResponse = unknown> = Options2<TData, ThrowOnError, TResponse> & {
     /**
@@ -175,6 +175,25 @@ export const settingsThemeSet = <ThrowOnError extends boolean = false>(options: 
 });
 
 /**
+ * Status
+ */
+export const setupStatus = <ThrowOnError extends boolean = false>(options?: Options<SetupStatusData, ThrowOnError>): RequestResult<SetupStatusResponses, unknown, ThrowOnError> => (options?.client ?? client).get<SetupStatusResponses, unknown, ThrowOnError>({ url: '/api/v1/setup', ...options });
+
+/**
+ * Complete
+ *
+ * Create the household and its first owner, and sign the owner in. Only while no account exists.
+ */
+export const setupComplete = <ThrowOnError extends boolean = false>(options: Options<SetupCompleteData, ThrowOnError>): RequestResult<SetupCompleteResponses, SetupCompleteErrors, ThrowOnError> => (options.client ?? client).post<SetupCompleteResponses, SetupCompleteErrors, ThrowOnError>({
+    url: '/api/v1/setup',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
  * List
  */
 export const tasksList = <ThrowOnError extends boolean = false>(options?: Options<TasksListData, ThrowOnError>): RequestResult<TasksListResponses, TasksListErrors, ThrowOnError> => (options?.client ?? client).get<TasksListResponses, TasksListErrors, ThrowOnError>({ url: '/api/v1/tasks', ...options });
@@ -262,3 +281,43 @@ export const usersUsersCreate = <ThrowOnError extends boolean = false>(options: 
  * Users Get
  */
 export const usersUsersGet = <ThrowOnError extends boolean = false>(options: Options<UsersUsersGetData, ThrowOnError>): RequestResult<UsersUsersGetResponses, UsersUsersGetErrors, ThrowOnError> => (options.client ?? client).get<UsersUsersGetResponses, UsersUsersGetErrors, ThrowOnError>({ url: '/api/v1/users/{user_id}', ...options });
+
+/**
+ * Users Update
+ *
+ * Change a member's display name or role (M1S-E06-02). 409 ``last_owner`` if no active owner would remain.
+ */
+export const usersUsersUpdate = <ThrowOnError extends boolean = false>(options: Options<UsersUsersUpdateData, ThrowOnError>): RequestResult<UsersUsersUpdateResponses, UsersUsersUpdateErrors, ThrowOnError> => (options.client ?? client).patch<UsersUsersUpdateResponses, UsersUsersUpdateErrors, ThrowOnError>({
+    url: '/api/v1/users/{user_id}',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Users Deactivate
+ *
+ * Switch an account off (M1S-E06-03): its sessions end and sign-in answers 403 ``account_deactivated``.
+ */
+export const usersUsersDeactivate = <ThrowOnError extends boolean = false>(options: Options<UsersUsersDeactivateData, ThrowOnError>): RequestResult<UsersUsersDeactivateResponses, UsersUsersDeactivateErrors, ThrowOnError> => (options.client ?? client).post<UsersUsersDeactivateResponses, UsersUsersDeactivateErrors, ThrowOnError>({ url: '/api/v1/users/{user_id}/deactivate', ...options });
+
+/**
+ * Users Reset Password
+ *
+ * Set a temporary password for a member (M1S-E06-04); they must replace it at their next sign-in.
+ */
+export const usersUsersResetPassword = <ThrowOnError extends boolean = false>(options: Options<UsersUsersResetPasswordData, ThrowOnError>): RequestResult<UsersUsersResetPasswordResponses, UsersUsersResetPasswordErrors, ThrowOnError> => (options.client ?? client).post<UsersUsersResetPasswordResponses, UsersUsersResetPasswordErrors, ThrowOnError>({
+    url: '/api/v1/users/{user_id}/password',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Users Reactivate
+ */
+export const usersUsersReactivate = <ThrowOnError extends boolean = false>(options: Options<UsersUsersReactivateData, ThrowOnError>): RequestResult<UsersUsersReactivateResponses, UsersUsersReactivateErrors, ThrowOnError> => (options.client ?? client).post<UsersUsersReactivateResponses, UsersUsersReactivateErrors, ThrowOnError>({ url: '/api/v1/users/{user_id}/reactivate', ...options });

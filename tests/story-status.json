@@ -250,7 +250,7 @@
       "acceptance": "suite"
     },
     "M1S-E01-02": {
-      "status": "red",
+      "status": "green",
       "acceptance": "suite"
     },
     "M1S-E02-01": {
@@ -270,7 +270,7 @@
       "acceptance": "suite"
     },
     "M1S-E03-01": {
-      "status": "red",
+      "status": "green",
       "acceptance": "suite"
     },
     "M1S-E03-02": {
@@ -322,15 +322,15 @@
       "acceptance": "suite"
     },
     "M1S-E06-02": {
-      "status": "red",
+      "status": "green",
       "acceptance": "suite"
     },
     "M1S-E06-03": {
-      "status": "red",
+      "status": "green",
       "acceptance": "suite"
     },
     "M1S-E06-04": {
-      "status": "red",
+      "status": "green",
       "acceptance": "suite"
     },
     "M1S-E06-05": {
@@ -338,7 +338,7 @@
       "acceptance": "suite"
     },
     "M1S-E06-06": {
-      "status": "red",
+      "status": "green",
       "acceptance": "in-story"
     },
     "M1S-E07-01": {

@@ -61,6 +61,17 @@ class MemberOut(UserOut):
         )
 
 
+class TemporaryPassword(_Model):
+    password: Annotated[str, Field(min_length=1, max_length=1024)]  # the policy answers 422 password_policy
+
+
+class MemberPatch(_Model):
+    """What owners may change about a member (M1S-E06-02); the username is fixed."""
+
+    display_name: DisplayName | None = None
+    role: UserRole | None = None
+
+
 class SessionOut(_Model):
     user: UserOut
     csrf_token: str

@@ -44,9 +44,11 @@ class LocalPasswordProvider:
     async def authenticate(self, session: AsyncSession, credentials: PasswordCredentials) -> UserRef | None:
         username = credentials.username.strip().lower()
         user = (await session.execute(select(User).where(User.username == username))).scalar_one_or_none()
-        if user is None or not user.is_active:
+        if user is None:
             await dummy_verify(credentials.password)  # same work as a real check (timing parity)
             return None
+        # Deactivated accounts are returned too: the caller answers 403 account_deactivated, but only after the
+        # password was right, so a wrong one still gives the generic 401 (M1S-E06-03).
         ok, new_hash = await verify_password(credentials.password, user.password_hash)
         return UserRef(user, new_hash) if ok else None
 

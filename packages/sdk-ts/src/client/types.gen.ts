@@ -361,6 +361,19 @@ export type MemberOut = {
 };
 
 /**
+ * MemberPatch
+ *
+ * What owners may change about a member (M1S-E06-02); the username is fixed.
+ */
+export type MemberPatch = {
+    /**
+     * Display Name
+     */
+    display_name?: string | null;
+    role?: UserRole | null;
+};
+
+/**
  * Navigation
  */
 export type Navigation = {
@@ -560,6 +573,62 @@ export type SessionOut = {
 };
 
 /**
+ * SetupHousehold
+ */
+export type SetupHousehold = {
+    /**
+     * Locale
+     */
+    locale: 'en' | 'de';
+    /**
+     * Name
+     */
+    name: string;
+    /**
+     * Timezone
+     */
+    timezone: string;
+};
+
+/**
+ * SetupIn
+ */
+export type SetupIn = {
+    household: SetupHousehold;
+    owner: SetupOwner;
+};
+
+/**
+ * SetupOwner
+ */
+export type SetupOwner = {
+    /**
+     * Display Name
+     */
+    display_name: string;
+    /**
+     * Password
+     */
+    password: string;
+    /**
+     * Username
+     */
+    username: string;
+};
+
+/**
+ * SetupStatus
+ */
+export type SetupStatus = {
+    /**
+     * Required
+     *
+     * True while there is no account yet.
+     */
+    required: boolean;
+};
+
+/**
  * Swatches
  */
 export type Swatches = {
@@ -675,6 +744,16 @@ export type TaskPatch = {
      * Version
      */
     version?: number | null;
+};
+
+/**
+ * TemporaryPassword
+ */
+export type TemporaryPassword = {
+    /**
+     * Password
+     */
+    password: string;
 };
 
 /**
@@ -1449,6 +1528,53 @@ export type SettingsThemeSetResponses = {
 
 export type SettingsThemeSetResponse = SettingsThemeSetResponses[keyof SettingsThemeSetResponses];
 
+export type SetupStatusData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/v1/setup';
+};
+
+export type SetupStatusResponses = {
+    /**
+     * Successful Response
+     */
+    200: SetupStatus;
+};
+
+export type SetupStatusResponse = SetupStatusResponses[keyof SetupStatusResponses];
+
+export type SetupCompleteData = {
+    body: SetupIn;
+    path?: never;
+    query?: never;
+    url: '/api/v1/setup';
+};
+
+export type SetupCompleteErrors = {
+    /**
+     * Forbidden
+     */
+    403: unknown;
+    /**
+     * Conflict
+     */
+    409: unknown;
+    /**
+     * Unprocessable Content
+     */
+    422: unknown;
+};
+
+export type SetupCompleteResponses = {
+    /**
+     * Successful Response
+     */
+    201: SessionOut;
+};
+
+export type SetupCompleteResponse = SetupCompleteResponses[keyof SetupCompleteResponses];
+
 export type TasksListData = {
     body?: never;
     path?: never;
@@ -1868,3 +1994,175 @@ export type UsersUsersGetResponses = {
 };
 
 export type UsersUsersGetResponse = UsersUsersGetResponses[keyof UsersUsersGetResponses];
+
+export type UsersUsersUpdateData = {
+    body: MemberPatch;
+    path: {
+        /**
+         * User Id
+         */
+        user_id: string;
+    };
+    query?: never;
+    url: '/api/v1/users/{user_id}';
+};
+
+export type UsersUsersUpdateErrors = {
+    /**
+     * Unauthorized
+     */
+    401: unknown;
+    /**
+     * Forbidden
+     */
+    403: unknown;
+    /**
+     * Not Found
+     */
+    404: unknown;
+    /**
+     * Conflict
+     */
+    409: unknown;
+    /**
+     * Unprocessable Content
+     */
+    422: unknown;
+};
+
+export type UsersUsersUpdateResponses = {
+    /**
+     * Successful Response
+     */
+    200: MemberOut;
+};
+
+export type UsersUsersUpdateResponse = UsersUsersUpdateResponses[keyof UsersUsersUpdateResponses];
+
+export type UsersUsersDeactivateData = {
+    body?: never;
+    path: {
+        /**
+         * User Id
+         */
+        user_id: string;
+    };
+    query?: never;
+    url: '/api/v1/users/{user_id}/deactivate';
+};
+
+export type UsersUsersDeactivateErrors = {
+    /**
+     * Unauthorized
+     */
+    401: unknown;
+    /**
+     * Forbidden
+     */
+    403: unknown;
+    /**
+     * Not Found
+     */
+    404: unknown;
+    /**
+     * Conflict
+     */
+    409: unknown;
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type UsersUsersDeactivateError = UsersUsersDeactivateErrors[keyof UsersUsersDeactivateErrors];
+
+export type UsersUsersDeactivateResponses = {
+    /**
+     * Successful Response
+     */
+    200: MemberOut;
+};
+
+export type UsersUsersDeactivateResponse = UsersUsersDeactivateResponses[keyof UsersUsersDeactivateResponses];
+
+export type UsersUsersResetPasswordData = {
+    body: TemporaryPassword;
+    path: {
+        /**
+         * User Id
+         */
+        user_id: string;
+    };
+    query?: never;
+    url: '/api/v1/users/{user_id}/password';
+};
+
+export type UsersUsersResetPasswordErrors = {
+    /**
+     * Unauthorized
+     */
+    401: unknown;
+    /**
+     * Forbidden
+     */
+    403: unknown;
+    /**
+     * Not Found
+     */
+    404: unknown;
+    /**
+     * Unprocessable Content
+     */
+    422: unknown;
+};
+
+export type UsersUsersResetPasswordResponses = {
+    /**
+     * Successful Response
+     */
+    204: void;
+};
+
+export type UsersUsersResetPasswordResponse = UsersUsersResetPasswordResponses[keyof UsersUsersResetPasswordResponses];
+
+export type UsersUsersReactivateData = {
+    body?: never;
+    path: {
+        /**
+         * User Id
+         */
+        user_id: string;
+    };
+    query?: never;
+    url: '/api/v1/users/{user_id}/reactivate';
+};
+
+export type UsersUsersReactivateErrors = {
+    /**
+     * Unauthorized
+     */
+    401: unknown;
+    /**
+     * Forbidden
+     */
+    403: unknown;
+    /**
+     * Not Found
+     */
+    404: unknown;
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type UsersUsersReactivateError = UsersUsersReactivateErrors[keyof UsersUsersReactivateErrors];
+
+export type UsersUsersReactivateResponses = {
+    /**
+     * Successful Response
+     */
+    200: MemberOut;
+};
+
+export type UsersUsersReactivateResponse = UsersUsersReactivateResponses[keyof UsersUsersReactivateResponses];

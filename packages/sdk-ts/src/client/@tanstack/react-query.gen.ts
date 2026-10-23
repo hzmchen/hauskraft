@@ -3,8 +3,8 @@
 import { type DefaultError, type InfiniteData, infiniteQueryOptions, queryOptions, type UseMutationOptions } from '@tanstack/react-query';
 
 import { client } from '../client.gen';
-import { activityList, authLogin, authLogout, authLogoutEverywhere, authSession, dashboardGet, dashboardPut, healthHealthz, healthReadyz, householdRead, householdUpdate, type Options, pluginsList, pluginsUpdate, settingsThemeSet, tasksCreate, tasksDelete, tasksGet, tasksList, tasksUpdate, themesActive, themesActiveCss, themesAsset, themesList, usersMeGet, usersMePassword, usersMeSessionEnd, usersMeSessions, usersMeUpdate, usersUsersCreate, usersUsersGet, usersUsersList } from '../sdk.gen';
-import type { ActivityListData, ActivityListResponse, AuthLoginData, AuthLoginError, AuthLoginResponse, AuthLogoutData, AuthLogoutEverywhereData, AuthLogoutEverywhereResponse, AuthLogoutResponse, AuthSessionData, AuthSessionResponse, DashboardGetData, DashboardGetResponse, DashboardPutData, DashboardPutResponse, HealthHealthzData, HealthHealthzResponse, HealthReadyzData, HealthReadyzError, HealthReadyzResponse, HouseholdReadData, HouseholdReadResponse, HouseholdUpdateData, HouseholdUpdateResponse, PluginsListData, PluginsListResponse, PluginsUpdateData, PluginsUpdateResponse, SettingsThemeSetData, SettingsThemeSetResponse, TasksCreateData, TasksCreateResponse, TasksDeleteData, TasksDeleteResponse, TasksGetData, TasksGetResponse, TasksListData, TasksListResponse, TasksUpdateData, TasksUpdateResponse, ThemesActiveCssData, ThemesActiveCssError, ThemesActiveCssResponse, ThemesActiveData, ThemesActiveResponse, ThemesAssetData, ThemesAssetError, ThemesListData, ThemesListResponse, UsersMeGetData, UsersMeGetResponse, UsersMePasswordData, UsersMePasswordResponse, UsersMeSessionEndData, UsersMeSessionEndError, UsersMeSessionEndResponse, UsersMeSessionsData, UsersMeSessionsResponse, UsersMeUpdateData, UsersMeUpdateResponse, UsersUsersCreateData, UsersUsersCreateResponse, UsersUsersGetData, UsersUsersGetError, UsersUsersGetResponse, UsersUsersListData, UsersUsersListResponse } from '../types.gen';
+import { activityList, authLogin, authLogout, authLogoutEverywhere, authSession, dashboardGet, dashboardPut, healthHealthz, healthReadyz, householdRead, householdUpdate, type Options, pluginsList, pluginsUpdate, settingsThemeSet, setupComplete, setupStatus, tasksCreate, tasksDelete, tasksGet, tasksList, tasksUpdate, themesActive, themesActiveCss, themesAsset, themesList, usersMeGet, usersMePassword, usersMeSessionEnd, usersMeSessions, usersMeUpdate, usersUsersCreate, usersUsersDeactivate, usersUsersGet, usersUsersList, usersUsersReactivate, usersUsersResetPassword, usersUsersUpdate } from '../sdk.gen';
+import type { ActivityListData, ActivityListResponse, AuthLoginData, AuthLoginError, AuthLoginResponse, AuthLogoutData, AuthLogoutEverywhereData, AuthLogoutEverywhereResponse, AuthLogoutResponse, AuthSessionData, AuthSessionResponse, DashboardGetData, DashboardGetResponse, DashboardPutData, DashboardPutResponse, HealthHealthzData, HealthHealthzResponse, HealthReadyzData, HealthReadyzError, HealthReadyzResponse, HouseholdReadData, HouseholdReadResponse, HouseholdUpdateData, HouseholdUpdateResponse, PluginsListData, PluginsListResponse, PluginsUpdateData, PluginsUpdateResponse, SettingsThemeSetData, SettingsThemeSetResponse, SetupCompleteData, SetupCompleteResponse, SetupStatusData, SetupStatusResponse, TasksCreateData, TasksCreateResponse, TasksDeleteData, TasksDeleteResponse, TasksGetData, TasksGetResponse, TasksListData, TasksListResponse, TasksUpdateData, TasksUpdateResponse, ThemesActiveCssData, ThemesActiveCssError, ThemesActiveCssResponse, ThemesActiveData, ThemesActiveResponse, ThemesAssetData, ThemesAssetError, ThemesListData, ThemesListResponse, UsersMeGetData, UsersMeGetResponse, UsersMePasswordData, UsersMePasswordResponse, UsersMeSessionEndData, UsersMeSessionEndError, UsersMeSessionEndResponse, UsersMeSessionsData, UsersMeSessionsResponse, UsersMeUpdateData, UsersMeUpdateResponse, UsersUsersCreateData, UsersUsersCreateResponse, UsersUsersDeactivateData, UsersUsersDeactivateError, UsersUsersDeactivateResponse, UsersUsersGetData, UsersUsersGetError, UsersUsersGetResponse, UsersUsersListData, UsersUsersListResponse, UsersUsersReactivateData, UsersUsersReactivateError, UsersUsersReactivateResponse, UsersUsersResetPasswordData, UsersUsersResetPasswordResponse, UsersUsersUpdateData, UsersUsersUpdateResponse } from '../types.gen';
 
 export type QueryKey<TOptions extends Options> = [
     Pick<TOptions, 'baseUrl' | 'body' | 'headers' | 'path' | 'query'> & {
@@ -442,6 +442,43 @@ export const settingsThemeSetMutation = (options?: Partial<Options<SettingsTheme
     return mutationOptions;
 };
 
+export const setupStatusQueryKey = (options?: Options<SetupStatusData>) => createQueryKey('setupStatus', options);
+
+/**
+ * Status
+ */
+export const setupStatusOptions = (options?: Options<SetupStatusData>) => queryOptions<SetupStatusResponse, DefaultError, SetupStatusResponse, ReturnType<typeof setupStatusQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await setupStatus({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: setupStatusQueryKey(options)
+});
+
+/**
+ * Complete
+ *
+ * Create the household and its first owner, and sign the owner in. Only while no account exists.
+ */
+export const setupCompleteMutation = (options?: Partial<Options<SetupCompleteData>>): UseMutationOptions<SetupCompleteResponse, DefaultError, Options<SetupCompleteData>> => {
+    const mutationOptions: UseMutationOptions<SetupCompleteResponse, DefaultError, Options<SetupCompleteData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await setupComplete({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
 export const tasksListQueryKey = (options?: Options<TasksListData>) => createQueryKey('tasksList', options);
 
 /**
@@ -691,3 +728,77 @@ export const usersUsersGetOptions = (options: Options<UsersUsersGetData>) => que
     },
     queryKey: usersUsersGetQueryKey(options)
 });
+
+/**
+ * Users Update
+ *
+ * Change a member's display name or role (M1S-E06-02). 409 ``last_owner`` if no active owner would remain.
+ */
+export const usersUsersUpdateMutation = (options?: Partial<Options<UsersUsersUpdateData>>): UseMutationOptions<UsersUsersUpdateResponse, DefaultError, Options<UsersUsersUpdateData>> => {
+    const mutationOptions: UseMutationOptions<UsersUsersUpdateResponse, DefaultError, Options<UsersUsersUpdateData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await usersUsersUpdate({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
+ * Users Deactivate
+ *
+ * Switch an account off (M1S-E06-03): its sessions end and sign-in answers 403 ``account_deactivated``.
+ */
+export const usersUsersDeactivateMutation = (options?: Partial<Options<UsersUsersDeactivateData>>): UseMutationOptions<UsersUsersDeactivateResponse, UsersUsersDeactivateError, Options<UsersUsersDeactivateData>> => {
+    const mutationOptions: UseMutationOptions<UsersUsersDeactivateResponse, UsersUsersDeactivateError, Options<UsersUsersDeactivateData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await usersUsersDeactivate({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
+ * Users Reset Password
+ *
+ * Set a temporary password for a member (M1S-E06-04); they must replace it at their next sign-in.
+ */
+export const usersUsersResetPasswordMutation = (options?: Partial<Options<UsersUsersResetPasswordData>>): UseMutationOptions<UsersUsersResetPasswordResponse, DefaultError, Options<UsersUsersResetPasswordData>> => {
+    const mutationOptions: UseMutationOptions<UsersUsersResetPasswordResponse, DefaultError, Options<UsersUsersResetPasswordData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await usersUsersResetPassword({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
+ * Users Reactivate
+ */
+export const usersUsersReactivateMutation = (options?: Partial<Options<UsersUsersReactivateData>>): UseMutationOptions<UsersUsersReactivateResponse, UsersUsersReactivateError, Options<UsersUsersReactivateData>> => {
+    const mutationOptions: UseMutationOptions<UsersUsersReactivateResponse, UsersUsersReactivateError, Options<UsersUsersReactivateData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await usersUsersReactivate({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
