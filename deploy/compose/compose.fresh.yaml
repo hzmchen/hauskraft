@@ -1,0 +1,21 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Overlay for the fresh stack (M1S-E01-01): a second, unseeded stack next to the demo stack, for first-run setup.
+#   docker compose -p hauskraft-fresh -f compose.yaml -f deploy/compose/compose.fresh.yaml up --wait
+# or `just fresh-up` / `just fresh-reset`. Its own project name gives it its own containers and database volume.
+services:
+  db:
+    ports: !reset []
+
+  migrate:
+    environment:
+      HAUSKRAFT_SEED_DEMO: "false"
+      HAUSKRAFT_ALLOWED_ORIGINS: http://localhost:8081
+
+  api:
+    environment:
+      HAUSKRAFT_SEED_DEMO: "false"
+      HAUSKRAFT_ALLOWED_ORIGINS: http://localhost:8081
+
+  web:
+    ports: !override
+      - "${HAUSKRAFT_WEB_BIND:-127.0.0.1}:8081:8080"
