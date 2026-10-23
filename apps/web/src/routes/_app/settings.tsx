@@ -15,7 +15,8 @@ function SettingsLayout() {
   const session = useSession();
   return (
     <div className="flex flex-col gap-density">
-      <nav aria-label={t("nav.settings")}>
+      {/* Landmark names stay English in every language, like "Main" (ui-contract). */}
+      <nav aria-label={t("settings.nav_label")}>
         <ul className="flex flex-wrap gap-2 border-b pb-2">
           {visibleSections(session.permissions).map((section) => (
             <li key={section.id}>

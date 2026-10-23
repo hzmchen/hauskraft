@@ -81,7 +81,8 @@
     "account": "Konto",
     "household": "Haushalt",
     "members": "Mitglieder",
-    "owners_only_theme": "Nur Inhaber können das Design des Haushalts ändern."
+    "owners_only_theme": "Nur Inhaber können das Design des Haushalts ändern.",
+    "nav_label": "Settings"
   },
   "dashboard": {
     "edit_layout": "Layout bearbeiten",

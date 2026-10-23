@@ -81,7 +81,8 @@
     "account": "Account",
     "household": "Household",
     "members": "Members",
-    "owners_only_theme": "Only owners can change the household theme."
+    "owners_only_theme": "Only owners can change the household theme.",
+    "nav_label": "Settings"
   },
   "dashboard": {
     "edit_layout": "Edit layout",

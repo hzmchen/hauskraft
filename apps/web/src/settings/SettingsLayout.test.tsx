@@ -25,7 +25,7 @@ function start(path: string, session: unknown, lng: "en" | "de" = "en") {
 }
 
 async function sections(): Promise<string[]> {
-  const nav = await screen.findByRole("navigation", { name: /^(Settings|Einstellungen)$/ });
+  const nav = await screen.findByRole("navigation", { name: "Settings" });
   return within(nav)
     .getAllByRole("link")
     .map((a) => a.textContent ?? "");
