@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
-"""M0S-E05-01: the user service (authorize first, lowercase usernames, adult only)."""
+"""M0S-E05-01, M1S-E02-02: the user service (authorize first, lowercase usernames, owner and adult only)."""
 
 import pytest
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
@@ -10,7 +10,7 @@ from hauskraft_core.settings import Settings
 from hauskraft_core.uow import UnitOfWork
 from hauskraft_core.users.service import (
     SYSTEM_ACTOR,
-    RoleNotEnabledInM0Error,
+    RoleNotEnabledError,
     UsernameTakenError,
     create_user,
     set_password,
@@ -61,14 +61,26 @@ async def test_duplicate_username(db_session: AsyncSession, db_settings: Setting
     assert err.value.code == "username_taken"
 
 
-@pytest.mark.parametrize("role", ["owner", "teen", "kid", "guest"])
-async def test_only_adults_can_be_created(db_session: AsyncSession, db_settings: Settings, role: str) -> None:
-    with pytest.raises(RoleNotEnabledInM0Error) as err:
+@pytest.mark.parametrize("role", [UserRole.OWNER, UserRole.ADULT])
+async def test_owner_and_adult_can_be_created(db_session: AsyncSession, db_settings: Settings, role: UserRole) -> None:
+    async with _uow(db_session, db_settings) as uow:
+        user = await create_user(
+            uow, SYSTEM_ACTOR, username=f"r{role}", display_name="R", password="correct-horse-battery", role=role
+        )
+    stored = await db_session.get(User, user.id)
+    assert stored is not None
+    assert stored.role is role
+
+
+@pytest.mark.parametrize("role", ["teen", "kid", "caregiver", "property_manager", "tenant", "guest"])
+async def test_other_roles_are_not_enabled(db_session: AsyncSession, db_settings: Settings, role: str) -> None:
+    with pytest.raises(RoleNotEnabledError) as err:
         async with _uow(db_session, db_settings) as uow:
             await create_user(
                 uow, SYSTEM_ACTOR, username=f"r{role}", display_name="R", password="correct-horse-battery", role=role
             )
     assert err.value.status == 422
+    assert err.value.code == "role_not_enabled"
 
 
 @pytest.mark.parametrize("username", ["a", "has space", "x" * 33, "ümlaut", "-dash-first"])
