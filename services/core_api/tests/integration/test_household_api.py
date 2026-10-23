@@ -140,3 +140,17 @@ def test_adults_cannot_change_the_household(signed_in: Callable[[str], TestClien
 def test_household_needs_a_session(household: Settings) -> None:
     with TestClient(create_app(household), headers={"Origin": "http://testserver"}) as c:
         assert c.get("/api/v1/household").status_code == 401
+
+
+def test_setting_a_default_value_pins_it_without_an_event(
+    signed_in: Callable[[str], TestClient], household: Settings
+) -> None:
+    """M1S-E03-03 relies on this: the seed stores all three values even where they equal the defaults."""
+    before = len(_events(household))
+    assert signed_in("owner").patch("/api/v1/household", json={"timezone": "Europe/Berlin"}).status_code == 200
+    stored = _db(
+        household,
+        select(DeploymentSetting.key, DeploymentSetting.value).where(DeploymentSetting.key.like("household.%")),
+    )
+    assert dict(stored) == {"household.timezone": "Europe/Berlin"}
+    assert len(_events(household)) == before

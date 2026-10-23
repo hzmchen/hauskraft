@@ -1,5 +1,6 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
-"""M0S-E11-02, M1S-E02-03: `hauskraft seed` creates the demo household once, with demo as owner."""
+"""M0S-E11-02, M1S-E02-03, M1S-E03-03: `hauskraft seed` creates the demo household once, with demo as owner
+and the household settings."""
 
 from collections.abc import Iterator
 
@@ -51,7 +52,7 @@ def test_seed_creates_the_household_once(empty_db: Settings) -> None:
     assert first.exit_code == 0, first.output
     assert _count(empty_db.database_url, User) == 2
     events = _count(empty_db.database_url, OutboxEvent)
-    assert events == 4, "3 task.created + 1 task.completed"
+    assert events == 5, "1 settings.household_changed + 3 task.created + 1 task.completed"
     second = CliRunner().invoke(cli, ["seed", "--if-empty"])
     assert second.exit_code == 0, second.output
     assert "already" in second.output
@@ -96,3 +97,18 @@ def test_seed_writes_no_theme_setting(empty_db: Settings) -> None:
     with engine.connect() as conn:
         assert conn.execute(text("SELECT count(*) FROM deployment_settings WHERE key = 'theme_id'")).scalar_one() == 0
     engine.dispose()
+
+
+def test_seed_stores_the_household_settings(empty_db: Settings) -> None:
+    assert CliRunner().invoke(cli, ["seed"]).exit_code == 0
+    engine = create_engine(empty_db.database_url)
+    with engine.connect() as conn:
+        stored = dict(
+            conn.execute(text("SELECT key, value FROM deployment_settings WHERE key LIKE 'household.%'")).all()
+        )
+    engine.dispose()
+    assert stored == {
+        "household.name": "Demo household",
+        "household.timezone": "Europe/Berlin",
+        "household.locale": "en",
+    }
