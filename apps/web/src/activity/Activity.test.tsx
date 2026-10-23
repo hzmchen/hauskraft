@@ -5,8 +5,10 @@ import userEvent from "@testing-library/user-event";
 import { I18nextProvider } from "react-i18next";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
+import { App } from "../app";
 import { createI18n } from "../i18n";
-import { fakeApi, json } from "../test/fakeApi";
+import { createAppRouter } from "../router";
+import { DEMO_SESSION, fakeApi, json } from "../test/fakeApi";
 import { ActivityFeed } from "./Activity";
 
 const demo = { id: "0199f390-1111-7aaa-8bbb-cccccccccccc", display_name: "Demo Adult" };
@@ -142,5 +144,29 @@ describe("Activity", () => {
     expect(await screen.findByText(/added 'Ancient'/)).toBeDefined();
     const older = calls.find((r) => new URL(r.url).searchParams.has("before"))!;
     expect(new URL(older.url).searchParams.get("before")).toBe("2026-10-13T10:53:00Z");
+  });
+});
+
+describe("Activity freshness", () => {
+  it("shows what happened since the last visit when the page is opened again", async () => {
+    let items = [item(1, "hauskraft.task.created", task("Buy milk"))];
+    fakeApi({
+      "GET /api/v1/auth/session": () => json(DEMO_SESSION),
+      "GET /api/v1/themes": () => json([]),
+      "GET /api/v1/activity": () => json(items),
+    });
+    // The app's default stale time (main.tsx): a revisit within it must still show new entries.
+    const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false, staleTime: 10_000 } } });
+    const router = createAppRouter({ initialPath: "/activity", queryClient, i18n: createI18n({ lng: "en" }) });
+    render(<App router={router} queryClient={queryClient} />);
+    expect(await screen.findByText(/added 'Buy milk'/)).toBeDefined();
+    items = [item(0, "hauskraft.task.created", task("Plan the garden")), ...items];
+    await act(async () => {
+      await router.navigate({ to: "/today" });
+    });
+    await act(async () => {
+      await router.navigate({ to: "/activity" });
+    });
+    expect(await screen.findByText(/added 'Plan the garden'/)).toBeDefined();
   });
 });
