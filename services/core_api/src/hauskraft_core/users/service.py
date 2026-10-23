@@ -41,6 +41,12 @@ class LastOwnerError(ConflictError):
         super().__init__("last_owner", "The household needs at least one active owner.")
 
 
+class OwnAccountError(HauskraftError):
+    status = 422
+    code = "own_account"
+    title = "Use your own account settings"
+
+
 class WrongPasswordError(HauskraftError):
     status = 422
     code = "wrong_password"
@@ -209,6 +215,20 @@ async def reactivate_member(uow: UnitOfWork, actor: Actor, user_id: uuid.UUID) -
         "personal",
     )
     return user
+
+
+async def reset_member_password(uow: UnitOfWork, actor: Actor, user_id: uuid.UUID, password: str) -> None:
+    """Give a member a temporary password (owners only): their sessions end and they must choose a new one."""
+    await uow.authorize(actor, "user.reset_password", ResourceRef("User", str(user_id)), "personal", "graph:write:User")
+    if str(user_id) == actor.id:
+        raise OwnAccountError("Change your own password in your account settings.")
+    user = await get_member(uow.session, user_id)
+    check_password_policy(password)
+    user.password_hash = await hash_password(password)
+    user.must_change_password = True
+    await sessions.revoke_all_for(uow.session, user)
+    await uow.session.flush()
+    await emit_account_event("hauskraft.user.password_reset", user)
 
 
 async def set_password(uow: UnitOfWork, actor: Actor, username: str, password: str) -> User:

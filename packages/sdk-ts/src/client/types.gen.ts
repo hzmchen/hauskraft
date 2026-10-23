@@ -747,6 +747,16 @@ export type TaskPatch = {
 };
 
 /**
+ * TemporaryPassword
+ */
+export type TemporaryPassword = {
+    /**
+     * Password
+     */
+    password: string;
+};
+
+/**
  * ThemePreview
  */
 export type ThemePreview = {
@@ -2074,6 +2084,46 @@ export type UsersUsersDeactivateResponses = {
 };
 
 export type UsersUsersDeactivateResponse = UsersUsersDeactivateResponses[keyof UsersUsersDeactivateResponses];
+
+export type UsersUsersResetPasswordData = {
+    body: TemporaryPassword;
+    path: {
+        /**
+         * User Id
+         */
+        user_id: string;
+    };
+    query?: never;
+    url: '/api/v1/users/{user_id}/password';
+};
+
+export type UsersUsersResetPasswordErrors = {
+    /**
+     * Unauthorized
+     */
+    401: unknown;
+    /**
+     * Forbidden
+     */
+    403: unknown;
+    /**
+     * Not Found
+     */
+    404: unknown;
+    /**
+     * Unprocessable Content
+     */
+    422: unknown;
+};
+
+export type UsersUsersResetPasswordResponses = {
+    /**
+     * Successful Response
+     */
+    204: void;
+};
+
+export type UsersUsersResetPasswordResponse = UsersUsersResetPasswordResponses[keyof UsersUsersResetPasswordResponses];
 
 export type UsersUsersReactivateData = {
     body?: never;

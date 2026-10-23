@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
-"""``/me`` (M0S-E05-02) and the member's own sessions (M1S-E05-02)."""
+"""``/me`` (M0S-E05-02), the member's own sessions (M1S-E05-02) and the owners' members API (M1S-E06)."""
 
 from __future__ import annotations
 
@@ -17,6 +17,7 @@ from hauskraft_core.auth.schemas import (
     MePatch,
     PasswordChange,
     SessionInfo,
+    TemporaryPassword,
     UserCreate,
     UserOut,
 )
@@ -33,6 +34,7 @@ from hauskraft_core.users.service import (
     get_member,
     list_members,
     reactivate_member,
+    reset_member_password,
     update_member,
     update_own_profile,
 )
@@ -155,6 +157,16 @@ async def users_reactivate(user_id: uuid.UUID, request: Request, resolved: Curre
     async with UnitOfWork(request.app.state.sessionmaker, request.app.state.policy, request.app.state.settings) as uow:
         out = MemberOut.of(await reactivate_member(uow, actor_for(resolved[1]), user_id))
     return out
+
+
+@router.post("/users/{user_id}/password", status_code=204, responses={401: {}, 403: {}, 404: {}, 422: {}})
+async def users_reset_password(
+    user_id: uuid.UUID, body: TemporaryPassword, request: Request, resolved: CurrentSession
+) -> Response:
+    """Set a temporary password for a member (M1S-E06-04); they must replace it at their next sign-in."""
+    async with UnitOfWork(request.app.state.sessionmaker, request.app.state.policy, request.app.state.settings) as uow:
+        await reset_member_password(uow, actor_for(resolved[1]), user_id, body.password)
+    return Response(status_code=204)
 
 
 @router.post("/users", status_code=201, responses={401: {}, 403: {}, 409: {}, 422: {}})
