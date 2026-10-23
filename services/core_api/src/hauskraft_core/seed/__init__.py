@@ -81,6 +81,7 @@ async def run_seed(settings: Settings, fixture: dict[str, Any], *, force_demo: b
                         username=spec["username"],
                         display_name=spec["display_name"],
                         password=spec["password"],
+                        role=spec.get("role", "adult"),
                         locale=spec.get("locale", "en"),
                     )
                 actors[spec["key"]] = actor_for(user)
