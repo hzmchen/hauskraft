@@ -10,6 +10,7 @@
 - **Story:** As a maintainer, I want fast PR feedback, so that broken code never lands.
 - **AC:**
   - Given a PR, when CI runs, then jobs `lint`, `typecheck`, `unit-py`, `unit-web` and `acceptance` run in parallel, finish in under 8 min, and failing any of them blocks merge.
+    - *Amended 2026-10-23 (D15):* `unit-web`'s hard limit is 15 min. Its own steps still aim for 8, but `playwright install --with-deps` downloads about 26 MB of system packages from the runner's apt mirror, which at times serves ~40 KB/s; the job was cancelled at 8 min 23 s while the tests themselves take ~20 s. The sturdier fix is NIE-87.
   - The `acceptance` job runs `python scripts/backlog_tools.py check` and `python -m pytest tests --strict-status`. Red stories report as xfail; a red story whose tests all pass fails the job until it is flipped to green; a green story's failing test fails the job.
 - **Tech:**
   - `.github/workflows/ci.yml` with `astral-sh/setup-uv` (cache on `uv.lock`), `actions/setup-node` with the pnpm cache, and `concurrency` cancel-in-progress.

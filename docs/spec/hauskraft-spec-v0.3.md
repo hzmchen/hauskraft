@@ -716,6 +716,11 @@ Every story is built red → green → refactor (ADR-0014).
 - **Spec-owned acceptance suite.** `tests/` is written from this spec and the backlog before the code: static contract tests (schemas, fixtures, config), black-box CLI tests, live HTTP tests against the running stack, and Playwright tests of the demo script, the tasks UI and theme invariance. Fixtures (valid and invalid manifests, events, theme packages) are part of the contract.
 - **One switch per story.** `tests/story-status.json` marks each story red or green. Red stories' tests run as expected failures; green stories' tests are hard gates; CI fails when a red story's tests all pass, so the switch cannot be forgotten.
 - **Black box first.** Tests talk to public surfaces only (HTTP API, CLI `--json`, linters via stdin, roles and accessible names in the UI), so implementers keep freedom inside modules. Unit and integration tests are written first inside each story.
+- **CI time budget.** Every CI job aims to finish in under 8 minutes and has a hard limit of 8, except `unit-web` with
+  15 (D15). Its browser install fetches about 26 MB of system packages from the runner's apt mirror, which at times
+  serves ~40 KB/s, and that alone overran 8 minutes while the tests take ~20 seconds. The limit stops runaway jobs;
+  it should not fail a PR because of a slow mirror. Running the job in the Playwright container image or caching the
+  packages would bring it back to 8 (NIE-87).
 - **Docs are tested too.** `scripts/backlog_tools.py check` and `tests/meta/` keep the spec, backlog, story status and test coverage consistent.
 
 ### 13.4 Contribution model
@@ -757,6 +762,7 @@ DCO sign-off; ADRs for architecture changes; plugin quality tiers mirroring HA's
 | D12 | M1* enables `owner` and `adult` through a static permission table behind `authorize()`; Cedar later (ADR 0016) | 2026-10-22 |
 | D13 | First-run setup is a web wizard; the first visitor becomes owner, with no setup code (ADR 0017) | 2026-10-22 |
 | D14 | Changes to members and passwords are CloudEvents shown in Activity (ADR 0018) | 2026-10-22 |
+| D15 | CI job `unit-web` may run 15 minutes instead of 8, because its browser install depends on a slow apt mirror (§13.3); the 8-minute target stays | 2026-10-23 |
 
 ## Sources (selected)
 - Design Tokens Format Module 2025.10 (first stable version): https://www.designtokens.org/ and https://www.w3.org/community/design-tokens/2025/10/28/design-tokens-specification-reaches-first-stable-version/
