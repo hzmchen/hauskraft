@@ -11,7 +11,8 @@ from hauskraft_core.auth import sessions
 from hauskraft_core.auth.csrf import check_origin
 from hauskraft_core.auth.deps import CurrentSession, actor_for
 from hauskraft_core.auth.providers import PasswordCredentials
-from hauskraft_core.auth.schemas import LoginIn, SessionOut, UserOut
+from hauskraft_core.auth.ratelimit import client_ip
+from hauskraft_core.auth.schemas import LoginIn, SessionOut
 from hauskraft_core.uow import UnitOfWork
 from hauskraft_sdk import ResourceRef
 from hauskraft_sdk.errors import HauskraftError
@@ -38,10 +39,6 @@ class RateLimitedError(HauskraftError):
         self.headers = {"Retry-After": str(retry_after)}
 
 
-def _client_ip(request: Request) -> str:
-    return request.client.host if request.client else "unknown"
-
-
 def _inet(value: str) -> str | None:
     """The INET column only takes real addresses (test clients report a host name)."""
     try:
@@ -66,7 +63,7 @@ def _set_cookie(response: Response, request: Request, token: str) -> None:
 async def login(body: LoginIn, request: Request, response: Response) -> SessionOut:
     check_origin(request)
     limiter = request.app.state.login_limiter
-    ip = _client_ip(request)
+    ip = client_ip(request)
     wait = limiter.retry_after(body.username, ip)
     if wait:
         raise RateLimitedError(wait)
@@ -89,7 +86,7 @@ async def login(body: LoginIn, request: Request, response: Response) -> SessionO
         token, row = await sessions.create(
             uow.session, user, user_agent=request.headers.get("user-agent"), ip=_inet(ip)
         )
-        out = SessionOut(user=UserOut.of(user), csrf_token=row.csrf_token, expires_at=row.expires_at)
+        out = SessionOut.of(user, row.csrf_token, row.expires_at)
     _set_cookie(response, request, token)
     return out
 
@@ -101,6 +98,20 @@ async def logout(request: Request, resolved: CurrentSession) -> Response:
     async with uow:
         await uow.authorize(actor_for(user), "session.revoke", ResourceRef("Session"), "personal", "auth:logout")
         await sessions.revoke(uow.session, request.cookies.get(sessions.COOKIE_NAME))
+    return _signed_out(request)
+
+
+@router.post("/logout-everywhere", status_code=204, responses={401: {}, 403: {}})
+async def logout_everywhere(request: Request, resolved: CurrentSession) -> Response:
+    """End every session of the signed-in member, this one included (M1S-E05-02)."""
+    _sess, user = resolved
+    async with UnitOfWork(request.app.state.sessionmaker, request.app.state.policy, request.app.state.settings) as uow:
+        await uow.authorize(actor_for(user), "session.revoke", ResourceRef("Session"), "personal", "auth:logout")
+        await sessions.revoke_all_for(uow.session, user)
+    return _signed_out(request)
+
+
+def _signed_out(request: Request) -> Response:
     response = Response(status_code=204)
     response.delete_cookie(
         sessions.COOKIE_NAME, path="/", httponly=True, samesite="lax", secure=request.app.state.settings.cookie_secure
@@ -111,4 +122,4 @@ async def logout(request: Request, resolved: CurrentSession) -> Response:
 @router.get("/session", responses={401: {}})
 async def session(resolved: CurrentSession) -> SessionOut:
     sess, user = resolved
-    return SessionOut(user=UserOut.of(user), csrf_token=sess.csrf_token, expires_at=sess.expires_at)
+    return SessionOut.of(user, sess.csrf_token, sess.expires_at)

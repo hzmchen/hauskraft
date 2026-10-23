@@ -5,7 +5,7 @@ import logging
 
 import pytest
 
-from hauskraft_core.policy import Decision, DenyAllPolicy, NoOpPolicy, Policy, policy_from_settings
+from hauskraft_core.policy import Decision, DenyAllPolicy, NoOpPolicy, Policy, RolePolicy, policy_from_settings
 from hauskraft_core.settings import Settings
 from hauskraft_core.uow import UnitOfWork, current_uow
 from hauskraft_sdk import Actor, DataClass, ResourceRef
@@ -58,7 +58,7 @@ def test_policy_protocol_is_structural() -> None:
     assert isinstance(SpyPolicy(), Policy)
 
 
-@pytest.mark.parametrize(("name", "cls"), [("noop", NoOpPolicy), ("deny_all", DenyAllPolicy)])
+@pytest.mark.parametrize(("name", "cls"), [("roles", RolePolicy), ("noop", NoOpPolicy), ("deny_all", DenyAllPolicy)])
 def test_policy_chosen_by_setting(name: str, cls: type) -> None:
     assert isinstance(policy_from_settings(Settings(env="test", policy=name)), cls)
 

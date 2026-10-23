@@ -33,7 +33,7 @@ class Settings(BaseSettings):
     plugin_paths: Annotated[list[Path], NoDecode] = Field(default_factory=lambda: [Path("plugins/official")])
     theme_paths: Annotated[list[Path], NoDecode] = Field(default_factory=lambda: [Path("themes/builtin")])
     default_theme: str = "dev.hauskraft.theme.default"
-    policy: Literal["noop", "deny_all"] = "noop"
+    policy: Literal["roles", "noop", "deny_all"] = "roles"
     auth_provider: Literal["local", "oidc"] = "local"
     seed_demo: bool = False
     relay_enabled: bool = True

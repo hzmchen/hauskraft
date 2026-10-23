@@ -303,6 +303,20 @@ export type NavigationStyles = {
 };
 
 /**
+ * PasswordChange
+ */
+export type PasswordChange = {
+    /**
+     * Current Password
+     */
+    current_password: string;
+    /**
+     * New Password
+     */
+    new_password: string;
+};
+
+/**
  * PluginOut
  */
 export type PluginOut = {
@@ -411,6 +425,34 @@ export type Readiness = {
 };
 
 /**
+ * SessionInfo
+ *
+ * One of the member's signed-in sessions (M1S-E05-02). Never the token, its hash or the IP address.
+ */
+export type SessionInfo = {
+    /**
+     * Created At
+     */
+    created_at: string;
+    /**
+     * Current
+     */
+    current: boolean;
+    /**
+     * Device
+     */
+    device: string;
+    /**
+     * Id
+     */
+    id: string;
+    /**
+     * Last Seen At
+     */
+    last_seen_at: string;
+};
+
+/**
  * SessionOut
  */
 export type SessionOut = {
@@ -422,6 +464,12 @@ export type SessionOut = {
      * Expires At
      */
     expires_at: string;
+    /**
+     * Permissions
+     *
+     * The actions the user's role may do, sorted (spec §2.3). For showing controls; the API decides.
+     */
+    permissions: Array<string>;
     user: UserOut;
 };
 
@@ -632,6 +680,7 @@ export type UserCreate = {
      * Password
      */
     password: string;
+    role?: UserRole;
     /**
      * Username
      */
@@ -677,6 +726,13 @@ export type UserRef = {
      */
     id: string;
 };
+
+/**
+ * UserRole
+ *
+ * The full role enum (spec §2.1). Only ``owner`` and ``adult`` can be created (M1*, ADR 0016).
+ */
+export type UserRole = 'owner' | 'adult' | 'teen' | 'kid' | 'caregiver' | 'property_manager' | 'tenant' | 'guest';
 
 /**
  * ValidationError
@@ -821,6 +877,33 @@ export type AuthLogoutResponses = {
 };
 
 export type AuthLogoutResponse = AuthLogoutResponses[keyof AuthLogoutResponses];
+
+export type AuthLogoutEverywhereData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/v1/auth/logout-everywhere';
+};
+
+export type AuthLogoutEverywhereErrors = {
+    /**
+     * Unauthorized
+     */
+    401: unknown;
+    /**
+     * Forbidden
+     */
+    403: unknown;
+};
+
+export type AuthLogoutEverywhereResponses = {
+    /**
+     * Successful Response
+     */
+    204: void;
+};
+
+export type AuthLogoutEverywhereResponse = AuthLogoutEverywhereResponses[keyof AuthLogoutEverywhereResponses];
 
 export type AuthSessionData = {
     body?: never;
@@ -982,6 +1065,108 @@ export type UsersMeUpdateResponses = {
 };
 
 export type UsersMeUpdateResponse = UsersMeUpdateResponses[keyof UsersMeUpdateResponses];
+
+export type UsersMePasswordData = {
+    body: PasswordChange;
+    path?: never;
+    query?: never;
+    url: '/api/v1/me/password';
+};
+
+export type UsersMePasswordErrors = {
+    /**
+     * Unauthorized
+     */
+    401: unknown;
+    /**
+     * Forbidden
+     */
+    403: unknown;
+    /**
+     * Unprocessable Content
+     */
+    422: unknown;
+    /**
+     * Too Many Requests
+     */
+    429: unknown;
+};
+
+export type UsersMePasswordResponses = {
+    /**
+     * Successful Response
+     */
+    204: void;
+};
+
+export type UsersMePasswordResponse = UsersMePasswordResponses[keyof UsersMePasswordResponses];
+
+export type UsersMeSessionsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/v1/me/sessions';
+};
+
+export type UsersMeSessionsErrors = {
+    /**
+     * Unauthorized
+     */
+    401: unknown;
+};
+
+export type UsersMeSessionsResponses = {
+    /**
+     * Response Users Me Sessions
+     *
+     * Successful Response
+     */
+    200: Array<SessionInfo>;
+};
+
+export type UsersMeSessionsResponse = UsersMeSessionsResponses[keyof UsersMeSessionsResponses];
+
+export type UsersMeSessionEndData = {
+    body?: never;
+    path: {
+        /**
+         * Session Id
+         */
+        session_id: string;
+    };
+    query?: never;
+    url: '/api/v1/me/sessions/{session_id}';
+};
+
+export type UsersMeSessionEndErrors = {
+    /**
+     * Unauthorized
+     */
+    401: unknown;
+    /**
+     * Forbidden
+     */
+    403: unknown;
+    /**
+     * Not Found
+     */
+    404: unknown;
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type UsersMeSessionEndError = UsersMeSessionEndErrors[keyof UsersMeSessionEndErrors];
+
+export type UsersMeSessionEndResponses = {
+    /**
+     * Successful Response
+     */
+    204: void;
+};
+
+export type UsersMeSessionEndResponse = UsersMeSessionEndResponses[keyof UsersMeSessionEndResponses];
 
 export type PluginsListData = {
     body?: never;

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import { getCsrfToken, setCsrfToken } from "@hauskraft/sdk-ts";
+import { getCsrfToken, setCsrfToken, usersMeGet } from "@hauskraft/sdk-ts";
 import { QueryClient } from "@tanstack/react-query";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -104,6 +104,87 @@ describe("sign out", () => {
     expect(queryClient.getQueryData(["private"])).toBeUndefined();
     expect(getCsrfToken()).toBeNull();
     expect(calls.find((r) => r.url.endsWith("/auth/logout"))!.headers.get("X-CSRF-Token")).toBe("csrf-123");
+  });
+});
+
+describe("ended session (M1S-E07-03)", () => {
+  const ENDED = "Your session has ended. Please sign in again.";
+
+  function household(state: { signedIn: boolean }) {
+    return fakeApi({
+      "GET /api/v1/auth/session": () => (state.signedIn ? json(DEMO_SESSION) : problem(401, "unauthenticated")),
+      "GET /api/v1/me": () => (state.signedIn ? json(DEMO_SESSION.user) : problem(401, "unauthenticated")),
+      "POST /api/v1/auth/login": () => {
+        state.signedIn = true;
+        return json(DEMO_SESSION);
+      },
+    });
+  }
+
+  it("a 401 while signed in goes to sign-in, says why, and returns to the page afterwards", async () => {
+    const state = { signedIn: true };
+    household(state);
+    const { router, queryClient } = start("/activity?page=2");
+    await screen.findByRole("heading", { level: 1, name: "Activity" });
+    queryClient.setQueryData(["private"], "household data");
+    state.signedIn = false; // signed out everywhere from another device
+    await usersMeGet();
+    await waitFor(() => expect(router.state.location.pathname).toBe("/login"));
+    expect(router.state.location.search).toEqual({ redirect: "/activity?page=2", reason: "expired" });
+    expect((await screen.findByRole("status")).textContent).toBe(ENDED);
+    expect(queryClient.getQueryData(["private"])).toBeUndefined();
+    expect(getCsrfToken()).toBeNull();
+
+    await userEvent.type(screen.getByRole("textbox", { name: "Username" }), "demo");
+    await userEvent.type(screen.getByLabelText("Password"), "hauskraft-demo");
+    await userEvent.click(screen.getByRole("button", { name: "Sign in" }));
+    await waitFor(() => expect(router.state.location.pathname).toBe("/activity"));
+    expect(router.state.location.searchStr).toBe("?page=2");
+  });
+
+  it("a wrong password on the sign-in page is not an ended session", async () => {
+    fakeApi({
+      "GET /api/v1/auth/session": () => problem(401, "unauthenticated"),
+      "POST /api/v1/auth/login": () => problem(401, "invalid_credentials"),
+    });
+    const { router } = start("/login");
+    await userEvent.type(await screen.findByRole("textbox", { name: "Username" }), "demo");
+    await userEvent.type(screen.getByLabelText("Password"), "nope");
+    await userEvent.click(screen.getByRole("button", { name: "Sign in" }));
+    await screen.findByRole("alert");
+    expect(screen.queryByRole("status")).toBeNull();
+    expect(router.state.location.search).toEqual({});
+  });
+
+  it("signing out on purpose shows no message", async () => {
+    const state = { signedIn: true };
+    fakeApi({
+      "GET /api/v1/auth/session": () => (state.signedIn ? json(DEMO_SESSION) : problem(401, "unauthenticated")),
+      "POST /api/v1/auth/logout": () => {
+        state.signedIn = false;
+        return new Response(null, { status: 204 });
+      },
+    });
+    const { router } = start("/today");
+    await userEvent.click(await screen.findByRole("button", { name: "Account menu" }));
+    await userEvent.click(await screen.findByRole("menuitem", { name: "Sign out" }));
+    await waitFor(() => expect(router.state.location.pathname).toBe("/login"));
+    await screen.findByRole("button", { name: "Sign in" });
+    expect(screen.queryByText(ENDED)).toBeNull();
+  });
+
+  it("the message is in German too", async () => {
+    fakeApi({ "GET /api/v1/auth/session": () => problem(401, "unauthenticated") });
+    const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+    const router = createAppRouter({
+      initialPath: "/login?reason=expired",
+      queryClient,
+      i18n: createI18n({ lng: "de" }),
+    });
+    render(<App router={router} queryClient={queryClient} />);
+    expect((await screen.findByRole("status")).textContent).toBe(
+      "Deine Sitzung ist abgelaufen. Bitte melde dich erneut an.",
+    );
   });
 });
 

@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
-"""M0S-E05-05: create another adult through the API and the `hauskraft` CLI."""
+"""M0S-E05-05, M1S-E02-02: owners create owner and adult accounts through the API; the `hauskraft` CLI."""
 
 import uuid
 from collections.abc import Callable
@@ -20,23 +20,37 @@ def _login(client: TestClient, username: str, password: str = PASSWORD):  # type
     return client.post("/api/v1/auth/login", json={"username": username, "password": password})
 
 
-def _signed_in(client: TestClient, make_user: Callable[..., str]) -> dict[str, str]:
-    return {"X-CSRF-Token": _login(client, make_user()).json()["csrf_token"]}
+def _signed_in(client: TestClient, make_user: Callable[..., str], role: str = "owner") -> dict[str, str]:
+    return {"X-CSRF-Token": _login(client, make_user(role=role)).json()["csrf_token"]}
 
 
-def test_adult_creates_another_adult(client: TestClient, make_user: Callable[..., str], api_settings: Settings) -> None:
+@pytest.mark.parametrize(("body", "role"), [({}, "adult"), ({"role": "adult"}, "adult"), ({"role": "owner"}, "owner")])
+def test_owner_creates_owner_or_adult(
+    client: TestClient, make_user: Callable[..., str], api_settings: Settings, body: dict[str, str], role: str
+) -> None:
     headers = _signed_in(client, make_user)
     username = "anna" + uuid.uuid4().hex[:6]
     r = client.post(
         "/api/v1/users",
-        json={"username": username, "display_name": "Anna Adult", "password": "correct-horse-battery"},
+        json={"username": username, "display_name": "Anna", "password": "correct-horse-battery", **body},
         headers=headers,
     )
     assert r.status_code == 201, r.text
-    assert r.json()["role"] == "adult"
+    assert r.json()["role"] == role
     assert r.json()["username"] == username
     with TestClient(create_app(api_settings), headers={"Origin": "http://testserver"}) as other:
         assert _login(other, username, "correct-horse-battery").status_code == 200
+
+
+def test_adults_cannot_create_accounts(client: TestClient, make_user: Callable[..., str]) -> None:
+    headers = _signed_in(client, make_user, role="adult")
+    r = client.post(
+        "/api/v1/users",
+        json={"username": "denied" + uuid.uuid4().hex[:6], "display_name": "D", "password": "correct-horse-battery"},
+        headers=headers,
+    )
+    assert r.status_code == 403
+    assert r.json()["code"] == "policy_denied"
 
 
 @pytest.mark.parametrize(
@@ -44,7 +58,8 @@ def test_adult_creates_another_adult(client: TestClient, make_user: Callable[...
     [
         ({"password": "short"}, 422, None),
         ({"password": "x" * 129}, 422, None),
-        ({"role": "owner"}, 422, None),
+        ({"role": "kid"}, 422, "role_not_enabled"),
+        ({"role": "superuser"}, 422, None),
         ({"username": "Has Space"}, 422, "invalid_username"),
     ],
 )

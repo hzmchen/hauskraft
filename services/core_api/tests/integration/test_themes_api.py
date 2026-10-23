@@ -64,17 +64,17 @@ def themed(theme_settings: Settings) -> Iterator[TestClient]:
 
 @pytest.fixture
 def actor(theme_settings: Settings, make_user: Callable[..., str]) -> Actor:
-    username = make_user("Probe")
+    username = make_user("Probe", role="owner")
     engine = create_engine(theme_settings.database_url)
     with engine.connect() as conn:
         user_id = conn.scalar(select(User.id).where(User.username == username))
     engine.dispose()
-    return Actor(id=str(user_id), role="adult", display_name="Probe")
+    return Actor(id=str(user_id), role="owner", display_name="Probe")
 
 
 @pytest.fixture
 def h(themed: TestClient, make_user: Callable[..., str]) -> dict[str, str]:
-    r = themed.post("/api/v1/auth/login", json={"username": make_user("Demo Adult"), "password": PASSWORD})
+    r = themed.post("/api/v1/auth/login", json={"username": make_user("Owner", role="owner"), "password": PASSWORD})
     return {"X-CSRF-Token": r.json()["csrf_token"]}
 
 

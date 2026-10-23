@@ -75,6 +75,24 @@ pnpm --filter @hauskraft/acceptance-e2e exec playwright test
 
 The test overlay (`deploy/compose/compose.test.yaml`, M0S-E11-01) mounts `tests/fixtures/themes` so the live tests can select fixture themes. Environment variables: `HAUSKRAFT_BASE_URL` (default `http://localhost:8080`), `HAUSKRAFT_DEMO_PASSWORD` (default `hauskraft-demo`), `HAUSKRAFT_CLI`, `HAUSKRAFT_RUFF`, `HAUSKRAFT_ESLINT`, `HAUSKRAFT_E2E_RESTART_CMD` (step 11 of the demo), `HAUSKRAFT_TDD_RAW=1` (Playwright raw mode).
 
+### The fresh stack (M1*)
+
+First-run setup can only be tested on a household without accounts, so a second, unseeded stack runs next to the
+demo stack (M1S-E01-01):
+
+```sh
+just fresh-up        # project hauskraft-fresh on http://localhost:8081, no demo seed, no database port
+just fresh-reset     # remove its containers and database volume, then start it again (empty and healthy)
+
+HAUSKRAFT_FRESH_BASE_URL=http://localhost:8081 HAUSKRAFT_FRESH_RESET_CMD="just fresh-reset" \
+  python -m pytest tests --live --strict-status
+```
+
+Tests marked `fresh` (pytest) and the specs that use `tests/e2e/support/fresh.ts` (Playwright) run only when
+`HAUSKRAFT_FRESH_BASE_URL` is set; otherwise they are skipped. `HAUSKRAFT_FRESH_RESET_CMD` is a shell command that
+leaves an empty, healthy fresh stack; tests run it before each first-run scenario. The fresh stack uses the same
+images as the demo stack, so build them first (`just demo`).
+
 ## Validating the docs
 
 ```sh

@@ -3,7 +3,8 @@
 #   db       Postgres 16
 #   migrate  one-shot: schema upgrade and demo seed (only into an empty database)
 #   api      core API (FastAPI) with the built-in themes and ./data/themes
-#   web      Caddy: the SPA and /api/* on one origin, published on HAUSKRAFT_WEB_PORT (8080)
+#   web      Caddy: the SPA and /api/* on one origin, published on HAUSKRAFT_WEB_PORT (8080), on this
+#            machine only unless HAUSKRAFT_WEB_BIND says otherwise (M1S-E03-04, ADR 0017)
 name: hauskraft
 
 x-api-env: &api-env
@@ -73,7 +74,7 @@ services:
       dockerfile: apps/web/Dockerfile
     image: hauskraft/web:dev
     ports:
-      - "${HAUSKRAFT_WEB_PORT:-8080}:8080"
+      - "${HAUSKRAFT_WEB_BIND:-127.0.0.1}:${HAUSKRAFT_WEB_PORT:-8080}:8080"
     depends_on:
       api:
         condition: service_healthy

@@ -32,9 +32,9 @@ def client(api_settings: Settings) -> Iterator[TestClient]:
 
 @pytest.fixture
 def make_user(api_settings: Settings) -> Callable[..., str]:
-    """Create a committed adult with a unique username; returns the username."""
+    """Create a committed account (adult unless ``role`` says otherwise) with a unique username; returns it."""
 
-    def _make(display_name: str = "Test Adult", password: str = PASSWORD) -> str:
+    def _make(display_name: str = "Test Adult", password: str = PASSWORD, role: str = "adult") -> str:
         username = "u" + uuid.uuid4().hex[:10]
 
         async def _create() -> None:
@@ -44,7 +44,7 @@ def make_user(api_settings: Settings) -> Callable[..., str]:
                     async_sessionmaker(engine, expire_on_commit=False), NoOpPolicy(), api_settings
                 ) as uow:
                     await create_user(
-                        uow, SYSTEM_ACTOR, username=username, display_name=display_name, password=password
+                        uow, SYSTEM_ACTOR, username=username, display_name=display_name, password=password, role=role
                     )
             finally:
                 await engine.dispose()

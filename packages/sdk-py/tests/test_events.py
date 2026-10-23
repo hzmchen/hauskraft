@@ -64,3 +64,27 @@ def test_task_snapshot_rejects_unknown_fields() -> None:
     raw["data"]["task"]["password"] = "leak"
     with pytest.raises(ValidationError):
         DATA_MODELS["hauskraft.task.created"].model_validate(raw["data"])
+
+
+ACCOUNTS = REPO / "tests" / "fixtures" / "events" / "accounts"
+ACCOUNTS_VALID = sorted((ACCOUNTS / "valid").glob("*.json"))
+ACCOUNTS_INVALID = sorted((ACCOUNTS / "invalid").glob("*.json"))
+
+
+@pytest.mark.parametrize("path", ACCOUNTS_VALID, ids=lambda p: p.stem)
+def test_account_fixture_round_trips_through_the_models(path: Path) -> None:
+    """M1S-E09-01: account and household events (ADR 0018)."""
+    test_fixture_round_trips_through_the_models(path)
+
+
+@pytest.mark.parametrize("path", ACCOUNTS_INVALID, ids=lambda p: p.stem)
+def test_invalid_account_data_is_rejected_by_the_model(path: Path) -> None:
+    raw = _load(path)
+    with pytest.raises(ValidationError):
+        DATA_MODELS[raw["type"]].model_validate(raw["data"])
+
+
+def test_account_changes_omit_unchanged_fields() -> None:
+    raw = _load(ACCOUNTS / "valid" / "user.updated.json")["data"]
+    data = DATA_MODELS["hauskraft.user.updated"].model_validate(raw)
+    assert data.model_dump(mode="json")["changes"] == {"display_name": {"from": "Alex", "to": "Alex M."}}

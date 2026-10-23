@@ -9,9 +9,17 @@ import { useTranslation } from "react-i18next";
 import { LOCALE_STORAGE_KEY, isLanguage } from "../i18n";
 import { rememberSession, safeRedirect, sessionQuery } from "../session";
 
+interface LoginSearch {
+  redirect?: string;
+  /** Set when a session ended while the app was open (M1S-E07-03). */
+  reason?: "expired";
+}
+
 export const Route = createFileRoute("/login")({
-  validateSearch: (search: Record<string, unknown>): { redirect?: string } =>
-    typeof search.redirect === "string" ? { redirect: search.redirect } : {},
+  validateSearch: (search: Record<string, unknown>): LoginSearch => ({
+    ...(typeof search.redirect === "string" ? { redirect: search.redirect } : {}),
+    ...(search.reason === "expired" ? { reason: "expired" as const } : {}),
+  }),
   beforeLoad: async ({ context, search }) => {
     if (await context.queryClient.ensureQueryData(sessionQuery)) {
       throw redirect({ href: safeRedirect(search.redirect) });
@@ -31,7 +39,7 @@ function hasDeviceLanguage(): boolean {
 function Login() {
   const { t, i18n } = useTranslation();
   const router = useRouter();
-  const { redirect: target } = Route.useSearch();
+  const { redirect: target, reason } = Route.useSearch();
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
   const ids = { title: useId(), username: useId(), password: useId() };
@@ -72,6 +80,11 @@ function Login() {
           </CardTitle>
         </CardHeader>
         <CardContent>
+          {reason === "expired" ? (
+            <p role="status" className="mb-3 text-muted-foreground">
+              {t("login.session_ended")}
+            </p>
+          ) : null}
           <form aria-labelledby={ids.title} onSubmit={submit} className="flex flex-col gap-3">
             <label htmlFor={ids.username} className="font-medium">
               {t("login.username")}

@@ -98,6 +98,15 @@ acceptance *args:
 demo:
     docker compose up --build --wait
 
+# Start the fresh, unseeded stack next to the demo (http://localhost:8081, M1S-E01-01)
+fresh-up:
+    docker compose -p hauskraft-fresh -f compose.yaml -f deploy/compose/compose.fresh.yaml up --wait
+
+# Empty the fresh stack: remove its containers and database volume, then start it again
+fresh-reset:
+    docker compose -p hauskraft-fresh -f compose.yaml -f deploy/compose/compose.fresh.yaml down -v
+    docker compose -p hauskraft-fresh -f compose.yaml -f deploy/compose/compose.fresh.yaml up --wait
+
 # Validate the built-in themes and the template, and doc-test the authoring guide (M0S-E13-09)
 themes-validate *args:
     for theme in themes/builtin/*/ themes/template/; do uv run hauskraft themes validate --strict {{ args }} "$theme" || exit 1; done

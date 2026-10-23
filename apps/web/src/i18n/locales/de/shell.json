@@ -40,7 +40,8 @@
     "password": "Passwort",
     "submit": "Anmelden",
     "error_credentials": "Falscher Benutzername oder falsches Passwort",
-    "error_rate_limited": "Zu viele Versuche. Warte eine Minute und versuche es noch einmal."
+    "error_rate_limited": "Zu viele Versuche. Warte eine Minute und versuche es noch einmal.",
+    "session_ended": "Deine Sitzung ist abgelaufen. Bitte melde dich erneut an."
   },
   "widget": {
     "unavailable": "Widget nicht verfügbar",

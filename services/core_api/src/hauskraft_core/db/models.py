@@ -17,7 +17,7 @@ from hauskraft_core.db.ids import new_id
 
 
 class UserRole(enum.StrEnum):
-    """The full role enum (spec §2.1). Only ``adult`` can be created in M0*."""
+    """The full role enum (spec §2.1). Only ``owner`` and ``adult`` can be created (M1*, ADR 0016)."""
 
     OWNER = "owner"
     ADULT = "adult"
@@ -60,6 +60,9 @@ class Session(Base):
     __tablename__ = "sessions"
 
     id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    public_id: Mapped[uuid.UUID] = mapped_column(
+        unique=True, default=new_id, server_default=text("gen_random_uuid()")
+    )  # what members see and send (M1S-E05-02); ``id`` never leaves the server
     user_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), index=True)
     csrf_token: Mapped[str] = mapped_column(Text)
     created_at: Mapped[dt.datetime] = mapped_column(TIMESTAMPTZ, server_default=func.now())
