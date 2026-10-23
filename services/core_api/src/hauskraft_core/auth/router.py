@@ -39,7 +39,7 @@ class RateLimitedError(HauskraftError):
         self.headers = {"Retry-After": str(retry_after)}
 
 
-def _inet(value: str) -> str | None:
+def inet(value: str) -> str | None:
     """The INET column only takes real addresses (test clients report a host name)."""
     try:
         return str(ipaddress.ip_address(value))
@@ -47,7 +47,7 @@ def _inet(value: str) -> str | None:
         return None
 
 
-def _set_cookie(response: Response, request: Request, token: str) -> None:
+def set_session_cookie(response: Response, request: Request, token: str) -> None:
     response.set_cookie(
         sessions.COOKIE_NAME,
         token,
@@ -83,11 +83,9 @@ async def login(body: LoginIn, request: Request, response: Response) -> SessionO
             user.password_hash = new_hash
         user.last_login_at = sessions.now()
         await sessions.revoke(uow.session, request.cookies.get(sessions.COOKIE_NAME))
-        token, row = await sessions.create(
-            uow.session, user, user_agent=request.headers.get("user-agent"), ip=_inet(ip)
-        )
+        token, row = await sessions.create(uow.session, user, user_agent=request.headers.get("user-agent"), ip=inet(ip))
         out = SessionOut.of(user, row.csrf_token, row.expires_at)
-    _set_cookie(response, request, token)
+    set_session_cookie(response, request, token)
     return out
 
 

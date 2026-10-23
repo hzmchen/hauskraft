@@ -560,6 +560,62 @@ export type SessionOut = {
 };
 
 /**
+ * SetupHousehold
+ */
+export type SetupHousehold = {
+    /**
+     * Locale
+     */
+    locale: 'en' | 'de';
+    /**
+     * Name
+     */
+    name: string;
+    /**
+     * Timezone
+     */
+    timezone: string;
+};
+
+/**
+ * SetupIn
+ */
+export type SetupIn = {
+    household: SetupHousehold;
+    owner: SetupOwner;
+};
+
+/**
+ * SetupOwner
+ */
+export type SetupOwner = {
+    /**
+     * Display Name
+     */
+    display_name: string;
+    /**
+     * Password
+     */
+    password: string;
+    /**
+     * Username
+     */
+    username: string;
+};
+
+/**
+ * SetupStatus
+ */
+export type SetupStatus = {
+    /**
+     * Required
+     *
+     * True while there is no account yet.
+     */
+    required: boolean;
+};
+
+/**
  * Swatches
  */
 export type Swatches = {
@@ -1448,6 +1504,53 @@ export type SettingsThemeSetResponses = {
 };
 
 export type SettingsThemeSetResponse = SettingsThemeSetResponses[keyof SettingsThemeSetResponses];
+
+export type SetupStatusData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/v1/setup';
+};
+
+export type SetupStatusResponses = {
+    /**
+     * Successful Response
+     */
+    200: SetupStatus;
+};
+
+export type SetupStatusResponse = SetupStatusResponses[keyof SetupStatusResponses];
+
+export type SetupCompleteData = {
+    body: SetupIn;
+    path?: never;
+    query?: never;
+    url: '/api/v1/setup';
+};
+
+export type SetupCompleteErrors = {
+    /**
+     * Forbidden
+     */
+    403: unknown;
+    /**
+     * Conflict
+     */
+    409: unknown;
+    /**
+     * Unprocessable Content
+     */
+    422: unknown;
+};
+
+export type SetupCompleteResponses = {
+    /**
+     * Successful Response
+     */
+    201: SessionOut;
+};
+
+export type SetupCompleteResponse = SetupCompleteResponses[keyof SetupCompleteResponses];
 
 export type TasksListData = {
     body?: never;

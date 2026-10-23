@@ -79,9 +79,34 @@ async def create_user(
     """Create an account. ``temporary``: the password came from an owner, so the member must replace it first."""
     if role not in ENABLED_ROLES:
         raise RoleNotEnabledError(role)
+    await uow.authorize(actor, "user.create", ResourceRef("User"), "personal", "graph:write:User")
+    user = await insert_account(
+        uow,
+        username=username,
+        display_name=display_name,
+        password=password,
+        role=role,
+        locale=locale,
+        temporary=temporary,
+    )
+    data = UserData(user=user_ref(user))
+    await emit("hauskraft.user.created", f"user/{user.id}", data.model_dump(mode="json"), "personal")
+    return user
+
+
+async def insert_account(
+    uow: UnitOfWork,
+    *,
+    username: str,
+    display_name: str,
+    password: str,
+    role: str,
+    locale: str,
+    temporary: bool = False,
+) -> User:
+    """Validate and insert an account. The caller has asked the policy and emits ``hauskraft.user.created``."""
     name = normalise_username(username)
     check_password_policy(password)
-    await uow.authorize(actor, "user.create", ResourceRef("User"), "personal", "graph:write:User")
     taken = await uow.session.scalar(select(func.count()).select_from(User).where(User.username == name))
     if taken:
         raise UsernameTakenError(name)
@@ -96,8 +121,6 @@ async def create_user(
     uow.session.add(user)
     await uow.session.flush()
     await uow.session.refresh(user)
-    data = UserData(user=user_ref(user))
-    await emit("hauskraft.user.created", f"user/{user.id}", data.model_dump(mode="json"), "personal")
     return user
 
 
