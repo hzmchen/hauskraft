@@ -145,5 +145,15 @@
     "title": "Choose a new password",
     "explain": "Your password was set by someone else. Choose your own to continue.",
     "save": "Save password"
+  },
+  "household_page": {
+    "name": "Household name",
+    "timezone": "Time zone",
+    "locale": "Default language",
+    "locale_hint": "Used for new members",
+    "save": "Save household",
+    "saved": "Household saved",
+    "invalid_timezone": "Choose a time zone from the list.",
+    "invalid_name": "The name needs 1 to 80 characters."
   }
 }

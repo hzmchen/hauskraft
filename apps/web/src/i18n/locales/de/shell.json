@@ -145,5 +145,15 @@
     "title": "Neues Passwort wählen",
     "explain": "Dein Passwort wurde von jemand anderem festgelegt. Wähle dein eigenes, um weiterzumachen.",
     "save": "Passwort speichern"
+  },
+  "household_page": {
+    "name": "Name des Haushalts",
+    "timezone": "Zeitzone",
+    "locale": "Standardsprache",
+    "locale_hint": "Gilt für neue Mitglieder",
+    "save": "Haushalt speichern",
+    "saved": "Haushalt gespeichert",
+    "invalid_timezone": "Wähle eine Zeitzone aus der Liste.",
+    "invalid_name": "Der Name braucht 1 bis 80 Zeichen."
   }
 }

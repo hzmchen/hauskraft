@@ -44,6 +44,7 @@ export function TextField({
 export function SelectField({
   label,
   hint,
+  error,
   value,
   onChange,
   options,
@@ -51,12 +52,13 @@ export function SelectField({
 }: {
   label: string;
   hint?: string;
+  error?: string | null;
   value: string;
   onChange: (value: string) => void;
   options: readonly { value: string; label: string }[];
   className?: string;
 }) {
-  const ids = { select: useId(), hint: useId() };
+  const ids = { select: useId(), hint: useId(), error: useId() };
   return (
     <div className={cn("flex flex-col gap-1", className)}>
       <label htmlFor={ids.select} className="font-medium">
@@ -66,7 +68,8 @@ export function SelectField({
         id={ids.select}
         value={value}
         onChange={(event) => onChange(event.target.value)}
-        aria-describedby={hint ? ids.hint : undefined}
+        aria-describedby={describedBy(hint && ids.hint, error && ids.error)}
+        aria-invalid={error ? true : undefined}
         className="h-control rounded-md border border-input bg-background px-2 text-foreground"
       >
         {options.map((option) => (
@@ -78,6 +81,11 @@ export function SelectField({
       {hint ? (
         <p id={ids.hint} className="text-sm text-muted-foreground">
           {hint}
+        </p>
+      ) : null}
+      {error ? (
+        <p id={ids.error} role="alert" className="text-sm text-destructive">
+          {error}
         </p>
       ) : null}
     </div>
