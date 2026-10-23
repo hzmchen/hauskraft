@@ -78,3 +78,12 @@ async def test_roles_not_enabled_get_nothing(role: str) -> None:
     actor = Actor(id="0199f390-1111-7aaa-8bbb-000000000003", role=role)
     for action in [*BOTH, *OWNER_ONLY]:
         assert await _decide(actor, action) is Decision.DENY
+
+
+def test_permissions_for_lists_the_table_rows_sorted() -> None:
+    """M1S-E02-04: Session.permissions comes from the same table as RolePolicy."""
+    from hauskraft_core.policy import permissions_for
+
+    assert permissions_for("owner") == sorted([*BOTH, *OWNER_ONLY])
+    assert permissions_for("adult") == sorted(BOTH)
+    assert permissions_for("kid") == []

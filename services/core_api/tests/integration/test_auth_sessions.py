@@ -170,3 +170,13 @@ def test_protected_routes_need_a_session(client: TestClient) -> None:
         ("POST", "/api/v1/auth/logout"),
     ):
         assert client.request(method, path).status_code == 401, path
+
+
+@pytest.mark.parametrize("role", ["owner", "adult"])
+def test_session_lists_the_role_permissions(client: TestClient, make_user: Callable[..., str], role: str) -> None:
+    """M1S-E02-04: login and /auth/session carry the actions the role may do, from the policy table."""
+    from hauskraft_core.policy import permissions_for
+
+    login = _login(client, make_user(role=role))
+    assert login.json()["permissions"] == permissions_for(role)
+    assert client.get("/api/v1/auth/session").json()["permissions"] == permissions_for(role)
