@@ -24,7 +24,7 @@ def test_defaults_are_safe_for_development() -> None:
     s = Settings()
     assert s.env == "development"
     assert s.cookie_secure is False
-    assert s.policy == "noop"
+    assert s.policy == "roles"
     assert s.auth_provider == "local"
     assert s.default_theme == "dev.hauskraft.theme.default"
     assert s.secret_key.get_secret_value(), "development gets an ephemeral secret"
