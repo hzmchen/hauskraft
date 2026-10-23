@@ -69,3 +69,51 @@ export async function chooseOption(page: Page, comboName: string, option: string
     await page.getByRole("option", { name: option }).click();
   }
 }
+
+// ---------------------------------------------------------------- M1* (docs/testing/ui-contract.md, "M1* additions")
+
+/** Fill the login form and submit, without assuming where the app goes next. */
+export async function signIn(page: Page, username: string, password: string): Promise<void> {
+  if (!/\/login/.test(page.url())) await page.goto("/login");
+  await page.getByRole("textbox", { name: "Username" }).fill(username);
+  await page.getByLabel("Password", { exact: true }).fill(password);
+  await page.getByRole("button", { name: "Sign in" }).click();
+}
+
+/** A password field by its exact label; several labels on one page contain "password". */
+export function passwordField(scope: Page | Locator, label: string): Locator {
+  return scope.getByLabel(label, { exact: true });
+}
+
+export function settingsNav(page: Page): Locator {
+  return page.getByRole("navigation", { name: "Settings", exact: true });
+}
+
+/** Settings section names in order. */
+export async function settingsSections(page: Page): Promise<string[]> {
+  await settingsNav(page).waitFor();
+  return (await settingsNav(page).getByRole("link").allInnerTexts()).map((n) => n.trim());
+}
+
+export async function openSettings(page: Page, section: string): Promise<void> {
+  await goNav(page, "Settings");
+  await settingsNav(page).getByRole("link", { name: section, exact: true }).click();
+  await expect(page.getByRole("heading", { level: 1, name: section })).toBeVisible();
+}
+
+/** Choose a new password on /change-password (English names unless `de`). */
+export async function chooseNewPassword(page: Page, current: string, next: string, de = false): Promise<void> {
+  const names = de
+    ? ["Neues Passwort wählen", "Aktuelles Passwort", "Neues Passwort", "Neues Passwort wiederholen", "Passwort speichern"]
+    : ["Choose a new password", "Current password", "New password", "Repeat new password", "Save password"];
+  await expect(page).toHaveURL(/\/change-password/);
+  await expect(page.getByRole("heading", { level: 1, name: names[0] })).toBeVisible();
+  await passwordField(page, names[1]).fill(current);
+  await passwordField(page, names[2]).fill(next);
+  await passwordField(page, names[3]).fill(next);
+  await page.getByRole("button", { name: names[4] }).click();
+}
+
+export const SESSION_ENDED = "Your session has ended. Please sign in again.";
+export const DEACTIVATED = "This account is deactivated. Ask an owner of your household.";
+export const LAST_OWNER = "The household needs at least one active owner.";

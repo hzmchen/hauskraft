@@ -43,11 +43,18 @@ def test_dependencies_exist_and_are_acyclic(stories) -> None:
     assert not bt.find_cycles(stories)
 
 
-def test_readme_counts_match_epic_files(stories) -> None:
-    per_epic, total = bt.readme_totals()
-    assert total == len(stories)
+def test_every_milestone_has_a_backlog() -> None:
+    assert list(bt.backlogs()) == sorted(bt.backlogs(), key=lambda p: int(p[1:-1]))
+    assert {"M0S", "M1S"} <= set(bt.backlogs())
+
+
+@pytest.mark.parametrize("prefix", list(bt.backlogs()))
+def test_readme_counts_match_epic_files(stories, prefix: str) -> None:
+    mine = [sid for sid in stories if bt.prefix_of(sid) == prefix]
+    per_epic, total = bt.readme_totals(bt.backlogs()[prefix])
+    assert total == len(mine)
     for epic, n in per_epic.items():
-        assert sum(1 for sid in stories if sid[4:7] == epic) == n, epic
+        assert sum(1 for sid in mine if bt.epic_of(sid) == epic) == n, epic
 
 
 def test_spec_section_references_resolve() -> None:

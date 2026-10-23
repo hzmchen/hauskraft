@@ -4,6 +4,9 @@ All 61 M0* stories are implemented and marked green. This page lists what needs 
 the spec owner should confirm, and the few things only a repo admin or the spec owner can change. Each entry
 names the story and what I did for now. Everything I chose is reversible.
 
+**Tracking (2026-10-22):** the open items below now live in the Linear project "Hauskraft Backlog" (NIE-79 for the
+decisions to confirm, NIE-80 to NIE-87 for the notes for later and the `unit-web` timeout).
+
 ## Needed action first (resolved)
 
 1. **Spec-owned e2e helper bug** in `ui.row` (`tests/e2e/support/ui.ts`), which stopped the demo at step 2:

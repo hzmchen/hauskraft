@@ -20,6 +20,9 @@ Hauskraft records architecture decisions as [MADR 4](https://adr.github.io/madr/
 | [0013](0013-theming.md) | Theming: data-only theme packages and validator thresholds | Accepted |
 | [0014](0014-tdd-spec-owned-acceptance-tests.md) | Test-driven development with spec-owned acceptance tests | Accepted |
 | [0015](0015-rename-to-hauskraft.md) | Rename HearthOS to Hauskraft | Accepted |
+| [0016](0016-static-role-permissions.md) | Static role permission table behind `authorize()` for M1* | Accepted |
+| [0017](0017-first-run-setup.md) | First-run setup in the browser: the first visitor becomes owner | Accepted |
+| [0018](0018-account-events.md) | Account changes are CloudEvents | Accepted |
 
 ## Writing a new ADR
 

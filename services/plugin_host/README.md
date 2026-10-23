@@ -2,6 +2,6 @@
 
 # services/plugin_host (placeholder)
 
-Hauskraft plugin host: manifest verification, supervisor, egress configuration. Owned by milestone **M5**; see `docs/spec/hauskraft-spec-v0.2.md` §3.1 and §13.1.
+Hauskraft plugin host: manifest verification, supervisor, egress configuration. Owned by milestone **M5**; see `docs/spec/hauskraft-spec-v0.3.md` §3.1 and §13.1.
 
 > Status: M5+, do not implement in M0*.

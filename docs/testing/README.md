@@ -14,7 +14,9 @@ Hauskraft is built test-first: **red, green, refactor**, one story at a time (AD
 | End to end | `tests/e2e/*.spec.ts` | the browser | running stack, Playwright | the 11-step demo script, theme invariance |
 | Unit / integration | inside each package | code | written by the story | `services/core_api/tests/`, Vitest in `apps/web` |
 
-Every test is tied to one or more backlog stories with `@pytest.mark.story("M0S-Exx-yy")` or Playwright tags (`story("M0S-Exx-yy")`). Meta tests carry `@pytest.mark.meta` instead and must always pass.
+Every test is tied to one or more backlog stories with `@pytest.mark.story("M1S-Exx-yy")` or Playwright tags (`story("M1S-Exx-yy")`). Meta tests carry `@pytest.mark.meta` instead and must always pass.
+
+Story IDs carry their milestone: `M0S-…` for M0* (`docs/backlog/m0-star/`, done) and `M1S-…` for M1* (`docs/backlog/m1-star/`). `scripts/backlog_tools.py` reads every `docs/backlog/m<N>-star/` folder, and `tests/story-status.json` holds the switch for all of them, so the stories of a finished milestone stay hard gates.
 
 Fixtures in `tests/fixtures/` (manifests, events, theme packages, lockfiles, lint probes) are part of the contract. See `tests/fixtures/README.md`.
 

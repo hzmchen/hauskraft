@@ -1,11 +1,12 @@
 # SPDX-License-Identifier: MIT
 """Backlog and traceability tooling for Hauskraft.
 
-    python scripts/backlog_tools.py check                # integrity of spec, backlog and story status
+    python scripts/backlog_tools.py check                # integrity of spec, backlogs and story status
     python scripts/backlog_tools.py coverage             # print story -> acceptance tests
     python scripts/backlog_tools.py coverage --write     # regenerate docs/testing/traceability.md
 
-Standard library only, so it runs before the workspace exists. Used by tests/meta.
+Every milestone has a folder docs/backlog/m<N>-star/ whose stories are named M<N>S-Exx-yy. Standard library only, so
+it runs before the workspace exists. Used by tests/meta.
 """
 
 from __future__ import annotations
@@ -18,12 +19,13 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[1]
-BACKLOG = REPO / "docs" / "backlog" / "m0-star"
-SPEC = REPO / "docs" / "spec" / "hauskraft-spec-v0.2.md"
+BACKLOG_ROOT = REPO / "docs" / "backlog"
+SPEC = REPO / "docs" / "spec" / "hauskraft-spec-v0.3.md"
 STATUS = REPO / "tests" / "story-status.json"
 TRACE = REPO / "docs" / "testing" / "traceability.md"
 
-STORY_HEADING = re.compile(r"^## (M0S-E\d{2}-\d{2}) · (.+)$", re.M)
+STORY_HEADING = re.compile(r"^## (M\d+S-E\d{2}-\d{2}) · (.+)$", re.M)
+BACKLOG_DIR = re.compile(r"^m(\d+)-star$")
 STORY_REF = re.compile(r"E\d{2}-\d{2}")
 REQUIRED_FIELDS = ("Story", "AC", "Tech", "Tests", "Deps")
 
@@ -39,26 +41,49 @@ class Story:
     labels: str = ""
 
 
+def backlogs() -> dict[str, Path]:
+    """Milestone prefix (``M0S``, ``M1S``, ...) -> backlog folder, in milestone order."""
+    found = {}
+    for path in BACKLOG_ROOT.iterdir():
+        m = BACKLOG_DIR.match(path.name)
+        if m and path.is_dir():
+            found[int(m.group(1))] = (f"M{m.group(1)}S", path)
+    return dict(found[n] for n in sorted(found))
+
+
+def prefix_of(sid: str) -> str:
+    return sid.split("-", 1)[0]
+
+
+def epic_of(sid: str) -> str:
+    return sid.split("-")[1]
+
+
 def parse_stories() -> dict[str, Story]:
     stories: dict[str, Story] = {}
-    for path in sorted(BACKLOG.glob("E[0-9][0-9]-*.md")):
-        text = path.read_text(encoding="utf-8")
-        heads = list(STORY_HEADING.finditer(text))
-        for i, m in enumerate(heads):
-            end = heads[i + 1].start() if i + 1 < len(heads) else len(text)
-            body = text[m.end():end]
-            sid = m.group(1)
-            if sid in stories:
-                raise ValueError(f"duplicate story id {sid}")
-            dep_line = re.search(r"\*\*Deps:\*\*\s*(.*?)\s*·\s*\*\*Est:\*\*\s*(\w+)\s*·\s*\*\*Labels:\*\*\s*(.*)", body)
-            deps = [f"M0S-{d}" for d in STORY_REF.findall(dep_line.group(1))] if dep_line else []
-            stories[sid] = Story(sid, m.group(2).strip(), path.name, body, deps,
-                                 dep_line.group(2) if dep_line else "", dep_line.group(3).strip() if dep_line else "")
+    for prefix, backlog in backlogs().items():
+        for path in sorted(backlog.glob("E[0-9][0-9]-*.md")):
+            text = path.read_text(encoding="utf-8")
+            heads = list(STORY_HEADING.finditer(text))
+            for i, m in enumerate(heads):
+                end = heads[i + 1].start() if i + 1 < len(heads) else len(text)
+                body = text[m.end():end]
+                sid = m.group(1)
+                if sid in stories:
+                    raise ValueError(f"duplicate story id {sid}")
+                if prefix_of(sid) != prefix:
+                    raise ValueError(f"{sid} is in {backlog.name}, which holds {prefix}-* stories")
+                dep_line = re.search(r"\*\*Deps:\*\*\s*(.*?)\s*·\s*\*\*Est:\*\*\s*(\w+)\s*·\s*\*\*Labels:\*\*\s*(.*)",
+                                     body)
+                deps = [f"{prefix}-{d}" for d in STORY_REF.findall(dep_line.group(1))] if dep_line else []
+                stories[sid] = Story(sid, m.group(2).strip(), path.name, body, deps,
+                                     dep_line.group(2) if dep_line else "",
+                                     dep_line.group(3).strip() if dep_line else "")
     return stories
 
 
-def readme_totals() -> tuple[dict[str, int], int]:
-    text = (BACKLOG / "README.md").read_text(encoding="utf-8")
+def readme_totals(backlog: Path) -> tuple[dict[str, int], int]:
+    text = (backlog / "README.md").read_text(encoding="utf-8")
     per_epic = {m.group(1): int(m.group(2)) for m in re.finditer(r"^\| (E\d{2}) \| [^|]+ \| (\d+) \|", text, re.M)}
     total = re.search(r"\| \*\*Total\*\* \| \*\*(\d+)\*\* \|", text)
     return per_epic, int(total.group(1)) if total else -1
@@ -94,7 +119,7 @@ def load_status() -> dict[str, dict[str, str]]:
 
 
 PY_STORY = re.compile(r"""story\(([^)]*)\)""")
-ID_IN = re.compile(r"""["'](M0S-E\d{2}-\d{2})["']""")
+ID_IN = re.compile(r"""["'](M\d+S-E\d{2}-\d{2})["']""")
 
 
 def coverage() -> dict[str, list[str]]:
@@ -109,7 +134,7 @@ def coverage() -> dict[str, list[str]]:
         # A test module covers every story id it names as a string literal (markers, params, RED hints).
         if PY_STORY.search(text):
             ids.update(ID_IN.findall(text))
-        consts = dict(re.findall(r'const (\w+) = "(M0S-E\d{2}-\d{2})"', text))
+        consts = dict(re.findall(r'const (\w+) = "(M\d+S-E\d{2}-\d{2})"', text))
         for name, sid in consts.items():
             if re.search(rf"story\([^)]*\b{name}\b", text):
                 ids.add(sid)
@@ -134,21 +159,23 @@ def check() -> list[str]:
     for cyc in find_cycles(stories):
         problems.append("dependency cycle: " + " -> ".join(cyc))
 
-    per_epic, total = readme_totals()
-    if total != len(stories):
-        problems.append(f"README total {total} != {len(stories)} stories in epic files")
-    counted: dict[str, int] = {}
-    for sid in stories:
-        counted[sid[4:7]] = counted.get(sid[4:7], 0) + 1
-    for epic, n in per_epic.items():
-        if counted.get(epic, 0) != n:
-            problems.append(f"README says {epic} has {n} stories, epic file has {counted.get(epic, 0)}")
-
     sections = spec_sections()
-    for path in sorted(BACKLOG.glob("*.md")):
-        for ref in re.findall(r"§(\d+(?:\.\d+)*)", path.read_text(encoding="utf-8")):
-            if ref.rstrip(".") not in sections:
-                problems.append(f"{path.name}: §{ref} not found in the spec")
+    for prefix, backlog in backlogs().items():
+        mine = [sid for sid in stories if prefix_of(sid) == prefix]
+        per_epic, total = readme_totals(backlog)
+        if total != len(mine):
+            problems.append(f"{backlog.name}/README.md total {total} != {len(mine)} stories in epic files")
+        counted: dict[str, int] = {}
+        for sid in mine:
+            counted[epic_of(sid)] = counted.get(epic_of(sid), 0) + 1
+        for epic, n in per_epic.items():
+            if counted.get(epic, 0) != n:
+                problems.append(f"{backlog.name}: README says {epic} has {n} stories, epic file has "
+                                f"{counted.get(epic, 0)}")
+        for path in sorted(backlog.glob("*.md")):
+            for ref in re.findall(r"§(\d+(?:\.\d+)*)", path.read_text(encoding="utf-8")):
+                if ref.rstrip(".") not in sections:
+                    problems.append(f"{backlog.name}/{path.name}: §{ref} not found in the spec")
 
     status = load_status()
     if set(status) != set(stories):
@@ -179,15 +206,19 @@ def write_traceability() -> str:
         "`in-story` stories are covered by tests the implementer writes first (red) inside the story. "
         "Status lives in `tests/story-status.json`.",
         "",
-        "| Story | Title | Status | Acceptance | Tests |",
-        "|---|---|---|---|---|",
     ]
-    for sid, s in stories.items():
-        st = status.get(sid, {})
-        tests = "<br>".join(f"`{t}`" for t in cov.get(sid, [])) or "written in-story"
-        lines.append(f"| {sid} | {s.title} | {st.get('status', '?')} | {st.get('acceptance', '?')} | {tests} |")
-    suite = sum(1 for v in status.values() if v.get("acceptance") == "suite")
-    lines += ["", f"{len(stories)} stories: {suite} with suite acceptance tests, {len(stories) - suite} in-story.", ""]
+    for prefix, backlog in backlogs().items():
+        mine = {sid: s for sid, s in stories.items() if prefix_of(sid) == prefix}
+        lines += [f"## {prefix[:-1]}* (`docs/backlog/{backlog.name}/`)", "",
+                  "| Story | Title | Status | Acceptance | Tests |", "|---|---|---|---|---|"]
+        for sid, s in mine.items():
+            st = status.get(sid, {})
+            tests = "<br>".join(f"`{t}`" for t in cov.get(sid, [])) or "written in-story"
+            lines.append(f"| {sid} | {s.title} | {st.get('status', '?')} | {st.get('acceptance', '?')} | {tests} |")
+        suite = sum(1 for sid in mine if status.get(sid, {}).get("acceptance") == "suite")
+        green = sum(1 for sid in mine if status.get(sid, {}).get("status") == "green")
+        lines += ["", f"{len(mine)} stories ({green} green): {suite} with suite acceptance tests, "
+                      f"{len(mine) - suite} in-story.", ""]
     return "\n".join(lines)
 
 
