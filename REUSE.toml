@@ -17,7 +17,7 @@ SPDX-License-Identifier = "AGPL-3.0-or-later"
 path = [
     "packages/**", "plugins/**", "themes/**", "integrations/**",
     "scripts/**", "docs/**", ".github/**",
-    "README.md", "AGENTS.md", "CONTRIBUTING.md", "LICENSING.md", "SECURITY.md",
+    "README.md", "AGENTS.md", "CHANGELOG.md", "CONTRIBUTING.md", "LICENSING.md", "SECURITY.md",
 ]
 precedence = "aggregate"
 SPDX-FileCopyrightText = "2026 Hauskraft contributors"
