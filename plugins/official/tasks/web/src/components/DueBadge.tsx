@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: MIT
-// Due badge: always words ("Overdue", "Today", "Due 14 Oct"), colour only as a second signal.
+// Due badge: always words ("Overdue", "Today", "Due 14 Oct"), colour only as a second signal. "Today" is today in
+// the household's time zone, which the shell provides (M1S-E04-03).
+import { useHost } from "@hauskraft/sdk-ts";
 import { Icon, cn } from "@hauskraft/ui";
 import { useTranslation } from "react-i18next";
 
@@ -14,8 +16,9 @@ function formatDue(iso: string, language: string): string {
 
 export function DueBadge({ due, done }: { due: string | null | undefined; done: boolean }) {
   const { t, i18n } = useTranslation("tasks");
+  const { timeZone } = useHost();
   if (!due) return null;
-  const today = todayIso();
+  const today = todayIso(new Date(), timeZone);
   const kind = done || due > today ? "later" : due === today ? "today" : "overdue";
   const label =
     kind === "overdue"

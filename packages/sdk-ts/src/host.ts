@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
-// What the shell offers plugin web code besides the API client: in-app navigation and the current page's
-// URL search parameters (plugins never import the router). The shell provides a router-backed host;
+// What the shell offers plugin web code besides the API client: in-app navigation, the current page's URL search
+// parameters and the household time zone (plugins never import the router or core). The shell provides a router-backed host;
 // without one, the browser location is used.
 import { createContext, createElement, useContext, type ReactNode } from "react";
 
@@ -11,9 +11,12 @@ export interface Host {
   search: Readonly<Record<string, string>>;
   /** Change search parameters; `undefined` removes one. */
   setSearch: (updates: Record<string, string | undefined>) => void;
+  /** The household's IANA time zone (M1S-E04-03). It decides what "today" means, not the device's zone. */
+  timeZone: string;
 }
 
-const browserHost: Host = {
+/** The fallback without a shell: the browser's location and time zone. */
+export const browserHost: Host = {
   navigate: (href) => window.location.assign(href),
   get search() {
     return Object.fromEntries(new URLSearchParams(window.location.search));
@@ -26,6 +29,9 @@ const browserHost: Host = {
     }
     const query = params.toString();
     window.history.replaceState(null, "", `${window.location.pathname}${query ? `?${query}` : ""}`);
+  },
+  get timeZone() {
+    return Intl.DateTimeFormat().resolvedOptions().timeZone;
   },
 };
 
