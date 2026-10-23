@@ -8,7 +8,7 @@ import { useId, useState, type FormEvent } from "react";
 import { useTranslation } from "react-i18next";
 
 import { problemCode } from "../forms/fields";
-import { LOCALE_STORAGE_KEY, isLanguage } from "../i18n";
+import { hasDeviceLanguage, isLanguage } from "../i18n";
 import { rememberSession, safeRedirect, sessionQuery } from "../session";
 
 interface LoginSearch {
@@ -29,14 +29,6 @@ export const Route = createFileRoute("/login")({
   },
   component: Login,
 });
-
-function hasDeviceLanguage(): boolean {
-  try {
-    return localStorage.getItem(LOCALE_STORAGE_KEY) !== null;
-  } catch {
-    return false;
-  }
-}
 
 function Login() {
   const { t, i18n } = useTranslation();

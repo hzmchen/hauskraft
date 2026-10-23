@@ -181,5 +181,16 @@
     "last_owner": "The household needs at least one active owner.",
     "username_taken": "This username is already taken.",
     "invalid_username": "Usernames have 2 to 32 characters: a–z, 0–9, '.', '_' or '-'."
+  },
+  "setup": {
+    "title": "Set up your household",
+    "intro": "Hauskraft has no household yet. Create it and your own account: you become its owner.",
+    "household_heading": "Your household",
+    "account_heading": "Your account",
+    "your_name": "Your name",
+    "password": "Password",
+    "repeat": "Repeat password",
+    "create": "Create household",
+    "done": "This household is already set up. Sign in instead."
   }
 }

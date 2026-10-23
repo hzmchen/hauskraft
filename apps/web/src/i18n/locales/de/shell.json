@@ -181,5 +181,16 @@
     "last_owner": "Der Haushalt braucht mindestens einen aktiven Inhaber.",
     "username_taken": "Dieser Benutzername ist schon vergeben.",
     "invalid_username": "Benutzernamen haben 2 bis 32 Zeichen: a–z, 0–9, '.', '_' oder '-'."
+  },
+  "setup": {
+    "title": "Haushalt einrichten",
+    "intro": "Hauskraft hat noch keinen Haushalt. Lege ihn und dein eigenes Konto an: Du wirst sein Inhaber.",
+    "household_heading": "Dein Haushalt",
+    "account_heading": "Dein Konto",
+    "your_name": "Dein Name",
+    "password": "Passwort",
+    "repeat": "Passwort wiederholen",
+    "create": "Haushalt anlegen",
+    "done": "Dieser Haushalt ist schon eingerichtet. Melde dich stattdessen an."
   }
 }
