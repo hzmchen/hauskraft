@@ -85,7 +85,7 @@ async def set_password(uow: UnitOfWork, actor: Actor, username: str, password: s
     user = await get_by_username(uow, username)
     if user is None:
         raise NotFoundError(f"No user {username!r}.")
-    await uow.authorize(actor, "user.set_password", ResourceRef("User", str(user.id)), "personal", "graph:write:User")
+    await uow.authorize(actor, "user.reset_password", ResourceRef("User", str(user.id)), "personal", "graph:write:User")
     user.password_hash = await hash_password(password)
     await uow.session.flush()
     return user
