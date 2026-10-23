@@ -262,7 +262,7 @@
       "acceptance": "suite"
     },
     "M1S-E02-03": {
-      "status": "red",
+      "status": "green",
       "acceptance": "suite"
     },
     "M1S-E02-04": {
