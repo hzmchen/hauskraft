@@ -1,5 +1,6 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
-"""M1S-E06-01..02: owners list, see and edit members; there is always an active owner (spec §2.3)."""
+"""M1S-E06-01..03: owners list, see, edit, deactivate and reactivate members; there is always an active
+owner (spec §2.3)."""
 
 import uuid
 from collections.abc import Callable, Iterator
@@ -246,3 +247,58 @@ def test_the_last_owner_cannot_step_down(one_owner: Callable[[], TestClient]) ->
     assert mia.patch(f"/api/v1/users/{me['id']}", json={"role": "adult"}).status_code == 200, "a second owner exists"
     assert mia.get("/api/v1/me").json()["role"] == "adult"
     assert jonas["role"] == "owner"
+
+
+# ---------------------------------------------------------------- M1S-E06-03 deactivate and reactivate
+def test_deactivate_ends_sessions_blocks_sign_in_and_reactivate_undoes_it(
+    signed_in: Callable[..., TestClient],
+    make_user: Callable[..., str],
+    api_settings: Settings,
+) -> None:
+    username = make_user("Leaving")
+    member_client = signed_in(username=username)
+    owner = signed_in()
+    member = _member(owner, username)
+    r = owner.post(f"/api/v1/users/{member['id']}/deactivate")
+    assert r.status_code == 200, r.text
+    assert r.json()["is_active"] is False
+    assert member_client.get("/api/v1/me").status_code == 401, "open sessions end at the next request"
+    with TestClient(create_app(api_settings), headers={"Origin": "http://testserver"}) as probe:
+        right = probe.post("/api/v1/auth/login", json={"username": username, "password": PASSWORD})
+        assert right.status_code == 403
+        assert right.json()["code"] == "account_deactivated"
+        wrong = probe.post("/api/v1/auth/login", json={"username": username, "password": "wrong-password-0000"})
+        assert wrong.status_code == 401
+        assert wrong.json()["code"] == "invalid_credentials"
+        assert _member(owner, username)["is_active"] is False, "deactivated members stay in the list"
+        assert owner.post(f"/api/v1/users/{member['id']}/deactivate").status_code == 200, "no-op"
+        r = owner.post(f"/api/v1/users/{member['id']}/reactivate")
+        assert r.status_code == 200
+        assert r.json()["is_active"] is True
+        assert owner.post(f"/api/v1/users/{member['id']}/reactivate").status_code == 200, "no-op"
+        login = probe.post("/api/v1/auth/login", json={"username": username, "password": PASSWORD})
+        assert login.status_code == 200
+    types = [e["type"] for e in _events_for(api_settings, member["id"])]
+    assert types == ["hauskraft.user.deactivated", "hauskraft.user.reactivated"], "no-ops emit nothing"
+
+
+def test_deactivation_needs_an_owner_and_a_member(
+    signed_in: Callable[..., TestClient], make_user: Callable[..., str]
+) -> None:
+    username = make_user()
+    owner = signed_in()
+    member = _member(owner, username)
+    for action in ("deactivate", "reactivate"):
+        assert owner.post(f"/api/v1/users/{uuid.uuid4()}/{action}").status_code == 404
+        denied = signed_in("adult").post(f"/api/v1/users/{member['id']}/{action}")
+        assert denied.status_code == 403
+        assert denied.json()["code"] == "policy_denied"
+
+
+def test_the_last_owner_cannot_deactivate_themself(one_owner: Callable[[], TestClient]) -> None:
+    mia = one_owner()
+    me = mia.get("/api/v1/me").json()
+    r = mia.post(f"/api/v1/users/{me['id']}/deactivate")
+    assert r.status_code == 409
+    assert r.json()["code"] == "last_owner"
+    assert mia.get("/api/v1/me").status_code == 200
