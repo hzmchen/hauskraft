@@ -210,6 +210,27 @@ describe("ended session (M1S-E07-03)", () => {
   });
 });
 
+describe("language (M1S-E05-03)", () => {
+  it("applies the account's language on load when this device chose none", async () => {
+    fakeApi({
+      "GET /api/v1/auth/session": () => json({ ...DEMO_SESSION, user: { ...DEMO_SESSION.user, locale: "de" } }),
+      "GET /api/v1/themes": () => json([]),
+    });
+    start("/today");
+    expect(await screen.findByRole("heading", { level: 1, name: "Heute" })).toBeDefined();
+  });
+
+  it("keeps this device's own choice", async () => {
+    localStorage.setItem("hauskraft.locale", "en");
+    fakeApi({
+      "GET /api/v1/auth/session": () => json({ ...DEMO_SESSION, user: { ...DEMO_SESSION.user, locale: "de" } }),
+      "GET /api/v1/themes": () => json([]),
+    });
+    start("/today");
+    expect(await screen.findByRole("heading", { level: 1, name: "Today" })).toBeDefined();
+  });
+});
+
 describe("account menu", () => {
   it("opens account settings from 'Account settings', above 'Sign out' (M1S-E08-03)", async () => {
     fakeApi({ "GET /api/v1/auth/session": () => json(DEMO_SESSION), "GET /api/v1/themes": () => json([]) });

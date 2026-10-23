@@ -7,6 +7,7 @@ import { Outlet, createFileRoute, redirect } from "@tanstack/react-router";
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
+import { hasDeviceLanguage, isLanguage } from "../i18n";
 import { loadPluginModule } from "../plugins/load";
 import { pluginRegistry } from "../plugins/registry.gen";
 import { useWebPlugins } from "../plugins/usePlugins";
@@ -22,6 +23,12 @@ export const Route = createFileRoute("/_app")({
   beforeLoad: async ({ context, location }) => {
     const session = await context.queryClient.ensureQueryData(sessionQuery);
     if (!session) throw redirect({ to: "/login", search: { redirect: location.href } });
+    // The account's language applies on every load, unless this device chose its own (account menu).
+    const locale = session.user.locale;
+    if (!hasDeviceLanguage() && isLanguage(locale) && context.i18n.resolvedLanguage !== locale) {
+      await context.i18n.changeLanguage(locale);
+      document.documentElement.lang = locale;
+    }
     // A temporary password comes first (M1S-E07-02); afterwards the member continues to this page.
     if (session.user.must_change_password)
       throw redirect({ to: "/change-password", search: { redirect: location.href } });

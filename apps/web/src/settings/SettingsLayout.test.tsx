@@ -53,7 +53,7 @@ describe("settings layout (M1S-E08-01)", () => {
   });
 
   it("translates the section names", async () => {
-    start("/settings/appearance", OWNER_SESSION, "de");
+    start("/settings/appearance", { ...OWNER_SESSION, user: { ...OWNER_SESSION.user, locale: "de" } }, "de");
     expect(await sections()).toEqual(["Darstellung", "Konto", "Haushalt", "Mitglieder"]);
   });
 
