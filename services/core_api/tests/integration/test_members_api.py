@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
-"""M1S-E06-01..03: owners list, see, edit, deactivate and reactivate members; there is always an active
-owner (spec §2.3)."""
+"""M1S-E06-01..04: owners list, see, edit, deactivate and reactivate members and reset their passwords; there is
+always an active owner (spec §2.3)."""
 
 import uuid
 from collections.abc import Callable, Iterator
@@ -302,3 +302,58 @@ def test_the_last_owner_cannot_deactivate_themself(one_owner: Callable[[], TestC
     assert r.status_code == 409
     assert r.json()["code"] == "last_owner"
     assert mia.get("/api/v1/me").status_code == 200
+
+
+# ---------------------------------------------------------------- M1S-E06-04 reset a member's password
+TEMPORARY = "reset-temporary-pass-42"
+
+
+def test_reset_password_ends_sessions_and_requires_a_new_one(
+    signed_in: Callable[..., TestClient], make_user: Callable[..., str], api_settings: Settings
+) -> None:
+    username = make_user("Forgetful")
+    member_client = signed_in(username=username)
+    owner = signed_in()
+    member = _member(owner, username)
+    r = owner.post(f"/api/v1/users/{member['id']}/password", json={"password": TEMPORARY})
+    assert r.status_code == 204, r.text
+    assert r.content == b""
+    assert member_client.get("/api/v1/me").status_code == 401, "the member's sessions end"
+    with TestClient(create_app(api_settings), headers={"Origin": "http://testserver"}) as probe:
+        login = probe.post("/api/v1/auth/login", json={"username": username, "password": TEMPORARY})
+        assert login.status_code == 200
+        assert login.json()["user"]["must_change_password"] is True
+    [event] = _events_for(api_settings, member["id"])
+    assert event["type"] == "hauskraft.user.password_reset"
+    assert TEMPORARY not in str(event)
+    assert set(event["data"]) == {"user"}
+
+
+@pytest.mark.parametrize(("password", "code"), [("short", "password_policy")])
+def test_reset_password_checks_the_policy(
+    signed_in: Callable[..., TestClient], make_user: Callable[..., str], password: str, code: str
+) -> None:
+    owner = signed_in()
+    member = _member(owner, make_user())
+    r = owner.post(f"/api/v1/users/{member['id']}/password", json={"password": password})
+    assert r.status_code == 422
+    assert r.json()["code"] == code
+
+
+def test_owners_change_their_own_password_elsewhere(signed_in: Callable[..., TestClient]) -> None:
+    owner = signed_in()
+    me = owner.get("/api/v1/me").json()
+    r = owner.post(f"/api/v1/users/{me['id']}/password", json={"password": TEMPORARY})
+    assert r.status_code == 422
+    assert r.json()["code"] == "own_account"
+
+
+def test_reset_password_needs_an_owner_and_a_member(
+    signed_in: Callable[..., TestClient], make_user: Callable[..., str]
+) -> None:
+    owner = signed_in()
+    member = _member(owner, make_user())
+    assert owner.post(f"/api/v1/users/{uuid.uuid4()}/password", json={"password": TEMPORARY}).status_code == 404
+    denied = signed_in("adult").post(f"/api/v1/users/{member['id']}/password", json={"password": TEMPORARY})
+    assert denied.status_code == 403
+    assert denied.json()["code"] == "policy_denied"
