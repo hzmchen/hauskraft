@@ -1,5 +1,8 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
-"""The ``hauskraft`` command line (M0S-E05-05, ``seed`` M0S-E11-02, ``themes`` M0S-E13-09).
+"""The ``hauskraft`` command line (M0S-E05-05, ``seed`` M0S-E11-02, ``themes`` M0S-E13-09, ``users`` M1S-E06-06).
+
+The ``users`` commands act as the system actor through the same services as the API: they keep the last-owner rule
+and emit the same account events. They are the recovery path when no owner can sign in.
 
 Configuration comes from the same ``HAUSKRAFT_*`` environment variables as the API.
 """
@@ -16,6 +19,7 @@ import typer
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 from sqlalchemy.pool import NullPool
 
+from hauskraft_core.auth.schemas import MemberOut
 from hauskraft_core.db import migrations
 from hauskraft_core.logging import configure_logging
 from hauskraft_core.policy import policy_from_settings
@@ -63,13 +67,33 @@ def _prompt_password() -> str:
     return str(typer.prompt("Password", hide_input=True, confirmation_prompt=True))
 
 
+Temporary = Annotated[bool, typer.Option("--temporary", help="The account must choose a new password at sign-in.")]
+
+
+@users_app.command("list")
+def users_list(as_json: Annotated[bool, typer.Option("--json", help="Print the members as JSON.")] = False) -> None:
+    """List every account with its role and whether it is active."""
+
+    async def work(uow: UnitOfWork) -> list[MemberOut]:
+        return [MemberOut.of(user) for user in await service.list_members(uow.session)]
+
+    members = _run(work)
+    if as_json:
+        typer.echo(json.dumps([m.model_dump(mode="json") for m in members], indent=2))
+        return
+    for m in members:
+        typer.echo(f"{m.username}\t{m.display_name}\t{m.role}\t{'active' if m.is_active else 'deactivated'}")
+
+
 @users_app.command("create")
 def users_create(
     username: Annotated[str, typer.Option(help="Login name (lowercase a-z, 0-9, '.', '_', '-').")],
     display_name: Annotated[str | None, typer.Option(help="Name shown in the UI.")] = None,
+    role: Annotated[str, typer.Option(help="owner or adult.")] = "adult",
     locale: Annotated[str, typer.Option(help="en or de.")] = "en",
+    temporary: Temporary = False,
 ) -> None:
-    """Create an adult account; prompts for the password."""
+    """Create an account; prompts for the password."""
     password = _prompt_password()
 
     async def work(uow: UnitOfWork) -> str:
@@ -79,22 +103,53 @@ def users_create(
             username=username,
             display_name=display_name or username.strip().capitalize(),
             password=password,
+            role=role,
             locale=locale,
+            temporary=temporary,
         )
         return user.username
 
-    typer.echo(f"Created adult account {_run(work)!r}.")
+    typer.echo(f"Created {role} account {_run(work)!r}.")
 
 
 @users_app.command("set-password")
-def users_set_password(username: Annotated[str, typer.Option(help="Account to change.")]) -> None:
-    """Set a new password for an account; prompts for it."""
+def users_set_password(
+    username: Annotated[str | None, typer.Argument(help="Account to change.")] = None,
+    username_option: Annotated[str | None, typer.Option("--username", hidden=True)] = None,
+    temporary: Temporary = False,
+) -> None:
+    """Set a new password for an account; prompts for it. Its sessions end."""
+    name = username or username_option
+    if not name:
+        raise typer.BadParameter("name the account: hauskraft users set-password USERNAME")
     password = _prompt_password()
 
     async def work(uow: UnitOfWork) -> str:
-        return (await service.set_password(uow, service.SYSTEM_ACTOR, username, password)).username
+        return (await service.set_password(uow, service.SYSTEM_ACTOR, name, password, temporary=temporary)).username
 
     typer.echo(f"Password changed for {_run(work)!r}.")
+
+
+@users_app.command("deactivate")
+def users_deactivate(username: Annotated[str, typer.Argument(help="Account to switch off.")]) -> None:
+    """Switch an account off: its sessions end and it can't sign in. The last active owner stays."""
+
+    async def work(uow: UnitOfWork) -> str:
+        user = await service.by_username(uow, username)
+        return (await service.deactivate_member(uow, service.SYSTEM_ACTOR, user.id)).username
+
+    typer.echo(f"Deactivated {_run(work)!r}.")
+
+
+@users_app.command("reactivate")
+def users_reactivate(username: Annotated[str, typer.Argument(help="Account to switch on again.")]) -> None:
+    """Let a deactivated account sign in again."""
+
+    async def work(uow: UnitOfWork) -> str:
+        user = await service.by_username(uow, username)
+        return (await service.reactivate_member(uow, service.SYSTEM_ACTOR, user.id)).username
+
+    typer.echo(f"Reactivated {_run(work)!r}.")
 
 
 @app.command("seed")

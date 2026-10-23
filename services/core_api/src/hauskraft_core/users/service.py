@@ -231,14 +231,24 @@ async def reset_member_password(uow: UnitOfWork, actor: Actor, user_id: uuid.UUI
     await emit_account_event("hauskraft.user.password_reset", user)
 
 
-async def set_password(uow: UnitOfWork, actor: Actor, username: str, password: str) -> User:
-    check_password_policy(password)
+async def by_username(uow: UnitOfWork, username: str) -> User:
     user = await get_by_username(uow, username)
     if user is None:
         raise NotFoundError(f"No user {username!r}.")
+    return user
+
+
+async def set_password(uow: UnitOfWork, actor: Actor, username: str, password: str, *, temporary: bool = False) -> User:
+    """Set an account's password by username (the CLI's recovery path). Like an owner's reset, the account's
+    sessions end and ``hauskraft.user.password_reset`` is emitted; ``temporary`` makes them choose a new one."""
+    check_password_policy(password)
+    user = await by_username(uow, username)
     await uow.authorize(actor, "user.reset_password", ResourceRef("User", str(user.id)), "personal", "graph:write:User")
     user.password_hash = await hash_password(password)
+    user.must_change_password = temporary
+    await sessions.revoke_all_for(uow.session, user)
     await uow.session.flush()
+    await emit_account_event("hauskraft.user.password_reset", user)
     return user
 
 
