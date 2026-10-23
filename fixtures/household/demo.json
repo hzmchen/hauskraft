@@ -1,5 +1,6 @@
 {
-  "$comment": "Synthetic demo household (M0S-E07-04, M0S-E11-02; roles M1S-E02-03). The password is the documented public demo password; never use it outside the demo.",
+  "$comment": "Synthetic demo household (M0S-E07-04, M0S-E11-02; roles M1S-E02-03, household M1S-E03-03). The password is the documented public demo password; never use it outside the demo.",
+  "household": { "name": "Demo household", "timezone": "Europe/Berlin", "locale": "en" },
   "users": [
     {
       "key": "demo",
