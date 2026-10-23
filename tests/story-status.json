@@ -294,7 +294,7 @@
       "acceptance": "suite"
     },
     "M1S-E04-03": {
-      "status": "red",
+      "status": "green",
       "acceptance": "suite"
     },
     "M1S-E04-04": {
