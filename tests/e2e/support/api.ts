@@ -119,6 +119,10 @@ export class Api {
     if (!r.ok()) throw new Error(`RED: cannot update household: ${r.status()} ${await r.text()}`);
   }
 
+  async logout(): Promise<void> {
+    await this.ctx.post("auth/logout", { headers: this.headers() });
+  }
+
   async logoutEverywhere(): Promise<void> {
     await this.ctx.post("auth/logout-everywhere", { headers: this.headers() });
   }
