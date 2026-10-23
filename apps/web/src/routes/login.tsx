@@ -62,6 +62,10 @@ function Login() {
     }
     rememberSession(router.options.context.queryClient, data);
     if (!hasDeviceLanguage() && isLanguage(data.user.locale)) await i18n.changeLanguage(data.user.locale);
+    if (data.user.must_change_password) {
+      await router.navigate({ to: "/change-password", search: { redirect: safeRedirect(target) } });
+      return;
+    }
     // Load the target's data first, so the URL changes together with the new page (no stale login frame).
     const href = safeRedirect(target);
     // preloadRoute accepts an href at runtime; its types only list typed `to` routes.

@@ -139,5 +139,10 @@
     "policy": "Passwords need 12 to 128 characters.",
     "change": "Change password",
     "changed": "Password changed"
+  },
+  "change_password": {
+    "title": "Choose a new password",
+    "explain": "Your password was set by someone else. Choose your own to continue.",
+    "save": "Save password"
   }
 }

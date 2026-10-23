@@ -139,5 +139,10 @@
     "policy": "Passwörter brauchen 12 bis 128 Zeichen.",
     "change": "Passwort ändern",
     "changed": "Passwort geändert"
+  },
+  "change_password": {
+    "title": "Neues Passwort wählen",
+    "explain": "Dein Passwort wurde von jemand anderem festgelegt. Wähle dein eigenes, um weiterzumachen.",
+    "save": "Passwort speichern"
   }
 }

@@ -21,6 +21,9 @@ export const Route = createFileRoute("/_app")({
   beforeLoad: async ({ context, location }) => {
     const session = await context.queryClient.ensureQueryData(sessionQuery);
     if (!session) throw redirect({ to: "/login", search: { redirect: location.href } });
+    // A temporary password comes first (M1S-E07-02); afterwards the member continues to this page.
+    if (session.user.must_change_password)
+      throw redirect({ to: "/change-password", search: { redirect: location.href } });
     return { session };
   },
   // Load enabled plugins' web modules up front: the navigation needs their strings.
