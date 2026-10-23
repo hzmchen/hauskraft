@@ -4,14 +4,18 @@
 from __future__ import annotations
 
 import re
+import uuid
 
 from sqlalchemy import func, select
 
-from hauskraft_core.auth.passwords import check_password_policy, hash_password
+from hauskraft_core.auth import sessions
+from hauskraft_core.auth.passwords import check_password_policy, hash_password, verify_password
 from hauskraft_core.db.models import User, UserRole
+from hauskraft_core.events.outbox import emit
 from hauskraft_core.uow import UnitOfWork
 from hauskraft_sdk import Actor, ResourceRef
 from hauskraft_sdk.errors import ConflictError, HauskraftError, NotFoundError
+from hauskraft_sdk.events import Change, UserChanges, UserData, UserRef, UserUpdatedData
 
 USERNAME = re.compile(r"^[a-z0-9][a-z0-9._-]{1,31}$")
 SYSTEM_ACTOR = Actor(id="system", role="owner", display_name="System", kind="system")
@@ -29,6 +33,12 @@ class RoleNotEnabledError(HauskraftError):
 
     def __init__(self, role: str) -> None:
         super().__init__(f"Accounts can be owners or adults, not {role!r}.")
+
+
+class WrongPasswordError(HauskraftError):
+    status = 422
+    code = "wrong_password"
+    title = "Wrong password"
 
 
 class InvalidUsernameError(HauskraftError):
@@ -93,3 +103,60 @@ async def set_password(uow: UnitOfWork, actor: Actor, username: str, password: s
     user.password_hash = await hash_password(password)
     await uow.session.flush()
     return user
+
+
+def user_ref(user: User) -> UserRef:
+    """The account as account events carry it (ADR 0018): never a password, hash or session."""
+    return UserRef.model_validate(
+        {"id": user.id, "username": user.username, "display_name": user.display_name, "role": str(user.role)}
+    )
+
+
+async def _own_row(uow: UnitOfWork, user_id: uuid.UUID) -> User:
+    row = await uow.session.get(User, user_id)
+    if row is None:  # pragma: no cover - the session just resolved this user
+        raise NotFoundError(f"No user {user_id}.")
+    return row
+
+
+async def update_own_profile(
+    uow: UnitOfWork, actor: Actor, user_id: uuid.UUID, *, display_name: str | None, locale: str | None
+) -> User:
+    """Change my display name and language. A new display name emits ``hauskraft.user.updated``; a language doesn't."""
+    await uow.authorize(actor, "user.update_self", ResourceRef("User", str(user_id)), "personal", "graph:write:User")
+    user = await _own_row(uow, user_id)
+    before = user.display_name
+    if display_name is not None:
+        user.display_name = display_name
+    if locale is not None:
+        user.locale = locale
+    await uow.session.flush()
+    if user.display_name != before:
+        changes = UserChanges(display_name=Change(from_=before, to=user.display_name))
+        data = UserUpdatedData(user=user_ref(user), changes=changes)
+        await emit("hauskraft.user.updated", f"user/{user.id}", data.model_dump(mode="json"), "personal")
+    return user
+
+
+async def change_own_password(
+    uow: UnitOfWork,
+    actor: Actor,
+    user_id: uuid.UUID,
+    *,
+    current_session_id: str,
+    current_password: str,
+    new_password: str,
+) -> None:
+    """Replace my password: my other sessions end, this one stays; emits ``hauskraft.user.password_changed``."""
+    await uow.authorize(
+        actor, "user.change_password", ResourceRef("User", str(user_id)), "personal", "graph:write:User"
+    )
+    user = await _own_row(uow, user_id)
+    matches, _ = await verify_password(current_password, user.password_hash)
+    if not matches:
+        raise WrongPasswordError("The current password is wrong.")
+    check_password_policy(new_password)
+    user.password_hash = await hash_password(new_password)
+    await sessions.revoke_all_for(uow.session, user, except_id=current_session_id)
+    data = UserData(user=user_ref(user))
+    await emit("hauskraft.user.password_changed", f"user/{user.id}", data.model_dump(mode="json"), "personal")

@@ -497,6 +497,29 @@
         "title": "NavigationStyles",
         "type": "object"
       },
+      "PasswordChange": {
+        "additionalProperties": false,
+        "properties": {
+          "current_password": {
+            "maxLength": 1024,
+            "minLength": 1,
+            "title": "Current Password",
+            "type": "string"
+          },
+          "new_password": {
+            "maxLength": 1024,
+            "minLength": 1,
+            "title": "New Password",
+            "type": "string"
+          }
+        },
+        "required": [
+          "current_password",
+          "new_password"
+        ],
+        "title": "PasswordChange",
+        "type": "object"
+      },
       "PluginOut": {
         "properties": {
           "contributes": {
@@ -1593,6 +1616,43 @@
           }
         },
         "summary": "Me Update",
+        "tags": [
+          "users"
+        ]
+      }
+    },
+    "/api/v1/me/password": {
+      "post": {
+        "description": "Change my password (M1S-E05-01). Wrong current passwords count towards the login rate limit.",
+        "operationId": "users_me_password",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PasswordChange"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "422": {
+            "description": "Unprocessable Content"
+          },
+          "429": {
+            "description": "Too Many Requests"
+          }
+        },
+        "summary": "Me Password",
         "tags": [
           "users"
         ]

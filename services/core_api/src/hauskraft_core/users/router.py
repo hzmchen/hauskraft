@@ -9,11 +9,12 @@ from fastapi import APIRouter, Request, Response
 
 from hauskraft_core.auth import sessions
 from hauskraft_core.auth.deps import CurrentSession, actor_for
-from hauskraft_core.auth.schemas import MePatch, SessionInfo, UserCreate, UserOut
-from hauskraft_core.db.models import User
+from hauskraft_core.auth.ratelimit import client_ip
+from hauskraft_core.auth.router import RateLimitedError
+from hauskraft_core.auth.schemas import MePatch, PasswordChange, SessionInfo, UserCreate, UserOut
 from hauskraft_core.db.session import DbSession
 from hauskraft_core.uow import UnitOfWork
-from hauskraft_core.users.service import create_user
+from hauskraft_core.users.service import WrongPasswordError, change_own_password, create_user, update_own_profile
 from hauskraft_sdk import ResourceRef
 from hauskraft_sdk.errors import NotFoundError
 
@@ -29,19 +30,38 @@ async def me_get(resolved: CurrentSession) -> UserOut:
 async def me_update(body: MePatch, request: Request, resolved: CurrentSession) -> UserOut:
     _, user = resolved
     async with UnitOfWork(request.app.state.sessionmaker, request.app.state.policy, request.app.state.settings) as uow:
-        await uow.authorize(
-            actor_for(user), "user.update_self", ResourceRef("User", str(user.id)), "personal", "graph:write:User"
+        row = await update_own_profile(
+            uow, actor_for(user), user.id, display_name=body.display_name, locale=body.locale
         )
-        row = await uow.session.get(User, user.id)
-        if row is None:  # pragma: no cover - the session just resolved this user
-            raise LookupError(user.id)
-        if body.display_name is not None:
-            row.display_name = body.display_name
-        if body.locale is not None:
-            row.locale = body.locale
-        await uow.session.flush()
         out = UserOut.of(row)
     return out
+
+
+@router.post("/me/password", status_code=204, responses={401: {}, 403: {}, 422: {}, 429: {}})
+async def me_password(body: PasswordChange, request: Request, resolved: CurrentSession) -> Response:
+    """Change my password (M1S-E05-01). Wrong current passwords count towards the login rate limit."""
+    sess, user = resolved
+    limiter, ip = request.app.state.login_limiter, client_ip(request)
+    wait = limiter.retry_after(user.username, ip)
+    if wait:
+        raise RateLimitedError(wait)
+    try:
+        async with UnitOfWork(
+            request.app.state.sessionmaker, request.app.state.policy, request.app.state.settings
+        ) as uow:
+            await change_own_password(
+                uow,
+                actor_for(user),
+                user.id,
+                current_session_id=sess.id,
+                current_password=body.current_password,
+                new_password=body.new_password,
+            )
+    except WrongPasswordError:
+        limiter.failed(user.username, ip)
+        raise
+    limiter.succeeded(user.username, ip)
+    return Response(status_code=204)
 
 
 @router.get("/me/sessions", responses={401: {}})

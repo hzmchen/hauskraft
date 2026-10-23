@@ -81,6 +81,11 @@ class LoginIn(_Model):
     password: Annotated[str, Field(min_length=1, max_length=1024)]
 
 
+class PasswordChange(_Model):
+    current_password: Annotated[str, Field(min_length=1, max_length=1024)]
+    new_password: Annotated[str, Field(min_length=1, max_length=1024)]  # the policy answers 422 password_policy
+
+
 class MePatch(_Model):
     display_name: DisplayName | None = None
     locale: Locale | None = None

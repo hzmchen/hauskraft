@@ -11,6 +11,7 @@ from hauskraft_core.auth import sessions
 from hauskraft_core.auth.csrf import check_origin
 from hauskraft_core.auth.deps import CurrentSession, actor_for
 from hauskraft_core.auth.providers import PasswordCredentials
+from hauskraft_core.auth.ratelimit import client_ip
 from hauskraft_core.auth.schemas import LoginIn, SessionOut
 from hauskraft_core.uow import UnitOfWork
 from hauskraft_sdk import ResourceRef
@@ -38,10 +39,6 @@ class RateLimitedError(HauskraftError):
         self.headers = {"Retry-After": str(retry_after)}
 
 
-def _client_ip(request: Request) -> str:
-    return request.client.host if request.client else "unknown"
-
-
 def _inet(value: str) -> str | None:
     """The INET column only takes real addresses (test clients report a host name)."""
     try:
@@ -66,7 +63,7 @@ def _set_cookie(response: Response, request: Request, token: str) -> None:
 async def login(body: LoginIn, request: Request, response: Response) -> SessionOut:
     check_origin(request)
     limiter = request.app.state.login_limiter
-    ip = _client_ip(request)
+    ip = client_ip(request)
     wait = limiter.retry_after(body.username, ip)
     if wait:
         raise RateLimitedError(wait)

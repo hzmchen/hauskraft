@@ -9,8 +9,14 @@ from __future__ import annotations
 import time
 from collections import defaultdict, deque
 
+from fastapi import Request
+
 MAX_FAILURES = 5
 WINDOW_SECONDS = 15 * 60
+
+
+def client_ip(request: Request) -> str:
+    return request.client.host if request.client else "unknown"
 
 
 class LoginRateLimiter:

@@ -2,7 +2,7 @@
 
 import type { Client, ClientMeta, Options as Options2, RequestResult, TDataShape } from './client';
 import { client } from './client.gen';
-import type { ActivityListData, ActivityListErrors, ActivityListResponses, AuthLoginData, AuthLoginErrors, AuthLoginResponses, AuthLogoutData, AuthLogoutErrors, AuthLogoutEverywhereData, AuthLogoutEverywhereErrors, AuthLogoutEverywhereResponses, AuthLogoutResponses, AuthSessionData, AuthSessionErrors, AuthSessionResponses, DashboardGetData, DashboardGetErrors, DashboardGetResponses, DashboardPutData, DashboardPutErrors, DashboardPutResponses, HealthHealthzData, HealthHealthzResponses, HealthReadyzData, HealthReadyzErrors, HealthReadyzResponses, PluginsListData, PluginsListErrors, PluginsListResponses, PluginsUpdateData, PluginsUpdateErrors, PluginsUpdateResponses, SettingsThemeSetData, SettingsThemeSetErrors, SettingsThemeSetResponses, TasksCreateData, TasksCreateErrors, TasksCreateResponses, TasksDeleteData, TasksDeleteErrors, TasksDeleteResponses, TasksGetData, TasksGetErrors, TasksGetResponses, TasksListData, TasksListErrors, TasksListResponses, TasksUpdateData, TasksUpdateErrors, TasksUpdateResponses, ThemesActiveCssData, ThemesActiveCssErrors, ThemesActiveCssResponses, ThemesActiveData, ThemesActiveErrors, ThemesActiveResponses, ThemesAssetData, ThemesAssetErrors, ThemesAssetResponses, ThemesListData, ThemesListErrors, ThemesListResponses, UsersMeGetData, UsersMeGetErrors, UsersMeGetResponses, UsersMeSessionEndData, UsersMeSessionEndErrors, UsersMeSessionEndResponses, UsersMeSessionsData, UsersMeSessionsErrors, UsersMeSessionsResponses, UsersMeUpdateData, UsersMeUpdateErrors, UsersMeUpdateResponses, UsersUsersCreateData, UsersUsersCreateErrors, UsersUsersCreateResponses } from './types.gen';
+import type { ActivityListData, ActivityListErrors, ActivityListResponses, AuthLoginData, AuthLoginErrors, AuthLoginResponses, AuthLogoutData, AuthLogoutErrors, AuthLogoutEverywhereData, AuthLogoutEverywhereErrors, AuthLogoutEverywhereResponses, AuthLogoutResponses, AuthSessionData, AuthSessionErrors, AuthSessionResponses, DashboardGetData, DashboardGetErrors, DashboardGetResponses, DashboardPutData, DashboardPutErrors, DashboardPutResponses, HealthHealthzData, HealthHealthzResponses, HealthReadyzData, HealthReadyzErrors, HealthReadyzResponses, PluginsListData, PluginsListErrors, PluginsListResponses, PluginsUpdateData, PluginsUpdateErrors, PluginsUpdateResponses, SettingsThemeSetData, SettingsThemeSetErrors, SettingsThemeSetResponses, TasksCreateData, TasksCreateErrors, TasksCreateResponses, TasksDeleteData, TasksDeleteErrors, TasksDeleteResponses, TasksGetData, TasksGetErrors, TasksGetResponses, TasksListData, TasksListErrors, TasksListResponses, TasksUpdateData, TasksUpdateErrors, TasksUpdateResponses, ThemesActiveCssData, ThemesActiveCssErrors, ThemesActiveCssResponses, ThemesActiveData, ThemesActiveErrors, ThemesActiveResponses, ThemesAssetData, ThemesAssetErrors, ThemesAssetResponses, ThemesListData, ThemesListErrors, ThemesListResponses, UsersMeGetData, UsersMeGetErrors, UsersMeGetResponses, UsersMePasswordData, UsersMePasswordErrors, UsersMePasswordResponses, UsersMeSessionEndData, UsersMeSessionEndErrors, UsersMeSessionEndResponses, UsersMeSessionsData, UsersMeSessionsErrors, UsersMeSessionsResponses, UsersMeUpdateData, UsersMeUpdateErrors, UsersMeUpdateResponses, UsersUsersCreateData, UsersUsersCreateErrors, UsersUsersCreateResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean, TResponse = unknown> = Options2<TData, ThrowOnError, TResponse> & {
     /**
@@ -84,6 +84,20 @@ export const usersMeGet = <ThrowOnError extends boolean = false>(options?: Optio
  */
 export const usersMeUpdate = <ThrowOnError extends boolean = false>(options: Options<UsersMeUpdateData, ThrowOnError>): RequestResult<UsersMeUpdateResponses, UsersMeUpdateErrors, ThrowOnError> => (options.client ?? client).patch<UsersMeUpdateResponses, UsersMeUpdateErrors, ThrowOnError>({
     url: '/api/v1/me',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Me Password
+ *
+ * Change my password (M1S-E05-01). Wrong current passwords count towards the login rate limit.
+ */
+export const usersMePassword = <ThrowOnError extends boolean = false>(options: Options<UsersMePasswordData, ThrowOnError>): RequestResult<UsersMePasswordResponses, UsersMePasswordErrors, ThrowOnError> => (options.client ?? client).post<UsersMePasswordResponses, UsersMePasswordErrors, ThrowOnError>({
+    url: '/api/v1/me/password',
     ...options,
     headers: {
         'Content-Type': 'application/json',

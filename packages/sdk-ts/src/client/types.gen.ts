@@ -303,6 +303,20 @@ export type NavigationStyles = {
 };
 
 /**
+ * PasswordChange
+ */
+export type PasswordChange = {
+    /**
+     * Current Password
+     */
+    current_password: string;
+    /**
+     * New Password
+     */
+    new_password: string;
+};
+
+/**
  * PluginOut
  */
 export type PluginOut = {
@@ -1051,6 +1065,41 @@ export type UsersMeUpdateResponses = {
 };
 
 export type UsersMeUpdateResponse = UsersMeUpdateResponses[keyof UsersMeUpdateResponses];
+
+export type UsersMePasswordData = {
+    body: PasswordChange;
+    path?: never;
+    query?: never;
+    url: '/api/v1/me/password';
+};
+
+export type UsersMePasswordErrors = {
+    /**
+     * Unauthorized
+     */
+    401: unknown;
+    /**
+     * Forbidden
+     */
+    403: unknown;
+    /**
+     * Unprocessable Content
+     */
+    422: unknown;
+    /**
+     * Too Many Requests
+     */
+    429: unknown;
+};
+
+export type UsersMePasswordResponses = {
+    /**
+     * Successful Response
+     */
+    204: void;
+};
+
+export type UsersMePasswordResponse = UsersMePasswordResponses[keyof UsersMePasswordResponses];
 
 export type UsersMeSessionsData = {
     body?: never;
