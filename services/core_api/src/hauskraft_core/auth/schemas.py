@@ -44,6 +44,23 @@ class UserOut(_Model):
         )
 
 
+class MemberOut(UserOut):
+    """A member as owners see them (M1S-E06-01). Never a hash, a session or an IP address."""
+
+    is_active: bool
+    created_at: dt.datetime
+    last_login_at: dt.datetime | None
+
+    @classmethod
+    def of(cls, user: User) -> MemberOut:
+        return cls(
+            **UserOut.of(user).model_dump(),
+            is_active=user.is_active,
+            created_at=user.created_at,
+            last_login_at=user.last_login_at,
+        )
+
+
 class SessionOut(_Model):
     user: UserOut
     csrf_token: str
@@ -102,3 +119,4 @@ class UserCreate(_Model):
     display_name: DisplayName
     password: Annotated[str, Field(min_length=1, max_length=1024)]
     role: UserRole = UserRole.ADULT
+    locale: Locale | None = Field(default=None, description="Defaults to the household's language.")

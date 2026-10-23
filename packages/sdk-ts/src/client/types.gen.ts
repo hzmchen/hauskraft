@@ -315,6 +315,52 @@ export type MePatch = {
 };
 
 /**
+ * MemberOut
+ *
+ * A member as owners see them (M1S-E06-01). Never a hash, a session or an IP address.
+ */
+export type MemberOut = {
+    /**
+     * Created At
+     */
+    created_at: string;
+    /**
+     * Display Name
+     */
+    display_name: string;
+    /**
+     * Id
+     */
+    id: string;
+    /**
+     * Is Active
+     */
+    is_active: boolean;
+    /**
+     * Last Login At
+     */
+    last_login_at: string | null;
+    /**
+     * Locale
+     */
+    locale: 'en' | 'de';
+    /**
+     * Must Change Password
+     *
+     * True until the member replaces a temporary password.
+     */
+    must_change_password: boolean;
+    /**
+     * Role
+     */
+    role: string;
+    /**
+     * Username
+     */
+    username: string;
+};
+
+/**
  * Navigation
  */
 export type Navigation = {
@@ -716,6 +762,12 @@ export type UserCreate = {
      * Display Name
      */
     display_name: string;
+    /**
+     * Locale
+     *
+     * Defaults to the household's language.
+     */
+    locale?: 'en' | 'de' | null;
     /**
      * Password
      */
@@ -1711,6 +1763,35 @@ export type ThemesListResponses = {
 
 export type ThemesListResponse = ThemesListResponses[keyof ThemesListResponses];
 
+export type UsersUsersListData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/v1/users';
+};
+
+export type UsersUsersListErrors = {
+    /**
+     * Unauthorized
+     */
+    401: unknown;
+    /**
+     * Forbidden
+     */
+    403: unknown;
+};
+
+export type UsersUsersListResponses = {
+    /**
+     * Response Users Users List
+     *
+     * Successful Response
+     */
+    200: Array<MemberOut>;
+};
+
+export type UsersUsersListResponse = UsersUsersListResponses[keyof UsersUsersListResponses];
+
 export type UsersUsersCreateData = {
     body: UserCreate;
     path?: never;
@@ -1741,7 +1822,49 @@ export type UsersUsersCreateResponses = {
     /**
      * Successful Response
      */
-    201: UserOut;
+    201: MemberOut;
 };
 
 export type UsersUsersCreateResponse = UsersUsersCreateResponses[keyof UsersUsersCreateResponses];
+
+export type UsersUsersGetData = {
+    body?: never;
+    path: {
+        /**
+         * User Id
+         */
+        user_id: string;
+    };
+    query?: never;
+    url: '/api/v1/users/{user_id}';
+};
+
+export type UsersUsersGetErrors = {
+    /**
+     * Unauthorized
+     */
+    401: unknown;
+    /**
+     * Forbidden
+     */
+    403: unknown;
+    /**
+     * Not Found
+     */
+    404: unknown;
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type UsersUsersGetError = UsersUsersGetErrors[keyof UsersUsersGetErrors];
+
+export type UsersUsersGetResponses = {
+    /**
+     * Successful Response
+     */
+    200: MemberOut;
+};
+
+export type UsersUsersGetResponse = UsersUsersGetResponses[keyof UsersUsersGetResponses];

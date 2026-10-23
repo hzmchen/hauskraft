@@ -7,6 +7,7 @@ import re
 import uuid
 
 from sqlalchemy import func, select
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from hauskraft_core.auth import sessions
 from hauskraft_core.auth.passwords import check_password_policy, hash_password, verify_password
@@ -94,6 +95,21 @@ async def create_user(
     )
     uow.session.add(user)
     await uow.session.flush()
+    await uow.session.refresh(user)
+    data = UserData(user=user_ref(user))
+    await emit("hauskraft.user.created", f"user/{user.id}", data.model_dump(mode="json"), "personal")
+    return user
+
+
+async def list_members(session: AsyncSession) -> list[User]:
+    """Every account, deactivated ones included, by display name (case-insensitive), then username."""
+    return list(await session.scalars(select(User).order_by(func.lower(User.display_name), User.username)))
+
+
+async def get_member(session: AsyncSession, user_id: uuid.UUID) -> User:
+    user = await session.get(User, user_id)
+    if user is None:
+        raise NotFoundError("No such member.")
     return user
 
 

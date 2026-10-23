@@ -3,8 +3,8 @@
 import { type DefaultError, type InfiniteData, infiniteQueryOptions, queryOptions, type UseMutationOptions } from '@tanstack/react-query';
 
 import { client } from '../client.gen';
-import { activityList, authLogin, authLogout, authLogoutEverywhere, authSession, dashboardGet, dashboardPut, healthHealthz, healthReadyz, householdRead, householdUpdate, type Options, pluginsList, pluginsUpdate, settingsThemeSet, tasksCreate, tasksDelete, tasksGet, tasksList, tasksUpdate, themesActive, themesActiveCss, themesAsset, themesList, usersMeGet, usersMePassword, usersMeSessionEnd, usersMeSessions, usersMeUpdate, usersUsersCreate } from '../sdk.gen';
-import type { ActivityListData, ActivityListResponse, AuthLoginData, AuthLoginError, AuthLoginResponse, AuthLogoutData, AuthLogoutEverywhereData, AuthLogoutEverywhereResponse, AuthLogoutResponse, AuthSessionData, AuthSessionResponse, DashboardGetData, DashboardGetResponse, DashboardPutData, DashboardPutResponse, HealthHealthzData, HealthHealthzResponse, HealthReadyzData, HealthReadyzError, HealthReadyzResponse, HouseholdReadData, HouseholdReadResponse, HouseholdUpdateData, HouseholdUpdateResponse, PluginsListData, PluginsListResponse, PluginsUpdateData, PluginsUpdateResponse, SettingsThemeSetData, SettingsThemeSetResponse, TasksCreateData, TasksCreateResponse, TasksDeleteData, TasksDeleteResponse, TasksGetData, TasksGetResponse, TasksListData, TasksListResponse, TasksUpdateData, TasksUpdateResponse, ThemesActiveCssData, ThemesActiveCssError, ThemesActiveCssResponse, ThemesActiveData, ThemesActiveResponse, ThemesAssetData, ThemesAssetError, ThemesListData, ThemesListResponse, UsersMeGetData, UsersMeGetResponse, UsersMePasswordData, UsersMePasswordResponse, UsersMeSessionEndData, UsersMeSessionEndError, UsersMeSessionEndResponse, UsersMeSessionsData, UsersMeSessionsResponse, UsersMeUpdateData, UsersMeUpdateResponse, UsersUsersCreateData, UsersUsersCreateResponse } from '../types.gen';
+import { activityList, authLogin, authLogout, authLogoutEverywhere, authSession, dashboardGet, dashboardPut, healthHealthz, healthReadyz, householdRead, householdUpdate, type Options, pluginsList, pluginsUpdate, settingsThemeSet, tasksCreate, tasksDelete, tasksGet, tasksList, tasksUpdate, themesActive, themesActiveCss, themesAsset, themesList, usersMeGet, usersMePassword, usersMeSessionEnd, usersMeSessions, usersMeUpdate, usersUsersCreate, usersUsersGet, usersUsersList } from '../sdk.gen';
+import type { ActivityListData, ActivityListResponse, AuthLoginData, AuthLoginError, AuthLoginResponse, AuthLogoutData, AuthLogoutEverywhereData, AuthLogoutEverywhereResponse, AuthLogoutResponse, AuthSessionData, AuthSessionResponse, DashboardGetData, DashboardGetResponse, DashboardPutData, DashboardPutResponse, HealthHealthzData, HealthHealthzResponse, HealthReadyzData, HealthReadyzError, HealthReadyzResponse, HouseholdReadData, HouseholdReadResponse, HouseholdUpdateData, HouseholdUpdateResponse, PluginsListData, PluginsListResponse, PluginsUpdateData, PluginsUpdateResponse, SettingsThemeSetData, SettingsThemeSetResponse, TasksCreateData, TasksCreateResponse, TasksDeleteData, TasksDeleteResponse, TasksGetData, TasksGetResponse, TasksListData, TasksListResponse, TasksUpdateData, TasksUpdateResponse, ThemesActiveCssData, ThemesActiveCssError, ThemesActiveCssResponse, ThemesActiveData, ThemesActiveResponse, ThemesAssetData, ThemesAssetError, ThemesListData, ThemesListResponse, UsersMeGetData, UsersMeGetResponse, UsersMePasswordData, UsersMePasswordResponse, UsersMeSessionEndData, UsersMeSessionEndError, UsersMeSessionEndResponse, UsersMeSessionsData, UsersMeSessionsResponse, UsersMeUpdateData, UsersMeUpdateResponse, UsersUsersCreateData, UsersUsersCreateResponse, UsersUsersGetData, UsersUsersGetError, UsersUsersGetResponse, UsersUsersListData, UsersUsersListResponse } from '../types.gen';
 
 export type QueryKey<TOptions extends Options> = [
     Pick<TOptions, 'baseUrl' | 'body' | 'headers' | 'path' | 'query'> & {
@@ -633,10 +633,32 @@ export const themesListOptions = (options?: Options<ThemesListData>) => queryOpt
     queryKey: themesListQueryKey(options)
 });
 
+export const usersUsersListQueryKey = (options?: Options<UsersUsersListData>) => createQueryKey('usersUsersList', options);
+
+/**
+ * Users List
+ *
+ * Every member, deactivated ones included, by display name (M1S-E06-01). Owners only.
+ */
+export const usersUsersListOptions = (options?: Options<UsersUsersListData>) => queryOptions<UsersUsersListResponse, DefaultError, UsersUsersListResponse, ReturnType<typeof usersUsersListQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await usersUsersList({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: usersUsersListQueryKey(options)
+});
+
 /**
  * Users Create
  *
- * Create an owner or adult account (M0S-E05-05, M1S-E02-02). Owners only (``user.create``).
+ * Create an owner or adult account with a temporary password (M0S-E05-05, M1S-E02-02, M1S-E06-01).
+ *
+ * Owners only (``user.create``). The language defaults to the household's.
  */
 export const usersUsersCreateMutation = (options?: Partial<Options<UsersUsersCreateData>>): UseMutationOptions<UsersUsersCreateResponse, DefaultError, Options<UsersUsersCreateData>> => {
     const mutationOptions: UseMutationOptions<UsersUsersCreateResponse, DefaultError, Options<UsersUsersCreateData>> = {
@@ -651,3 +673,21 @@ export const usersUsersCreateMutation = (options?: Partial<Options<UsersUsersCre
     };
     return mutationOptions;
 };
+
+export const usersUsersGetQueryKey = (options: Options<UsersUsersGetData>) => createQueryKey('usersUsersGet', options);
+
+/**
+ * Users Get
+ */
+export const usersUsersGetOptions = (options: Options<UsersUsersGetData>) => queryOptions<UsersUsersGetResponse, UsersUsersGetError, UsersUsersGetResponse, ReturnType<typeof usersUsersGetQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await usersUsersGet({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: usersUsersGetQueryKey(options)
+});

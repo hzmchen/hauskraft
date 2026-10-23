@@ -11,12 +11,22 @@ from hauskraft_core.auth import sessions
 from hauskraft_core.auth.deps import CurrentSession, actor_for
 from hauskraft_core.auth.ratelimit import client_ip
 from hauskraft_core.auth.router import RateLimitedError
-from hauskraft_core.auth.schemas import MePatch, PasswordChange, SessionInfo, UserCreate, UserOut
+from hauskraft_core.auth.schemas import MemberOut, MePatch, PasswordChange, SessionInfo, UserCreate, UserOut
+from hauskraft_core.db.models import User
 from hauskraft_core.db.session import DbSession
+from hauskraft_core.household.service import read_household
+from hauskraft_core.policy import Decision
 from hauskraft_core.uow import UnitOfWork
-from hauskraft_core.users.service import WrongPasswordError, change_own_password, create_user, update_own_profile
+from hauskraft_core.users.service import (
+    WrongPasswordError,
+    change_own_password,
+    create_user,
+    get_member,
+    list_members,
+    update_own_profile,
+)
 from hauskraft_sdk import ResourceRef
-from hauskraft_sdk.errors import NotFoundError
+from hauskraft_sdk.errors import NotFoundError, PolicyDeniedError
 
 router = APIRouter(tags=["users"])
 
@@ -88,10 +98,37 @@ async def me_session_end(session_id: str, request: Request, resolved: CurrentSes
     return Response(status_code=204)
 
 
+async def _require(request: Request, user: User, action: str) -> None:
+    """Reads that only some roles may do ask the policy too (``user.list`` for the members API)."""
+    decision = await request.app.state.policy.authorize(
+        actor_for(user), action, ResourceRef("User"), "personal", "graph:read:User"
+    )
+    if decision is not Decision.ALLOW:
+        raise PolicyDeniedError(action)
+
+
+@router.get("/users", responses={401: {}, 403: {}})
+async def users_list(request: Request, db: DbSession, resolved: CurrentSession) -> list[MemberOut]:
+    """Every member, deactivated ones included, by display name (M1S-E06-01). Owners only."""
+    await _require(request, resolved[1], "user.list")
+    return [MemberOut.of(member) for member in await list_members(db)]
+
+
+@router.get("/users/{user_id}", responses={401: {}, 403: {}, 404: {}})
+async def users_get(user_id: uuid.UUID, request: Request, db: DbSession, resolved: CurrentSession) -> MemberOut:
+    await _require(request, resolved[1], "user.list")
+    return MemberOut.of(await get_member(db, user_id))
+
+
 @router.post("/users", status_code=201, responses={401: {}, 403: {}, 409: {}, 422: {}})
-async def users_create(body: UserCreate, request: Request, resolved: CurrentSession) -> UserOut:
-    """Create an owner or adult account (M0S-E05-05, M1S-E02-02). Owners only (``user.create``)."""
-    async with UnitOfWork(request.app.state.sessionmaker, request.app.state.policy, request.app.state.settings) as uow:
+async def users_create(body: UserCreate, request: Request, resolved: CurrentSession) -> MemberOut:
+    """Create an owner or adult account with a temporary password (M0S-E05-05, M1S-E02-02, M1S-E06-01).
+
+    Owners only (``user.create``). The language defaults to the household's.
+    """
+    settings = request.app.state.settings
+    async with UnitOfWork(request.app.state.sessionmaker, request.app.state.policy, settings) as uow:
+        locale = body.locale or (await read_household(uow.session, settings)).locale
         user = await create_user(
             uow,
             actor_for(resolved[1]),
@@ -99,7 +136,8 @@ async def users_create(body: UserCreate, request: Request, resolved: CurrentSess
             display_name=body.display_name,
             password=body.password,
             role=body.role,
+            locale=locale,
             temporary=True,
         )
-        out = UserOut.of(user)
+        out = MemberOut.of(user)
     return out
