@@ -99,16 +99,12 @@ def test_seed_writes_no_theme_setting(empty_db: Settings) -> None:
     engine.dispose()
 
 
-def test_seed_stores_the_household_settings(empty_db: Settings) -> None:
+def test_seed_sets_the_household_settings(empty_db: Settings) -> None:
     assert CliRunner().invoke(cli, ["seed"]).exit_code == 0
-    engine = create_engine(empty_db.database_url)
-    with engine.connect() as conn:
-        stored = dict(
-            conn.execute(text("SELECT key, value FROM deployment_settings WHERE key LIKE 'household.%'")).all()
-        )
-    engine.dispose()
-    assert stored == {
-        "household.name": "Demo household",
-        "household.timezone": "Europe/Berlin",
-        "household.locale": "en",
-    }
+    with TestClient(create_app(empty_db), headers={"Origin": "http://testserver"}) as client:
+        client.post("/api/v1/auth/login", json={"username": "alex", "password": "hauskraft-demo"})
+        assert client.get("/api/v1/household").json() == {
+            "name": "Demo household",
+            "timezone": "Europe/Berlin",
+            "locale": "en",
+        }
