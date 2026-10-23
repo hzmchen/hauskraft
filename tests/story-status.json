@@ -266,7 +266,7 @@
       "acceptance": "suite"
     },
     "M1S-E02-04": {
-      "status": "red",
+      "status": "green",
       "acceptance": "suite"
     },
     "M1S-E03-01": {
