@@ -155,5 +155,31 @@
     "saved": "Household saved",
     "invalid_timezone": "Choose a time zone from the list.",
     "invalid_name": "The name needs 1 to 80 characters."
+  },
+  "roles": {
+    "owner": "Owner",
+    "adult": "Adult"
+  },
+  "members": {
+    "add": "Add member",
+    "edit": "Edit",
+    "edit_named": "Edit {{name}}",
+    "edit_title": "Edit member",
+    "save": "Save",
+    "reset": "Reset password",
+    "reset_named": "Reset password for {{name}}",
+    "reset_title": "Reset password?",
+    "deactivate": "Deactivate",
+    "deactivate_named": "Deactivate {{name}}",
+    "deactivate_title": "Deactivate {{name}}?",
+    "deactivate_body": "They are signed out everywhere and can't sign in until reactivated.",
+    "reactivate": "Reactivate",
+    "reactivate_named": "Reactivate {{name}}",
+    "deactivated": "Deactivated",
+    "role": "Role",
+    "temporary_password": "Temporary password",
+    "last_owner": "The household needs at least one active owner.",
+    "username_taken": "This username is already taken.",
+    "invalid_username": "Usernames have 2 to 32 characters: a–z, 0–9, '.', '_' or '-'."
   }
 }

@@ -155,5 +155,31 @@
     "saved": "Haushalt gespeichert",
     "invalid_timezone": "Wähle eine Zeitzone aus der Liste.",
     "invalid_name": "Der Name braucht 1 bis 80 Zeichen."
+  },
+  "roles": {
+    "owner": "Inhaber",
+    "adult": "Erwachsen"
+  },
+  "members": {
+    "add": "Mitglied hinzufügen",
+    "edit": "Bearbeiten",
+    "edit_named": "{{name}} bearbeiten",
+    "edit_title": "Mitglied bearbeiten",
+    "save": "Speichern",
+    "reset": "Passwort zurücksetzen",
+    "reset_named": "Passwort zurücksetzen für {{name}}",
+    "reset_title": "Passwort zurücksetzen?",
+    "deactivate": "Deaktivieren",
+    "deactivate_named": "{{name}} deaktivieren",
+    "deactivate_title": "{{name}} deaktivieren?",
+    "deactivate_body": "Die Person wird überall abgemeldet und kann sich erst nach der Reaktivierung wieder anmelden.",
+    "reactivate": "Reaktivieren",
+    "reactivate_named": "{{name}} reaktivieren",
+    "deactivated": "Deaktiviert",
+    "role": "Rolle",
+    "temporary_password": "Vorübergehendes Passwort",
+    "last_owner": "Der Haushalt braucht mindestens einen aktiven Inhaber.",
+    "username_taken": "Dieser Benutzername ist schon vergeben.",
+    "invalid_username": "Benutzernamen haben 2 bis 32 Zeichen: a–z, 0–9, '.', '_' oder '-'."
   }
 }
