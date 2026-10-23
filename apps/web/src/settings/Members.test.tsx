@@ -178,3 +178,22 @@ describe("Settings → Members (M1S-E06-05)", () => {
     expect(screen.queryByRole("alertdialog")).toBeNull();
   });
 });
+
+describe("Settings → Members freshness", () => {
+  it("shows changes made elsewhere when the page is opened again", async () => {
+    let name = "Alex Adult";
+    fakeApi({
+      "GET /api/v1/auth/session": () => json(OWNER_SESSION),
+      "GET /api/v1/themes": () => json([]),
+      "GET /api/v1/users": () => json([ME, { ...ALEX, display_name: name }]),
+    });
+    const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false, staleTime: 10_000 } } });
+    const router = createAppRouter({ initialPath: "/settings/members", queryClient, i18n: createI18n({ lng: "en" }) });
+    render(<App router={router} queryClient={queryClient} />);
+    expect(await screen.findByRole("button", { name: "Edit Alex Adult" })).toBeDefined();
+    name = "Alex M."; // renamed in their own account settings, within the default stale time
+    await router.navigate({ to: "/settings/appearance" });
+    await router.navigate({ to: "/settings/members" });
+    expect(await screen.findByRole("button", { name: "Edit Alex M." })).toBeDefined();
+  });
+});
