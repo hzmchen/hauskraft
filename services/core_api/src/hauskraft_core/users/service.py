@@ -36,6 +36,11 @@ class RoleNotEnabledError(HauskraftError):
         super().__init__(f"Accounts can be owners or adults, not {role!r}.")
 
 
+class LastOwnerError(ConflictError):
+    def __init__(self) -> None:
+        super().__init__("last_owner", "The household needs at least one active owner.")
+
+
 class WrongPasswordError(HauskraftError):
     status = 422
     code = "wrong_password"
@@ -133,6 +138,40 @@ async def get_member(session: AsyncSession, user_id: uuid.UUID) -> User:
     user = await session.get(User, user_id)
     if user is None:
         raise NotFoundError("No such member.")
+    return user
+
+
+async def _ensure_an_active_owner_remains(session: AsyncSession, leaving: User) -> None:
+    """Refuse when ``leaving`` is the only active owner. The owner rows stay locked until the transaction ends, so
+    two owners can't demote or deactivate each other at the same moment."""
+    owners = await session.scalars(
+        select(User.id).where(User.role == UserRole.OWNER, User.is_active.is_(True)).with_for_update()
+    )
+    if set(owners) <= {leaving.id}:
+        raise LastOwnerError
+
+
+async def update_member(
+    uow: UnitOfWork, actor: Actor, user_id: uuid.UUID, *, display_name: str | None, role: str | None
+) -> User:
+    """Change a member's display name and/or role (owners only); emits ``hauskraft.user.updated`` with the changes."""
+    await uow.authorize(actor, "user.update", ResourceRef("User", str(user_id)), "personal", "graph:write:User")
+    if role is not None and role not in ENABLED_ROLES:
+        raise RoleNotEnabledError(role)
+    user = await get_member(uow.session, user_id)
+    changes: dict[str, Change[str]] = {}
+    if display_name is not None and display_name != user.display_name:
+        changes["display_name"] = Change(from_=user.display_name, to=display_name)
+        user.display_name = display_name
+    if role is not None and role != user.role:
+        if user.role == UserRole.OWNER and user.is_active:
+            await _ensure_an_active_owner_remains(uow.session, user)
+        changes["role"] = Change(from_=str(user.role), to=str(role))
+        user.role = UserRole(role)
+    if changes:
+        await uow.session.flush()
+        data = UserUpdatedData(user=user_ref(user), changes=UserChanges.model_validate(changes))
+        await emit("hauskraft.user.updated", f"user/{user.id}", data.model_dump(mode="json"), "personal")
     return user
 
 

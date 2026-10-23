@@ -361,6 +361,19 @@ export type MemberOut = {
 };
 
 /**
+ * MemberPatch
+ *
+ * What owners may change about a member (M1S-E06-02); the username is fixed.
+ */
+export type MemberPatch = {
+    /**
+     * Display Name
+     */
+    display_name?: string | null;
+    role?: UserRole | null;
+};
+
+/**
  * Navigation
  */
 export type Navigation = {
@@ -1971,3 +1984,47 @@ export type UsersUsersGetResponses = {
 };
 
 export type UsersUsersGetResponse = UsersUsersGetResponses[keyof UsersUsersGetResponses];
+
+export type UsersUsersUpdateData = {
+    body: MemberPatch;
+    path: {
+        /**
+         * User Id
+         */
+        user_id: string;
+    };
+    query?: never;
+    url: '/api/v1/users/{user_id}';
+};
+
+export type UsersUsersUpdateErrors = {
+    /**
+     * Unauthorized
+     */
+    401: unknown;
+    /**
+     * Forbidden
+     */
+    403: unknown;
+    /**
+     * Not Found
+     */
+    404: unknown;
+    /**
+     * Conflict
+     */
+    409: unknown;
+    /**
+     * Unprocessable Content
+     */
+    422: unknown;
+};
+
+export type UsersUsersUpdateResponses = {
+    /**
+     * Successful Response
+     */
+    200: MemberOut;
+};
+
+export type UsersUsersUpdateResponse = UsersUsersUpdateResponses[keyof UsersUsersUpdateResponses];

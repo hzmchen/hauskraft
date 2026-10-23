@@ -608,6 +608,38 @@
         "title": "MemberOut",
         "type": "object"
       },
+      "MemberPatch": {
+        "additionalProperties": false,
+        "description": "What owners may change about a member (M1S-E06-02); the username is fixed.",
+        "properties": {
+          "display_name": {
+            "anyOf": [
+              {
+                "maxLength": 80,
+                "minLength": 1,
+                "pattern": "^[^\\x00]*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Display Name"
+          },
+          "role": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/UserRole"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "title": "MemberPatch",
+        "type": "object"
+      },
       "Navigation": {
         "additionalProperties": false,
         "properties": {
@@ -2822,6 +2854,63 @@
           }
         },
         "summary": "Users Get",
+        "tags": [
+          "users"
+        ]
+      },
+      "patch": {
+        "description": "Change a member's display name or role (M1S-E06-02). 409 ``last_owner`` if no active owner would remain.",
+        "operationId": "users_users_update",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "user_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "User Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MemberPatch"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MemberOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "409": {
+            "description": "Conflict"
+          },
+          "422": {
+            "description": "Unprocessable Content"
+          }
+        },
+        "summary": "Users Update",
         "tags": [
           "users"
         ]

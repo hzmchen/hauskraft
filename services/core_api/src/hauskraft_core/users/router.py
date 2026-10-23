@@ -11,7 +11,15 @@ from hauskraft_core.auth import sessions
 from hauskraft_core.auth.deps import CurrentSession, actor_for
 from hauskraft_core.auth.ratelimit import client_ip
 from hauskraft_core.auth.router import RateLimitedError
-from hauskraft_core.auth.schemas import MemberOut, MePatch, PasswordChange, SessionInfo, UserCreate, UserOut
+from hauskraft_core.auth.schemas import (
+    MemberOut,
+    MemberPatch,
+    MePatch,
+    PasswordChange,
+    SessionInfo,
+    UserCreate,
+    UserOut,
+)
 from hauskraft_core.db.models import User
 from hauskraft_core.db.session import DbSession
 from hauskraft_core.household.service import read_household
@@ -23,6 +31,7 @@ from hauskraft_core.users.service import (
     create_user,
     get_member,
     list_members,
+    update_member,
     update_own_profile,
 )
 from hauskraft_sdk import ResourceRef
@@ -118,6 +127,17 @@ async def users_list(request: Request, db: DbSession, resolved: CurrentSession) 
 async def users_get(user_id: uuid.UUID, request: Request, db: DbSession, resolved: CurrentSession) -> MemberOut:
     await _require(request, resolved[1], "user.list")
     return MemberOut.of(await get_member(db, user_id))
+
+
+@router.patch("/users/{user_id}", responses={401: {}, 403: {}, 404: {}, 409: {}, 422: {}})
+async def users_update(user_id: uuid.UUID, body: MemberPatch, request: Request, resolved: CurrentSession) -> MemberOut:
+    """Change a member's display name or role (M1S-E06-02). 409 ``last_owner`` if no active owner would remain."""
+    async with UnitOfWork(request.app.state.sessionmaker, request.app.state.policy, request.app.state.settings) as uow:
+        member = await update_member(
+            uow, actor_for(resolved[1]), user_id, display_name=body.display_name, role=body.role
+        )
+        out = MemberOut.of(member)
+    return out
 
 
 @router.post("/users", status_code=201, responses={401: {}, 403: {}, 409: {}, 422: {}})

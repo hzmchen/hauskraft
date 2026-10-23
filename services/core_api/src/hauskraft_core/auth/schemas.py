@@ -61,6 +61,13 @@ class MemberOut(UserOut):
         )
 
 
+class MemberPatch(_Model):
+    """What owners may change about a member (M1S-E06-02); the username is fixed."""
+
+    display_name: DisplayName | None = None
+    role: UserRole | None = None
+
+
 class SessionOut(_Model):
     user: UserOut
     csrf_token: str
