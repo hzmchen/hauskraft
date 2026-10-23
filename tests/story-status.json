@@ -342,7 +342,7 @@
       "acceptance": "in-story"
     },
     "M1S-E07-01": {
-      "status": "red",
+      "status": "green",
       "acceptance": "suite"
     },
     "M1S-E07-02": {
