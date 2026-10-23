@@ -12,6 +12,7 @@ import { pluginRegistry } from "../plugins/registry.gen";
 import { useWebPlugins } from "../plugins/usePlugins";
 import { sessionQuery } from "../session";
 import { AccountMenu } from "../shell/AccountMenu";
+import { DocumentTitle } from "../shell/DocumentTitle";
 import { buildNavModel } from "../shell/nav/model";
 import { NavRenderer, useNavStyle } from "../shell/nav/NavRenderer";
 import { RouterHost } from "../shell/RouterHost";
@@ -79,6 +80,7 @@ function AppLayout() {
             <Outlet />
           </RouterHost>
         </main>
+        <DocumentTitle />
         {style === "bottom-tabs" ? <NavRenderer style={style} items={items} /> : null}
       </div>
     </div>

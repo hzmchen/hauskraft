@@ -20,7 +20,7 @@ export function stringSearch(search: Record<string, unknown>): Record<string, st
 export function RouterHost({ children }: { children: ReactNode }) {
   const navigate = useNavigate();
   const location = useRouterState({ select: (state) => state.location });
-  const { data: household } = useQuery(householdQuery);
+  const { data: household } = useQuery(householdQuery());
   const timeZone = household?.timezone ?? browserHost.timeZone;
   const host = useMemo<Host>(
     () => ({

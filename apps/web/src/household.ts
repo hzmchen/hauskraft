@@ -3,4 +3,6 @@
 // "today". Refetched every minute, so an owner's change reaches every open device without a reload.
 import { householdReadOptions } from "@hauskraft/sdk-ts";
 
-export const householdQuery = { ...householdReadOptions(), refetchInterval: 60_000, staleTime: 30_000 } as const;
+export function householdQuery() {
+  return { ...householdReadOptions(), refetchInterval: 60_000, staleTime: 30_000 } as const;
+}
