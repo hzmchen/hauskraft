@@ -75,7 +75,10 @@
     "confirm_body": "{{name}} will be used on every device in the household. Everything keeps working the same way.",
     "confirm": "Change theme",
     "cancel": "Cancel",
-    "add_theme": "Add a theme"
+    "add_theme": "Add a theme",
+    "account": "Account",
+    "household": "Household",
+    "members": "Members"
   },
   "dashboard": {
     "edit_layout": "Edit layout",

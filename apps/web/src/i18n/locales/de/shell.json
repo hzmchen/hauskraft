@@ -75,7 +75,10 @@
     "confirm_body": "{{name}} wird auf jedem Gerät im Haushalt verwendet. Alles funktioniert weiter wie gewohnt.",
     "confirm": "Design ändern",
     "cancel": "Abbrechen",
-    "add_theme": "Design hinzufügen"
+    "add_theme": "Design hinzufügen",
+    "account": "Konto",
+    "household": "Haushalt",
+    "members": "Mitglieder"
   },
   "dashboard": {
     "edit_layout": "Layout bearbeiten",

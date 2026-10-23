@@ -13,10 +13,14 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppRouteImport } from './routes/_app'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as AppActivityRouteImport } from './routes/_app/activity'
+import { Route as AppSettingsRouteImport } from './routes/_app/settings'
 import { Route as AppTodayRouteImport } from './routes/_app/today'
 import { Route as AppPPageIdRouteImport } from './routes/_app/p.$pageId'
 import { Route as AppSettingsIndexRouteImport } from './routes/_app/settings.index'
+import { Route as AppSettingsAccountRouteImport } from './routes/_app/settings.account'
 import { Route as AppSettingsAppearanceRouteImport } from './routes/_app/settings.appearance'
+import { Route as AppSettingsHouseholdRouteImport } from './routes/_app/settings.household'
+import { Route as AppSettingsMembersRouteImport } from './routes/_app/settings.members'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -37,6 +41,11 @@ const AppActivityRoute = AppActivityRouteImport.update({
   path: '/activity',
   getParentRoute: () => AppRoute,
 } as any)
+const AppSettingsRoute = AppSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppTodayRoute = AppTodayRouteImport.update({
   id: '/today',
   path: '/today',
@@ -48,23 +57,42 @@ const AppPPageIdRoute = AppPPageIdRouteImport.update({
   getParentRoute: () => AppRoute,
 } as any)
 const AppSettingsIndexRoute = AppSettingsIndexRouteImport.update({
-  id: '/settings/',
-  path: '/settings/',
-  getParentRoute: () => AppRoute,
+  id: '/',
+  path: '/',
+  getParentRoute: () => AppSettingsRoute,
+} as any)
+const AppSettingsAccountRoute = AppSettingsAccountRouteImport.update({
+  id: '/account',
+  path: '/account',
+  getParentRoute: () => AppSettingsRoute,
 } as any)
 const AppSettingsAppearanceRoute = AppSettingsAppearanceRouteImport.update({
-  id: '/settings/appearance',
-  path: '/settings/appearance',
-  getParentRoute: () => AppRoute,
+  id: '/appearance',
+  path: '/appearance',
+  getParentRoute: () => AppSettingsRoute,
+} as any)
+const AppSettingsHouseholdRoute = AppSettingsHouseholdRouteImport.update({
+  id: '/household',
+  path: '/household',
+  getParentRoute: () => AppSettingsRoute,
+} as any)
+const AppSettingsMembersRoute = AppSettingsMembersRouteImport.update({
+  id: '/members',
+  path: '/members',
+  getParentRoute: () => AppSettingsRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/activity': typeof AppActivityRoute
+  '/settings': typeof AppSettingsRouteWithChildren
   '/today': typeof AppTodayRoute
   '/p/$pageId': typeof AppPPageIdRoute
+  '/settings/account': typeof AppSettingsAccountRoute
   '/settings/appearance': typeof AppSettingsAppearanceRoute
+  '/settings/household': typeof AppSettingsHouseholdRoute
+  '/settings/members': typeof AppSettingsMembersRoute
   '/settings/': typeof AppSettingsIndexRoute
 }
 export interface FileRoutesByTo {
@@ -73,7 +101,10 @@ export interface FileRoutesByTo {
   '/activity': typeof AppActivityRoute
   '/today': typeof AppTodayRoute
   '/p/$pageId': typeof AppPPageIdRoute
+  '/settings/account': typeof AppSettingsAccountRoute
   '/settings/appearance': typeof AppSettingsAppearanceRoute
+  '/settings/household': typeof AppSettingsHouseholdRoute
+  '/settings/members': typeof AppSettingsMembersRoute
   '/settings': typeof AppSettingsIndexRoute
 }
 export interface FileRoutesById {
@@ -82,9 +113,13 @@ export interface FileRoutesById {
   '/_app': typeof AppRouteWithChildren
   '/login': typeof LoginRoute
   '/_app/activity': typeof AppActivityRoute
+  '/_app/settings': typeof AppSettingsRouteWithChildren
   '/_app/today': typeof AppTodayRoute
   '/_app/p/$pageId': typeof AppPPageIdRoute
+  '/_app/settings/account': typeof AppSettingsAccountRoute
   '/_app/settings/appearance': typeof AppSettingsAppearanceRoute
+  '/_app/settings/household': typeof AppSettingsHouseholdRoute
+  '/_app/settings/members': typeof AppSettingsMembersRoute
   '/_app/settings/': typeof AppSettingsIndexRoute
 }
 export interface FileRouteTypes {
@@ -93,9 +128,13 @@ export interface FileRouteTypes {
     | '/'
     | '/login'
     | '/activity'
+    | '/settings'
     | '/today'
     | '/p/$pageId'
+    | '/settings/account'
     | '/settings/appearance'
+    | '/settings/household'
+    | '/settings/members'
     | '/settings/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -104,7 +143,10 @@ export interface FileRouteTypes {
     | '/activity'
     | '/today'
     | '/p/$pageId'
+    | '/settings/account'
     | '/settings/appearance'
+    | '/settings/household'
+    | '/settings/members'
     | '/settings'
   id:
     | '__root__'
@@ -112,9 +154,13 @@ export interface FileRouteTypes {
     | '/_app'
     | '/login'
     | '/_app/activity'
+    | '/_app/settings'
     | '/_app/today'
     | '/_app/p/$pageId'
+    | '/_app/settings/account'
     | '/_app/settings/appearance'
+    | '/_app/settings/household'
+    | '/_app/settings/members'
     | '/_app/settings/'
   fileRoutesById: FileRoutesById
 }
@@ -154,6 +200,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppActivityRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/settings': {
+      id: '/_app/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof AppSettingsRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/today': {
       id: '/_app/today'
       path: '/today'
@@ -170,35 +223,74 @@ declare module '@tanstack/react-router' {
     }
     '/_app/settings/': {
       id: '/_app/settings/'
-      path: '/settings'
+      path: '/'
       fullPath: '/settings/'
       preLoaderRoute: typeof AppSettingsIndexRouteImport
-      parentRoute: typeof AppRoute
+      parentRoute: typeof AppSettingsRoute
+    }
+    '/_app/settings/account': {
+      id: '/_app/settings/account'
+      path: '/account'
+      fullPath: '/settings/account'
+      preLoaderRoute: typeof AppSettingsAccountRouteImport
+      parentRoute: typeof AppSettingsRoute
     }
     '/_app/settings/appearance': {
       id: '/_app/settings/appearance'
-      path: '/settings/appearance'
+      path: '/appearance'
       fullPath: '/settings/appearance'
       preLoaderRoute: typeof AppSettingsAppearanceRouteImport
-      parentRoute: typeof AppRoute
+      parentRoute: typeof AppSettingsRoute
+    }
+    '/_app/settings/household': {
+      id: '/_app/settings/household'
+      path: '/household'
+      fullPath: '/settings/household'
+      preLoaderRoute: typeof AppSettingsHouseholdRouteImport
+      parentRoute: typeof AppSettingsRoute
+    }
+    '/_app/settings/members': {
+      id: '/_app/settings/members'
+      path: '/members'
+      fullPath: '/settings/members'
+      preLoaderRoute: typeof AppSettingsMembersRouteImport
+      parentRoute: typeof AppSettingsRoute
     }
   }
 }
 
+interface AppSettingsRouteChildren {
+  AppSettingsAccountRoute: typeof AppSettingsAccountRoute
+  AppSettingsAppearanceRoute: typeof AppSettingsAppearanceRoute
+  AppSettingsHouseholdRoute: typeof AppSettingsHouseholdRoute
+  AppSettingsMembersRoute: typeof AppSettingsMembersRoute
+  AppSettingsIndexRoute: typeof AppSettingsIndexRoute
+}
+
+const AppSettingsRouteChildren: AppSettingsRouteChildren = {
+  AppSettingsAccountRoute: AppSettingsAccountRoute,
+  AppSettingsAppearanceRoute: AppSettingsAppearanceRoute,
+  AppSettingsHouseholdRoute: AppSettingsHouseholdRoute,
+  AppSettingsMembersRoute: AppSettingsMembersRoute,
+  AppSettingsIndexRoute: AppSettingsIndexRoute,
+}
+
+const AppSettingsRouteWithChildren = AppSettingsRoute._addFileChildren(
+  AppSettingsRouteChildren,
+)
+
 interface AppRouteChildren {
   AppActivityRoute: typeof AppActivityRoute
+  AppSettingsRoute: typeof AppSettingsRouteWithChildren
   AppTodayRoute: typeof AppTodayRoute
   AppPPageIdRoute: typeof AppPPageIdRoute
-  AppSettingsAppearanceRoute: typeof AppSettingsAppearanceRoute
-  AppSettingsIndexRoute: typeof AppSettingsIndexRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
   AppActivityRoute: AppActivityRoute,
+  AppSettingsRoute: AppSettingsRouteWithChildren,
   AppTodayRoute: AppTodayRoute,
   AppPPageIdRoute: AppPPageIdRoute,
-  AppSettingsAppearanceRoute: AppSettingsAppearanceRoute,
-  AppSettingsIndexRoute: AppSettingsIndexRoute,
 }
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
