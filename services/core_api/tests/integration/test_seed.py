@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
-"""M0S-E11-02: `hauskraft seed` creates the demo household once."""
+"""M0S-E11-02, M1S-E02-03: `hauskraft seed` creates the demo household once, with demo as owner."""
 
 from collections.abc import Iterator
 
@@ -59,10 +59,11 @@ def test_seed_creates_the_household_once(empty_db: Settings) -> None:
     assert _count(empty_db.database_url, OutboxEvent) == events
 
     with TestClient(create_app(empty_db), headers={"Origin": "http://testserver"}) as client:
-        for username, display in (("demo", "Demo Adult"), ("alex", "Alex Adult")):
+        for username, display, role in (("demo", "Demo Adult", "owner"), ("alex", "Alex Adult", "adult")):
             r = client.post("/api/v1/auth/login", json={"username": username, "password": "hauskraft-demo"})
             assert r.status_code == 200, r.text
             assert r.json()["user"]["display_name"] == display
+            assert r.json()["user"]["role"] == role
         titles = {t["title"]: t for t in client.get("/api/v1/tasks").json()["items"]}
     assert set(titles) == {"Water the plants", "Take out recycling", "Book chimney sweep"}
     assert titles["Book chimney sweep"]["done"] is True
