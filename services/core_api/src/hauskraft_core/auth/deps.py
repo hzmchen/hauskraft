@@ -9,6 +9,7 @@ from fastapi import Depends, Request
 
 from hauskraft_core.auth import sessions
 from hauskraft_core.auth.csrf import check_request
+from hauskraft_core.auth.locked import PasswordChangeRequiredError, allowed_while_locked
 from hauskraft_core.db.models import Session, User
 from hauskraft_core.db.session import DbSession
 from hauskraft_core.logging import request_user_id
@@ -33,6 +34,8 @@ async def current_session(request: Request, db: DbSession) -> tuple[Session, Use
         raise UnauthenticatedError("Sign in to continue.")
     sess, user = resolved
     check_request(request, sess.csrf_token)
+    if user.must_change_password and not allowed_while_locked(request.method, request.url.path):
+        raise PasswordChangeRequiredError("Choose a new password before you continue.")
     request.state.session = sess
     request.state.user = user
     request_user_id.set(str(user.id))

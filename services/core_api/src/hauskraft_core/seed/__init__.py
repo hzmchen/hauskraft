@@ -1,8 +1,9 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
-"""Demo household seed (M0S-E11-02): users from ``fixtures/household/demo.json``, then each plugin's ``seed()``.
+"""Demo household seed (M0S-E11-02): users and household settings (M1S-E03-03) from
+``fixtures/household/demo.json``, then each plugin's ``seed()``.
 
 The seed writes through the same services, ``authorize()`` and outbox as the API. It writes no theme
-setting, so the deployment uses ``HAUSKRAFT_DEFAULT_THEME`` until an adult picks another.
+setting, so the deployment uses ``HAUSKRAFT_DEFAULT_THEME`` until an owner picks another.
 """
 
 from __future__ import annotations
@@ -18,6 +19,7 @@ from sqlalchemy.pool import NullPool
 
 from hauskraft_core.auth.deps import actor_for
 from hauskraft_core.db.models import User
+from hauskraft_core.household.service import update_household
 from hauskraft_core.logging import get_logger
 from hauskraft_core.settings import Settings
 from hauskraft_core.uow import UnitOfWork
@@ -85,6 +87,9 @@ async def run_seed(settings: Settings, fixture: dict[str, Any], *, force_demo: b
                         locale=spec.get("locale", "en"),
                     )
                 actors[spec["key"]] = actor_for(user)
+        if household := fixture.get("household"):
+            async with UnitOfWork(app.state.sessionmaker, app.state.policy, settings) as uow:
+                await update_household(uow, users.SYSTEM_ACTOR, settings, **household)
         for plugin_id, section in (fixture.get("plugins") or {}).items():
             loaded = app.state.plugins.get(plugin_id)
             if loaded is None or loaded.registration is None or loaded.registration.seed is None:

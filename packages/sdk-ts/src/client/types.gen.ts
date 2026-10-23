@@ -190,6 +190,46 @@ export type Health = {
 };
 
 /**
+ * HouseholdOut
+ */
+export type HouseholdOut = {
+    /**
+     * Locale
+     *
+     * Default language for new members.
+     */
+    locale: 'en' | 'de';
+    /**
+     * Name
+     */
+    name: string;
+    /**
+     * Timezone
+     *
+     * IANA time zone name; it decides what 'today' means for due dates.
+     */
+    timezone: string;
+};
+
+/**
+ * HouseholdPatch
+ */
+export type HouseholdPatch = {
+    /**
+     * Locale
+     */
+    locale?: 'en' | 'de' | null;
+    /**
+     * Name
+     */
+    name?: string | null;
+    /**
+     * Timezone
+     */
+    timezone?: string | null;
+};
+
+/**
  * Icons
  */
 export type Icons = {
@@ -272,6 +312,52 @@ export type MePatch = {
      * Locale
      */
     locale?: 'en' | 'de' | null;
+};
+
+/**
+ * MemberOut
+ *
+ * A member as owners see them (M1S-E06-01). Never a hash, a session or an IP address.
+ */
+export type MemberOut = {
+    /**
+     * Created At
+     */
+    created_at: string;
+    /**
+     * Display Name
+     */
+    display_name: string;
+    /**
+     * Id
+     */
+    id: string;
+    /**
+     * Is Active
+     */
+    is_active: boolean;
+    /**
+     * Last Login At
+     */
+    last_login_at: string | null;
+    /**
+     * Locale
+     */
+    locale: 'en' | 'de';
+    /**
+     * Must Change Password
+     *
+     * True until the member replaces a temporary password.
+     */
+    must_change_password: boolean;
+    /**
+     * Role
+     */
+    role: string;
+    /**
+     * Username
+     */
+    username: string;
 };
 
 /**
@@ -677,6 +763,12 @@ export type UserCreate = {
      */
     display_name: string;
     /**
+     * Locale
+     *
+     * Defaults to the household's language.
+     */
+    locale?: 'en' | 'de' | null;
+    /**
      * Password
      */
     password: string;
@@ -703,6 +795,12 @@ export type UserOut = {
      * Locale
      */
     locale: 'en' | 'de';
+    /**
+     * Must Change Password
+     *
+     * True until the member replaces a temporary password.
+     */
+    must_change_password: boolean;
     /**
      * Role
      */
@@ -1011,6 +1109,60 @@ export type HealthHealthzResponses = {
 };
 
 export type HealthHealthzResponse = HealthHealthzResponses[keyof HealthHealthzResponses];
+
+export type HouseholdReadData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/v1/household';
+};
+
+export type HouseholdReadErrors = {
+    /**
+     * Unauthorized
+     */
+    401: unknown;
+};
+
+export type HouseholdReadResponses = {
+    /**
+     * Successful Response
+     */
+    200: HouseholdOut;
+};
+
+export type HouseholdReadResponse = HouseholdReadResponses[keyof HouseholdReadResponses];
+
+export type HouseholdUpdateData = {
+    body: HouseholdPatch;
+    path?: never;
+    query?: never;
+    url: '/api/v1/household';
+};
+
+export type HouseholdUpdateErrors = {
+    /**
+     * Unauthorized
+     */
+    401: unknown;
+    /**
+     * Forbidden
+     */
+    403: unknown;
+    /**
+     * Unprocessable Content
+     */
+    422: unknown;
+};
+
+export type HouseholdUpdateResponses = {
+    /**
+     * Successful Response
+     */
+    200: HouseholdOut;
+};
+
+export type HouseholdUpdateResponse = HouseholdUpdateResponses[keyof HouseholdUpdateResponses];
 
 export type UsersMeGetData = {
     body?: never;
@@ -1611,6 +1763,35 @@ export type ThemesListResponses = {
 
 export type ThemesListResponse = ThemesListResponses[keyof ThemesListResponses];
 
+export type UsersUsersListData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/v1/users';
+};
+
+export type UsersUsersListErrors = {
+    /**
+     * Unauthorized
+     */
+    401: unknown;
+    /**
+     * Forbidden
+     */
+    403: unknown;
+};
+
+export type UsersUsersListResponses = {
+    /**
+     * Response Users Users List
+     *
+     * Successful Response
+     */
+    200: Array<MemberOut>;
+};
+
+export type UsersUsersListResponse = UsersUsersListResponses[keyof UsersUsersListResponses];
+
 export type UsersUsersCreateData = {
     body: UserCreate;
     path?: never;
@@ -1641,7 +1822,49 @@ export type UsersUsersCreateResponses = {
     /**
      * Successful Response
      */
-    201: UserOut;
+    201: MemberOut;
 };
 
 export type UsersUsersCreateResponse = UsersUsersCreateResponses[keyof UsersUsersCreateResponses];
+
+export type UsersUsersGetData = {
+    body?: never;
+    path: {
+        /**
+         * User Id
+         */
+        user_id: string;
+    };
+    query?: never;
+    url: '/api/v1/users/{user_id}';
+};
+
+export type UsersUsersGetErrors = {
+    /**
+     * Unauthorized
+     */
+    401: unknown;
+    /**
+     * Forbidden
+     */
+    403: unknown;
+    /**
+     * Not Found
+     */
+    404: unknown;
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type UsersUsersGetError = UsersUsersGetErrors[keyof UsersUsersGetErrors];
+
+export type UsersUsersGetResponses = {
+    /**
+     * Successful Response
+     */
+    200: MemberOut;
+};
+
+export type UsersUsersGetResponse = UsersUsersGetResponses[keyof UsersUsersGetResponses];

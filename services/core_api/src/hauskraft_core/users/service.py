@@ -7,6 +7,7 @@ import re
 import uuid
 
 from sqlalchemy import func, select
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from hauskraft_core.auth import sessions
 from hauskraft_core.auth.passwords import check_password_policy, hash_password, verify_password
@@ -73,7 +74,9 @@ async def create_user(
     password: str,
     role: str = UserRole.ADULT,
     locale: str = "en",
+    temporary: bool = False,
 ) -> User:
+    """Create an account. ``temporary``: the password came from an owner, so the member must replace it first."""
     if role not in ENABLED_ROLES:
         raise RoleNotEnabledError(role)
     name = normalise_username(username)
@@ -88,9 +91,25 @@ async def create_user(
         password_hash=await hash_password(password),
         role=UserRole(role),
         locale=locale,
+        must_change_password=temporary,
     )
     uow.session.add(user)
     await uow.session.flush()
+    await uow.session.refresh(user)
+    data = UserData(user=user_ref(user))
+    await emit("hauskraft.user.created", f"user/{user.id}", data.model_dump(mode="json"), "personal")
+    return user
+
+
+async def list_members(session: AsyncSession) -> list[User]:
+    """Every account, deactivated ones included, by display name (case-insensitive), then username."""
+    return list(await session.scalars(select(User).order_by(func.lower(User.display_name), User.username)))
+
+
+async def get_member(session: AsyncSession, user_id: uuid.UUID) -> User:
+    user = await session.get(User, user_id)
+    if user is None:
+        raise NotFoundError("No such member.")
     return user
 
 
@@ -157,6 +176,7 @@ async def change_own_password(
         raise WrongPasswordError("The current password is wrong.")
     check_password_policy(new_password)
     user.password_hash = await hash_password(new_password)
+    user.must_change_password = False
     await sessions.revoke_all_for(uow.session, user, except_id=current_session_id)
     data = UserData(user=user_ref(user))
     await emit("hauskraft.user.password_changed", f"user/{user.id}", data.model_dump(mode="json"), "personal")

@@ -305,6 +305,85 @@
         "title": "Health",
         "type": "object"
       },
+      "HouseholdOut": {
+        "additionalProperties": false,
+        "properties": {
+          "locale": {
+            "description": "Default language for new members.",
+            "enum": [
+              "en",
+              "de"
+            ],
+            "title": "Locale",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "timezone": {
+            "description": "IANA time zone name; it decides what 'today' means for due dates.",
+            "title": "Timezone",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "timezone",
+          "locale"
+        ],
+        "title": "HouseholdOut",
+        "type": "object"
+      },
+      "HouseholdPatch": {
+        "additionalProperties": false,
+        "properties": {
+          "locale": {
+            "anyOf": [
+              {
+                "enum": [
+                  "en",
+                  "de"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Locale"
+          },
+          "name": {
+            "anyOf": [
+              {
+                "maxLength": 80,
+                "minLength": 1,
+                "pattern": "^[^\\x00]*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Name"
+          },
+          "timezone": {
+            "anyOf": [
+              {
+                "maxLength": 64,
+                "pattern": "^[^\\x00]*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Timezone"
+          }
+        },
+        "title": "HouseholdPatch",
+        "type": "object"
+      },
       "Icons": {
         "additionalProperties": false,
         "properties": {
@@ -457,6 +536,76 @@
           }
         },
         "title": "MePatch",
+        "type": "object"
+      },
+      "MemberOut": {
+        "additionalProperties": false,
+        "description": "A member as owners see them (M1S-E06-01). Never a hash, a session or an IP address.",
+        "properties": {
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "display_name": {
+            "title": "Display Name",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "is_active": {
+            "title": "Is Active",
+            "type": "boolean"
+          },
+          "last_login_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Login At"
+          },
+          "locale": {
+            "enum": [
+              "en",
+              "de"
+            ],
+            "title": "Locale",
+            "type": "string"
+          },
+          "must_change_password": {
+            "description": "True until the member replaces a temporary password.",
+            "title": "Must Change Password",
+            "type": "boolean"
+          },
+          "role": {
+            "title": "Role",
+            "type": "string"
+          },
+          "username": {
+            "title": "Username",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "username",
+          "display_name",
+          "role",
+          "locale",
+          "must_change_password",
+          "is_active",
+          "created_at",
+          "last_login_at"
+        ],
+        "title": "MemberOut",
         "type": "object"
       },
       "Navigation": {
@@ -1106,6 +1255,22 @@
             "title": "Display Name",
             "type": "string"
           },
+          "locale": {
+            "anyOf": [
+              {
+                "enum": [
+                  "en",
+                  "de"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Defaults to the household's language.",
+            "title": "Locale"
+          },
           "password": {
             "maxLength": 1024,
             "minLength": 1,
@@ -1152,6 +1317,11 @@
             "title": "Locale",
             "type": "string"
           },
+          "must_change_password": {
+            "description": "True until the member replaces a temporary password.",
+            "title": "Must Change Password",
+            "type": "boolean"
+          },
           "role": {
             "title": "Role",
             "type": "string"
@@ -1166,7 +1336,8 @@
           "username",
           "display_name",
           "role",
-          "locale"
+          "locale",
+          "must_change_password"
         ],
         "title": "UserOut",
         "type": "object"
@@ -1556,6 +1727,69 @@
         "summary": "Healthz",
         "tags": [
           "health"
+        ]
+      }
+    },
+    "/api/v1/household": {
+      "get": {
+        "operationId": "household_read",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HouseholdOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "summary": "Read",
+        "tags": [
+          "household"
+        ]
+      },
+      "patch": {
+        "description": "Change any subset of name, time zone and default language (owners only).",
+        "operationId": "household_update",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HouseholdPatch"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HouseholdOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "422": {
+            "description": "Unprocessable Content"
+          }
+        },
+        "summary": "Update",
+        "tags": [
+          "household"
         ]
       }
     },
@@ -2312,8 +2546,38 @@
       }
     },
     "/api/v1/users": {
+      "get": {
+        "description": "Every member, deactivated ones included, by display name (M1S-E06-01). Owners only.",
+        "operationId": "users_users_list",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/MemberOut"
+                  },
+                  "title": "Response Users Users List",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "summary": "Users List",
+        "tags": [
+          "users"
+        ]
+      },
       "post": {
-        "description": "Create an owner or adult account (M0S-E05-05, M1S-E02-02). Owners only (``user.create``).",
+        "description": "Create an owner or adult account with a temporary password (M0S-E05-05, M1S-E02-02, M1S-E06-01).\n\nOwners only (``user.create``). The language defaults to the household's.",
         "operationId": "users_users_create",
         "requestBody": {
           "content": {
@@ -2330,7 +2594,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/UserOut"
+                  "$ref": "#/components/schemas/MemberOut"
                 }
               }
             },
@@ -2350,6 +2614,58 @@
           }
         },
         "summary": "Users Create",
+        "tags": [
+          "users"
+        ]
+      }
+    },
+    "/api/v1/users/{user_id}": {
+      "get": {
+        "operationId": "users_users_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "user_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "User Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MemberOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Users Get",
         "tags": [
           "users"
         ]

@@ -29,12 +29,35 @@ class UserOut(_Model):
     display_name: str
     role: str
     locale: Locale
+    must_change_password: bool = Field(description="True until the member replaces a temporary password.")
 
     @classmethod
     def of(cls, user: User) -> UserOut:
         locale: Locale = "de" if user.locale == "de" else "en"
         return cls(
-            id=user.id, username=user.username, display_name=user.display_name, role=str(user.role), locale=locale
+            id=user.id,
+            username=user.username,
+            display_name=user.display_name,
+            role=str(user.role),
+            locale=locale,
+            must_change_password=user.must_change_password,
+        )
+
+
+class MemberOut(UserOut):
+    """A member as owners see them (M1S-E06-01). Never a hash, a session or an IP address."""
+
+    is_active: bool
+    created_at: dt.datetime
+    last_login_at: dt.datetime | None
+
+    @classmethod
+    def of(cls, user: User) -> MemberOut:
+        return cls(
+            **UserOut.of(user).model_dump(),
+            is_active=user.is_active,
+            created_at=user.created_at,
+            last_login_at=user.last_login_at,
         )
 
 
@@ -96,3 +119,4 @@ class UserCreate(_Model):
     display_name: DisplayName
     password: Annotated[str, Field(min_length=1, max_length=1024)]
     role: UserRole = UserRole.ADULT
+    locale: Locale | None = Field(default=None, description="Defaults to the household's language.")

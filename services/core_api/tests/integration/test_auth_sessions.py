@@ -57,6 +57,7 @@ def test_login_sets_a_hardened_cookie_and_returns_the_session(
         "display_name": "Demo Adult",
         "role": "adult",
         "locale": "en",
+        "must_change_password": False,
     }
     assert len(body["csrf_token"]) >= 32
     token = client.cookies["hauskraft_session"]

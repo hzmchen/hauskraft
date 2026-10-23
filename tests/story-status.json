@@ -254,11 +254,11 @@
       "acceptance": "suite"
     },
     "M1S-E02-01": {
-      "status": "red",
+      "status": "green",
       "acceptance": "suite"
     },
     "M1S-E02-02": {
-      "status": "red",
+      "status": "green",
       "acceptance": "suite"
     },
     "M1S-E02-03": {
@@ -278,7 +278,7 @@
       "acceptance": "suite"
     },
     "M1S-E03-03": {
-      "status": "red",
+      "status": "green",
       "acceptance": "suite"
     },
     "M1S-E03-04": {
@@ -286,7 +286,7 @@
       "acceptance": "suite"
     },
     "M1S-E04-01": {
-      "status": "red",
+      "status": "green",
       "acceptance": "suite"
     },
     "M1S-E04-02": {
@@ -318,7 +318,7 @@
       "acceptance": "suite"
     },
     "M1S-E06-01": {
-      "status": "red",
+      "status": "green",
       "acceptance": "suite"
     },
     "M1S-E06-02": {
@@ -342,7 +342,7 @@
       "acceptance": "in-story"
     },
     "M1S-E07-01": {
-      "status": "red",
+      "status": "green",
       "acceptance": "suite"
     },
     "M1S-E07-02": {

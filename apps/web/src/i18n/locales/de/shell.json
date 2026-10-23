@@ -93,11 +93,20 @@
       "deleted": "{{actor}} hat '{{title}}' gelöscht"
     },
     "settings": {
-      "theme_changed": "{{actor}} hat das Design auf {{theme}} umgestellt"
+      "theme_changed": "{{actor}} hat das Design auf {{theme}} umgestellt",
+      "household_changed": "{{actor}} hat die Haushaltseinstellungen geändert"
     },
     "plugin": {
       "toggled_on": "{{actor}} hat {{plugin}} eingeschaltet",
       "toggled_off": "{{actor}} hat {{plugin}} ausgeschaltet"
+    },
+    "user": {
+      "created": "{{actor}} hat {{name}} zum Haushalt hinzugefügt",
+      "updated": "{{actor}} hat das Konto von {{name}} geändert",
+      "deactivated": "{{actor}} hat {{name}} deaktiviert",
+      "reactivated": "{{actor}} hat {{name}} reaktiviert",
+      "password_reset": "{{actor}} hat das Passwort von {{name}} zurückgesetzt",
+      "password_changed": "{{actor}} hat das eigene Passwort geändert"
     }
   }
 }

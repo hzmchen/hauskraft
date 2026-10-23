@@ -93,11 +93,20 @@
       "deleted": "{{actor}} deleted '{{title}}'"
     },
     "settings": {
-      "theme_changed": "{{actor}} switched the theme to {{theme}}"
+      "theme_changed": "{{actor}} switched the theme to {{theme}}",
+      "household_changed": "{{actor}} changed the household settings"
     },
     "plugin": {
       "toggled_on": "{{actor}} turned on {{plugin}}",
       "toggled_off": "{{actor}} turned off {{plugin}}"
+    },
+    "user": {
+      "created": "{{actor}} added {{name}} to the household",
+      "updated": "{{actor}} updated the account of {{name}}",
+      "deactivated": "{{actor}} deactivated {{name}}",
+      "reactivated": "{{actor}} reactivated {{name}}",
+      "password_reset": "{{actor}} reset the password of {{name}}",
+      "password_changed": "{{actor}} changed their password"
     }
   }
 }

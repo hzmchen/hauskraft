@@ -82,6 +82,7 @@ def build_api_router() -> APIRouter:
     from hauskraft_core.activity import router as activity
     from hauskraft_core.auth import router as auth
     from hauskraft_core.dashboard import router as dashboard
+    from hauskraft_core.household import router as household
     from hauskraft_core.plugins import router as plugins
     from hauskraft_core.themes import router as themes
     from hauskraft_core.users import router as users
@@ -94,6 +95,7 @@ def build_api_router() -> APIRouter:
     router.include_router(activity.router)
     router.include_router(themes.router)
     router.include_router(dashboard.router)
+    router.include_router(household.router)
     return router
 
 

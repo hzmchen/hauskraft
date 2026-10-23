@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Activity (M0S-E10-03, web): who did what, newest first. Summaries are i18n keys from the API
-// (summary_key) filled with the actor's name and the task title or theme name.
+// (summary_key) filled with the actor's name and the task title, theme name or account name (M1S-E09-02).
 import { activityList, themesListOptions, type ActivityItem } from "@hauskraft/sdk-ts";
 import { Button } from "@hauskraft/ui";
 import { infiniteQueryOptions, useInfiniteQuery, useQuery } from "@tanstack/react-query";
@@ -13,6 +13,7 @@ const PAGE = 50;
 
 interface EventData {
   task?: { title?: string };
+  user?: { display_name?: string };
   to?: string;
   plugin_id?: string;
   enabled?: boolean;
@@ -41,6 +42,7 @@ export function summarise(item: ActivityItem, t: TFunction, themeName: (id: stri
     title: data.task?.title ?? "",
     theme: data.to ? themeName(data.to) : "",
     plugin: data.plugin_id ?? "",
+    name: data.user?.display_name ?? "",
     ...(item.type === "hauskraft.plugin.toggled" ? { context: data.enabled ? "on" : "off" } : {}),
     defaultValue: t("activity.unknown", { actor, type: item.type }),
   });

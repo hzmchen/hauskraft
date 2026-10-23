@@ -47,6 +47,7 @@ def _user(settings: Settings, username: str) -> User:
 
 
 def _events(settings: Settings, username: str) -> list[dict[str, Any]]:
+    """The account's events after its creation (user.created comes with every account, M1S-E06-01)."""
     user_id = _user(settings, username).id
     engine = create_engine(settings.database_url)
     try:
@@ -54,7 +55,7 @@ def _events(settings: Settings, username: str) -> list[dict[str, Any]]:
             rows = conn.execute(
                 select(OutboxEvent.envelope).where(OutboxEvent.subject == f"user/{user_id}").order_by(OutboxEvent.time)
             )
-            return [row[0] for row in rows]
+            return [row[0] for row in rows if row[0]["type"] != "hauskraft.user.created"]
     finally:
         engine.dispose()
 

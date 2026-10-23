@@ -2,7 +2,7 @@
 
 import type { Client, ClientMeta, Options as Options2, RequestResult, TDataShape } from './client';
 import { client } from './client.gen';
-import type { ActivityListData, ActivityListErrors, ActivityListResponses, AuthLoginData, AuthLoginErrors, AuthLoginResponses, AuthLogoutData, AuthLogoutErrors, AuthLogoutEverywhereData, AuthLogoutEverywhereErrors, AuthLogoutEverywhereResponses, AuthLogoutResponses, AuthSessionData, AuthSessionErrors, AuthSessionResponses, DashboardGetData, DashboardGetErrors, DashboardGetResponses, DashboardPutData, DashboardPutErrors, DashboardPutResponses, HealthHealthzData, HealthHealthzResponses, HealthReadyzData, HealthReadyzErrors, HealthReadyzResponses, PluginsListData, PluginsListErrors, PluginsListResponses, PluginsUpdateData, PluginsUpdateErrors, PluginsUpdateResponses, SettingsThemeSetData, SettingsThemeSetErrors, SettingsThemeSetResponses, TasksCreateData, TasksCreateErrors, TasksCreateResponses, TasksDeleteData, TasksDeleteErrors, TasksDeleteResponses, TasksGetData, TasksGetErrors, TasksGetResponses, TasksListData, TasksListErrors, TasksListResponses, TasksUpdateData, TasksUpdateErrors, TasksUpdateResponses, ThemesActiveCssData, ThemesActiveCssErrors, ThemesActiveCssResponses, ThemesActiveData, ThemesActiveErrors, ThemesActiveResponses, ThemesAssetData, ThemesAssetErrors, ThemesAssetResponses, ThemesListData, ThemesListErrors, ThemesListResponses, UsersMeGetData, UsersMeGetErrors, UsersMeGetResponses, UsersMePasswordData, UsersMePasswordErrors, UsersMePasswordResponses, UsersMeSessionEndData, UsersMeSessionEndErrors, UsersMeSessionEndResponses, UsersMeSessionsData, UsersMeSessionsErrors, UsersMeSessionsResponses, UsersMeUpdateData, UsersMeUpdateErrors, UsersMeUpdateResponses, UsersUsersCreateData, UsersUsersCreateErrors, UsersUsersCreateResponses } from './types.gen';
+import type { ActivityListData, ActivityListErrors, ActivityListResponses, AuthLoginData, AuthLoginErrors, AuthLoginResponses, AuthLogoutData, AuthLogoutErrors, AuthLogoutEverywhereData, AuthLogoutEverywhereErrors, AuthLogoutEverywhereResponses, AuthLogoutResponses, AuthSessionData, AuthSessionErrors, AuthSessionResponses, DashboardGetData, DashboardGetErrors, DashboardGetResponses, DashboardPutData, DashboardPutErrors, DashboardPutResponses, HealthHealthzData, HealthHealthzResponses, HealthReadyzData, HealthReadyzErrors, HealthReadyzResponses, HouseholdReadData, HouseholdReadErrors, HouseholdReadResponses, HouseholdUpdateData, HouseholdUpdateErrors, HouseholdUpdateResponses, PluginsListData, PluginsListErrors, PluginsListResponses, PluginsUpdateData, PluginsUpdateErrors, PluginsUpdateResponses, SettingsThemeSetData, SettingsThemeSetErrors, SettingsThemeSetResponses, TasksCreateData, TasksCreateErrors, TasksCreateResponses, TasksDeleteData, TasksDeleteErrors, TasksDeleteResponses, TasksGetData, TasksGetErrors, TasksGetResponses, TasksListData, TasksListErrors, TasksListResponses, TasksUpdateData, TasksUpdateErrors, TasksUpdateResponses, ThemesActiveCssData, ThemesActiveCssErrors, ThemesActiveCssResponses, ThemesActiveData, ThemesActiveErrors, ThemesActiveResponses, ThemesAssetData, ThemesAssetErrors, ThemesAssetResponses, ThemesListData, ThemesListErrors, ThemesListResponses, UsersMeGetData, UsersMeGetErrors, UsersMeGetResponses, UsersMePasswordData, UsersMePasswordErrors, UsersMePasswordResponses, UsersMeSessionEndData, UsersMeSessionEndErrors, UsersMeSessionEndResponses, UsersMeSessionsData, UsersMeSessionsErrors, UsersMeSessionsResponses, UsersMeUpdateData, UsersMeUpdateErrors, UsersMeUpdateResponses, UsersUsersCreateData, UsersUsersCreateErrors, UsersUsersCreateResponses, UsersUsersGetData, UsersUsersGetErrors, UsersUsersGetResponses, UsersUsersListData, UsersUsersListErrors, UsersUsersListResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean, TResponse = unknown> = Options2<TData, ThrowOnError, TResponse> & {
     /**
@@ -73,6 +73,25 @@ export const dashboardPut = <ThrowOnError extends boolean = false>(options: Opti
  * Healthz
  */
 export const healthHealthz = <ThrowOnError extends boolean = false>(options?: Options<HealthHealthzData, ThrowOnError>): RequestResult<HealthHealthzResponses, unknown, ThrowOnError> => (options?.client ?? client).get<HealthHealthzResponses, unknown, ThrowOnError>({ url: '/api/v1/healthz', ...options });
+
+/**
+ * Read
+ */
+export const householdRead = <ThrowOnError extends boolean = false>(options?: Options<HouseholdReadData, ThrowOnError>): RequestResult<HouseholdReadResponses, HouseholdReadErrors, ThrowOnError> => (options?.client ?? client).get<HouseholdReadResponses, HouseholdReadErrors, ThrowOnError>({ url: '/api/v1/household', ...options });
+
+/**
+ * Update
+ *
+ * Change any subset of name, time zone and default language (owners only).
+ */
+export const householdUpdate = <ThrowOnError extends boolean = false>(options: Options<HouseholdUpdateData, ThrowOnError>): RequestResult<HouseholdUpdateResponses, HouseholdUpdateErrors, ThrowOnError> => (options.client ?? client).patch<HouseholdUpdateResponses, HouseholdUpdateErrors, ThrowOnError>({
+    url: '/api/v1/household',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
 
 /**
  * Me Get
@@ -217,9 +236,18 @@ export const themesAsset = <ThrowOnError extends boolean = false>(options: Optio
 export const themesList = <ThrowOnError extends boolean = false>(options?: Options<ThemesListData, ThrowOnError>): RequestResult<ThemesListResponses, ThemesListErrors, ThrowOnError> => (options?.client ?? client).get<ThemesListResponses, ThemesListErrors, ThrowOnError>({ url: '/api/v1/themes', ...options });
 
 /**
+ * Users List
+ *
+ * Every member, deactivated ones included, by display name (M1S-E06-01). Owners only.
+ */
+export const usersUsersList = <ThrowOnError extends boolean = false>(options?: Options<UsersUsersListData, ThrowOnError>): RequestResult<UsersUsersListResponses, UsersUsersListErrors, ThrowOnError> => (options?.client ?? client).get<UsersUsersListResponses, UsersUsersListErrors, ThrowOnError>({ url: '/api/v1/users', ...options });
+
+/**
  * Users Create
  *
- * Create an owner or adult account (M0S-E05-05, M1S-E02-02). Owners only (``user.create``).
+ * Create an owner or adult account with a temporary password (M0S-E05-05, M1S-E02-02, M1S-E06-01).
+ *
+ * Owners only (``user.create``). The language defaults to the household's.
  */
 export const usersUsersCreate = <ThrowOnError extends boolean = false>(options: Options<UsersUsersCreateData, ThrowOnError>): RequestResult<UsersUsersCreateResponses, UsersUsersCreateErrors, ThrowOnError> => (options.client ?? client).post<UsersUsersCreateResponses, UsersUsersCreateErrors, ThrowOnError>({
     url: '/api/v1/users',
@@ -229,3 +257,8 @@ export const usersUsersCreate = <ThrowOnError extends boolean = false>(options: 
         ...options.headers
     }
 });
+
+/**
+ * Users Get
+ */
+export const usersUsersGet = <ThrowOnError extends boolean = false>(options: Options<UsersUsersGetData, ThrowOnError>): RequestResult<UsersUsersGetResponses, UsersUsersGetErrors, ThrowOnError> => (options.client ?? client).get<UsersUsersGetResponses, UsersUsersGetErrors, ThrowOnError>({ url: '/api/v1/users/{user_id}', ...options });

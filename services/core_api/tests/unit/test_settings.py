@@ -27,6 +27,7 @@ def test_defaults_are_safe_for_development() -> None:
     assert s.policy == "roles"
     assert s.auth_provider == "local"
     assert s.default_theme == "dev.hauskraft.theme.default"
+    assert s.default_timezone == "Europe/Berlin"
     assert s.secret_key.get_secret_value(), "development gets an ephemeral secret"
     assert s.validate_events is True, "events are validated outside production by default"
 
@@ -70,7 +71,13 @@ def test_production_defaults(monkeypatch: pytest.MonkeyPatch) -> None:
 
 
 @pytest.mark.parametrize(
-    ("key", "value"), [("HAUSKRAFT_POLICY", "cedar"), ("HAUSKRAFT_ENV", "staging"), ("HAUSKRAFT_AUTH_PROVIDER", "ldap")]
+    ("key", "value"),
+    [
+        ("HAUSKRAFT_POLICY", "cedar"),
+        ("HAUSKRAFT_ENV", "staging"),
+        ("HAUSKRAFT_AUTH_PROVIDER", "ldap"),
+        ("HAUSKRAFT_DEFAULT_TIMEZONE", "Mars/Olympus_Mons"),
+    ],
 )
 def test_enumerated_settings_reject_unknown_values(monkeypatch: pytest.MonkeyPatch, key: str, value: str) -> None:
     monkeypatch.setenv(key, value)

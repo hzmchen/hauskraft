@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import secrets
+import zoneinfo
 from functools import lru_cache
 from pathlib import Path
 from typing import Annotated, Any, Literal, Self
@@ -33,6 +34,7 @@ class Settings(BaseSettings):
     plugin_paths: Annotated[list[Path], NoDecode] = Field(default_factory=lambda: [Path("plugins/official")])
     theme_paths: Annotated[list[Path], NoDecode] = Field(default_factory=lambda: [Path("themes/builtin")])
     default_theme: str = "dev.hauskraft.theme.default"
+    default_timezone: str = "Europe/Berlin"  # the household time zone until an owner sets one (M1S-E04-01)
     policy: Literal["roles", "noop", "deny_all"] = "roles"
     auth_provider: Literal["local", "oidc"] = "local"
     seed_demo: bool = False
@@ -40,6 +42,13 @@ class Settings(BaseSettings):
     validate_events: bool | None = None
     otel_enabled: bool = False
     log_level: Literal["DEBUG", "INFO", "WARNING", "ERROR"] = "INFO"
+
+    @field_validator("default_timezone")
+    @classmethod
+    def _known_timezone(cls, value: str) -> str:
+        if value not in zoneinfo.available_timezones():
+            raise ValueError(f"HAUSKRAFT_DEFAULT_TIMEZONE {value!r} is not a time zone this system knows")
+        return value
 
     @field_validator("allowed_origins", "plugin_paths", "theme_paths", mode="before")
     @classmethod

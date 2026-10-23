@@ -84,6 +84,58 @@ describe("Activity", () => {
     );
   });
 
+  it("summarises account and household changes in en and de (M1S-E09-02)", async () => {
+    const alex = {
+      user: { id: "0199f391-3333-7aaa-8bbb-dddddddddddd", username: "alex", display_name: "Alex", role: "adult" },
+    };
+    const events = [
+      item(1, "hauskraft.user.created", alex),
+      item(2, "hauskraft.user.updated", { ...alex, changes: { display_name: { from: "Al", to: "Alex" } } }),
+      item(3, "hauskraft.user.deactivated", alex),
+      item(4, "hauskraft.user.reactivated", alex),
+      item(5, "hauskraft.user.password_reset", alex),
+      item(6, "hauskraft.user.password_changed", alex, { ...demo, display_name: "Alex" }),
+      item(7, "hauskraft.settings.household_changed", { changes: { name: { from: "A", to: "B" } } }),
+    ];
+    const expected = {
+      en: [
+        "Demo Adult added Alex to the household",
+        "Demo Adult updated the account of Alex",
+        "Demo Adult deactivated Alex",
+        "Demo Adult reactivated Alex",
+        "Demo Adult reset the password of Alex",
+        "Alex changed their password",
+        "Demo Adult changed the household settings",
+      ],
+      de: [
+        "Demo Adult hat Alex zum Haushalt hinzugefügt",
+        "Demo Adult hat das Konto von Alex geändert",
+        "Demo Adult hat Alex deaktiviert",
+        "Demo Adult hat Alex reaktiviert",
+        "Demo Adult hat das Passwort von Alex zurückgesetzt",
+        "Alex hat das eigene Passwort geändert",
+        "Demo Adult hat die Haushaltseinstellungen geändert",
+      ],
+    };
+    for (const lng of ["en", "de"] as const) {
+      fakeApi({ "GET /api/v1/activity": () => json(events), "GET /api/v1/themes": () => json([]) });
+      const view = render(
+        <I18nextProvider i18n={createI18n({ lng })}>
+          <QueryClientProvider client={new QueryClient({ defaultOptions: { queries: { retry: false } } })}>
+            <ActivityFeed />
+          </QueryClientProvider>
+        </I18nextProvider>,
+      );
+      const feed = await screen.findByRole("list", { name: lng === "en" ? "Activity" : "Aktivität" });
+      await vi.waitFor(() => expect(within(feed).getAllByRole("listitem")).toHaveLength(7));
+      const texts = within(feed)
+        .getAllByRole("listitem")
+        .map((li) => li.firstElementChild?.textContent);
+      expect(texts).toEqual(expected[lng]);
+      view.unmount();
+    }
+  });
+
   it("loads older entries on request", async () => {
     const calls = await show("en", [item(9, "hauskraft.task.created", task("Ancient"))]);
     await userEvent.click(await screen.findByRole("button", { name: "Show older" }));
