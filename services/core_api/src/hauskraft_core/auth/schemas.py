@@ -9,7 +9,8 @@ from typing import Annotated, Literal
 
 from pydantic import BaseModel, ConfigDict, Field, StringConstraints
 
-from hauskraft_core.db.models import User, UserRole
+from hauskraft_core.auth.devices import describe
+from hauskraft_core.db.models import Session, User, UserRole
 from hauskraft_core.policy import permissions_for
 
 Locale = Literal["en", "de"]
@@ -52,6 +53,26 @@ class SessionOut(_Model):
             csrf_token=csrf_token,
             expires_at=expires_at,
             permissions=permissions_for(str(user.role)),
+        )
+
+
+class SessionInfo(_Model):
+    """One of the member's signed-in sessions (M1S-E05-02). Never the token, its hash or the IP address."""
+
+    id: uuid.UUID
+    device: str
+    created_at: dt.datetime
+    last_seen_at: dt.datetime
+    current: bool
+
+    @classmethod
+    def of(cls, row: Session, current: Session) -> SessionInfo:
+        return cls(
+            id=row.public_id,
+            device=describe(row.user_agent),
+            created_at=row.created_at,
+            last_seen_at=row.last_seen_at,
+            current=row.id == current.id,
         )
 
 

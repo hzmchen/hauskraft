@@ -1,16 +1,21 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
-"""``/me`` (M0S-E05-02)."""
+"""``/me`` (M0S-E05-02) and the member's own sessions (M1S-E05-02)."""
 
 from __future__ import annotations
 
-from fastapi import APIRouter, Request
+import uuid
 
+from fastapi import APIRouter, Request, Response
+
+from hauskraft_core.auth import sessions
 from hauskraft_core.auth.deps import CurrentSession, actor_for
-from hauskraft_core.auth.schemas import MePatch, UserCreate, UserOut
+from hauskraft_core.auth.schemas import MePatch, SessionInfo, UserCreate, UserOut
 from hauskraft_core.db.models import User
+from hauskraft_core.db.session import DbSession
 from hauskraft_core.uow import UnitOfWork
 from hauskraft_core.users.service import create_user
 from hauskraft_sdk import ResourceRef
+from hauskraft_sdk.errors import NotFoundError
 
 router = APIRouter(tags=["users"])
 
@@ -37,6 +42,30 @@ async def me_update(body: MePatch, request: Request, resolved: CurrentSession) -
         await uow.session.flush()
         out = UserOut.of(row)
     return out
+
+
+@router.get("/me/sessions", responses={401: {}})
+async def me_sessions(db: DbSession, resolved: CurrentSession) -> list[SessionInfo]:
+    """The member's signed-in sessions, most recently used first."""
+    current, user = resolved
+    return [SessionInfo.of(row, current) for row in await sessions.live_for(db, user)]
+
+
+@router.delete("/me/sessions/{session_id}", status_code=204, responses={401: {}, 403: {}, 404: {}})
+async def me_session_end(session_id: str, request: Request, resolved: CurrentSession) -> Response:
+    """End one of the member's sessions; that browser gets 401 on its next request."""
+    _, user = resolved
+    try:
+        public_id = uuid.UUID(session_id)
+    except ValueError:
+        raise NotFoundError("No such session.") from None
+    async with UnitOfWork(request.app.state.sessionmaker, request.app.state.policy, request.app.state.settings) as uow:
+        await uow.authorize(
+            actor_for(user), "session.revoke", ResourceRef("Session", session_id), "personal", "auth:logout"
+        )
+        if not await sessions.revoke_public(uow.session, user, public_id):
+            raise NotFoundError("No such session.")
+    return Response(status_code=204)
 
 
 @router.post("/users", status_code=201, responses={401: {}, 403: {}, 409: {}, 422: {}})

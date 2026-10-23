@@ -12,7 +12,7 @@ import hashlib
 import secrets
 import uuid
 
-from sqlalchemy import select, update
+from sqlalchemy import ColumnElement, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from hauskraft_core.db.models import Session, User
@@ -60,6 +60,42 @@ async def revoke(session: AsyncSession, token: str | None) -> None:
             .where(Session.id == token_hash(token), Session.revoked_at.is_(None))
             .values(revoked_at=now())
         )
+
+
+def _live(current: dt.datetime) -> tuple[ColumnElement[bool], ...]:
+    return (
+        Session.revoked_at.is_(None),
+        Session.expires_at > current,
+        Session.last_seen_at >= current - IDLE_TIMEOUT,
+    )
+
+
+async def live_for(session: AsyncSession, user: User) -> list[Session]:
+    """The member's sessions that still work, most recently used first."""
+    rows = await session.scalars(
+        select(Session)
+        .where(Session.user_id == user.id, *_live(now()))
+        .order_by(Session.last_seen_at.desc(), Session.created_at.desc())
+    )
+    return list(rows)
+
+
+async def revoke_public(session: AsyncSession, user: User, public_id: uuid.UUID) -> bool:
+    """End one of the member's live sessions by its public id; False if there is no such session."""
+    result = await session.execute(
+        update(Session)
+        .where(Session.user_id == user.id, Session.public_id == public_id, *_live(now()))
+        .values(revoked_at=now())
+    )
+    return bool(result.rowcount)  # type: ignore[attr-defined]
+
+
+async def revoke_all_for(session: AsyncSession, user: User, *, except_id: str | None = None) -> None:
+    """End every session of ``user``, except the one whose stored id is ``except_id``."""
+    query = update(Session).where(Session.user_id == user.id, Session.revoked_at.is_(None))
+    if except_id is not None:
+        query = query.where(Session.id != except_id)
+    await session.execute(query.values(revoked_at=now()))
 
 
 async def resolve(session: AsyncSession, token: str) -> tuple[Session, User] | None:

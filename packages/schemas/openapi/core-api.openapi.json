@@ -655,6 +655,44 @@
         "title": "Readiness",
         "type": "object"
       },
+      "SessionInfo": {
+        "additionalProperties": false,
+        "description": "One of the member's signed-in sessions (M1S-E05-02). Never the token, its hash or the IP address.",
+        "properties": {
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "current": {
+            "title": "Current",
+            "type": "boolean"
+          },
+          "device": {
+            "title": "Device",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "last_seen_at": {
+            "format": "date-time",
+            "title": "Last Seen At",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "device",
+          "created_at",
+          "last_seen_at",
+          "current"
+        ],
+        "title": "SessionInfo",
+        "type": "object"
+      },
       "SessionOut": {
         "additionalProperties": false,
         "properties": {
@@ -1343,6 +1381,27 @@
         ]
       }
     },
+    "/api/v1/auth/logout-everywhere": {
+      "post": {
+        "description": "End every session of the signed-in member, this one included (M1S-E05-02).",
+        "operationId": "auth_logout_everywhere",
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "summary": "Logout Everywhere",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
     "/api/v1/auth/session": {
       "get": {
         "operationId": "auth_session",
@@ -1534,6 +1593,80 @@
           }
         },
         "summary": "Me Update",
+        "tags": [
+          "users"
+        ]
+      }
+    },
+    "/api/v1/me/sessions": {
+      "get": {
+        "description": "The member's signed-in sessions, most recently used first.",
+        "operationId": "users_me_sessions",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/SessionInfo"
+                  },
+                  "title": "Response Users Me Sessions",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "summary": "Me Sessions",
+        "tags": [
+          "users"
+        ]
+      }
+    },
+    "/api/v1/me/sessions/{session_id}": {
+      "delete": {
+        "description": "End one of the member's sessions; that browser gets 401 on its next request.",
+        "operationId": "users_me_session_end",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "session_id",
+            "required": true,
+            "schema": {
+              "title": "Session Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Me Session End",
         "tags": [
           "users"
         ]

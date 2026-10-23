@@ -101,6 +101,20 @@ async def logout(request: Request, resolved: CurrentSession) -> Response:
     async with uow:
         await uow.authorize(actor_for(user), "session.revoke", ResourceRef("Session"), "personal", "auth:logout")
         await sessions.revoke(uow.session, request.cookies.get(sessions.COOKIE_NAME))
+    return _signed_out(request)
+
+
+@router.post("/logout-everywhere", status_code=204, responses={401: {}, 403: {}})
+async def logout_everywhere(request: Request, resolved: CurrentSession) -> Response:
+    """End every session of the signed-in member, this one included (M1S-E05-02)."""
+    _sess, user = resolved
+    async with UnitOfWork(request.app.state.sessionmaker, request.app.state.policy, request.app.state.settings) as uow:
+        await uow.authorize(actor_for(user), "session.revoke", ResourceRef("Session"), "personal", "auth:logout")
+        await sessions.revoke_all_for(uow.session, user)
+    return _signed_out(request)
+
+
+def _signed_out(request: Request) -> Response:
     response = Response(status_code=204)
     response.delete_cookie(
         sessions.COOKIE_NAME, path="/", httponly=True, samesite="lax", secure=request.app.state.settings.cookie_secure

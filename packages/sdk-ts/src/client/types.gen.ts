@@ -411,6 +411,34 @@ export type Readiness = {
 };
 
 /**
+ * SessionInfo
+ *
+ * One of the member's signed-in sessions (M1S-E05-02). Never the token, its hash or the IP address.
+ */
+export type SessionInfo = {
+    /**
+     * Created At
+     */
+    created_at: string;
+    /**
+     * Current
+     */
+    current: boolean;
+    /**
+     * Device
+     */
+    device: string;
+    /**
+     * Id
+     */
+    id: string;
+    /**
+     * Last Seen At
+     */
+    last_seen_at: string;
+};
+
+/**
  * SessionOut
  */
 export type SessionOut = {
@@ -836,6 +864,33 @@ export type AuthLogoutResponses = {
 
 export type AuthLogoutResponse = AuthLogoutResponses[keyof AuthLogoutResponses];
 
+export type AuthLogoutEverywhereData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/v1/auth/logout-everywhere';
+};
+
+export type AuthLogoutEverywhereErrors = {
+    /**
+     * Unauthorized
+     */
+    401: unknown;
+    /**
+     * Forbidden
+     */
+    403: unknown;
+};
+
+export type AuthLogoutEverywhereResponses = {
+    /**
+     * Successful Response
+     */
+    204: void;
+};
+
+export type AuthLogoutEverywhereResponse = AuthLogoutEverywhereResponses[keyof AuthLogoutEverywhereResponses];
+
 export type AuthSessionData = {
     body?: never;
     path?: never;
@@ -996,6 +1051,73 @@ export type UsersMeUpdateResponses = {
 };
 
 export type UsersMeUpdateResponse = UsersMeUpdateResponses[keyof UsersMeUpdateResponses];
+
+export type UsersMeSessionsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/v1/me/sessions';
+};
+
+export type UsersMeSessionsErrors = {
+    /**
+     * Unauthorized
+     */
+    401: unknown;
+};
+
+export type UsersMeSessionsResponses = {
+    /**
+     * Response Users Me Sessions
+     *
+     * Successful Response
+     */
+    200: Array<SessionInfo>;
+};
+
+export type UsersMeSessionsResponse = UsersMeSessionsResponses[keyof UsersMeSessionsResponses];
+
+export type UsersMeSessionEndData = {
+    body?: never;
+    path: {
+        /**
+         * Session Id
+         */
+        session_id: string;
+    };
+    query?: never;
+    url: '/api/v1/me/sessions/{session_id}';
+};
+
+export type UsersMeSessionEndErrors = {
+    /**
+     * Unauthorized
+     */
+    401: unknown;
+    /**
+     * Forbidden
+     */
+    403: unknown;
+    /**
+     * Not Found
+     */
+    404: unknown;
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type UsersMeSessionEndError = UsersMeSessionEndErrors[keyof UsersMeSessionEndErrors];
+
+export type UsersMeSessionEndResponses = {
+    /**
+     * Successful Response
+     */
+    204: void;
+};
+
+export type UsersMeSessionEndResponse = UsersMeSessionEndResponses[keyof UsersMeSessionEndResponses];
 
 export type PluginsListData = {
     body?: never;

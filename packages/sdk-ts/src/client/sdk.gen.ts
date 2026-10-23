@@ -2,7 +2,7 @@
 
 import type { Client, ClientMeta, Options as Options2, RequestResult, TDataShape } from './client';
 import { client } from './client.gen';
-import type { ActivityListData, ActivityListErrors, ActivityListResponses, AuthLoginData, AuthLoginErrors, AuthLoginResponses, AuthLogoutData, AuthLogoutErrors, AuthLogoutResponses, AuthSessionData, AuthSessionErrors, AuthSessionResponses, DashboardGetData, DashboardGetErrors, DashboardGetResponses, DashboardPutData, DashboardPutErrors, DashboardPutResponses, HealthHealthzData, HealthHealthzResponses, HealthReadyzData, HealthReadyzErrors, HealthReadyzResponses, PluginsListData, PluginsListErrors, PluginsListResponses, PluginsUpdateData, PluginsUpdateErrors, PluginsUpdateResponses, SettingsThemeSetData, SettingsThemeSetErrors, SettingsThemeSetResponses, TasksCreateData, TasksCreateErrors, TasksCreateResponses, TasksDeleteData, TasksDeleteErrors, TasksDeleteResponses, TasksGetData, TasksGetErrors, TasksGetResponses, TasksListData, TasksListErrors, TasksListResponses, TasksUpdateData, TasksUpdateErrors, TasksUpdateResponses, ThemesActiveCssData, ThemesActiveCssErrors, ThemesActiveCssResponses, ThemesActiveData, ThemesActiveErrors, ThemesActiveResponses, ThemesAssetData, ThemesAssetErrors, ThemesAssetResponses, ThemesListData, ThemesListErrors, ThemesListResponses, UsersMeGetData, UsersMeGetErrors, UsersMeGetResponses, UsersMeUpdateData, UsersMeUpdateErrors, UsersMeUpdateResponses, UsersUsersCreateData, UsersUsersCreateErrors, UsersUsersCreateResponses } from './types.gen';
+import type { ActivityListData, ActivityListErrors, ActivityListResponses, AuthLoginData, AuthLoginErrors, AuthLoginResponses, AuthLogoutData, AuthLogoutErrors, AuthLogoutEverywhereData, AuthLogoutEverywhereErrors, AuthLogoutEverywhereResponses, AuthLogoutResponses, AuthSessionData, AuthSessionErrors, AuthSessionResponses, DashboardGetData, DashboardGetErrors, DashboardGetResponses, DashboardPutData, DashboardPutErrors, DashboardPutResponses, HealthHealthzData, HealthHealthzResponses, HealthReadyzData, HealthReadyzErrors, HealthReadyzResponses, PluginsListData, PluginsListErrors, PluginsListResponses, PluginsUpdateData, PluginsUpdateErrors, PluginsUpdateResponses, SettingsThemeSetData, SettingsThemeSetErrors, SettingsThemeSetResponses, TasksCreateData, TasksCreateErrors, TasksCreateResponses, TasksDeleteData, TasksDeleteErrors, TasksDeleteResponses, TasksGetData, TasksGetErrors, TasksGetResponses, TasksListData, TasksListErrors, TasksListResponses, TasksUpdateData, TasksUpdateErrors, TasksUpdateResponses, ThemesActiveCssData, ThemesActiveCssErrors, ThemesActiveCssResponses, ThemesActiveData, ThemesActiveErrors, ThemesActiveResponses, ThemesAssetData, ThemesAssetErrors, ThemesAssetResponses, ThemesListData, ThemesListErrors, ThemesListResponses, UsersMeGetData, UsersMeGetErrors, UsersMeGetResponses, UsersMeSessionEndData, UsersMeSessionEndErrors, UsersMeSessionEndResponses, UsersMeSessionsData, UsersMeSessionsErrors, UsersMeSessionsResponses, UsersMeUpdateData, UsersMeUpdateErrors, UsersMeUpdateResponses, UsersUsersCreateData, UsersUsersCreateErrors, UsersUsersCreateResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean, TResponse = unknown> = Options2<TData, ThrowOnError, TResponse> & {
     /**
@@ -39,6 +39,13 @@ export const authLogin = <ThrowOnError extends boolean = false>(options: Options
  * Logout
  */
 export const authLogout = <ThrowOnError extends boolean = false>(options?: Options<AuthLogoutData, ThrowOnError>): RequestResult<AuthLogoutResponses, AuthLogoutErrors, ThrowOnError> => (options?.client ?? client).post<AuthLogoutResponses, AuthLogoutErrors, ThrowOnError>({ url: '/api/v1/auth/logout', ...options });
+
+/**
+ * Logout Everywhere
+ *
+ * End every session of the signed-in member, this one included (M1S-E05-02).
+ */
+export const authLogoutEverywhere = <ThrowOnError extends boolean = false>(options?: Options<AuthLogoutEverywhereData, ThrowOnError>): RequestResult<AuthLogoutEverywhereResponses, AuthLogoutEverywhereErrors, ThrowOnError> => (options?.client ?? client).post<AuthLogoutEverywhereResponses, AuthLogoutEverywhereErrors, ThrowOnError>({ url: '/api/v1/auth/logout-everywhere', ...options });
 
 /**
  * Session
@@ -83,6 +90,20 @@ export const usersMeUpdate = <ThrowOnError extends boolean = false>(options: Opt
         ...options.headers
     }
 });
+
+/**
+ * Me Sessions
+ *
+ * The member's signed-in sessions, most recently used first.
+ */
+export const usersMeSessions = <ThrowOnError extends boolean = false>(options?: Options<UsersMeSessionsData, ThrowOnError>): RequestResult<UsersMeSessionsResponses, UsersMeSessionsErrors, ThrowOnError> => (options?.client ?? client).get<UsersMeSessionsResponses, UsersMeSessionsErrors, ThrowOnError>({ url: '/api/v1/me/sessions', ...options });
+
+/**
+ * Me Session End
+ *
+ * End one of the member's sessions; that browser gets 401 on its next request.
+ */
+export const usersMeSessionEnd = <ThrowOnError extends boolean = false>(options: Options<UsersMeSessionEndData, ThrowOnError>): RequestResult<UsersMeSessionEndResponses, UsersMeSessionEndErrors, ThrowOnError> => (options.client ?? client).delete<UsersMeSessionEndResponses, UsersMeSessionEndErrors, ThrowOnError>({ url: '/api/v1/me/sessions/{session_id}', ...options });
 
 /**
  * List
