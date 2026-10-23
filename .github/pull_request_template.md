@@ -1,4 +1,4 @@
-<!-- Title: [M0S-Exx-yy] Short description. One story per PR. -->
+<!-- Title: [M1S-Exx-yy] Short description. One story per PR; in M1*, one wave per PR: [M1* wave N] …, one block per story. -->
 
 Story: **M0S-Exx-yy** · <title> (<link to the epic file>)
 

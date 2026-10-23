@@ -121,7 +121,7 @@ emits its event in the same story (AGENTS.md rule 1).
 
 ## Suggested order and parallelisation (3 lanes)
 Waves are the dependency levels computed from the story `Deps` fields; start a story only when its own `Deps` are
-merged.
+merged. Each wave ships as one PR (D8).
 
 | Wave | A · backend | B · web | C · deploy, CI, docs |
 |---|---|---|---|
@@ -184,6 +184,7 @@ Use the M0* template with these paths: `docs/backlog/m1-star/README.md`, the epi
 | D5 | Accounts are deactivated, never deleted, in M1*. Usernames are fixed after creation. |
 | D6 | The household time zone, not the browser's, decides "today" for due badges. |
 | D7 | Two M0* acceptance assertions are superseded by M1* behaviour and were moved, not weakened: the seeded `demo` is now `owner` (M1S-E02-03), and `owner` is creatable (M1S-E02-02). The M0* tests now check only what still holds. |
+| D8 | One PR per wave instead of per story (decided 2026-10-23), titled `[M1* wave N] …`. Each story keeps its own red, green and flip commits, and the PR ticks every story's AC. `main` requires up-to-date branches, so this saves about 28 sequential CI runs. |
 
 ## Risks and open questions
 - **First visitor wins** on an exposed port (spec §14 item 15). Localhost binding by default (M1S-E03-04) and docs.

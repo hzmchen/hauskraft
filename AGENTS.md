@@ -69,6 +69,7 @@ Do not implement anything listed as out of scope.
 
 ## PR rules
 - One story per PR, title `[M1S-Exx-yy] …`, conventional commits, `git commit -s` (DCO).
-- The PR shows the red commit before the green one.
+  M1* exception (decided 2026-10-23): one PR per wave of the backlog, title `[M1* wave N] …`.
+- The PR shows the red commit before the green one, for every story in it.
 - Fill the PR template: AC checklist, tests run, screenshots in all three built-in themes for UI changes.
 - If an AC is ambiguous or conflicts with an ADR or the spec: stop and ask in the PR; do not invent scope.
