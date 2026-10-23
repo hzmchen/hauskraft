@@ -1231,6 +1231,11 @@
             "title": "Locale",
             "type": "string"
           },
+          "must_change_password": {
+            "description": "True until the member replaces a temporary password.",
+            "title": "Must Change Password",
+            "type": "boolean"
+          },
           "role": {
             "title": "Role",
             "type": "string"
@@ -1245,7 +1250,8 @@
           "username",
           "display_name",
           "role",
-          "locale"
+          "locale",
+          "must_change_password"
         ],
         "title": "UserOut",
         "type": "object"

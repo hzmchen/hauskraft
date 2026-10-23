@@ -744,6 +744,12 @@ export type UserOut = {
      */
     locale: 'en' | 'de';
     /**
+     * Must Change Password
+     *
+     * True until the member replaces a temporary password.
+     */
+    must_change_password: boolean;
+    /**
      * Role
      */
     role: string;

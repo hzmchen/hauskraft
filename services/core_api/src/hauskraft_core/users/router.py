@@ -99,6 +99,7 @@ async def users_create(body: UserCreate, request: Request, resolved: CurrentSess
             display_name=body.display_name,
             password=body.password,
             role=body.role,
+            temporary=True,
         )
         out = UserOut.of(user)
     return out

@@ -47,6 +47,7 @@ class User(Base):
     role: Mapped[UserRole] = mapped_column(USER_ROLE, default=UserRole.ADULT, server_default=UserRole.ADULT.value)
     locale: Mapped[str] = mapped_column(Text, default="en", server_default="en")
     is_active: Mapped[bool] = mapped_column(default=True, server_default=text("true"))
+    must_change_password: Mapped[bool] = mapped_column(default=False, server_default=text("false"))  # M1S-E07-01
     external_subject: Mapped[str | None] = mapped_column(Text, unique=True)  # OIDC seam (M1)
     data_class: Mapped[str] = mapped_column(Text, default="personal", server_default="personal")
     created_at: Mapped[dt.datetime] = mapped_column(TIMESTAMPTZ, server_default=func.now())
