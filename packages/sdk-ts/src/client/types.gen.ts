@@ -2028,3 +2028,91 @@ export type UsersUsersUpdateResponses = {
 };
 
 export type UsersUsersUpdateResponse = UsersUsersUpdateResponses[keyof UsersUsersUpdateResponses];
+
+export type UsersUsersDeactivateData = {
+    body?: never;
+    path: {
+        /**
+         * User Id
+         */
+        user_id: string;
+    };
+    query?: never;
+    url: '/api/v1/users/{user_id}/deactivate';
+};
+
+export type UsersUsersDeactivateErrors = {
+    /**
+     * Unauthorized
+     */
+    401: unknown;
+    /**
+     * Forbidden
+     */
+    403: unknown;
+    /**
+     * Not Found
+     */
+    404: unknown;
+    /**
+     * Conflict
+     */
+    409: unknown;
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type UsersUsersDeactivateError = UsersUsersDeactivateErrors[keyof UsersUsersDeactivateErrors];
+
+export type UsersUsersDeactivateResponses = {
+    /**
+     * Successful Response
+     */
+    200: MemberOut;
+};
+
+export type UsersUsersDeactivateResponse = UsersUsersDeactivateResponses[keyof UsersUsersDeactivateResponses];
+
+export type UsersUsersReactivateData = {
+    body?: never;
+    path: {
+        /**
+         * User Id
+         */
+        user_id: string;
+    };
+    query?: never;
+    url: '/api/v1/users/{user_id}/reactivate';
+};
+
+export type UsersUsersReactivateErrors = {
+    /**
+     * Unauthorized
+     */
+    401: unknown;
+    /**
+     * Forbidden
+     */
+    403: unknown;
+    /**
+     * Not Found
+     */
+    404: unknown;
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type UsersUsersReactivateError = UsersUsersReactivateErrors[keyof UsersUsersReactivateErrors];
+
+export type UsersUsersReactivateResponses = {
+    /**
+     * Successful Response
+     */
+    200: MemberOut;
+};
+
+export type UsersUsersReactivateResponse = UsersUsersReactivateResponses[keyof UsersUsersReactivateResponses];

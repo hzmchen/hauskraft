@@ -3,8 +3,8 @@
 import { type DefaultError, type InfiniteData, infiniteQueryOptions, queryOptions, type UseMutationOptions } from '@tanstack/react-query';
 
 import { client } from '../client.gen';
-import { activityList, authLogin, authLogout, authLogoutEverywhere, authSession, dashboardGet, dashboardPut, healthHealthz, healthReadyz, householdRead, householdUpdate, type Options, pluginsList, pluginsUpdate, settingsThemeSet, setupComplete, setupStatus, tasksCreate, tasksDelete, tasksGet, tasksList, tasksUpdate, themesActive, themesActiveCss, themesAsset, themesList, usersMeGet, usersMePassword, usersMeSessionEnd, usersMeSessions, usersMeUpdate, usersUsersCreate, usersUsersGet, usersUsersList, usersUsersUpdate } from '../sdk.gen';
-import type { ActivityListData, ActivityListResponse, AuthLoginData, AuthLoginError, AuthLoginResponse, AuthLogoutData, AuthLogoutEverywhereData, AuthLogoutEverywhereResponse, AuthLogoutResponse, AuthSessionData, AuthSessionResponse, DashboardGetData, DashboardGetResponse, DashboardPutData, DashboardPutResponse, HealthHealthzData, HealthHealthzResponse, HealthReadyzData, HealthReadyzError, HealthReadyzResponse, HouseholdReadData, HouseholdReadResponse, HouseholdUpdateData, HouseholdUpdateResponse, PluginsListData, PluginsListResponse, PluginsUpdateData, PluginsUpdateResponse, SettingsThemeSetData, SettingsThemeSetResponse, SetupCompleteData, SetupCompleteResponse, SetupStatusData, SetupStatusResponse, TasksCreateData, TasksCreateResponse, TasksDeleteData, TasksDeleteResponse, TasksGetData, TasksGetResponse, TasksListData, TasksListResponse, TasksUpdateData, TasksUpdateResponse, ThemesActiveCssData, ThemesActiveCssError, ThemesActiveCssResponse, ThemesActiveData, ThemesActiveResponse, ThemesAssetData, ThemesAssetError, ThemesListData, ThemesListResponse, UsersMeGetData, UsersMeGetResponse, UsersMePasswordData, UsersMePasswordResponse, UsersMeSessionEndData, UsersMeSessionEndError, UsersMeSessionEndResponse, UsersMeSessionsData, UsersMeSessionsResponse, UsersMeUpdateData, UsersMeUpdateResponse, UsersUsersCreateData, UsersUsersCreateResponse, UsersUsersGetData, UsersUsersGetError, UsersUsersGetResponse, UsersUsersListData, UsersUsersListResponse, UsersUsersUpdateData, UsersUsersUpdateResponse } from '../types.gen';
+import { activityList, authLogin, authLogout, authLogoutEverywhere, authSession, dashboardGet, dashboardPut, healthHealthz, healthReadyz, householdRead, householdUpdate, type Options, pluginsList, pluginsUpdate, settingsThemeSet, setupComplete, setupStatus, tasksCreate, tasksDelete, tasksGet, tasksList, tasksUpdate, themesActive, themesActiveCss, themesAsset, themesList, usersMeGet, usersMePassword, usersMeSessionEnd, usersMeSessions, usersMeUpdate, usersUsersCreate, usersUsersDeactivate, usersUsersGet, usersUsersList, usersUsersReactivate, usersUsersUpdate } from '../sdk.gen';
+import type { ActivityListData, ActivityListResponse, AuthLoginData, AuthLoginError, AuthLoginResponse, AuthLogoutData, AuthLogoutEverywhereData, AuthLogoutEverywhereResponse, AuthLogoutResponse, AuthSessionData, AuthSessionResponse, DashboardGetData, DashboardGetResponse, DashboardPutData, DashboardPutResponse, HealthHealthzData, HealthHealthzResponse, HealthReadyzData, HealthReadyzError, HealthReadyzResponse, HouseholdReadData, HouseholdReadResponse, HouseholdUpdateData, HouseholdUpdateResponse, PluginsListData, PluginsListResponse, PluginsUpdateData, PluginsUpdateResponse, SettingsThemeSetData, SettingsThemeSetResponse, SetupCompleteData, SetupCompleteResponse, SetupStatusData, SetupStatusResponse, TasksCreateData, TasksCreateResponse, TasksDeleteData, TasksDeleteResponse, TasksGetData, TasksGetResponse, TasksListData, TasksListResponse, TasksUpdateData, TasksUpdateResponse, ThemesActiveCssData, ThemesActiveCssError, ThemesActiveCssResponse, ThemesActiveData, ThemesActiveResponse, ThemesAssetData, ThemesAssetError, ThemesListData, ThemesListResponse, UsersMeGetData, UsersMeGetResponse, UsersMePasswordData, UsersMePasswordResponse, UsersMeSessionEndData, UsersMeSessionEndError, UsersMeSessionEndResponse, UsersMeSessionsData, UsersMeSessionsResponse, UsersMeUpdateData, UsersMeUpdateResponse, UsersUsersCreateData, UsersUsersCreateResponse, UsersUsersDeactivateData, UsersUsersDeactivateError, UsersUsersDeactivateResponse, UsersUsersGetData, UsersUsersGetError, UsersUsersGetResponse, UsersUsersListData, UsersUsersListResponse, UsersUsersReactivateData, UsersUsersReactivateError, UsersUsersReactivateResponse, UsersUsersUpdateData, UsersUsersUpdateResponse } from '../types.gen';
 
 export type QueryKey<TOptions extends Options> = [
     Pick<TOptions, 'baseUrl' | 'body' | 'headers' | 'path' | 'query'> & {
@@ -738,6 +738,42 @@ export const usersUsersUpdateMutation = (options?: Partial<Options<UsersUsersUpd
     const mutationOptions: UseMutationOptions<UsersUsersUpdateResponse, DefaultError, Options<UsersUsersUpdateData>> = {
         mutationFn: async (fnOptions) => {
             const { data } = await usersUsersUpdate({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
+ * Users Deactivate
+ *
+ * Switch an account off (M1S-E06-03): its sessions end and sign-in answers 403 ``account_deactivated``.
+ */
+export const usersUsersDeactivateMutation = (options?: Partial<Options<UsersUsersDeactivateData>>): UseMutationOptions<UsersUsersDeactivateResponse, UsersUsersDeactivateError, Options<UsersUsersDeactivateData>> => {
+    const mutationOptions: UseMutationOptions<UsersUsersDeactivateResponse, UsersUsersDeactivateError, Options<UsersUsersDeactivateData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await usersUsersDeactivate({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
+ * Users Reactivate
+ */
+export const usersUsersReactivateMutation = (options?: Partial<Options<UsersUsersReactivateData>>): UseMutationOptions<UsersUsersReactivateResponse, UsersUsersReactivateError, Options<UsersUsersReactivateData>> => {
+    const mutationOptions: UseMutationOptions<UsersUsersReactivateResponse, UsersUsersReactivateError, Options<UsersUsersReactivateData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await usersUsersReactivate({
                 ...options,
                 ...fnOptions,
                 throwOnError: true

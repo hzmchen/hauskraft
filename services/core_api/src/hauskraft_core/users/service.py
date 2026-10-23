@@ -94,8 +94,7 @@ async def create_user(
         locale=locale,
         temporary=temporary,
     )
-    data = UserData(user=user_ref(user))
-    await emit("hauskraft.user.created", f"user/{user.id}", data.model_dump(mode="json"), "personal")
+    await emit_account_event("hauskraft.user.created", user)
     return user
 
 
@@ -175,6 +174,43 @@ async def update_member(
     return user
 
 
+async def deactivate_member(uow: UnitOfWork, actor: Actor, user_id: uuid.UUID) -> User:
+    """Switch an account off (owners only): its sessions end and it can't sign in; history keeps its name."""
+    await uow.authorize(actor, "user.deactivate", ResourceRef("User", str(user_id)), "personal", "graph:write:User")
+    user = await get_member(uow.session, user_id)
+    if not user.is_active:
+        return user
+    if user.role == UserRole.OWNER:
+        await _ensure_an_active_owner_remains(uow.session, user)
+    user.is_active = False
+    await sessions.revoke_all_for(uow.session, user)
+    await uow.session.flush()
+    await emit(
+        "hauskraft.user.deactivated",
+        f"user/{user.id}",
+        UserData(user=user_ref(user)).model_dump(mode="json"),
+        "personal",
+    )
+    return user
+
+
+async def reactivate_member(uow: UnitOfWork, actor: Actor, user_id: uuid.UUID) -> User:
+    """Let a deactivated account sign in again (owners only)."""
+    await uow.authorize(actor, "user.reactivate", ResourceRef("User", str(user_id)), "personal", "graph:write:User")
+    user = await get_member(uow.session, user_id)
+    if user.is_active:
+        return user
+    user.is_active = True
+    await uow.session.flush()
+    await emit(
+        "hauskraft.user.reactivated",
+        f"user/{user.id}",
+        UserData(user=user_ref(user)).model_dump(mode="json"),
+        "personal",
+    )
+    return user
+
+
 async def set_password(uow: UnitOfWork, actor: Actor, username: str, password: str) -> User:
     check_password_policy(password)
     user = await get_by_username(uow, username)
@@ -191,6 +227,11 @@ def user_ref(user: User) -> UserRef:
     return UserRef.model_validate(
         {"id": user.id, "username": user.username, "display_name": user.display_name, "role": str(user.role)}
     )
+
+
+async def emit_account_event(event_type: str, user: User) -> None:
+    """Emit an account event whose data is the account alone (``{user: UserRef}``, ADR 0018)."""
+    await emit(event_type, f"user/{user.id}", UserData(user=user_ref(user)).model_dump(mode="json"), "personal")
 
 
 async def _own_row(uow: UnitOfWork, user_id: uuid.UUID) -> User:
@@ -240,5 +281,4 @@ async def change_own_password(
     user.password_hash = await hash_password(new_password)
     user.must_change_password = False
     await sessions.revoke_all_for(uow.session, user, except_id=current_session_id)
-    data = UserData(user=user_ref(user))
-    await emit("hauskraft.user.password_changed", f"user/{user.id}", data.model_dump(mode="json"), "personal")
+    await emit_account_event("hauskraft.user.password_changed", user)

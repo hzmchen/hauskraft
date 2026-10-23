@@ -29,6 +29,15 @@ class InvalidCredentialsError(HauskraftError):
         super().__init__("The username or password is not correct.")
 
 
+class AccountDeactivatedError(HauskraftError):
+    status = 403
+    code = "account_deactivated"
+    title = "Account deactivated"
+
+    def __init__(self) -> None:
+        super().__init__("This account is deactivated. Ask an owner of your household.")
+
+
 class RateLimitedError(HauskraftError):
     status = 429
     code = "rate_limited"
@@ -76,6 +85,8 @@ async def login(body: LoginIn, request: Request, response: Response) -> SessionO
             limiter.failed(body.username, ip)
             raise InvalidCredentialsError
         user, new_hash = ref.user, ref.upgraded_password_hash
+        if not user.is_active:
+            raise AccountDeactivatedError
         limiter.succeeded(body.username, ip)
         actor = actor_for(user)
         await uow.authorize(actor, "session.create", ResourceRef("Session"), "personal", "auth:login")

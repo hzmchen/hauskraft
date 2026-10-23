@@ -29,8 +29,10 @@ from hauskraft_core.users.service import (
     WrongPasswordError,
     change_own_password,
     create_user,
+    deactivate_member,
     get_member,
     list_members,
+    reactivate_member,
     update_member,
     update_own_profile,
 )
@@ -137,6 +139,21 @@ async def users_update(user_id: uuid.UUID, body: MemberPatch, request: Request, 
             uow, actor_for(resolved[1]), user_id, display_name=body.display_name, role=body.role
         )
         out = MemberOut.of(member)
+    return out
+
+
+@router.post("/users/{user_id}/deactivate", responses={401: {}, 403: {}, 404: {}, 409: {}})
+async def users_deactivate(user_id: uuid.UUID, request: Request, resolved: CurrentSession) -> MemberOut:
+    """Switch an account off (M1S-E06-03): its sessions end and sign-in answers 403 ``account_deactivated``."""
+    async with UnitOfWork(request.app.state.sessionmaker, request.app.state.policy, request.app.state.settings) as uow:
+        out = MemberOut.of(await deactivate_member(uow, actor_for(resolved[1]), user_id))
+    return out
+
+
+@router.post("/users/{user_id}/reactivate", responses={401: {}, 403: {}, 404: {}})
+async def users_reactivate(user_id: uuid.UUID, request: Request, resolved: CurrentSession) -> MemberOut:
+    async with UnitOfWork(request.app.state.sessionmaker, request.app.state.policy, request.app.state.settings) as uow:
+        out = MemberOut.of(await reactivate_member(uow, actor_for(resolved[1]), user_id))
     return out
 
 
