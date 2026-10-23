@@ -40,7 +40,8 @@
     "password": "Password",
     "submit": "Sign in",
     "error_credentials": "Wrong username or password",
-    "error_rate_limited": "Too many attempts. Wait a minute and try again."
+    "error_rate_limited": "Too many attempts. Wait a minute and try again.",
+    "session_ended": "Your session has ended. Please sign in again."
   },
   "widget": {
     "unavailable": "Widget unavailable",
