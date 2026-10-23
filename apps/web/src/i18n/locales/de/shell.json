@@ -16,7 +16,8 @@
   "account": {
     "menu": "Kontomenü",
     "sign_out": "Abmelden",
-    "language": "Sprache"
+    "language": "Sprache",
+    "settings": "Kontoeinstellungen"
   },
   "language": {
     "en": "English",

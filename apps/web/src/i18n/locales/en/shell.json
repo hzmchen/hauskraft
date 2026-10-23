@@ -16,7 +16,8 @@
   "account": {
     "menu": "Account menu",
     "sign_out": "Sign out",
-    "language": "Language"
+    "language": "Language",
+    "settings": "Account settings"
   },
   "language": {
     "en": "English",
