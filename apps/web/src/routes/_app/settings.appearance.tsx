@@ -2,6 +2,7 @@
 import { themesListOptions } from "@hauskraft/sdk-ts";
 import { createFileRoute } from "@tanstack/react-router";
 
+import { can, useSession } from "../../session";
 import { AppearanceSettings } from "../../settings/Appearance";
 
 export const Route = createFileRoute("/_app/settings/appearance")({
@@ -10,5 +11,9 @@ export const Route = createFileRoute("/_app/settings/appearance")({
   // Prefetch on entering the page only; search changes (filters, sort) must not wait for it.
   shouldReload: false,
   loader: ({ context }) => context.queryClient.ensureQueryData(themesListOptions()).catch(() => undefined),
-  component: AppearanceSettings,
+  component: AppearancePage,
 });
+
+function AppearancePage() {
+  return <AppearanceSettings canChangeTheme={can(useSession(), "settings.theme.set")} />;
+}

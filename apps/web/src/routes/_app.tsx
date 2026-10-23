@@ -7,11 +7,13 @@ import { Outlet, createFileRoute, redirect } from "@tanstack/react-router";
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
+import { hasDeviceLanguage, isLanguage } from "../i18n";
 import { loadPluginModule } from "../plugins/load";
 import { pluginRegistry } from "../plugins/registry.gen";
 import { useWebPlugins } from "../plugins/usePlugins";
 import { sessionQuery } from "../session";
 import { AccountMenu } from "../shell/AccountMenu";
+import { DocumentTitle } from "../shell/DocumentTitle";
 import { buildNavModel } from "../shell/nav/model";
 import { NavRenderer, useNavStyle } from "../shell/nav/NavRenderer";
 import { RouterHost } from "../shell/RouterHost";
@@ -21,6 +23,15 @@ export const Route = createFileRoute("/_app")({
   beforeLoad: async ({ context, location }) => {
     const session = await context.queryClient.ensureQueryData(sessionQuery);
     if (!session) throw redirect({ to: "/login", search: { redirect: location.href } });
+    // The account's language applies on every load, unless this device chose its own (account menu).
+    const locale = session.user.locale;
+    if (!hasDeviceLanguage() && isLanguage(locale) && context.i18n.resolvedLanguage !== locale) {
+      await context.i18n.changeLanguage(locale);
+      document.documentElement.lang = locale;
+    }
+    // A temporary password comes first (M1S-E07-02); afterwards the member continues to this page.
+    if (session.user.must_change_password)
+      throw redirect({ to: "/change-password", search: { redirect: location.href } });
     return { session };
   },
   // Load enabled plugins' web modules up front: the navigation needs their strings.
@@ -76,6 +87,7 @@ function AppLayout() {
             <Outlet />
           </RouterHost>
         </main>
+        <DocumentTitle />
         {style === "bottom-tabs" ? <NavRenderer style={style} items={items} /> : null}
       </div>
     </div>

@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// The account menu (ui-contract: button "Account menu"; menuitemradio English/Deutsch; menuitem "Sign out").
+// The account menu (ui-contract: button "Account menu"; menuitemradio English/Deutsch; menuitems "Account settings"
+// (M1S-E08-03) and "Sign out").
 // The button shows its name as its label (WCAG 2.5.3, label in name).
 import {
   Button,
@@ -53,6 +54,9 @@ export function AccountMenu() {
           ))}
         </DropdownMenuRadioGroup>
         <DropdownMenuSeparator />
+        <DropdownMenuItem onSelect={() => void router.navigate({ to: "/settings/account" })}>
+          {t("account.settings")}
+        </DropdownMenuItem>
         <DropdownMenuItem onSelect={() => void onSignOut()}>{t("account.sign_out")}</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

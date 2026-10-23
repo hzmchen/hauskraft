@@ -16,7 +16,8 @@
   "account": {
     "menu": "Account menu",
     "sign_out": "Sign out",
-    "language": "Language"
+    "language": "Language",
+    "settings": "Account settings"
   },
   "language": {
     "en": "English",
@@ -41,7 +42,8 @@
     "submit": "Sign in",
     "error_credentials": "Wrong username or password",
     "error_rate_limited": "Too many attempts. Wait a minute and try again.",
-    "session_ended": "Your session has ended. Please sign in again."
+    "session_ended": "Your session has ended. Please sign in again.",
+    "error_deactivated": "This account is deactivated. Ask an owner of your household."
   },
   "widget": {
     "unavailable": "Widget unavailable",
@@ -75,7 +77,12 @@
     "confirm_body": "{{name}} will be used on every device in the household. Everything keeps working the same way.",
     "confirm": "Change theme",
     "cancel": "Cancel",
-    "add_theme": "Add a theme"
+    "add_theme": "Add a theme",
+    "account": "Account",
+    "household": "Household",
+    "members": "Members",
+    "owners_only_theme": "Only owners can change the household theme.",
+    "nav_label": "Settings"
   },
   "dashboard": {
     "edit_layout": "Edit layout",
@@ -108,5 +115,83 @@
       "password_reset": "{{actor}} reset the password of {{name}}",
       "password_changed": "{{actor}} changed their password"
     }
+  },
+  "account_page": {
+    "profile": "Profile",
+    "username": "Username",
+    "display_name": "Display name",
+    "save_profile": "Save profile",
+    "profile_saved": "Profile saved",
+    "devices": "Devices",
+    "devices_list": "Signed-in devices",
+    "this_device": "This device",
+    "last_active": "Last active {{when}}",
+    "sign_out_everywhere": "Sign out everywhere",
+    "sign_out_everywhere_title": "Sign out everywhere?",
+    "sign_out_everywhere_body": "Every device, this one included, will have to sign in again."
+  },
+  "password": {
+    "heading": "Password",
+    "current": "Current password",
+    "new": "New password",
+    "repeat": "Repeat new password",
+    "hint": "At least 12 characters",
+    "mismatch": "Passwords do not match",
+    "wrong_current": "The current password is wrong.",
+    "policy": "Passwords need 12 to 128 characters.",
+    "change": "Change password",
+    "changed": "Password changed"
+  },
+  "change_password": {
+    "title": "Choose a new password",
+    "explain": "Your password was set by someone else. Choose your own to continue.",
+    "save": "Save password"
+  },
+  "household_page": {
+    "name": "Household name",
+    "timezone": "Time zone",
+    "locale": "Default language",
+    "locale_hint": "Used for new members",
+    "save": "Save household",
+    "saved": "Household saved",
+    "invalid_timezone": "Choose a time zone from the list.",
+    "invalid_name": "The name needs 1 to 80 characters."
+  },
+  "roles": {
+    "owner": "Owner",
+    "adult": "Adult"
+  },
+  "members": {
+    "add": "Add member",
+    "edit": "Edit",
+    "edit_named": "Edit {{name}}",
+    "edit_title": "Edit member",
+    "save": "Save",
+    "reset": "Reset password",
+    "reset_named": "Reset password for {{name}}",
+    "reset_title": "Reset password?",
+    "deactivate": "Deactivate",
+    "deactivate_named": "Deactivate {{name}}",
+    "deactivate_title": "Deactivate {{name}}?",
+    "deactivate_body": "They are signed out everywhere and can't sign in until reactivated.",
+    "reactivate": "Reactivate",
+    "reactivate_named": "Reactivate {{name}}",
+    "deactivated": "Deactivated",
+    "role": "Role",
+    "temporary_password": "Temporary password",
+    "last_owner": "The household needs at least one active owner.",
+    "username_taken": "This username is already taken.",
+    "invalid_username": "Usernames have 2 to 32 characters: a–z, 0–9, '.', '_' or '-'."
+  },
+  "setup": {
+    "title": "Set up your household",
+    "intro": "Hauskraft has no household yet. Create it and your own account: you become its owner.",
+    "household_heading": "Your household",
+    "account_heading": "Your account",
+    "your_name": "Your name",
+    "password": "Password",
+    "repeat": "Repeat password",
+    "create": "Create household",
+    "done": "This household is already set up. Sign in instead."
   }
 }

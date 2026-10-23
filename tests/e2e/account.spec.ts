@@ -32,6 +32,7 @@ async function member(ready = true): Promise<Member> {
   const api = await Api.login(username, TEMP_PASSWORD);
   try {
     await api.changePassword(TEMP_PASSWORD, MEMBER_PASSWORD);
+    await api.logout(); // the helper's own session must not count as one of the member's devices
   } finally {
     await api.dispose();
   }

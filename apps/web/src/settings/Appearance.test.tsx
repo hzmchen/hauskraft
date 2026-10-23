@@ -45,7 +45,7 @@ const THEMES = [
 
 let puts: unknown[] = [];
 
-async function show() {
+async function show(canChangeTheme = true) {
   puts = [];
   fakeApi({
     "GET /api/v1/themes": () => json(THEMES),
@@ -60,7 +60,7 @@ async function show() {
       <I18nextProvider i18n={createI18n({ lng: "en" })}>
         <QueryClientProvider client={new QueryClient({ defaultOptions: { queries: { retry: false } } })}>
           <ColorModeProvider>
-            <AppearanceSettings />
+            <AppearanceSettings canChangeTheme={canChangeTheme} />
           </ColorModeProvider>
         </QueryClientProvider>
       </I18nextProvider>,
@@ -118,5 +118,30 @@ describe("Appearance", () => {
   it("has no free-form input", async () => {
     await show();
     expect(screen.queryAllByRole("textbox")).toHaveLength(0);
+  });
+});
+
+describe("Appearance for adults (M1S-E08-02)", () => {
+  it("shows the household theme read-only and says who may change it", async () => {
+    const group = await show(false);
+    const household = screen.getByRole("region", { name: "Household theme" });
+    expect(household.textContent).toContain("Only owners can change the household theme.");
+    const radios = group.getAllByRole("radio") as HTMLInputElement[];
+    expect(radios.length).toBe(3);
+    expect(radios.every((r) => r.disabled)).toBe(true);
+    expect(radios.filter((r) => r.checked).map((r) => r.labels?.[0]?.textContent)).toHaveLength(1);
+    await userEvent.click(radio(group, "Paper"));
+    expect(screen.queryByRole("dialog")).toBeNull();
+  });
+
+  it("still lets adults choose this device's colour mode", async () => {
+    await show(false);
+    expect(screen.getByRole("radiogroup", { name: "Colour mode" })).toBeDefined();
+    expect(within(screen.getByRole("radiogroup", { name: "Colour mode" })).getAllByRole("radio")).toHaveLength(3);
+  });
+
+  it("shows owners no such note", async () => {
+    await show(true);
+    expect(screen.queryByText("Only owners can change the household theme.")).toBeNull();
   });
 });

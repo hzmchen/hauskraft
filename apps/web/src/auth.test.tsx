@@ -54,6 +54,28 @@ describe("login", () => {
     expect((await screen.findByRole("alert")).textContent).toBe("Wrong username or password");
   });
 
+  it("explains a deactivated account, but keeps one message for wrong credentials (M1S-E07-04)", async () => {
+    let deactivated = true;
+    fakeApi({
+      "GET /api/v1/auth/session": () => problem(401, "unauthenticated"),
+      "POST /api/v1/auth/login": () =>
+        deactivated ? problem(403, "account_deactivated") : problem(401, "invalid_credentials"),
+    });
+    start("/login");
+    const username = await screen.findByRole("textbox", { name: "Username" });
+    expect(username.getAttribute("autocomplete")).toBe("username");
+    expect(screen.getByLabelText("Password").getAttribute("autocomplete")).toBe("current-password");
+    await userEvent.type(username, "gone");
+    await userEvent.type(screen.getByLabelText("Password"), "correct-horse-battery");
+    await userEvent.click(screen.getByRole("button", { name: "Sign in" }));
+    expect((await screen.findByRole("alert")).textContent).toBe(
+      "This account is deactivated. Ask an owner of your household.",
+    );
+    deactivated = false;
+    await userEvent.click(screen.getByRole("button", { name: "Sign in" }));
+    await waitFor(() => expect(screen.getByRole("alert").textContent).toBe("Wrong username or password"));
+  });
+
   it("signs in and goes to the requested page", async () => {
     let signedIn = false;
     const calls = fakeApi({
@@ -188,7 +210,39 @@ describe("ended session (M1S-E07-03)", () => {
   });
 });
 
+describe("language (M1S-E05-03)", () => {
+  it("applies the account's language on load when this device chose none", async () => {
+    fakeApi({
+      "GET /api/v1/auth/session": () => json({ ...DEMO_SESSION, user: { ...DEMO_SESSION.user, locale: "de" } }),
+      "GET /api/v1/themes": () => json([]),
+    });
+    start("/today");
+    expect(await screen.findByRole("heading", { level: 1, name: "Heute" })).toBeDefined();
+  });
+
+  it("keeps this device's own choice", async () => {
+    localStorage.setItem("hauskraft.locale", "en");
+    fakeApi({
+      "GET /api/v1/auth/session": () => json({ ...DEMO_SESSION, user: { ...DEMO_SESSION.user, locale: "de" } }),
+      "GET /api/v1/themes": () => json([]),
+    });
+    start("/today");
+    expect(await screen.findByRole("heading", { level: 1, name: "Today" })).toBeDefined();
+  });
+});
+
 describe("account menu", () => {
+  it("opens account settings from 'Account settings', above 'Sign out' (M1S-E08-03)", async () => {
+    fakeApi({ "GET /api/v1/auth/session": () => json(DEMO_SESSION), "GET /api/v1/themes": () => json([]) });
+    const { router } = start("/today");
+    await userEvent.click(await screen.findByRole("button", { name: "Account menu" }));
+    const items = (await screen.findAllByRole("menuitem")).map((i) => i.textContent);
+    expect(items.indexOf("Account settings")).toBeGreaterThanOrEqual(0);
+    expect(items.indexOf("Account settings")).toBeLessThan(items.indexOf("Sign out"));
+    await userEvent.click(screen.getByRole("menuitem", { name: "Account settings" }));
+    await waitFor(() => expect(router.state.location.pathname).toBe("/settings/account"));
+  });
+
   it("shows its accessible name as its label, not the user's name (WCAG 2.5.3, label in name)", async () => {
     fakeApi({ "GET /api/v1/auth/session": () => json(DEMO_SESSION) });
     start("/today");

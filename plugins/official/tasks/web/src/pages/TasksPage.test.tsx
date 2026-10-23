@@ -12,6 +12,7 @@ function host(search: Record<string, string> = {}) {
     navigate: vi.fn<Host["navigate"]>(),
     search,
     setSearch: vi.fn<Host["setSearch"]>(),
+    timeZone: "Europe/Berlin",
   } satisfies Host;
 }
 

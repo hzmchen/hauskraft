@@ -274,7 +274,7 @@
       "acceptance": "suite"
     },
     "M1S-E03-02": {
-      "status": "red",
+      "status": "green",
       "acceptance": "suite"
     },
     "M1S-E03-03": {
@@ -290,15 +290,15 @@
       "acceptance": "suite"
     },
     "M1S-E04-02": {
-      "status": "red",
+      "status": "green",
       "acceptance": "suite"
     },
     "M1S-E04-03": {
-      "status": "red",
+      "status": "green",
       "acceptance": "suite"
     },
     "M1S-E04-04": {
-      "status": "red",
+      "status": "green",
       "acceptance": "suite"
     },
     "M1S-E05-01": {
@@ -310,11 +310,11 @@
       "acceptance": "suite"
     },
     "M1S-E05-03": {
-      "status": "red",
+      "status": "green",
       "acceptance": "suite"
     },
     "M1S-E05-04": {
-      "status": "red",
+      "status": "green",
       "acceptance": "suite"
     },
     "M1S-E06-01": {
@@ -334,7 +334,7 @@
       "acceptance": "suite"
     },
     "M1S-E06-05": {
-      "status": "red",
+      "status": "green",
       "acceptance": "suite"
     },
     "M1S-E06-06": {
@@ -346,7 +346,7 @@
       "acceptance": "suite"
     },
     "M1S-E07-02": {
-      "status": "red",
+      "status": "green",
       "acceptance": "suite"
     },
     "M1S-E07-03": {
@@ -354,19 +354,19 @@
       "acceptance": "suite"
     },
     "M1S-E07-04": {
-      "status": "red",
+      "status": "green",
       "acceptance": "suite"
     },
     "M1S-E08-01": {
-      "status": "red",
+      "status": "green",
       "acceptance": "suite"
     },
     "M1S-E08-02": {
-      "status": "red",
+      "status": "green",
       "acceptance": "suite"
     },
     "M1S-E08-03": {
-      "status": "red",
+      "status": "green",
       "acceptance": "suite"
     },
     "M1S-E09-01": {
@@ -374,15 +374,15 @@
       "acceptance": "suite"
     },
     "M1S-E09-02": {
-      "status": "red",
+      "status": "green",
       "acceptance": "suite"
     },
     "M1S-E10-01": {
-      "status": "red",
+      "status": "green",
       "acceptance": "suite"
     },
     "M1S-E10-02": {
-      "status": "red",
+      "status": "green",
       "acceptance": "suite"
     }
   }

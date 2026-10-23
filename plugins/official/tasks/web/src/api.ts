@@ -36,10 +36,11 @@ export function useTaskList(query: ListQuery) {
 const widgetLists = () =>
   (["open", "done"] as const).map((status) => tasksListOptions({ query: { limit: 50, status, sort: "-created_at" } }));
 
-/** Load what the widget and the All tasks page show by default, ahead of rendering (PluginWebModule.prefetch). */
+/** Load what the widget and the All tasks page show by default, ahead of rendering (PluginWebModule.prefetch).
+ * Always fetches: other members change tasks too, and a list cached seconds ago must not hide theirs. */
 export function prefetchTasks(queryClient: QueryClient): Promise<unknown> {
   const page = listOptions({ status: "open", sort: "-created_at" });
-  return Promise.all([...widgetLists(), page].map((options) => queryClient.ensureQueryData(options)));
+  return Promise.all([...widgetLists(), page].map((options) => queryClient.fetchQuery({ ...options, staleTime: 0 })));
 }
 
 /** The widget's open and done lists, suspending until both have loaded so it appears complete at once. */
@@ -160,8 +161,10 @@ export function useDeleteTask() {
   return (taskId: string) => mutation.mutateAsync({ path: { task_id: taskId } });
 }
 
-/** Today's calendar date on this device, YYYY-MM-DD (due dates have no time zone). */
-export function todayIso(now = new Date()): string {
-  const pad = (n: number) => String(n).padStart(2, "0");
-  return `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
+/** Today's date as YYYY-MM-DD in `timeZone` (the household's, M1S-E04-03), or in the browser's zone. */
+export function todayIso(now = new Date(), timeZone?: string): string {
+  const parts = new Intl.DateTimeFormat("en-CA", { timeZone, year: "numeric", month: "2-digit", day: "2-digit" })
+    .formatToParts(now)
+    .reduce<Record<string, string>>((acc, part) => ({ ...acc, [part.type]: part.value }), {});
+  return `${parts.year}-${parts.month}-${parts.day}`;
 }

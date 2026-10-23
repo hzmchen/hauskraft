@@ -2,7 +2,31 @@
 
 A Home Assistant–centred, plugin-first household cockpit: one themeable dashboard for a busy family, with governed AI help that prepares and drafts while people approve anything consequential. Self-hosted, local-first, open source.
 
-> **Status: M0\* is done; M1\* "Household basics" is next.** M0\* (61 stories) delivered the scaffolding MVP below. M1\* (35 stories, spec v0.3) makes Hauskraft usable by a real household: first-run setup in the browser, owner and adult roles, members, accounts and household settings. Its spec-owned acceptance tests are written and red until the stories are built. Hauskraft was called HearthOS until October 2026 (ADR 0015).
+> **Status: M1\* "Household basics" is built.** M0\* (61 stories) delivered the scaffolding MVP; M1\* (35 stories, spec v0.3) makes Hauskraft usable by a real household: first-run setup in the browser, owner and adult roles, members, accounts and household settings. See [CHANGELOG.md](CHANGELOG.md). Hauskraft was called HearthOS until October 2026 (ADR 0015).
+
+## Quick start
+
+You need Docker with the Compose plugin.
+
+### Try the demo
+
+```sh
+git clone https://github.com/hzmchen/hauskraft.git && cd hauskraft
+docker compose up --wait
+```
+
+Open <http://localhost:8080> and sign in as `demo` (an owner) or `alex` (an adult), both with the password
+`hauskraft-demo`. [docs/how-to-test.md](docs/how-to-test.md) walks you through it.
+
+### Set up your household
+
+```sh
+HAUSKRAFT_SEED_DEMO=false docker compose up --wait
+```
+
+Open <http://localhost:8080> on the same machine and finish the setup right away: the first person to complete it
+becomes the household's owner. [docs/household-admin.md](docs/household-admin.md) covers members, passwords, opening
+Hauskraft to your network with TLS, and recovery.
 
 ## Start here
 
@@ -31,7 +55,7 @@ python -m pytest tests --story M1S-E02-01   # one story, in raw mode
 python scripts/backlog_tools.py check       # backlog, spec references, story status, coverage
 ```
 
-Wave 0 of the M1\* backlog (permission table, event schemas, fresh test stack) is the place to begin.
+The next milestone climbs the capability ladder; the candidates are in the Linear project "Hauskraft Backlog".
 
 ## What M0\* gives you
 

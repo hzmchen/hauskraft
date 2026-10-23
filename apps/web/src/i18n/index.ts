@@ -52,6 +52,15 @@ export function addPluginLocales(i18n: I18n, namespace: string, locales: Record<
   for (const lng of LANGUAGES) i18n.addResourceBundle(lng, namespace, locales[lng], true, true);
 }
 
+/** Whether this device chose a language itself (then the account's language doesn't override it). */
+export function hasDeviceLanguage(): boolean {
+  try {
+    return localStorage.getItem(LOCALE_STORAGE_KEY) !== null;
+  } catch {
+    return false;
+  }
+}
+
 /** Switch language on this device and save it to the account with `save` (PATCH /me). */
 export async function setLanguage(i18n: I18n, lng: Language, save: (lng: Language) => Promise<unknown>) {
   await i18n.changeLanguage(lng);
