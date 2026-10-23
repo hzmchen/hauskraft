@@ -52,7 +52,7 @@ def test_seed_creates_the_household_once(empty_db: Settings) -> None:
     assert first.exit_code == 0, first.output
     assert _count(empty_db.database_url, User) == 2
     events = _count(empty_db.database_url, OutboxEvent)
-    assert events == 5, "1 settings.household_changed + 3 task.created + 1 task.completed"
+    assert events == 7, "2 user.created + 1 settings.household_changed + 3 task.created + 1 task.completed"
     second = CliRunner().invoke(cli, ["seed", "--if-empty"])
     assert second.exit_code == 0, second.output
     assert "already" in second.output
