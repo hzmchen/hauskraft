@@ -99,3 +99,72 @@ describe("Settings → Account: password (M1S-E05-03)", () => {
     await waitFor(() => expect((field(pw, "New password") as HTMLInputElement).value).toBe(""));
   });
 });
+
+describe("Settings → Account: devices (M1S-E05-04)", () => {
+  const SESSIONS = [
+    {
+      id: "0199f390-aaaa-7aaa-8bbb-000000000001",
+      device: "Firefox on Linux",
+      created_at: "2026-10-20T08:00:00Z",
+      last_seen_at: "2026-10-23T09:00:00Z",
+      current: true,
+    },
+    {
+      id: "0199f390-aaaa-7aaa-8bbb-000000000002",
+      device: "Safari on iPhone",
+      created_at: "2026-10-19T08:00:00Z",
+      last_seen_at: "2026-10-22T18:00:00Z",
+      current: false,
+    },
+  ];
+
+  it("lists my sessions, marks this device and signs out another one", async () => {
+    let sessions = [...SESSIONS];
+    const deleted: string[] = [];
+    start({
+      "GET /api/v1/me/sessions": () => json(sessions),
+      [`DELETE /api/v1/me/sessions/${SESSIONS[1]!.id}`]: () => {
+        deleted.push(SESSIONS[1]!.id);
+        sessions = sessions.filter((s) => s.id !== SESSIONS[1]!.id);
+        return new Response(null, { status: 204 });
+      },
+    });
+    const list = await screen.findByRole("list", { name: "Signed-in devices" });
+    await waitFor(() => expect(within(list).getAllByRole("listitem")).toHaveLength(2));
+    const [current, other] = within(list).getAllByRole("listitem");
+    expect(current!.textContent).toContain("Firefox on Linux");
+    expect(current!.textContent).toContain("This device");
+    expect(within(current!).queryByRole("button", { name: "Sign out" })).toBeNull();
+    expect(other!.textContent).toContain("Safari on iPhone");
+    await userEvent.click(within(other!).getByRole("button", { name: "Sign out" }));
+    await waitFor(() => expect(within(list).getAllByRole("listitem")).toHaveLength(1));
+    expect(deleted).toEqual([SESSIONS[1]!.id]);
+  });
+
+  it("signs out everywhere after confirming, and returns to sign-in without a session message", async () => {
+    let signedIn = true;
+    const { router } = start({
+      "GET /api/v1/auth/session": () => (signedIn ? json(DEMO_SESSION) : problem(401, "unauthenticated")),
+      "GET /api/v1/me/sessions": () => (signedIn ? json(SESSIONS) : problem(401, "unauthenticated")),
+      "POST /api/v1/auth/logout-everywhere": () => {
+        signedIn = false;
+        return new Response(null, { status: 204 });
+      },
+    });
+    await userEvent.click(await screen.findByRole("button", { name: "Sign out everywhere" }));
+    const confirm = await screen.findByRole("alertdialog", { name: "Sign out everywhere?" });
+    await userEvent.click(within(confirm).getByRole("button", { name: "Sign out everywhere" }));
+    await waitFor(() => expect(router.state.location.pathname).toBe("/login"));
+    await screen.findByRole("button", { name: "Sign in" });
+    expect(screen.queryByText("Your session has ended. Please sign in again.")).toBeNull();
+  });
+
+  it("can cancel signing out everywhere", async () => {
+    const calls = start({ "GET /api/v1/me/sessions": () => json(SESSIONS) }).calls;
+    await userEvent.click(await screen.findByRole("button", { name: "Sign out everywhere" }));
+    const confirm = await screen.findByRole("alertdialog", { name: "Sign out everywhere?" });
+    await userEvent.click(within(confirm).getByRole("button", { name: "Cancel" }));
+    await waitFor(() => expect(screen.queryByRole("alertdialog")).toBeNull());
+    expect(calls.some((r) => r.url.endsWith("/auth/logout-everywhere"))).toBe(false);
+  });
+});
