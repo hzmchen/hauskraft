@@ -190,6 +190,46 @@ export type Health = {
 };
 
 /**
+ * HouseholdOut
+ */
+export type HouseholdOut = {
+    /**
+     * Locale
+     *
+     * Default language for new members.
+     */
+    locale: 'en' | 'de';
+    /**
+     * Name
+     */
+    name: string;
+    /**
+     * Timezone
+     *
+     * IANA time zone name; it decides what 'today' means for due dates.
+     */
+    timezone: string;
+};
+
+/**
+ * HouseholdPatch
+ */
+export type HouseholdPatch = {
+    /**
+     * Locale
+     */
+    locale?: 'en' | 'de' | null;
+    /**
+     * Name
+     */
+    name?: string | null;
+    /**
+     * Timezone
+     */
+    timezone?: string | null;
+};
+
+/**
  * Icons
  */
 export type Icons = {
@@ -1011,6 +1051,60 @@ export type HealthHealthzResponses = {
 };
 
 export type HealthHealthzResponse = HealthHealthzResponses[keyof HealthHealthzResponses];
+
+export type HouseholdReadData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/v1/household';
+};
+
+export type HouseholdReadErrors = {
+    /**
+     * Unauthorized
+     */
+    401: unknown;
+};
+
+export type HouseholdReadResponses = {
+    /**
+     * Successful Response
+     */
+    200: HouseholdOut;
+};
+
+export type HouseholdReadResponse = HouseholdReadResponses[keyof HouseholdReadResponses];
+
+export type HouseholdUpdateData = {
+    body: HouseholdPatch;
+    path?: never;
+    query?: never;
+    url: '/api/v1/household';
+};
+
+export type HouseholdUpdateErrors = {
+    /**
+     * Unauthorized
+     */
+    401: unknown;
+    /**
+     * Forbidden
+     */
+    403: unknown;
+    /**
+     * Unprocessable Content
+     */
+    422: unknown;
+};
+
+export type HouseholdUpdateResponses = {
+    /**
+     * Successful Response
+     */
+    200: HouseholdOut;
+};
+
+export type HouseholdUpdateResponse = HouseholdUpdateResponses[keyof HouseholdUpdateResponses];
 
 export type UsersMeGetData = {
     body?: never;
