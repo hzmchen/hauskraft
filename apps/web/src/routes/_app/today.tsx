@@ -9,8 +9,8 @@ import { pluginRegistry } from "../../plugins/registry.gen";
 export const Route = createFileRoute("/_app/today")({
   // Render with the layout and the widgets' data, not an empty grid that fills in later. Prefetching only:
   // a failure must not replace the page; the components' own queries load and report it.
-  // Prefetch on entering the page only; search changes (filters, sort) must not wait for it.
-  shouldReload: false,
+  // Prefetch on every visit (others change the data too), but search changes (filters, sort) must not wait for it.
+  shouldReload: ({ cause }) => cause === "enter",
   loader: async ({ context }) => {
     try {
       const { layout } = await context.queryClient.ensureQueryData(

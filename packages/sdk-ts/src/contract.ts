@@ -21,7 +21,8 @@ export type PluginWebModule = {
   icons?: Record<string, string>;
   /**
    * Optional: load the data the plugin's widgets and pages show by default before they render, so they appear
-   * complete at once instead of filling in. Called by the shell's Today and plugin-page routes; failures are ignored.
+   * complete at once instead of filling in. Called by the shell's Today and plugin-page routes each time one is opened, so load current data rather
+   * reuse the cache; failures are ignored.
    */
   prefetch?: (queryClient: QueryClient) => Promise<unknown>;
 };

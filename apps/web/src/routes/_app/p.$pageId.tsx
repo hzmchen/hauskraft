@@ -15,8 +15,8 @@ export const Route = createFileRoute("/_app/p/$pageId")({
   validateSearch: (search: Record<string, unknown>) => stringSearch(search),
   // Load the owning plugin's module and its default data first, so the page renders complete. Prefetching
   // only: a failure must not replace the page; its own queries load and report it.
-  // Prefetch on entering the page only; search changes (filters, sort) must not wait for it.
-  shouldReload: false,
+  // Prefetch on every visit (others change the data too), but search changes (filters, sort) must not wait for it.
+  shouldReload: ({ cause }) => cause === "enter",
   loader: async ({ context, params }) => {
     try {
       const plugins = await context.queryClient.ensureQueryData(pluginsListOptions());
