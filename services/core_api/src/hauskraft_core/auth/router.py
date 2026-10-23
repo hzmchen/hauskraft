@@ -11,7 +11,7 @@ from hauskraft_core.auth import sessions
 from hauskraft_core.auth.csrf import check_origin
 from hauskraft_core.auth.deps import CurrentSession, actor_for
 from hauskraft_core.auth.providers import PasswordCredentials
-from hauskraft_core.auth.schemas import LoginIn, SessionOut, UserOut
+from hauskraft_core.auth.schemas import LoginIn, SessionOut
 from hauskraft_core.uow import UnitOfWork
 from hauskraft_sdk import ResourceRef
 from hauskraft_sdk.errors import HauskraftError
@@ -89,7 +89,7 @@ async def login(body: LoginIn, request: Request, response: Response) -> SessionO
         token, row = await sessions.create(
             uow.session, user, user_agent=request.headers.get("user-agent"), ip=_inet(ip)
         )
-        out = SessionOut(user=UserOut.of(user), csrf_token=row.csrf_token, expires_at=row.expires_at)
+        out = SessionOut.of(user, row.csrf_token, row.expires_at)
     _set_cookie(response, request, token)
     return out
 
@@ -111,4 +111,4 @@ async def logout(request: Request, resolved: CurrentSession) -> Response:
 @router.get("/session", responses={401: {}})
 async def session(resolved: CurrentSession) -> SessionOut:
     sess, user = resolved
-    return SessionOut(user=UserOut.of(user), csrf_token=sess.csrf_token, expires_at=sess.expires_at)
+    return SessionOut.of(user, sess.csrf_token, sess.expires_at)

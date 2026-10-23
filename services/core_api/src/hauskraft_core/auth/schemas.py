@@ -10,6 +10,7 @@ from typing import Annotated, Literal
 from pydantic import BaseModel, ConfigDict, Field, StringConstraints
 
 from hauskraft_core.db.models import User, UserRole
+from hauskraft_core.policy import permissions_for
 
 Locale = Literal["en", "de"]
 NO_NUL = r"^[^\x00]*$"  # PostgreSQL text cannot hold NUL bytes: 422 instead of a failed query
@@ -40,6 +41,18 @@ class SessionOut(_Model):
     user: UserOut
     csrf_token: str
     expires_at: dt.datetime
+    permissions: list[str] = Field(
+        description="The actions the user's role may do, sorted (spec §2.3). For showing controls; the API decides."
+    )
+
+    @classmethod
+    def of(cls, user: User, csrf_token: str, expires_at: dt.datetime) -> SessionOut:
+        return cls(
+            user=UserOut.of(user),
+            csrf_token=csrf_token,
+            expires_at=expires_at,
+            permissions=permissions_for(str(user.role)),
+        )
 
 
 class LoginIn(_Model):

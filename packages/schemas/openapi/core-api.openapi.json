@@ -667,6 +667,14 @@
             "title": "Expires At",
             "type": "string"
           },
+          "permissions": {
+            "description": "The actions the user's role may do, sorted (spec §2.3). For showing controls; the API decides.",
+            "items": {
+              "type": "string"
+            },
+            "title": "Permissions",
+            "type": "array"
+          },
           "user": {
             "$ref": "#/components/schemas/UserOut"
           }
@@ -674,7 +682,8 @@
         "required": [
           "user",
           "csrf_token",
-          "expires_at"
+          "expires_at",
+          "permissions"
         ],
         "title": "SessionOut",
         "type": "object"

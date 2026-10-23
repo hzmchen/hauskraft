@@ -422,6 +422,12 @@ export type SessionOut = {
      * Expires At
      */
     expires_at: string;
+    /**
+     * Permissions
+     *
+     * The actions the user's role may do, sorted (spec §2.3). For showing controls; the API decides.
+     */
+    permissions: Array<string>;
     user: UserOut;
 };
 
