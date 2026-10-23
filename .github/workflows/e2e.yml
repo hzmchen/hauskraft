@@ -1,6 +1,7 @@
 # SPDX-License-Identifier: MIT
 # End-to-end gate (M0S-E02-03): the Compose stack with the fixture themes, the live API acceptance suite and the
-# spec-owned Playwright suites (demo script, tasks, theme invariance) against http://localhost:8080.
+# spec-owned Playwright suites (demo script, tasks, theme invariance) against http://localhost:8080. Next to it runs
+# the unseeded fresh stack on http://localhost:8081 for the first-run tests (M1S-E01-02).
 name: e2e
 
 on:
@@ -25,6 +26,12 @@ jobs:
   e2e:
     runs-on: ubuntu-latest
     timeout-minutes: 45
+    env:
+      HAUSKRAFT_FRESH_BASE_URL: http://localhost:8081
+      # Leaves the fresh stack empty and healthy; absolute paths because Playwright runs from tests/e2e.
+      HAUSKRAFT_FRESH_RESET_CMD: >-
+        docker compose -p hauskraft-fresh -f ${{ github.workspace }}/compose.yaml -f ${{ github.workspace }}/deploy/compose/compose.fresh.yaml down -v &&
+        docker compose -p hauskraft-fresh -f ${{ github.workspace }}/compose.yaml -f ${{ github.workspace }}/deploy/compose/compose.fresh.yaml up --wait
     steps:
       - uses: actions/checkout@v7.0.1
       - uses: ./.github/actions/setup
@@ -34,6 +41,8 @@ jobs:
         run: $COMPOSE build
       - name: Start the stack
         run: $COMPOSE up --wait
+      - name: Start the fresh stack (no demo seed, port 8081)
+        run: docker compose -p hauskraft-fresh -f compose.yaml -f deploy/compose/compose.fresh.yaml up --wait
       - name: Live API acceptance suite
         run: uv run python -m pytest tests --live --strict-status -ra
       - name: Install Chromium
@@ -50,7 +59,9 @@ jobs:
 
       - name: Stack logs
         if: failure()
-        run: $COMPOSE logs --no-color > compose-logs.txt
+        run: |
+          $COMPOSE logs --no-color > compose-logs.txt
+          docker compose -p hauskraft-fresh -f compose.yaml -f deploy/compose/compose.fresh.yaml logs --no-color > compose-fresh-logs.txt
       - name: Upload traces, reports and logs
         if: failure()
         uses: actions/upload-artifact@v7.0.2
@@ -61,4 +72,5 @@ jobs:
             tests/e2e/test-results
             apps/web/test-results
             compose-logs.txt
+            compose-fresh-logs.txt
           retention-days: 14
