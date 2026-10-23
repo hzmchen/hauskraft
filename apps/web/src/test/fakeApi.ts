@@ -39,7 +39,36 @@ export const DEMO_SESSION = {
     display_name: "Demo Adult",
     role: "adult",
     locale: "en",
+    must_change_password: false,
   },
   csrf_token: "csrf-123",
   expires_at: "2099-01-01T00:00:00Z",
+  permissions: [
+    "dashboard.layout.set",
+    "session.create",
+    "session.revoke",
+    "task.create",
+    "task.delete",
+    "task.update",
+    "user.change_password",
+    "user.update_self",
+  ],
+};
+
+/** The same session for an owner (M1S-E02-04): every permission of the table. */
+export const OWNER_SESSION = {
+  ...DEMO_SESSION,
+  user: { ...DEMO_SESSION.user, role: "owner" },
+  permissions: [
+    ...DEMO_SESSION.permissions,
+    "plugin.toggle",
+    "settings.household.set",
+    "settings.theme.set",
+    "user.create",
+    "user.deactivate",
+    "user.list",
+    "user.reactivate",
+    "user.reset_password",
+    "user.update",
+  ].sort(),
 };
