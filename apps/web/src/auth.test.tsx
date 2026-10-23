@@ -189,6 +189,17 @@ describe("ended session (M1S-E07-03)", () => {
 });
 
 describe("account menu", () => {
+  it("opens account settings from 'Account settings', above 'Sign out' (M1S-E08-03)", async () => {
+    fakeApi({ "GET /api/v1/auth/session": () => json(DEMO_SESSION), "GET /api/v1/themes": () => json([]) });
+    const { router } = start("/today");
+    await userEvent.click(await screen.findByRole("button", { name: "Account menu" }));
+    const items = (await screen.findAllByRole("menuitem")).map((i) => i.textContent);
+    expect(items.indexOf("Account settings")).toBeGreaterThanOrEqual(0);
+    expect(items.indexOf("Account settings")).toBeLessThan(items.indexOf("Sign out"));
+    await userEvent.click(screen.getByRole("menuitem", { name: "Account settings" }));
+    await waitFor(() => expect(router.state.location.pathname).toBe("/settings/account"));
+  });
+
   it("shows its accessible name as its label, not the user's name (WCAG 2.5.3, label in name)", async () => {
     fakeApi({ "GET /api/v1/auth/session": () => json(DEMO_SESSION) });
     start("/today");
