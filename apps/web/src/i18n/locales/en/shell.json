@@ -113,5 +113,24 @@
       "password_reset": "{{actor}} reset the password of {{name}}",
       "password_changed": "{{actor}} changed their password"
     }
+  },
+  "account_page": {
+    "profile": "Profile",
+    "username": "Username",
+    "display_name": "Display name",
+    "save_profile": "Save profile",
+    "profile_saved": "Profile saved"
+  },
+  "password": {
+    "heading": "Password",
+    "current": "Current password",
+    "new": "New password",
+    "repeat": "Repeat new password",
+    "hint": "At least 12 characters",
+    "mismatch": "Passwords do not match",
+    "wrong_current": "The current password is wrong.",
+    "policy": "Passwords need 12 to 128 characters.",
+    "change": "Change password",
+    "changed": "Password changed"
   }
 }

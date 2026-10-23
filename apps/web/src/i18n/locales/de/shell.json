@@ -113,5 +113,24 @@
       "password_reset": "{{actor}} hat das Passwort von {{name}} zurückgesetzt",
       "password_changed": "{{actor}} hat das eigene Passwort geändert"
     }
+  },
+  "account_page": {
+    "profile": "Profil",
+    "username": "Benutzername",
+    "display_name": "Anzeigename",
+    "save_profile": "Profil speichern",
+    "profile_saved": "Profil gespeichert"
+  },
+  "password": {
+    "heading": "Passwort",
+    "current": "Aktuelles Passwort",
+    "new": "Neues Passwort",
+    "repeat": "Neues Passwort wiederholen",
+    "hint": "Mindestens 12 Zeichen",
+    "mismatch": "Die Passwörter stimmen nicht überein",
+    "wrong_current": "Das aktuelle Passwort ist falsch.",
+    "policy": "Passwörter brauchen 12 bis 128 Zeichen.",
+    "change": "Passwort ändern",
+    "changed": "Passwort geändert"
   }
 }
