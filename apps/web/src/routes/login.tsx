@@ -1,11 +1,13 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-// Sign-in (M0S-E08-03). One message for every credential failure, so it never reveals which field was wrong.
+// Sign-in (M0S-E08-03). One message for every credential failure, so it never reveals which field was wrong. A
+// deactivated account (right password) says so (M1S-E07-04).
 import { authLogin } from "@hauskraft/sdk-ts";
 import { Button, Card, CardContent, CardHeader, CardTitle, Input } from "@hauskraft/ui";
 import { createFileRoute, redirect, useRouter } from "@tanstack/react-router";
 import { useId, useState, type FormEvent } from "react";
 import { useTranslation } from "react-i18next";
 
+import { problemCode } from "../forms/fields";
 import { LOCALE_STORAGE_KEY, isLanguage } from "../i18n";
 import { rememberSession, safeRedirect, sessionQuery } from "../session";
 
@@ -49,14 +51,22 @@ function Login() {
     const form = new FormData(event.currentTarget);
     setPending(true);
     setError(null);
-    const { data, response } = await authLogin({
+    const { data, error, response } = await authLogin({
       body: { username: String(form.get("username") ?? ""), password: String(form.get("password") ?? "") },
     });
     setPending(false);
     if (!data) {
       const status = response?.status;
       setError(
-        t(status === 401 ? "login.error_credentials" : status === 429 ? "login.error_rate_limited" : "errors.generic"),
+        t(
+          status === 401
+            ? "login.error_credentials"
+            : status === 403 && problemCode(error) === "account_deactivated"
+              ? "login.error_deactivated"
+              : status === 429
+                ? "login.error_rate_limited"
+                : "errors.generic",
+        ),
       );
       return;
     }
