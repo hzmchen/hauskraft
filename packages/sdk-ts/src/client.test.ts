@@ -52,3 +52,10 @@ describe("generated client", () => {
     expect(calls[0]!.headers.get("X-CSRF-Token")).toBeNull();
   });
 });
+
+describe("host time zone (M1S-E04-03)", () => {
+  it("defaults to the browser's zone without a shell", async () => {
+    const { browserHost } = await import("./host");
+    expect(browserHost.timeZone).toBe(Intl.DateTimeFormat().resolvedOptions().timeZone);
+  });
+});
