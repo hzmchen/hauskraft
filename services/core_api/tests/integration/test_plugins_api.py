@@ -142,7 +142,7 @@ def test_toggle_takes_effect_after_restart_and_emits(
 ) -> None:
     pid, theme_id, extra = paths
     prefix = pid.replace(".", "-")
-    username = make_user()
+    username = make_user(role="owner")
     with _client(api_settings, extra) as client:
         csrf = {
             "X-CSRF-Token": client.post("/api/v1/auth/login", json={"username": username, "password": PASSWORD}).json()[

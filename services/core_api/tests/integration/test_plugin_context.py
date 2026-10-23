@@ -20,7 +20,8 @@ MANIFEST = {"capabilities": ["settings:write"], "data_classes": {"emits": ["hous
 async def test_context_writes_and_emits_in_one_transaction(db_settings: Settings) -> None:
     from fastapi.testclient import TestClient
 
-    app = create_app(db_settings.model_copy(update={"plugin_paths": [], "theme_paths": []}))
+    # The mechanics, not the permission table, are under test here.
+    app = create_app(db_settings.model_copy(update={"plugin_paths": [], "theme_paths": [], "policy": "noop"}))
     with TestClient(app):
         ctx = CorePluginContext("org.example.ctx", MANIFEST, app)
         actor = Actor(id=str(uuid.uuid4()), role="adult", display_name="Ctx", kind="agent")
