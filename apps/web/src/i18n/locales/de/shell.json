@@ -78,7 +78,8 @@
     "add_theme": "Design hinzufügen",
     "account": "Konto",
     "household": "Haushalt",
-    "members": "Mitglieder"
+    "members": "Mitglieder",
+    "owners_only_theme": "Nur Inhaber können das Design des Haushalts ändern."
   },
   "dashboard": {
     "edit_layout": "Layout bearbeiten",

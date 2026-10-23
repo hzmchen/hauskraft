@@ -78,7 +78,8 @@
     "add_theme": "Add a theme",
     "account": "Account",
     "household": "Household",
-    "members": "Members"
+    "members": "Members",
+    "owners_only_theme": "Only owners can change the household theme."
   },
   "dashboard": {
     "edit_layout": "Edit layout",

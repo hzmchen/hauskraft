@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Settings → Appearance (M0S-E13-07): the household theme (everyone, every device) and this device's
-// colour mode. Choosing a theme asks first. No editor and no free-form input.
+// colour mode. Choosing a theme asks first. No editor and no free-form input. Adults see the household theme
+// read-only (M1S-E08-02).
 import {
   settingsThemeSetMutation,
   themesActiveQueryKey,
@@ -17,7 +18,7 @@ import { ColorModeControl } from "../shell/ColorMode";
 
 export const THEMES_GUIDE_URL = "https://github.com/hzmchen/hauskraft/blob/main/docs/themes.md";
 
-export function AppearanceSettings() {
+export function AppearanceSettings({ canChangeTheme = true }: { canChangeTheme?: boolean }) {
   const { t } = useTranslation();
   const ids = { household: useId(), hint: useId(), device: useId() };
   return (
@@ -30,7 +31,8 @@ export function AppearanceSettings() {
         <p id={ids.hint} className="text-muted-foreground">
           {t("settings.household_hint")}
         </p>
-        <ThemePicker labelledBy={ids.household} describedBy={ids.hint} />
+        {canChangeTheme ? null : <p>{t("settings.owners_only_theme")}</p>}
+        <ThemePicker labelledBy={ids.household} describedBy={ids.hint} readOnly={!canChangeTheme} />
         <p>
           <a href={THEMES_GUIDE_URL} target="_blank" rel="noreferrer noopener" className="text-primary underline">
             {t("settings.add_theme")}
@@ -48,7 +50,15 @@ export function AppearanceSettings() {
   );
 }
 
-function ThemePicker({ labelledBy, describedBy }: { labelledBy: string; describedBy: string }) {
+function ThemePicker({
+  labelledBy,
+  describedBy,
+  readOnly,
+}: {
+  labelledBy: string;
+  describedBy: string;
+  readOnly: boolean;
+}) {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
   const { data } = useQuery(themesListOptions());
@@ -83,7 +93,8 @@ function ThemePicker({ labelledBy, describedBy }: { labelledBy: string; describe
             theme={theme}
             group={name}
             checked={checked === theme.theme_id}
-            onChoose={() => theme.theme_id !== active && setPending(theme)}
+            readOnly={readOnly}
+            onChoose={() => !readOnly && theme.theme_id !== active && setPending(theme)}
           />
         ))}
       </div>
@@ -115,11 +126,13 @@ function ThemeCard({
   theme,
   group,
   checked,
+  readOnly,
   onChoose,
 }: {
   theme: ThemeSummary;
   group: string;
   checked: boolean;
+  readOnly: boolean;
   onChoose: () => void;
 }) {
   const { t } = useTranslation();
@@ -140,7 +153,7 @@ function ThemeCard({
           type="radio"
           name={group}
           checked={checked}
-          disabled={!theme.valid}
+          disabled={!theme.valid || readOnly}
           onChange={onChoose}
           aria-labelledby={ids.name}
           aria-describedby={ids.details}
