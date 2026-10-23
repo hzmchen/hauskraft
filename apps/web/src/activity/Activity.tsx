@@ -32,6 +32,8 @@ export const activityQuery = infiniteQueryOptions({
   initialPageParam: undefined as string | undefined,
   getNextPageParam: (last) => (last.length > 0 ? last.at(-1)?.time : undefined),
   refetchInterval: 15_000,
+  // Activity is about what just happened: every visit refetches, even within the app's default stale time.
+  staleTime: 0,
 });
 
 export function summarise(item: ActivityItem, t: TFunction, themeName: (id: string) => string): string {
