@@ -104,7 +104,10 @@ test("2 · Mia sets up the household in Deutsch", story(DEMO, "M1S-E03-01", "M1S
 test("3 · Mia adds Alex as an adult", story(DEMO, "M1S-E08-01", "M1S-E06-05", "M1S-E09-02"), async () => {
   await goNav(mia, "Settings");
   await expect(mia).toHaveURL(/\/settings\/appearance$/);
-  expect(await settingsSections(mia)).toEqual(["Appearance", "Account", "Household", "Members"]);
+  // M2* adds "Assistant" after Members for owners (M2S-E07-01).
+  expect((await settingsSections(mia)).filter((s) => s !== "Assistant")).toEqual([
+    "Appearance", "Account", "Household", "Members",
+  ]);
   await openSettings(mia, "Members");
   await mia.getByRole("button", { name: "Add member" }).click();
   const dialog = mia.getByRole("dialog", { name: "Add member" });

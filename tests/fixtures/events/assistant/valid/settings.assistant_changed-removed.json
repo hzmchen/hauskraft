@@ -1,0 +1,17 @@
+{
+  "specversion": "1.0",
+  "id": "019a1c20-1111-7b8a-9d40-2f6c1a0b7e02",
+  "source": "dev.hauskraft.core",
+  "type": "hauskraft.settings.assistant_changed",
+  "subject": "setting/assistant",
+  "time": "2026-10-24T10:00:00.000Z",
+  "datacontenttype": "application/json",
+  "dataschema": "https://hauskraft.dev/schema/events/settings.assistant_changed/v1.json",
+  "dataclass": "household",
+  "actorid": "0199f390-2222-7aaa-8bbb-cccccccccccc",
+  "data": {
+    "changed": [
+      "chat"
+    ]
+  }
+}

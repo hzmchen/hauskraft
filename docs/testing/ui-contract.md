@@ -141,7 +141,7 @@ German names (a new member starts in the household language): heading **Neues Pa
 
 | Role | Name | Notes |
 |---|---|---|
-| navigation | Settings | inside `main`; links in this order: **Appearance, Account, Household, Members** for owners, **Appearance, Account** for adults (de: Darstellung, Konto, Haushalt, Mitglieder) |
+| navigation | Settings | inside `main`; links in this order: **Appearance, Account, Household, Members** for owners, **Appearance, Account** for adults (de: Darstellung, Konto, Haushalt, Mitglieder); from M2*, owners also get **Assistant** after Members (M2S-E07-01) |
 
 ## Settings → Account (`/settings/account`) · M1S-E05-03, M1S-E05-04
 
@@ -188,3 +188,69 @@ German names (a new member starts in the household language): heading **Neues Pa
 | dialog | Reset password? | password Temporary password; buttons: Reset password, Cancel |
 | alertdialog | Deactivate <name>? | text "They are signed out everywhere and can't sign in until reactivated."; buttons: Deactivate, Cancel |
 | alert | (text) The household needs at least one active owner. | on 409 `last_owner` |
+
+# M2* additions
+
+The assistant (docs/backlog/m2-star/). German names follow in the notes. Card and button names that contain a title
+use the form `'<title>'`.
+
+## Changes to earlier views
+
+| View | Role | Name | Notes | Story |
+|---|---|---|---|---|
+| Activity | (text) | <actor> via assistant added '<title>' · <actor> via assistant updated '<title>' · <actor> via assistant completed '<title>' · <actor> via assistant deleted '<title>' | for task events with `agentrunid`; de: `<actor> über den Assistenten hat '<title>' hinzugefügt` and likewise | M2S-E04-07 |
+| Activity | (text) | <actor> changed the assistant settings | de: `<actor> hat die Assistent-Einstellungen geändert` | M2S-E03-02 |
+| All tasks | button | Add from text | only when the assistant is available; opens the dialog below; de: Aus Text hinzufügen | M2S-E06-05 |
+
+## Shell: Assistant button and side panel · M2S-E06-01 to M2S-E06-04
+
+| Role | Name | Notes |
+|---|---|---|
+| button | Assistant | in every navigation style, only when the assistant is available; `aria-expanded`; de: Assistent |
+| complementary | Assistant | the side panel; beside the page on wide screens, covering it below 768 px |
+| heading (level 2) | Assistant | inside the panel |
+| button | Close assistant | inside the panel; focus returns to the Assistant button; de: Assistent schließen |
+| button | New chat | de: Neuer Chat |
+| list | Chats | one listitem per chat, newest first; each has a button named by the chat's title ("Untitled chat" before the first message) |
+| button | Delete chat '<title>' | in each chat's listitem; opens the confirmation |
+| alertdialog | Delete chat? | buttons: Delete, Cancel |
+| log | Messages | the current chat; new answers are announced politely |
+| textbox | Message the assistant | Enter sends, Shift+Enter adds a line; de: Nachricht an den Assistenten |
+| button | Send | de: Senden |
+| status | (text) Working… | while a run is going; de: Arbeitet… |
+| article | Added task '<title>' · Updated task '<title>' · Completed task '<title>' · Deleted task '<title>' | an action card (the plugin's `summary_key` text); contains the link "Open" and, when available, the button "Undo"; after Undo the card contains "Undone" |
+| button | Undo | inside an action card; de: Rückgängig |
+| article | Delete task '<title>'? | a confirmation card; buttons: Delete, Cancel |
+| alert | (text) The assistant is not available right now. Try again later. | `model_unavailable`; the other codes have their own texts in the locale files |
+
+## Tasks plugin · M2S-E06-05, M2S-E06-06
+
+| Role | Name | Notes |
+|---|---|---|
+| dialog | Add tasks from text | textbox **Text** (multi-line), button **Suggest tasks**; de: Aufgaben aus Text hinzufügen |
+| list | Suggested tasks | one checkbox per suggestion, named by its title, checked by default |
+| button | Add <n> tasks | e.g. Add 3 tasks; counts the checked suggestions |
+| region | Weekly overview | the widget `tasks.overview`; text "Created <relative time>" or "No overview yet."; without an assistant "The assistant isn't set up." |
+| button | Create now | inside the widget |
+
+## Settings → Assistant (`/settings/assistant`, owners) · M2S-E07-01 to M2S-E07-03
+
+| Role | Name | Notes |
+|---|---|---|
+| heading (level 1) | Assistant | de: Assistent |
+| region | Endpoint | |
+| textbox | Base URL | |
+| textbox | Model | |
+| textbox (password) | API key | exact label; empty keeps the saved key; hint "Saved key ends in <last four>" |
+| combobox | Model location | options: Cloud, Local |
+| button | Save endpoint | then the text "Endpoint saved" |
+| button | Test connection | then the list below |
+| list | Connection checks | listitems "Server reachable: OK", "API key accepted: OK", "Model found: OK", "Tool calls supported: OK" (": Failed" when not) |
+| button | Remove endpoint | opens the alertdialog "Remove the endpoint?" with buttons Remove, Cancel |
+| region | Tools | |
+| switch | tasks.delete | one switch per tool, named by the tool (e.g. tasks.create, tasks.list); description and annotations in words next to it; then the text "Tools saved" |
+| region | Usage | |
+| combobox | Period | options: Today, Last 7 days, Last 30 days |
+| table | Usage by day / Usage by member / Usage by model | columns Requests, Input tokens, Output tokens |
+| textbox | Price per million input tokens / Price per million output tokens | button "Save prices"; then the text "Estimated cost: <amount> EUR" |
+

@@ -8,7 +8,7 @@ from collections.abc import Iterator
 
 import pytest
 
-from _support.live import MEMBER_PASSWORD, TEMP_PASSWORD, Api, logged_in, reachable
+from _support.live import MEMBER_PASSWORD, TEMP_PASSWORD, Api, configure_fake, logged_in, reachable, tasks_titled
 
 
 @pytest.fixture
@@ -95,3 +95,32 @@ def ready_member(new_member) -> Iterator:
     yield _make
     for api in apis:
         api.close()
+
+
+# ---------------------------------------------------------------- M2*: the assistant on the demo stack
+@pytest.fixture
+def assistant(demo: Api) -> Iterator[Api]:
+    """The demo owner with the assistant pointed at the fake model (`fake-tools`); left that way afterwards."""
+    configure_fake(demo)
+    demo.patch("/assistant/settings", json={"tools_disabled": []})
+    yield demo
+    configure_fake(demo)
+    demo.patch("/assistant/settings", json={"tools_disabled": []})
+
+
+@pytest.fixture
+def cleanup_titles(demo: Api) -> Iterator[list[str]]:
+    """Titles of tasks a test made the assistant create; every task with one of them is deleted afterwards."""
+    titles: list[str] = []
+    yield titles
+    for title in titles:
+        for task in tasks_titled(demo, title):
+            demo.delete(f"/tasks/{task['id']}")
+
+
+@pytest.fixture
+def unique_title() -> Iterator:
+    def _make(label: str) -> str:
+        return f"acc-{uuid.uuid4().hex[:8]} {label}"
+    yield _make
+

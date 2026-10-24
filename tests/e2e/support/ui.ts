@@ -117,3 +117,24 @@ export async function chooseNewPassword(page: Page, current: string, next: strin
 export const SESSION_ENDED = "Your session has ended. Please sign in again.";
 export const DEACTIVATED = "This account is deactivated. Ask an owner of your household.";
 export const LAST_OWNER = "The household needs at least one active owner.";
+
+// ---------------------------------------------------------------- M2* (docs/testing/ui-contract.md, "M2* additions")
+
+export const assistant = {
+  button: (page: Page) => page.getByRole("button", { name: "Assistant", exact: true }),
+  panel: (page: Page) => page.getByRole("complementary", { name: "Assistant" }),
+  input: (page: Page) => assistant.panel(page).getByRole("textbox", { name: "Message the assistant" }),
+  log: (page: Page) => assistant.panel(page).getByRole("log", { name: "Messages" }),
+  chats: (page: Page) => assistant.panel(page).getByRole("list", { name: "Chats" }),
+  card: (page: Page, name: string) => assistant.panel(page).getByRole("article", { name }),
+};
+
+/** Open the assistant panel (if closed) and send a message; waits until the run is over. */
+export async function askAssistant(page: Page, text: string): Promise<void> {
+  if (!(await assistant.panel(page).isVisible())) await assistant.button(page).click();
+  await assistant.input(page).fill(text);
+  await assistant.panel(page).getByRole("button", { name: "Send" }).click();
+  await expect(assistant.log(page)).toContainText(text);
+  await expect(assistant.panel(page).getByRole("status").filter({ hasText: "Working…" })).toBeHidden({ timeout: 60_000 });
+}
+
