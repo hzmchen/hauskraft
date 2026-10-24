@@ -1,7 +1,7 @@
 # E13 · Theming system
 
 **Goal:** Adults can switch the whole deployment between theme packages that change colours, type, shapes, component styles, icons and a few layout options, while every function stays exactly the same. Each device keeps its own light/dark/system mode.
-**Spec:** `docs/spec/hauskraft-spec-v0.3.md` §10.2 (normative), §5.3 (theme plugin rules), §11.1 (theme threats).
+**Spec:** `docs/spec/hauskraft-spec-v0.4.md` §10.2 (normative), §5.3 (theme plugin rules), §11.1 (theme threats).
 **Decisions:** D4 (scope A + B + limited C, no custom CSS, packages only, no editor, built-in themes), D5 (one theme per deployment, mode per device), D6 (function invariance).
 **Out of scope:** theme editor, custom CSS or scripts, per-user or per-device themes, hot reload, registry and signing, HA theme import, MCP Apps theme variables (M5).
 **Dependencies:** E04-02, E06-01/03, E08-01/05.

@@ -7,5 +7,5 @@ REPO = Path(__file__).resolve().parents[2]
 TESTS = REPO / "tests"
 FIXTURES = TESTS / "fixtures"
 BACKLOG_ROOT = REPO / "docs" / "backlog"  # one m<N>-star folder per milestone
-SPEC = REPO / "docs" / "spec" / "hauskraft-spec-v0.3.md"
+SPEC = REPO / "docs" / "spec" / "hauskraft-spec-v0.4.md"
 STATUS_FILE = TESTS / "story-status.json"

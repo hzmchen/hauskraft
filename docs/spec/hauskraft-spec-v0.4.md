@@ -1,14 +1,14 @@
-# Hauskraft Specification v0.3
+# Hauskraft Specification v0.4
 
 **A Home Assistant–centred, plugin-first household cockpit**
 
 | | |
 |---|---|
 | Status | Draft |
-| Version | 0.3 (supersedes 0.2) |
-| Date | 2026-10-22 |
+| Version | 0.4 (supersedes 0.3) |
+| Date | 2026-10-24 |
 | Name | Hauskraft, formerly HearthOS (D10, ADR 0015) |
-| Companion docs | `docs/backlog/m1-star/` (M1* backlog), `docs/backlog/m0-star/` (M0* backlog, done), `docs/adr/` (decisions) |
+| Companion docs | `docs/backlog/m2-star/` (M2* backlog), `docs/backlog/m1-star/` and `docs/backlog/m0-star/` (done), `docs/adr/` (decisions) |
 
 **Bottom line.** Hauskraft is an AGPL-3.0, Python-backend / TypeScript-frontend standalone web app. Home Assistant (HA) is the event bus and device layer. Every household domain is a plugin that wraps an existing tool through MCP or REST, or a native module where no tool exists. All agent actions pass through one governed tool gateway (default-deny writes, human approval, spend limits, data-class routing). The dashboard is themeable: themes change how it looks, never what it does. Native code is written only where the ecosystem has real gaps: the German rental/Nebenkosten workflow, a cross-domain household graph and deadline engine, the approval inbox, the theming system and the cockpit UI itself.
 
@@ -16,7 +16,17 @@
 
 ## 0. Changes
 
-### 0.1 Changes in v0.3 (since v0.2)
+### 0.1 Changes in v0.4 (since v0.3)
+
+| # | Change | Sections |
+|---|---|---|
+| C13 | **Roadmap: an agentic harness before the capability ladder.** The milestone after M1\* is **M2\* Agentic harness**: the seams that agents and workflow automation stand on, without the full governance stack of §8.1–§8.9. Elsewhere in this spec, "M2" still means the MVP-domains milestone. | §8.0, §13.1, §14 |
+| C14 | **One tool contract, MCP at the edges.** Plugins declare tools in the manifest and register them through the SDK; core keeps one tool registry that the built-in assistant uses directly. MCP becomes an adapter for outside agents and outside tools later (ADR 0019). This answers open question 14. | §5.3, §8.0, §14 |
+| C15 | **Assistant on behalf of a person.** The assistant calls tools with the person's own permissions; events record the run (`agentrunid`); a gate decides allow, confirm or deny per call (ADR 0020). | §3.2, §8.0 |
+| C16 | **Owner-configured model endpoint.** An OpenAI-compatible Chat Completions endpoint, set in Settings → Assistant; the API key is encrypted at rest (ADR 0021). Token usage is recorded per request and shown to owners. | §8.0, §8.9, §10.1 |
+| C17 | **Skills and evals.** Skills are declarative `SKILL.md` bundles contributed by plugins (ADR 0023). The harness is measured by evals in two layers: free scripted tests in CI, real-model evals on demand (ADR 0022). | §5.2, §5.3, §8.0, §13.3 |
+
+### 0.2 Changes in v0.3 (since v0.2)
 
 | # | Change | Sections |
 |---|---|---|
@@ -26,7 +36,7 @@
 | C11 | **Household settings.** Name, time zone and default language are deployment settings. The household time zone decides what "today" means. | §2.3, §9.1, §10.1 |
 | C12 | **Account events.** Changes to members and passwords are CloudEvents shown in Activity (ADR 0018). | §2.3, §3.2 |
 
-### 0.2 Changes in v0.2 (since v0.1)
+### 0.3 Changes in v0.2 (since v0.1)
 
 | # | Change | Sections |
 |---|---|---|
@@ -174,6 +184,8 @@ Postgres `LISTEN/NOTIFY` plus an outbox table in v1 (NATS optional later). Envel
 - `dataclass`: the event's data class (spelled without underscore because CloudEvents attribute names may contain only lower-case letters and digits),
 - `actorid`: the acting user or agent.
 
+From M2\*, an event caused by an assistant run also carries `agentrunid`, the run's id; `actorid` stays the person on whose behalf the run acted (ADR 0020).
+
 JSON bodies, DB columns and manifests keep the readable `data_class`. HA events are mirrored as `ha.state_changed` / `ha.event.<type>`.
 
 ### 3.3 Deployment topology
@@ -261,6 +273,7 @@ Optional:
 - `contributes`: `widgets[]` `{id, title, component | resource: "ui://…", default_size, min_size, roles}`, `pages[]`, `tools[]`, `skills[]`, `workflows[]`, `entities[]` (graph node types with JSON-LD context), `ha_entities[]`, `settings[]`, `commands[]`, `icons[]` (semantic icon names a plugin introduces, with a default SVG), `themes[]` `{id, file: "theme.json"}`.
 - `subscribes`: CloudEvents types, e.g. `ha.state_changed:sensor.water_meter_*`.
 - `tool_annotations`: `read_only`, `destructive`, `idempotent`, `open_world` (aligned with MCP and HA 2026.10's `llm.ToolAnnotations`). Undeclared tools are treated as destructive, write and open-world.
+- **Tools and skills (M2\*, ADR 0019, ADR 0023).** Each `contributes.tools[]` entry has `name` (`<plugin>.<verb>`, e.g. `tasks.create`; sent to models as `tasks_create`, because function names may not contain dots), `description` (English, written for models), `annotations`, `data_class`, `permission` (the action in the permission table) and `agent` (the author's switch: `false` keeps the tool away from agents; default `true`). The code registers the same tools through `hauskraft_sdk.tools.ToolSpec`, with Pydantic input and output models; core refuses to load a plugin whose manifest and code disagree. `contributes.skills[]` entries are `{id, path}` pointing at a `SKILL.md`, and `contributes.agent_guidance` is a short English text (at most 600 characters) that the system prompt includes while the plugin's tools are offered.
 - `verification`: per write tool, a `verify` tool + JSONPath assertion run by the gateway after the write.
 - `i18n`, `icons`, `min_ha_version`, `signing` `{sigstore_bundle | minisign_pubkey}`.
 
@@ -391,6 +404,19 @@ HA is truth for device state, presence and energy. The cockpit is truth for appr
 
 ## 8. Agent harness and governance specification (M1+)
 
+### 8.0 The M2\* harness (implemented first)
+M2\* builds the parts of this section that everything later stands on, and nothing more. §8.1–§8.9 stay the direction; each deferred item names its seam in `docs/backlog/m2-star/README.md` § Deferred.
+
+- **One assistant, Pydantic AI, one endpoint.** The owner sets an OpenAI-compatible **Chat Completions** endpoint (base URL, model, API key) in Settings → Assistant. Settings are keyed by purpose (`chat` now; `transcription`, `speech` and more models later). The key is encrypted at rest with AES-GCM under a key derived from `HAUSKRAFT_SECRET_KEY`; the API never returns it (ADR 0021).
+- **Tool registry.** Core collects every plugin's tools (§5.3) and selects a small set per run: only tools the person's role permits, the owner has not switched off, whose data class the endpoint may see (the ceiling defaults to `household`; full routing per §8.5 comes later), and that the running skill allows (ADR 0019).
+- **On behalf of a person.** Tools run with the person's permissions through the plugin's normal service functions, so `authorize()` and one event per write hold. Events carry `agentrunid`; Activity says "Mia via assistant …" (ADR 0020).
+- **Gate.** One function decides each call: `allow`, `confirm` or `deny`. In M2\*: tools outside the selected set are denied, `destructive` tools need confirmation in the chat, everything else is allowed. Reversible actions offer Undo instead of a question. The gate sees the run kind, channel and history, so a later risk classifier ("auto mode"), schedules (confirm becomes an approval request, §8.4) and voice can change the rule without changing callers.
+- **Runs.** A run is one agent execution with a state (`running`, `awaiting_confirmation`, `done`, `failed`), its messages, tool calls, gate decisions, `prompt_version` and token usage. A chat is a series of runs; scheduled runs later have no chat. Chats are private to the person who wrote them, kept until deleted.
+- **System prompt.** Short English prompt files in the repository: role, rules, each offered plugin's guidance, the running skill's instructions, then a context block (date and time in the household time zone, household name, the person's name, role and language, the active plugins). Stable parts come first so providers can cache them.
+- **Skills.** Declarative `SKILL.md` files contributed by plugins (ADR 0023): instructions, the allowed tools and the output (text or a JSON schema). A skill that reads untrusted text (for example pasted notes) gets no tools and returns typed output only, the reader rule of §8.1 in small.
+- **Usage.** Every model request records the person, run, model and tokens; owners see totals per day, member and model. Field names follow the OpenTelemetry conventions for generative AI so §8.9's export can be added. Limits come later.
+- **Evals.** Scripted models and a fake OpenAI-compatible server keep CI free and deterministic; real-model evals (Pydantic Evals) run on demand and report pass rates per dataset with the prompt and tool versions (ADR 0022).
+
 ### 8.1 Agents (Pydantic AI)
 
 | Agent | Role | Sees untrusted content? | Tools |
@@ -473,7 +499,7 @@ Hybrid Postgres full-text + pgvector (sqlite-vec on the add-on tier) with local 
 ## 10. Dashboard and UI specification
 
 ### 10.1 Information architecture
-*Today* (default), *Inbox* (approvals, documents to classify, extractions to confirm; M1+), domain pages (Home & Assets, Rentals, Money, Family, Food, Projects, Documents, Vehicles), *Activity*, global *Search*/command palette, *Settings* (in this order: Appearance, Account, Household, Members, later Plugins; Household and Members only for owners, §2.3). One navigation model (`NavModel`) defines the items, their order, labels and icons; every navigation style renders that same model.
+*Today* (default), *Inbox* (approvals, documents to classify, extractions to confirm; M1+), domain pages (Home & Assets, Rentals, Money, Family, Food, Projects, Documents, Vehicles), *Activity*, global *Search*/command palette, *Settings* (in this order: Appearance, Account, Household, Members, Assistant, later Plugins; Household, Members and Assistant only for owners, §2.3, §8.0). The *Assistant* side panel opens from a fixed shell button on every page once an owner has set up the assistant; it is part of the shell, so every theme renders it with the same functions. One navigation model (`NavModel`) defines the items, their order, labels and icons; every navigation style renders that same model.
 
 ### 10.2 Theming system
 
@@ -677,7 +703,8 @@ LAN-only by default; remote access via WireGuard/Tailscale (HA Cloud for HA). If
 
 - **M0\* Scaffolding MVP** (replaces M0). Monorepo, CI, Compose; core-api with local session auth (OIDC seam) and the role enum (only `adult` enabled); migrations; in-process plugin loader; native `tasks` plugin (shared list: title, done, optional due date; any adult may edit or delete any task); web shell with Today grid, All tasks page and Activity feed; CloudEvents outbox; `authorize()` no-op seam; theming system with three built-in themes, deployment-wide theme and per-device colour mode; en/de. **No** third-party integrations (HA counts as one; `NullBridge` only), gateway, agents, approvals, registry or signing. *AC:* the demo script in `docs/backlog/m0-star/README.md` (12 steps, automated in Playwright) and green CI. Detailed in 13 epics / 61 stories. **Done 2026-10-22.**
 - **M1\* Household basics** (C8). A real household installs Hauskraft without demo data, sets it up in the browser, brings in its members and runs its own accounts: first-run wizard; `owner` and `adult` roles through a static permission table behind `authorize()`; My account (profile, password, sessions); member management for owners; household settings (name, time zone, default language); sign-in polish; a settings area; account events in Activity (§2.3). **No** policy engine, approvals, gateway, MCP or agent skills, LLM routing, HA, OIDC, teen/kid roles, email, backup or release images. *AC:* the demo script in `docs/backlog/m1-star/README.md` (automated in Playwright), the M0* demo still passing, and green CI.
-- **Capability ladder (after M1\*).** The milestones below remain the direction. Their order and cut are re-planned one milestone at a time from the project backlog, starting with the open question of how plugins reach agents (§14).
+- **M2\* Agentic harness** (C13). Members chat with an assistant in a side panel that runs plugin tools on their behalf; skills turn pasted text into tasks and write a weekly overview; owners connect an OpenAI-compatible endpoint and see token usage; evals measure the harness. One tool contract and registry (§5.3, ADR 0019), a gate with confirmation for destructive tools, encrypted endpoint key, usage records. **No** schedules, approval inbox, risk classifier, budget limits, MCP server or client, streaming, voice, data-class routing or Cedar; each is listed with its seam in the backlog. *AC:* the demo script in `docs/backlog/m2-star/README.md` (automated in Playwright against a fake model), the M0\* and M1\* demos still passing, green CI, and one documented eval run against a real endpoint.
+- **Capability ladder (after M2\*).** The milestones below remain the direction. Their order and cut are re-planned one milestone at a time from the project backlog.
 - **M1 Governed gateway + HA bridge (3–5 wks):** MCP aggregation, Cedar behind `authorize()`, audit chain fed from the outbox, LiteLLM class routing, verify hooks; ha-bridge v0 replacing `NullBridge`; OIDC `IdentityProvider`; RBAC for owner/adult/teen/kid. *AC:* unpermitted write denied; approval calls appear in the inbox; tampering any audit row fails `hauskraft audit verify`; a `child` prompt with no local model fails closed; HA entity widget live.
 - **M2 MVP domains (4–6 wks):** Vikunja, Donetick, Paperless, Actual, Mealie, Grocy, CalDAV connectors; weekly briefing; HA integration v0. *AC:* Journey 1 runs end-to-end on a fixture household; approval via HA notification works; every item links to its source.
 - **M3 Deadlines + documents (3–4 wks):** reader extraction with provenance; contract deadlines; Wallos; HA calendar/todo publication. *AC:* ≥90% of notice dates correct across 20 fixture contracts after the confirmation UI; zero deadlines scheduled without confirmation.
@@ -721,6 +748,7 @@ Every story is built red → green → refactor (ADR-0014).
   serves ~40 KB/s, and that alone overran 8 minutes while the tests take ~20 seconds. The limit stops runaway jobs;
   it should not fail a PR because of a slow mirror. Running the job in the Playwright container image or caching the
   packages would bring it back to 8 (NIE-87).
+- **Agent behaviour is measured, not assumed (M2\*).** Scripted models and a fake OpenAI-compatible server test the harness deterministically in every CI run. Real-model evals run on demand: datasets per use case, repeated cases, pass-rate thresholds (100% for safety cases) and a report naming the model, prompt version and tool versions (ADR 0022).
 - **Docs are tested too.** `scripts/backlog_tools.py check` and `tests/meta/` keep the spec, backlog, story status and test coverage consistent.
 
 ### 13.4 Contribution model
@@ -739,9 +767,11 @@ DCO sign-off; ADRs for architecture changes; plugin quality tiers mirroring HA's
 9. **Licensing of closed in-process plugins** is unsettled: keep the SDK minimal and MIT; prefer out-of-process for closed plugins.
 10. **Theme expressiveness vs safety:** without custom CSS, some designs are impossible. Watch demand; any future custom-CSS tier needs sandboxing, a review tier and invariance tests.
 11. **Per-user/per-device themes** are deferred; the data model (`deployment_settings`) should not block adding `user_preferences.theme_id` later.
-12. **Scope creep:** hold the line on M0*, then the household basics (M1*), then gateway and HA, then M2 domains, rentals and governance.
+12. **Scope creep:** hold the line on M0*, then the household basics (M1*), then the agentic harness (M2*), then gateway and HA, then M2 domains, rentals and governance.
+16. **Confirmation fatigue.** Asking before every destructive call trains people to click yes. M2\* logs every gate decision so confirmation rates can be measured; a risk classifier (like an "auto mode") and the approval inbox build on the same gate (ADR 0020).
+17. **Model quality varies.** Tool calling on small or local models is unreliable, and every tool costs tokens on every request. Keep tool sets small per run, tools coarse and outputs compact (token budgets are tested), and check a model with the evals before relying on it.
 13. **Unverified items:** A2UI-style declarative UI standards; long-term stability of OpenProperty forks.
-14. **How plugins reach agents (open).** One Hauskraft MCP gateway that aggregates every plugin's tools, one MCP server per plugin behind the gateway, or agent skills (declarative prompt and tool bundles) on top of a smaller tool surface. To be decided in an ADR before any gateway work starts.
+14. **How plugins reach agents (decided, ADR 0019).** One tool contract and an in-core registry; skills on top; MCP as an adapter at the edges (exposing the registry to outside agents, wrapping outside MCP servers as tools). The gateway of §8.2 builds on the registry.
 15. **First visitor wins at setup.** Between `docker compose up` and finishing the wizard, anyone who can reach the port can claim the install (ADR 0017). The docs tell operators to finish setup right after starting the stack and to keep it on localhost or a trusted LAN until then.
 
 ## Appendix: decision log (since v0.1)
@@ -763,6 +793,12 @@ DCO sign-off; ADRs for architecture changes; plugin quality tiers mirroring HA's
 | D13 | First-run setup is a web wizard; the first visitor becomes owner, with no setup code (ADR 0017) | 2026-10-22 |
 | D14 | Changes to members and passwords are CloudEvents shown in Activity (ADR 0018) | 2026-10-22 |
 | D15 | CI job `unit-web` may run 15 minutes instead of 8, because its browser install depends on a slow apt mirror (§13.3); the 8-minute target stays | 2026-10-23 |
+| D16 | The milestone after M1\* is M2\* Agentic harness; schedules, the approval inbox, a risk classifier, budget limits, MCP, streaming, voice and data-class routing come later, and the design must not block them | 2026-10-24 |
+| D17 | Plugins expose tools through one contract and an in-core registry; skills sit on top; MCP is an adapter at the edges (ADR 0019) | 2026-10-24 |
+| D18 | The assistant acts with the person's permissions; events carry `agentrunid`; a swappable gate decides allow, confirm or deny, with confirmation for destructive tools in M2\* (ADR 0020) | 2026-10-24 |
+| D19 | The owner sets an OpenAI-compatible Chat Completions endpoint in the web UI; the key is AES-GCM-encrypted in the database (ADR 0021) | 2026-10-24 |
+| D20 | Owners and adults may use the assistant; tools are on by default and owners can switch them off; chats are private and kept until deleted | 2026-10-24 |
+| D21 | Evals in two layers: scripted and fake-model tests in every CI run, real-model evals on demand (ADR 0022); skills are `SKILL.md` bundles (ADR 0023) | 2026-10-24 |
 
 ## Sources (selected)
 - Design Tokens Format Module 2025.10 (first stable version): https://www.designtokens.org/ and https://www.w3.org/community/design-tokens/2025/10/28/design-tokens-specification-reaches-first-stable-version/

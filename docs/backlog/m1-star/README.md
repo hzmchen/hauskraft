@@ -3,7 +3,7 @@
 | | |
 |---|---|
 | Milestone | M1* (replaces the spec v0.2 M1 as the next milestone; spec C8, D11) |
-| Spec | `docs/spec/hauskraft-spec-v0.3.md` (§2.3 is the heart of this milestone) |
+| Spec | `docs/spec/hauskraft-spec-v0.4.md` (§2.3 is the heart of this milestone) |
 | Version | Backlog v0.1, 2026-10-22 (draft for review) |
 | Size | 10 epics, 35 stories (all S or M) |
 
@@ -170,7 +170,7 @@ As in M0* (`docs/backlog/m0-star/README.md`), plus:
 - **Both roles:** UI stories are checked as owner and as adult.
 
 ## Handing a story to an AI coding agent (prompt template)
-Use the M0* template with these paths: `docs/backlog/m1-star/README.md`, the epic file, `docs/spec/hauskraft-spec-v0.3.md`
+Use the M0* template with these paths: `docs/backlog/m1-star/README.md`, the epic file, `docs/spec/hauskraft-spec-v0.4.md`
 §2.3 plus the sections the story cites, ADRs 0006, 0007, 0016–0018, and `docs/testing/ui-contract.md` for UI stories.
 
 ## Decisions for this backlog

@@ -3,7 +3,7 @@
 | | |
 |---|---|
 | Milestone | M0* (replaces M0 in spec v0.1) |
-| Spec | `docs/spec/hauskraft-spec-v0.3.md` |
+| Spec | `docs/spec/hauskraft-spec-v0.4.md` |
 | Version | Backlog v0.2, 2026-10-12 |
 | Size | 13 epics, 61 stories (all S or M) |
 
@@ -150,7 +150,7 @@ Acceptance tests and fixtures under `tests/` belong to the spec, not to the stor
 ```text
 You are implementing story {ID} "{title}" in the Hauskraft monorepo.
 Read first: AGENTS.md, docs/backlog/m0-star/README.md, docs/backlog/m0-star/{epic file} (story {ID}),
-spec sections: {docs/spec/hauskraft-spec-v0.3.md §…}, ADRs: {list},
+spec sections: {docs/spec/hauskraft-spec-v0.4.md §…}, ADRs: {list},
 contracts: {packages/schemas/... | openapi paths | theme tokens}.
 Files you may touch: {paths}. Files you must NOT touch: anything outside these, and lockfiles unless adding a listed dependency.
 Acceptance criteria: {paste Given/When/Then}.
@@ -231,7 +231,7 @@ hauskraft/
   themes/template/                           # authoring starting point
   integrations/ha-hauskraft/README.md          (placeholder)
   deploy/compose/{compose.yaml,compose.test.yaml,Caddyfile,.env.example}   deploy/ha-addon/README.md (placeholder)
-  docs/spec/hauskraft-spec-v0.3.md  docs/adr/0001-…md … 0013-…md  docs/backlog/m0-star/*.md
+  docs/spec/hauskraft-spec-v0.4.md  docs/adr/0001-…md … 0013-…md  docs/backlog/m0-star/*.md
   docs/how-to-test.md  docs/themes.md
   fixtures/household/demo.json
   tests/                                     # spec-owned acceptance suite (MIT), committed before the code

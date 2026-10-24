@@ -4,9 +4,10 @@
 Hauskraft is a plugin-first, themeable household cockpit centred on Home Assistant. Core (AGPL-3.0-or-later):
 `services/core_api` (FastAPI) and `apps/web` (React). Everything plugin-facing is MIT: `packages/sdk-py`,
 `packages/sdk-ts`, `packages/ui`, `packages/schemas`, `plugins/official/*`, `themes/*`.
-Spec: [docs/spec/hauskraft-spec-v0.3.md](docs/spec/hauskraft-spec-v0.3.md).
-Current milestone: M1* Household basics — [docs/backlog/m1-star/README.md](docs/backlog/m1-star/README.md).
-Previous milestone (done): M0* — [docs/backlog/m0-star/README.md](docs/backlog/m0-star/README.md).
+Spec: [docs/spec/hauskraft-spec-v0.4.md](docs/spec/hauskraft-spec-v0.4.md).
+Current milestone: M2* Agentic harness — [docs/backlog/m2-star/README.md](docs/backlog/m2-star/README.md).
+Previous milestones (done): M1* — [docs/backlog/m1-star/README.md](docs/backlog/m1-star/README.md),
+M0* — [docs/backlog/m0-star/README.md](docs/backlog/m0-star/README.md).
 Testing: [docs/testing/README.md](docs/testing/README.md). Decisions: [docs/adr/](docs/adr/README.md).
 Nested `AGENTS.md` files in `apps/web`, `packages/ui`, `plugins/official/tasks` and `themes` add local rules.
 Do not implement anything listed as out of scope.
@@ -14,11 +15,11 @@ Do not implement anything listed as out of scope.
 ## How you work: red, green, refactor (non-negotiable)
 1. Pick one story. Read its epic file, the spec sections it cites and the ADRs.
 2. **Red.** Run its spec-owned acceptance tests in raw mode and watch them fail for the right reason:
-   `python -m pytest tests --story M1S-Exx-yy` (add `--live` with the stack running) and, for UI stories,
-   `HAUSKRAFT_TDD_RAW=1 pnpm --filter @hauskraft/acceptance-e2e exec playwright test --grep @M1S-Exx-yy`.
-   Then write the unit/integration tests for your code and watch them fail. Commit `test(M1S-Exx-yy): red …`.
-3. **Green.** Write the least code that makes every one of those tests pass. Commit `feat(M1S-Exx-yy): …`.
-4. **Refactor** with everything green. Commit `refactor(M1S-Exx-yy): …`.
+   `python -m pytest tests --story M2S-Exx-yy` (add `--live` with the stack running) and, for UI stories,
+   `HAUSKRAFT_TDD_RAW=1 pnpm --filter @hauskraft/acceptance-e2e exec playwright test --grep @M2S-Exx-yy`.
+   Then write the unit/integration tests for your code and watch them fail. Commit `test(M2S-Exx-yy): red …`.
+3. **Green.** Write the least code that makes every one of those tests pass. Commit `feat(M2S-Exx-yy): …`.
+4. **Refactor** with everything green. Commit `refactor(M2S-Exx-yy): …`.
 5. **Flip.** Set the story to `"green"` in `tests/story-status.json`, run
    `python scripts/backlog_tools.py coverage --write` and `python scripts/backlog_tools.py check`.
 6. Never edit, skip or delete anything under `tests/acceptance/`, `tests/e2e/` or `tests/fixtures/` to get to green.
@@ -38,6 +39,7 @@ Do not implement anything listed as out of scope.
    first and emits exactly one CloudEvent in the same transaction. No direct ORM writes from routers.
    (Session bookkeeping and language changes call `authorize()` but emit no event; member, password and household
    changes do emit events from M1*, ADR 0018.)
+   Assistant tool handlers (M2*) call those same service functions, acting as the person (ADR 0019, ADR 0020).
 2. Plugins import only `hauskraft_sdk` (Python) and `@hauskraft/sdk-ts` / `@hauskraft/ui` (web).
    Never `hauskraft_core` or `apps/web`.
 3. API contract = OpenAPI 3.1 generated from FastAPI. Change Pydantic models → run `just gen` → commit both.
@@ -47,7 +49,7 @@ Do not implement anything listed as out of scope.
    to the permission table behind `authorize()` (ADR 0016) and test the denial.
 7. Errors: problem+json with a stable `code`. User-facing strings: i18n keys in en AND de.
 8. No new dependency without updating the lockfile and stating why in the PR. Respect pins (TS ~6.0).
-9. Secrets never in code, logs or fixtures (except the documented demo password).
+9. Secrets never in code, logs or fixtures (except the documented demo password and the fake model's test key).
 
 ## Theming rules (non-negotiable)
 10. Function is fixed, presentation is swappable. A theme may never add, remove, reorder, rename, relabel or hide
@@ -68,8 +70,9 @@ Do not implement anything listed as out of scope.
 - Tests next to scope: unit (no I/O), integration (DB), contract (schemas/OpenAPI), e2e and invariance (Playwright).
 
 ## PR rules
-- One story per PR, title `[M1S-Exx-yy] …`, conventional commits, `git commit -s` (DCO).
-  M1* exception (decided 2026-10-23): one PR per wave of the backlog, title `[M1* wave N] …`.
+- One story per PR, title `[M2S-Exx-yy] …`, conventional commits, `git commit -s` (DCO).
+  Exception since M1* (decided 2026-10-23, kept for M2*): one PR per wave of the backlog, title `[M2* wave N] …`.
 - The PR shows the red commit before the green one, for every story in it.
 - Fill the PR template: AC checklist, tests run, screenshots in all three built-in themes for UI changes.
+- PRs that change a system prompt, a tool or a skill say whether evals were run (`just eval`, ADR 0022).
 - If an AC is ambiguous or conflicts with an ADR or the spec: stop and ask in the PR; do not invent scope.
