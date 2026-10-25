@@ -20,7 +20,7 @@ from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[1]
 BACKLOG_ROOT = REPO / "docs" / "backlog"
-SPEC = REPO / "docs" / "spec" / "hauskraft-spec-v0.3.md"
+SPEC = REPO / "docs" / "spec" / "hauskraft-spec-v0.4.md"
 STATUS = REPO / "tests" / "story-status.json"
 TRACE = REPO / "docs" / "testing" / "traceability.md"
 

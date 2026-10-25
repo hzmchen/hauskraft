@@ -2,7 +2,7 @@
 
 A Home Assistant–centred, plugin-first household cockpit: one themeable dashboard for a busy family, with governed AI help that prepares and drafts while people approve anything consequential. Self-hosted, local-first, open source.
 
-> **Status: M1\* "Household basics" is built.** M0\* (61 stories) delivered the scaffolding MVP; M1\* (35 stories, spec v0.3) makes Hauskraft usable by a real household: first-run setup in the browser, owner and adult roles, members, accounts and household settings. See [CHANGELOG.md](CHANGELOG.md). Hauskraft was called HearthOS until October 2026 (ADR 0015).
+> **Status: M1\* "Household basics" is built; M2\* "Agentic harness" is planned.** M0\* (61 stories) delivered the scaffolding MVP; M1\* (35 stories) makes Hauskraft usable by a real household: first-run setup in the browser, owner and adult roles, members, accounts and household settings. M2\* (38 stories, spec v0.4, [backlog](docs/backlog/m2-star/README.md)) adds an assistant that works with your tasks on your behalf. See [CHANGELOG.md](CHANGELOG.md). Hauskraft was called HearthOS until October 2026 (ADR 0015).
 
 ## Quick start
 
@@ -32,7 +32,7 @@ Hauskraft to your network with TLS, and recovery.
 
 | If you want to… | Read |
 |---|---|
-| Understand the product and architecture | [docs/spec/hauskraft-spec-v0.3.md](docs/spec/hauskraft-spec-v0.3.md) |
+| Understand the product and architecture | [docs/spec/hauskraft-spec-v0.4.md](docs/spec/hauskraft-spec-v0.4.md) |
 | See what M1\* delivers and in which order | [docs/backlog/m1-star/README.md](docs/backlog/m1-star/README.md) |
 | See what M0\* delivered | [docs/backlog/m0-star/README.md](docs/backlog/m0-star/README.md) |
 | Implement a story (human or AI agent) | [AGENTS.md](AGENTS.md), then the story's epic file |

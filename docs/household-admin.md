@@ -4,7 +4,7 @@
 
 This page is for whoever installs Hauskraft and looks after the household's accounts: setting it up, adding the family,
 helping someone who forgot their password, and getting back in if nobody can sign in. It covers M1\* ("Household
-basics"). The background is in [spec §2.3](spec/hauskraft-spec-v0.3.md) and ADRs
+basics"). The background is in [spec §2.3](spec/hauskraft-spec-v0.4.md) and ADRs
 [0016](adr/0016-static-role-permissions.md), [0017](adr/0017-first-run-setup.md) and
 [0018](adr/0018-account-events.md).
 

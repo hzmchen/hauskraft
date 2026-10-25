@@ -1,0 +1,7 @@
+{
+  "invalid": {
+    "changed-with-key-value.json": "data may hold only `changed`; a key value must never appear",
+    "changed-not-a-list.json": "`changed` is a list of field paths",
+    "changed-with-values.json": "`changed` lists field paths only, never values"
+  }
+}

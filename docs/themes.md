@@ -6,7 +6,7 @@ A theme changes how Hauskraft looks: colours, type, shapes, spacing, a few compo
 layout. It never changes what Hauskraft does. This guide takes you from a copy of the template to your theme being
 active in the household, in an evening, without reading any source code.
 
-Contract details live in the [spec, §10.2](spec/hauskraft-spec-v0.3.md#102-theming-system) and
+Contract details live in the [spec, §10.2](spec/hauskraft-spec-v0.4.md#102-theming-system) and
 [ADR-0013](adr/0013-theming.md). The machine-readable contract is in
 [`packages/schemas/theme/`](../packages/schemas/theme/).
 

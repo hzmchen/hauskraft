@@ -13,6 +13,23 @@ export const THEMES = {
   hackspace: "dev.hauskraft.theme.hackspace",
 } as const;
 
+/** The fake model (tests/fixtures/fake-llm/, M2S-E01-01): as the API container sees it, and as the tests see it. */
+export const FAKE_LLM_URL = process.env.HAUSKRAFT_FAKE_LLM_URL ?? "http://fake-llm:8090/v1";
+export const FAKE_LLM_ADMIN_URL = process.env.HAUSKRAFT_FAKE_LLM_ADMIN_URL ?? "http://localhost:8090";
+export const FAKE_KEY = "sk-hauskraft-fake-key-abcd";
+
+/** Requests the fake model received whose messages contain `contains`, oldest first. */
+export async function fakeRequests(contains: string): Promise<{ model: string; tools: string[]; messages: unknown[] }[]> {
+  const ctx = await request.newContext();
+  try {
+    const r = await ctx.get(`${FAKE_LLM_ADMIN_URL}/_requests`, { params: { contains } });
+    if (!r.ok()) throw new Error(`RED (M2S-E01-01): the fake model answered ${r.status()}`);
+    return r.json();
+  } finally {
+    await ctx.dispose();
+  }
+}
+
 export class Api {
   private constructor(
     readonly ctx: APIRequestContext,
@@ -125,6 +142,32 @@ export class Api {
 
   async logoutEverywhere(): Promise<void> {
     await this.ctx.post("auth/logout-everywhere", { headers: this.headers() });
+  }
+
+  // ---------------------------------------------------------------- M2* assistant (docs/backlog/m2-star/)
+  /** Point the assistant at the fake model (owner only). */
+  async configureAssistant(model = "fake-tools", apiKey = FAKE_KEY): Promise<void> {
+    const r = await this.ctx.patch("assistant/settings", {
+      data: { chat: { base_url: FAKE_LLM_URL, model, api_key: apiKey }, tools_disabled: [] },
+      headers: this.headers(),
+    });
+    if (!r.ok()) throw new Error(`RED (M2S-E03-02): cannot configure the assistant: ${r.status()} ${await r.text()}`);
+  }
+
+  async deleteTasksTitled(title: string): Promise<void> {
+    const r = await this.ctx.get("tasks", { params: { status: "all", limit: 100 } });
+    for (const t of (await r.json()).items as { id: string; title: string }[]) {
+      if (t.title === title) await this.deleteTask(t.id);
+    }
+  }
+
+  async layout(): Promise<unknown[]> {
+    return (await (await this.ctx.get("dashboard/today")).json()).layout;
+  }
+
+  async setLayout(layout: unknown[]): Promise<void> {
+    const r = await this.ctx.put("dashboard/today", { data: { layout }, headers: this.headers() });
+    if (!r.ok()) throw new Error(`cannot save the layout: ${r.status()} ${await r.text()}`);
   }
 
   async dispose(): Promise<void> {

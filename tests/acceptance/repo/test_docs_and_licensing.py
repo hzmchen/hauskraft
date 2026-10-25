@@ -18,7 +18,7 @@ story = pytest.mark.story
 def test_root_agents_md_is_short_and_linked() -> None:
     text = require_text("AGENTS.md", "M0S-E12-01")
     assert len(text.splitlines()) < 300
-    for link in ("docs/spec/hauskraft-spec-v0.3.md", "docs/backlog/m0-star/README.md", "docs/testing/README.md"):
+    for link in ("docs/spec/hauskraft-spec-v0.4.md", "docs/backlog/m0-star/README.md", "docs/testing/README.md"):
         assert link in text, f"AGENTS.md should link {link}"
     assert re.search(r"red", text, re.I) and re.search(r"green", text, re.I), "AGENTS.md must describe red/green TDD"
 

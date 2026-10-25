@@ -83,6 +83,9 @@ test.describe("visual baselines", () => {
   let dated: { id: string; due_on: string | null } | undefined;
   test.beforeAll(async () => {
     api = await Api.login("demo").catch(() => undefined as unknown as Api);
+    // The baselines show the app without an assistant: M2* adds shell and page controls once one is set up
+    // (M2S-E06-01, M2S-E06-05). Specs run one at a time, and the assistant specs set it up again themselves.
+    await api?.status("DELETE", "assistant/settings/chat").catch(() => undefined);
     dated = await api?.findTask("Take out recycling").catch(() => undefined);
     if (dated) await api.patchTask(dated.id, { due_on: FIXED_DUE });
   });

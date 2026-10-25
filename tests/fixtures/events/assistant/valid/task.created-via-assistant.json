@@ -1,0 +1,22 @@
+{
+  "specversion": "1.0",
+  "id": "019a1c20-2222-7b8a-9d40-2f6c1a0b7e03",
+  "source": "dev.hauskraft.tasks",
+  "type": "hauskraft.task.created",
+  "subject": "task/0199f3a0-5555-7aaa-8bbb-111111111111",
+  "time": "2026-10-24T10:01:00.000Z",
+  "datacontenttype": "application/json",
+  "dataschema": "https://hauskraft.dev/schema/events/task.created/v1.json",
+  "dataclass": "household",
+  "actorid": "0199f390-2222-7aaa-8bbb-cccccccccccc",
+  "agentrunid": "019a1c20-3333-7b8a-9d40-2f6c1a0b7e04",
+  "data": {
+    "task": {
+      "id": "0199f3a0-5555-7aaa-8bbb-111111111111",
+      "title": "Buy milk",
+      "done": false,
+      "due_on": "2026-10-25",
+      "version": 1
+    }
+  }
+}

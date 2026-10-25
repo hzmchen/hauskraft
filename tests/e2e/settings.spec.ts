@@ -19,7 +19,10 @@ test.describe("sections follow the role", () => {
     await login(page, "demo");
     await goNav(page, "Settings");
     await expect(page).toHaveURL(/\/settings\/appearance$/);
-    expect(await settingsSections(page)).toEqual(["Appearance", "Account", "Household", "Members"]);
+    // M2* adds "Assistant" after Members for owners (M2S-E07-01, tested in assistant.spec.ts).
+    expect((await settingsSections(page)).filter((s) => s !== "Assistant")).toEqual([
+      "Appearance", "Account", "Household", "Members",
+    ]);
     for (const section of ["Account", "Household", "Members", "Appearance"]) {
       await settingsNav(page).getByRole("link", { name: section, exact: true }).click();
       await expect(page.getByRole("heading", { level: 1, name: section })).toBeVisible();

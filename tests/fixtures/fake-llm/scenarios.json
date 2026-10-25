@@ -1,0 +1,82 @@
+{
+  "$comment": "SPDX-License-Identifier: MIT. Scripted answers of the fake model (tests/fixtures/fake-llm/README.md). The first scenario whose 'system' regex is found in the system prompt and whose 'match' regex matches the whole latest user message wins. Step n answers the request that follows n tool rounds since that message. Templates: {{g:name}} regex group, {{date:+N}} the context block's 'Today:' date plus N days, {{find:title}} the id of the item with that title in the latest tool results, {{titles}} the titles in the newest tool result, {{user}} the user message, {{null}} JSON null.",
+  "scenarios": [
+    {
+      "name": "add-from-text skill",
+      "system": "(?m)^Skill: tasks\\.add-from-text$",
+      "steps": [{"output_from_lines": true}]
+    },
+    {
+      "name": "weekly-overview skill",
+      "system": "(?m)^Skill: tasks\\.weekly-overview$",
+      "steps": [
+        {"call": [{"name": "tasks_list", "args": {"status": "open", "limit": 50}}]},
+        {"say": "This week: {{titles}}."}
+      ]
+    },
+    {
+      "name": "add a task due tomorrow",
+      "match": "Add '(?P<title>[^']+)', due tomorrow\\.?",
+      "steps": [
+        {"call": [{"name": "tasks_create", "args": {"title": "{{g:title}}", "due_on": "{{date:+1}}"}}]},
+        {"say": "Added '{{g:title}}', due {{date:+1}}."}
+      ]
+    },
+    {
+      "name": "add a task",
+      "match": "Add '(?P<title>[^']+)'\\.?",
+      "steps": [
+        {"call": [{"name": "tasks_create", "args": {"title": "{{g:title}}"}}]},
+        {"say": "Added '{{g:title}}'."}
+      ]
+    },
+    {
+      "name": "what is open",
+      "match": "What is still open\\??",
+      "steps": [
+        {"call": [{"name": "tasks_list", "args": {"status": "open", "limit": 50}}]},
+        {"say": "Still open: {{titles}}."}
+      ]
+    },
+    {
+      "name": "complete a task",
+      "match": "Mark '(?P<title>[^']+)' as done\\.?",
+      "steps": [
+        {"call": [{"name": "tasks_list", "args": {"status": "open", "limit": 50}}]},
+        {"call": [{"name": "tasks_update", "args": {"task_id": "{{find:{{g:title}}}}", "done": true}}]},
+        {"say": "Completed '{{g:title}}'."}
+      ]
+    },
+    {
+      "name": "rename a task",
+      "match": "Rename '(?P<old>[^']+)' to '(?P<new>[^']+)'\\.?",
+      "steps": [
+        {"call": [{"name": "tasks_list", "args": {"status": "all", "limit": 50}}]},
+        {"call": [{"name": "tasks_update", "args": {"task_id": "{{find:{{g:old}}}}", "title": "{{g:new}}"}}]},
+        {"say": "Renamed '{{g:old}}' to '{{g:new}}'."}
+      ]
+    },
+    {
+      "name": "delete a task",
+      "match": "Delete '(?P<title>[^']+)'\\.?",
+      "steps": [
+        {"call": [{"name": "tasks_list", "args": {"status": "all", "limit": 50}}]},
+        {"call": [{"name": "tasks_delete", "args": {"task_id": "{{find:{{g:title}}}}"}}]},
+        {"say": "Deleted '{{g:title}}'.", "say_denied": "I did not delete '{{g:title}}'."}
+      ]
+    },
+    {
+      "name": "complete an unknown task",
+      "match": "Complete the task with id (?P<id>[0-9a-f-]+)\\.?",
+      "steps": [
+        {"call": [{"name": "tasks_update", "args": {"task_id": "{{g:id}}", "done": true}}]},
+        {"say": "Completed it.", "say_failed": "That task doesn't exist."}
+      ]
+    },
+    {
+      "name": "greeting",
+      "match": "(Hello|Hallo)[!.]?",
+      "steps": [{"say": "Hello! How can I help?"}]
+    }
+  ]
+}

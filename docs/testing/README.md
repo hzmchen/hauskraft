@@ -16,7 +16,7 @@ Hauskraft is built test-first: **red, green, refactor**, one story at a time (AD
 
 Every test is tied to one or more backlog stories with `@pytest.mark.story("M1S-Exx-yy")` or Playwright tags (`story("M1S-Exx-yy")`). Meta tests carry `@pytest.mark.meta` instead and must always pass.
 
-Story IDs carry their milestone: `M0S-…` for M0* (`docs/backlog/m0-star/`, done) and `M1S-…` for M1* (`docs/backlog/m1-star/`). `scripts/backlog_tools.py` reads every `docs/backlog/m<N>-star/` folder, and `tests/story-status.json` holds the switch for all of them, so the stories of a finished milestone stay hard gates.
+Story IDs carry their milestone: `M0S-…` for M0* (`docs/backlog/m0-star/`, done), `M1S-…` for M1* (`docs/backlog/m1-star/`, done) and `M2S-…` for M2* (`docs/backlog/m2-star/`). `scripts/backlog_tools.py` reads every `docs/backlog/m<N>-star/` folder, and `tests/story-status.json` holds the switch for all of them, so the stories of a finished milestone stay hard gates.
 
 Fixtures in `tests/fixtures/` (manifests, events, theme packages, lockfiles, lint probes) are part of the contract. See `tests/fixtures/README.md`.
 
@@ -92,6 +92,24 @@ Tests marked `fresh` (pytest) and the specs that use `tests/e2e/support/fresh.ts
 `HAUSKRAFT_FRESH_BASE_URL` is set; otherwise they are skipped. `HAUSKRAFT_FRESH_RESET_CMD` is a shell command that
 leaves an empty, healthy fresh stack; tests run it before each first-run scenario. The fresh stack uses the same
 images as the demo stack, so build them first (`just demo`).
+
+### The fake model (M2*)
+
+Assistant tests never call a real provider. The test stack runs a small OpenAI-compatible server,
+`tests/fixtures/fake-llm/server.py`, that answers from scripted scenarios and records every request (M2S-E01-01,
+ADR 0022). Tests point the assistant at it and then check what the harness sent: the tools offered, the system prompt
+and the API key.
+
+```sh
+python tests/fixtures/fake-llm/server.py --port 8090   # or: the fake-llm service of compose.test.yaml
+HAUSKRAFT_FAKE_LLM_URL=http://fake-llm:8090/v1 HAUSKRAFT_FAKE_LLM_ADMIN_URL=http://localhost:8090 \
+  python -m pytest tests --live --strict-status
+```
+
+`HAUSKRAFT_FAKE_LLM_URL` is the URL the API container uses (what an owner enters in Settings → Assistant);
+`HAUSKRAFT_FAKE_LLM_ADMIN_URL` is the URL the tests use to read recorded requests. Its behaviour is described in
+`tests/fixtures/fake-llm/README.md`; `tests/meta/test_fake_llm.py` keeps it honest. Real-model evals are separate and
+run on demand (`just eval`, `evals/README.md`).
 
 ## Validating the docs
 

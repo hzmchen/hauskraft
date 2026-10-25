@@ -1,0 +1,146 @@
+{
+  "$schema": "../../../../../packages/schemas/manifest/hauskraft.plugin.schema.json",
+  "id": "dev.hauskraft.tasks",
+  "name": "Tasks",
+  "version": "0.1.0",
+  "type": [
+    "domain",
+    "widget"
+  ],
+  "hauskraft_api": "^0.1.0",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Hauskraft contributors"
+    }
+  ],
+  "source": "https://github.com/hzmchen/hauskraft/tree/main/plugins/official/tasks",
+  "runtime": {
+    "kind": "inprocess",
+    "entrypoint": "hauskraft_tasks.plugin:plugin",
+    "api_prefix": "/tasks",
+    "migrations": "backend/migrations/versions",
+    "web": "@hauskraft/plugin-tasks"
+  },
+  "capabilities": [
+    "graph:read:Task",
+    "graph:write:Task",
+    "events:emit:hauskraft.task.*"
+  ],
+  "data_classes": {
+    "reads": [
+      "household"
+    ],
+    "writes": [
+      "household"
+    ],
+    "emits": [
+      "household"
+    ]
+  },
+  "config_schema": {
+    "type": "object",
+    "properties": {},
+    "additionalProperties": false
+  },
+  "contributes": {
+    "widgets": [
+      {
+        "id": "tasks.list",
+        "title": "i18n:tasks:widget.title",
+        "component": "TasksWidget",
+        "default_size": {
+          "w": 4,
+          "h": 6
+        },
+        "min_size": {
+          "w": 3,
+          "h": 4
+        }
+      }
+    ],
+    "pages": [
+      {
+        "id": "tasks",
+        "title": "i18n:tasks:page.title",
+        "component": "TasksPage",
+        "nav": true,
+        "icon": "nav.tasks",
+        "nav_order": 20
+      }
+    ],
+    "entities": [
+      {
+        "type": "Task",
+        "data_class": "household"
+      }
+    ],
+    "icons": [],
+    "tools": [
+      {
+        "name": "tasks.list",
+        "description": "List household tasks, newest first. Use it to find a task's id before changing it.",
+        "annotations": {
+          "read_only": true,
+          "destructive": false,
+          "idempotent": true,
+          "open_world": false
+        },
+        "data_class": "household",
+        "permission": "task.read"
+      },
+      {
+        "name": "tasks.create",
+        "description": "Add a task with an optional due date (a calendar date in the household time zone).",
+        "annotations": {
+          "read_only": false,
+          "destructive": false,
+          "idempotent": false,
+          "open_world": false
+        },
+        "data_class": "household",
+        "permission": "task.create"
+      },
+      {
+        "name": "tasks.update",
+        "description": "Change a task's title, due date or done state.",
+        "annotations": {
+          "read_only": false,
+          "destructive": false,
+          "idempotent": true,
+          "open_world": false
+        },
+        "data_class": "household",
+        "permission": "task.update"
+      },
+      {
+        "name": "tasks.delete",
+        "description": "Delete a task for good. The app asks the person first.",
+        "annotations": {
+          "read_only": false,
+          "destructive": true,
+          "idempotent": true,
+          "open_world": false
+        },
+        "data_class": "household",
+        "permission": "task.delete"
+      }
+    ],
+    "settings": [],
+    "commands": [],
+    "themes": [],
+    "skills": [
+      {
+        "id": "add-from-text",
+        "path": "skills/add-from-text/SKILL.md"
+      },
+      {
+        "id": "weekly-overview",
+        "path": "skills/weekly-overview/SKILL.md"
+      }
+    ],
+    "agent_guidance": "Due dates are calendar dates in the household time zone. 'Tomorrow' is the context block's date plus one day."
+  },
+  "subscribes": [],
+  "$comment": "The tasks plugin's M2* contribution: four tools, two skills, agent guidance."
+}

@@ -6,6 +6,9 @@ Environment:
   HAUSKRAFT_DEMO_PASSWORD  default hauskraft-demo (seeded by M0S-E11-02)
   HAUSKRAFT_FRESH_BASE_URL  the unseeded stack for first-run tests (M1S-E01-01), e.g. http://localhost:8081
   HAUSKRAFT_FRESH_RESET_CMD  shell command that leaves an empty, healthy fresh stack (M1S-E01-01)
+  HAUSKRAFT_FAKE_LLM_URL  the fake model's base URL as the API container sees it (M2S-E01-01), default
+                          http://fake-llm:8090/v1
+  HAUSKRAFT_FAKE_LLM_ADMIN_URL  the fake model as the tests see it (recorded requests), default http://localhost:8090
 """
 
 from __future__ import annotations
@@ -27,6 +30,9 @@ DEMO_PASSWORD = os.environ.get("HAUSKRAFT_DEMO_PASSWORD", "hauskraft-demo")
 PROBLEM_JSON = "application/problem+json"
 FRESH_BASE_URL = os.environ.get("HAUSKRAFT_FRESH_BASE_URL", "http://localhost:8081").rstrip("/")
 FRESH_RESET_CMD = os.environ.get("HAUSKRAFT_FRESH_RESET_CMD", "")
+FAKE_LLM_URL = os.environ.get("HAUSKRAFT_FAKE_LLM_URL", "http://fake-llm:8090/v1").rstrip("/")
+FAKE_LLM_ADMIN_URL = os.environ.get("HAUSKRAFT_FAKE_LLM_ADMIN_URL", "http://localhost:8090").rstrip("/")
+FAKE_KEY = "sk-hauskraft-fake-key-abcd"  # a test key for the fake model; its hint is "abcd"
 # Passwords used for throwaway accounts (M1*): all meet the 12-character policy.
 TEMP_PASSWORD = "temporary-pass-1234"
 MEMBER_PASSWORD = "member-chosen-pass-5678"
@@ -167,3 +173,56 @@ def reset_fresh_stack() -> None:
             pass
         time.sleep(2)
     pytest.fail("the fresh stack did not come back empty after HAUSKRAFT_FRESH_RESET_CMD", pytrace=False)
+
+
+# ---------------------------------------------------------------- M2*: the fake model (tests/fixtures/fake-llm/)
+def fake_requests(contains: str = "", limit: int = 100) -> list[dict[str, Any]]:
+    """Requests the fake model received whose messages contain ``contains``, oldest first."""
+    try:
+        r = httpx.get(f"{FAKE_LLM_ADMIN_URL}/_requests", params={"contains": contains, "limit": limit}, timeout=5)
+    except httpx.HTTPError as exc:
+        pytest.fail(f"RED (M2S-E01-01): no fake model at {FAKE_LLM_ADMIN_URL} ({exc.__class__.__name__}); start the "
+                    "test stack with the fake-llm service", pytrace=False)
+    assert r.status_code == 200, r.text
+    return r.json()
+
+
+def system_prompt(record: dict[str, Any]) -> str:
+    """The system message text of a recorded request."""
+    parts = []
+    for m in record["messages"]:
+        if m.get("role") in ("system", "developer"):
+            c = m.get("content")
+            parts.append(c if isinstance(c, str) else "\n".join(p.get("text", "") for p in c or []))
+    return "\n".join(parts)
+
+
+def configure_fake(owner: Api, model: str = "fake-tools", api_key: str = FAKE_KEY, **chat: Any) -> dict[str, Any]:
+    """Point the assistant at the fake model (owner only) and return the settings."""
+    body = {"chat": {"base_url": FAKE_LLM_URL, "model": model, "api_key": api_key, **chat}}
+    r = owner.patch("/assistant/settings", json=body)
+    if r.status_code != 200:
+        pytest.fail(f"RED (M2S-E03-02): PATCH /assistant/settings answered {r.status_code}: {r.text[:200]}",
+                    pytrace=False)
+    return r.json()
+
+
+def new_chat(api: Api) -> str:
+    r = api.post("/assistant/conversations")
+    if r.status_code != 201:
+        pytest.fail(f"RED (M2S-E04-01): POST /assistant/conversations answered {r.status_code}: {r.text[:200]}",
+                    pytrace=False)
+    return r.json()["id"]
+
+
+def say(api: Api, conversation_id: str, text: str) -> dict[str, Any]:
+    """Send a chat message and return the RunResult (fails the test on a non-200 answer)."""
+    r = api.post(f"/assistant/conversations/{conversation_id}/messages", json={"text": text}, timeout=90)
+    assert r.status_code == 200, f"{r.status_code}: {r.text[:300]}"
+    return r.json()
+
+
+def tasks_titled(api: Api, title: str) -> list[dict[str, Any]]:
+    items = api.get("/tasks", params={"status": "all", "limit": 100}).json()["items"]
+    return [t for t in items if t["title"] == title]
+

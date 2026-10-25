@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: MIT
 """The theme contract v1 as the acceptance suite expects it.
 
-Source of truth for humans: docs/spec/hauskraft-spec-v0.3.md §10.2 and
+Source of truth for humans: docs/spec/hauskraft-spec-v0.4.md §10.2 and
 docs/backlog/m0-star/E13-theming-system.md ("Contracts"). The machine-readable files
 in packages/schemas/theme/ (M0S-E13-01) must agree with this module; a test checks that.
 """
