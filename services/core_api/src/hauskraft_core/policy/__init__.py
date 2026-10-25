@@ -56,6 +56,7 @@ PERMISSIONS: Mapping[str, frozenset[str]] = {
     "session.revoke": _BOTH,
     "user.update_self": _BOTH,
     "user.change_password": _BOTH,
+    "assistant.use": _BOTH,
     "settings.theme.set": _OWNER,
     "settings.household.set": _OWNER,
     "plugin.toggle": _OWNER,
@@ -65,6 +66,8 @@ PERMISSIONS: Mapping[str, frozenset[str]] = {
     "user.deactivate": _OWNER,
     "user.reactivate": _OWNER,
     "user.reset_password": _OWNER,
+    "assistant.configure": _OWNER,
+    "assistant.usage.read": _OWNER,
 }
 """Which roles may do what (spec §2.3). Actions that are not listed are denied."""
 
