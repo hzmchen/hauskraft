@@ -23,11 +23,11 @@ Hauskraft records architecture decisions as [MADR 4](https://adr.github.io/madr/
 | [0016](0016-static-role-permissions.md) | Static role permission table behind `authorize()` for M1* | Accepted |
 | [0017](0017-first-run-setup.md) | First-run setup in the browser: the first visitor becomes owner | Accepted |
 | [0018](0018-account-events.md) | Account changes are CloudEvents | Accepted |
-| [0019](0019-tool-contract-and-registry.md) | One tool contract and an in-core registry; MCP at the edges | Proposed |
-| [0020](0020-assistant-acts-on-behalf.md) | The assistant acts on behalf of a person, through a swappable gate | Proposed |
-| [0021](0021-assistant-endpoint-and-key.md) | Owner-configured Chat Completions endpoint with the key encrypted at rest | Proposed |
-| [0022](0022-evals-in-two-layers.md) | Evals in two layers: free scripted tests in CI, real-model evals on demand | Proposed |
-| [0023](0023-skill-format.md) | Skills are `SKILL.md` bundles contributed by plugins | Proposed |
+| [0019](0019-tool-contract-and-registry.md) | One tool contract and an in-core registry; MCP at the edges | Accepted |
+| [0020](0020-assistant-acts-on-behalf.md) | The assistant acts on behalf of a person, through a swappable gate | Accepted |
+| [0021](0021-assistant-endpoint-and-key.md) | Owner-configured Chat Completions endpoint with the key encrypted at rest | Accepted |
+| [0022](0022-evals-in-two-layers.md) | Evals in two layers: free scripted tests in CI, real-model evals on demand | Accepted |
+| [0023](0023-skill-format.md) | Skills are `SKILL.md` bundles contributed by plugins | Accepted |
 
 ## Writing a new ADR
 
