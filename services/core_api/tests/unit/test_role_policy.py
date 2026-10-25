@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
-"""M1S-E02-01: the static role permission table behind ``authorize()`` (ADR 0016, spec §2.3)."""
+"""M1S-E02-01, M2S-E03-01: the static role permission table behind ``authorize()`` (ADR 0016, spec §2.3)."""
 
 import pytest
 
@@ -21,6 +21,7 @@ BOTH = [
     "session.revoke",
     "user.update_self",
     "user.change_password",
+    "assistant.use",
 ]
 OWNER_ONLY = [
     "settings.theme.set",
@@ -32,6 +33,8 @@ OWNER_ONLY = [
     "user.deactivate",
     "user.reactivate",
     "user.reset_password",
+    "assistant.configure",
+    "assistant.usage.read",
 ]
 SYSTEM_ONLY = ["plugin.sync", "setup.complete"]
 
