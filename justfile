@@ -102,6 +102,10 @@ demo:
 fresh-up:
     docker compose -p hauskraft-fresh -f compose.yaml -f deploy/compose/compose.fresh.yaml up --wait
 
+# Forget the fake model's recorded requests (the test stack's fake-llm service, M2S-E01-01)
+fake-llm-reset:
+    curl -fsS -X POST http://localhost:8090/_reset
+
 # Empty the fresh stack: remove its containers and database volume, then start it again
 fresh-reset:
     docker compose -p hauskraft-fresh -f compose.yaml -f deploy/compose/compose.fresh.yaml down -v
