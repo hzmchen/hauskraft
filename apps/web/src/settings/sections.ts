@@ -6,7 +6,8 @@ export interface SettingsSection {
   id: string;
   /** i18n key of the section name, which is also its page's level-1 heading. */
   labelKey: string;
-  href: "/settings/appearance" | "/settings/account" | "/settings/household" | "/settings/members";
+  href:
+    "/settings/appearance" | "/settings/account" | "/settings/household" | "/settings/members" | "/settings/assistant";
   /** The permission the section needs; none means everyone. */
   requires?: string;
 }
@@ -16,6 +17,7 @@ export const SETTINGS_SECTIONS: readonly SettingsSection[] = [
   { id: "account", labelKey: "settings.account", href: "/settings/account" },
   { id: "household", labelKey: "settings.household", href: "/settings/household", requires: "settings.household.set" },
   { id: "members", labelKey: "settings.members", href: "/settings/members", requires: "user.list" },
+  { id: "assistant", labelKey: "settings.assistant", href: "/settings/assistant", requires: "assistant.configure" },
 ];
 
 export function visibleSections(permissions: readonly string[]): SettingsSection[] {
