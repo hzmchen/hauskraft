@@ -7,12 +7,13 @@ import { prefetchTasks } from "./api";
 import de from "./locales/de/tasks.json";
 import en from "./locales/en/tasks.json";
 import { TasksPage } from "./pages/TasksPage";
+import { OverviewWidget } from "./widgets/OverviewWidget";
 import { TasksWidget } from "./widgets/TasksWidget";
 
 export const pluginId = "dev.hauskraft.tasks";
 
 export default definePluginWeb({
-  widgets: { "tasks.list": TasksWidget },
+  widgets: { "tasks.list": TasksWidget, "tasks.overview": OverviewWidget },
   pages: { TasksPage },
   locales: { en, de },
   prefetch: prefetchTasks,

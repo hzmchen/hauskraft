@@ -44,6 +44,19 @@
           "w": 3,
           "h": 4
         }
+      },
+      {
+        "id": "tasks.overview",
+        "title": "i18n:tasks:overview.title",
+        "component": "OverviewWidget",
+        "default_size": {
+          "w": 4,
+          "h": 4
+        },
+        "min_size": {
+          "w": 3,
+          "h": 3
+        }
       }
     ],
     "pages": [
