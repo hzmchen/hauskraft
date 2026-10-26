@@ -100,6 +100,7 @@ def run(args: argparse.Namespace) -> int:
 
 
 def main(argv: list[str] | None = None) -> int:
+    os.environ.setdefault("PYDANTIC_AI_NO_BANNER", "1")  # the report is the output
     parser = argparse.ArgumentParser(prog="just eval", description=__doc__)
     sub = parser.add_subparsers(dest="command", required=True)
     p_run = sub.add_parser("run", help="run datasets against the endpoint from the environment")
