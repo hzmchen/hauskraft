@@ -172,3 +172,81 @@ def test_theme_manifests_go_to_the_theme_registry_without_imports(tmp_path: Path
 def test_core_context_satisfies_the_sdk_protocol(tmp_path: Path) -> None:
     ctx = CorePluginContext("org.example.x", {"capabilities": [], "data_classes": {}}, _app(tmp_path))
     assert isinstance(ctx, PluginContext)
+
+
+# ---------------------------------------------------------------- M2S-E02-02: tools in the manifest and in code
+TOOL_CODE = """
+from fastapi import APIRouter
+from pydantic import BaseModel
+from hauskraft_sdk import PluginRegistration
+from hauskraft_sdk.tools import ToolAnnotations, ToolOutcome, ToolSpec
+
+class Args(BaseModel):
+    text: str
+
+async def handle(ctx, actor, args):
+    return ToolOutcome(output={{"echo": args.text}})
+
+class _Plugin:
+    id = "{plugin_id}"
+
+    def register(self, ctx):
+        return PluginRegistration(router=APIRouter(), tools=[{tools}])
+
+plugin = _Plugin()
+"""
+ECHO = (
+    'ToolSpec(name="{{short}}.echo", description="Echo the text.", input_model=Args, handler=handle, '
+    'annotations=ToolAnnotations(read_only=True, destructive=False, idempotent=True, open_world=False), '
+    'permission="task.read", data_class="household")'
+)
+ECHO_MANIFEST = {
+    "description": "Echo the text.",
+    "annotations": {"read_only": True, "destructive": False, "idempotent": True, "open_world": False},
+    "permission": "task.read",
+    "data_class": "household",
+}
+
+
+def test_tools_matching_the_manifest_are_registered(tmp_path: Path, plugin_dir: Callable[..., str]) -> None:
+    pid = plugin_dir(prefix="/echo", code=TOOL_CODE.replace("{tools}", ECHO), contributes={
+        "widgets": [], "pages": [], "tools": [{"name": "SHORT.echo", **ECHO_MANIFEST}]})
+    _fix_short_names(tmp_path, pid)
+    app = _app(tmp_path)
+    loaded = app.state.plugins[pid]
+    assert loaded.load_error is None, loaded.load_error
+    short = pid.rsplit(".", 1)[1]
+    assert [t.name for t in loaded.registration.tools] == [f"{short}.echo"]
+    assert f"{short}.echo" in app.state.tool_names
+
+
+def test_a_tool_missing_from_the_manifest_is_a_load_error(tmp_path: Path, plugin_dir: Callable[..., str]) -> None:
+    pid = plugin_dir(prefix="/echo2", code=TOOL_CODE.replace("{tools}", ECHO))
+    _fix_short_names(tmp_path, pid)
+    app = _app(tmp_path)
+    assert "echo" in (app.state.plugins[pid].load_error or "")
+
+
+def test_annotations_must_agree(tmp_path: Path, plugin_dir: Callable[..., str]) -> None:
+    pid = plugin_dir(prefix="/echo3", code=TOOL_CODE.replace("{tools}", ECHO), contributes={
+        "widgets": [], "pages": [], "tools": [{"name": "SHORT.echo", **ECHO_MANIFEST, "annotations": {}}]})
+    _fix_short_names(tmp_path, pid)
+    app = _app(tmp_path)
+    assert "annotations" in (app.state.plugins[pid].load_error or "")
+
+
+def test_hidden_manifest_tools_need_no_code(tmp_path: Path, plugin_dir: Callable[..., str]) -> None:
+    pid = plugin_dir(prefix="/echo4", contributes={
+        "widgets": [], "pages": [], "tools": [{"name": "SHORT.reindex", "agent": False}]})
+    _fix_short_names(tmp_path, pid)
+    assert _app(tmp_path).state.plugins[pid].load_error is None
+
+
+def _fix_short_names(tmp_path: Path, pid: str) -> None:
+    """Replace the placeholders with the generated plugin's short name, in its manifest and its code."""
+    short = pid.rsplit(".", 1)[1]
+    manifest = tmp_path / "plugins" / pid / "hauskraft.plugin.json"
+    manifest.write_text(manifest.read_text().replace("SHORT.", f"{short}."))
+    code = tmp_path / "py" / f"{pid.replace('.', '_')}.py"
+    if code.exists():
+        code.write_text(code.read_text().replace("{short}", short))
