@@ -69,7 +69,8 @@ async def settings_update(
             chat=body.chat.sent() if body.chat else None,
             tools_disabled=body.tools_disabled,
             prices=body.prices.sent() if body.prices else None,
-            known_tools=getattr(request.app.state, "tool_names", None),
+            # Unknown names are refused once any plugin registers tools (until then, any <plugin>.<verb> name).
+            known_tools=getattr(request.app.state, "tool_names", None) or None,
         )
     return AssistantSettings.of(config)
 
