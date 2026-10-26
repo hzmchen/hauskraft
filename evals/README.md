@@ -26,10 +26,11 @@ Optional settings:
 - `HAUSKRAFT_EVAL_PRICE_INPUT` and `HAUSKRAFT_EVAL_PRICE_OUTPUT` (per million tokens) add an estimated cost.
 - `HAUSKRAFT_TEST_DATABASE_URL` uses an existing, disposable database instead of a Testcontainers Postgres.
 
-**Cost:** a full run makes about 40 cases × 3 runs, each one to five model requests with roughly 2,000 to 4,000
-tokens. With a small model that's cents; with a large one, a few euros. Use `--repeat 1` and dataset names while
-iterating, and the token cap as a safety net. Prefer an account with zero data retention: evals send only the
-made-up households in the datasets, but they still leave your machine.
+**Cost:** a full run is about 40 cases × 3 runs, each one to four model requests of roughly 1,500 tokens: about
+400,000 tokens in all. With a small model that's cents; with a large one, a few euros. The default token cap of
+200,000 suits iterating on a dataset or two with `--repeat 1`; for a full run set `HAUSKRAFT_EVAL_MAX_TOKENS=600000`.
+Prefer an account with zero data retention: evals send only the made-up households in the datasets, but they still
+leave your machine.
 
 The runner starts the app in-process on a fresh database, with an owner and an adult, and talks to it through the API.
 Before each run of a case it resets the household to the case's fixture and fixes the prompt's "Today" to the

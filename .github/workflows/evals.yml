@@ -15,6 +15,10 @@ on:
         description: "Runs per case (empty: each dataset's repeat)"
         required: false
         default: ""
+      max_tokens:
+        description: "Token cap for the run (empty: 200,000; a full run needs about 600,000)"
+        required: false
+        default: ""
 
 permissions:
   contents: read
@@ -36,6 +40,7 @@ jobs:
           HAUSKRAFT_EVAL_MODEL: ${{ secrets.HAUSKRAFT_EVAL_MODEL }}
           DATASETS: ${{ inputs.datasets }}
           REPEAT: ${{ inputs.repeat }}
+          HAUSKRAFT_EVAL_MAX_TOKENS: ${{ inputs.max_tokens }}
         run: |
           set -f  # dataset names are words, never globs
           args=()
