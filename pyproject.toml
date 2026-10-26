@@ -63,8 +63,8 @@ known-first-party = ["hauskraft_core", "hauskraft_sdk", "hauskraft_tasks"]
 python_version = "3.13"
 strict = true
 plugins = ["pydantic.mypy"]
-mypy_path = ["services/core_api/src", "packages/sdk-py/src", "plugins/official/tasks/backend/src"]
-files = ["services/core_api/src", "packages/sdk-py/src", "plugins/official/tasks/backend/src"]
+mypy_path = ["services/core_api/src", "packages/sdk-py/src", "plugins/official/tasks/backend/src", "evals"]
+files = ["services/core_api/src", "packages/sdk-py/src", "plugins/official/tasks/backend/src", "evals/hauskraft_evals"]
 
 [[tool.mypy.overrides]]
 module = ["semantic_version"]
@@ -80,7 +80,9 @@ warn_required_dynamic_aliases = true
 # run separately from the spec-owned suite in tests/, whose conftest requires story markers.
 [tool.pytest.ini_options]
 # `uv run pytest` without arguments runs the package tests; the spec-owned suite runs as `pytest tests`.
-testpaths = ["services", "packages", "plugins"]
+testpaths = ["services", "packages", "plugins", "evals"]
+# The eval runner (M2S-E09-01) is a plain package next to its datasets, not a workspace member.
+pythonpath = ["evals"]
 asyncio_mode = "auto"
 asyncio_default_fixture_loop_scope = "function"
 markers = [

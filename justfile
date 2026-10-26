@@ -4,7 +4,7 @@
 set shell := ["bash", "-euo", "pipefail", "-c"]
 
 # Python test roots next to their code (the spec-owned suite in tests/ runs via `just acceptance`).
-py_tests := "services/core_api/tests packages/sdk-py/tests plugins/official/tasks/backend/tests"
+py_tests := "services/core_api/tests packages/sdk-py/tests plugins/official/tasks/backend/tests evals/tests"
 
 # List recipes
 default:
