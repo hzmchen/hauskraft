@@ -116,7 +116,17 @@
     "settings": [],
     "commands": [],
     "themes": [],
-    "agent_guidance": "Tasks are the household's shared to-do list. Due dates are calendar dates in the household time zone (the context block's 'Today:' line); 'tomorrow' is that date plus one day. Find a task's id with tasks.list before changing it; never guess ids."
+    "agent_guidance": "Tasks are the household's shared to-do list. Due dates are calendar dates in the household time zone (the context block's 'Today:' line); 'tomorrow' is that date plus one day. Find a task's id with tasks.list before changing it; never guess ids.",
+    "skills": [
+      {
+        "id": "add-from-text",
+        "path": "skills/add-from-text/SKILL.md"
+      },
+      {
+        "id": "weekly-overview",
+        "path": "skills/weekly-overview/SKILL.md"
+      }
+    ]
   },
   "subscribes": []
 }
