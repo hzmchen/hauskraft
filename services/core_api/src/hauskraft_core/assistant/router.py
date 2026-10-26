@@ -26,6 +26,9 @@ from hauskraft_core.assistant.schemas import (
     MessageOut,
     RunOut,
     RunResult,
+    SkillInfo,
+    SkillRun,
+    SkillRunIn,
     ToolInfo,
     Usage,
     UsageGroup,
@@ -256,3 +259,38 @@ async def usage_read(
             "groups": [UsageGroup(**vars(g)) for g in data.groups],
         }
     )
+
+
+# ---------------------------------------------------------------- skills (M2S-E05-01, -02)
+@router.get("/skills", responses={401: {}, 403: {}})
+async def skills_list(request: Request, resolved: CurrentSession) -> list[SkillInfo]:
+    await require(request, resolved[1], "assistant.use")
+    harness = Harness.of(request.app.state)
+    return [
+        SkillInfo(
+            id=s.id,
+            plugin_id=s.plugin_id,
+            name=s.name,
+            description=s.description,
+            tools=list(s.tools),
+            output="text" if s.output_kind == "text" else "json",
+        )
+        for s in sorted(harness.skills.values(), key=lambda s: s.id)
+        if s.plugin_id not in harness.disabled_plugins
+    ]
+
+
+@router.post("/skills/{skill_id}/runs", responses={401: {}, 403: {}, 404: {}, 409: {}, 422: {}})
+async def skills_run(skill_id: str, body: SkillRunIn, request: Request, resolved: CurrentSession) -> SkillRun:
+    """Run a skill as the caller with exactly its tools; returns its text or structured output."""
+    await require(request, resolved[1], "assistant.use")
+    data = await Harness.of(request.app.state).run_skill(resolved[1], skill_id, body.input.text)
+    return SkillRun(run=RunOut.model_validate(data.run), output=data.output, created_at=data.run.created_at)
+
+
+@router.get("/skills/{skill_id}/runs/latest", responses={401: {}, 403: {}, 404: {}})
+async def skills_latest(skill_id: str, request: Request, resolved: CurrentSession) -> SkillRun:
+    """The caller's last successful run of this skill."""
+    await require(request, resolved[1], "assistant.use")
+    run = await Harness.of(request.app.state).latest_skill_run(resolved[1], skill_id)
+    return SkillRun(run=RunOut.model_validate(run), output=run.output, created_at=run.created_at)

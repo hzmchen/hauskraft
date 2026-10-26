@@ -1978,6 +1978,105 @@
         "title": "SetupStatus",
         "type": "object"
       },
+      "SkillInfo": {
+        "additionalProperties": false,
+        "properties": {
+          "description": {
+            "title": "Description",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "output": {
+            "enum": [
+              "text",
+              "json"
+            ],
+            "title": "Output",
+            "type": "string"
+          },
+          "plugin_id": {
+            "title": "Plugin Id",
+            "type": "string"
+          },
+          "tools": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Tools",
+            "type": "array"
+          }
+        },
+        "required": [
+          "id",
+          "plugin_id",
+          "name",
+          "description",
+          "tools",
+          "output"
+        ],
+        "title": "SkillInfo",
+        "type": "object"
+      },
+      "SkillInput": {
+        "additionalProperties": false,
+        "properties": {
+          "text": {
+            "anyOf": [
+              {
+                "maxLength": 20000,
+                "pattern": "^[^\\x00]*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Text"
+          }
+        },
+        "title": "SkillInput",
+        "type": "object"
+      },
+      "SkillRun": {
+        "additionalProperties": false,
+        "properties": {
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "output": {
+            "title": "Output"
+          },
+          "run": {
+            "$ref": "#/components/schemas/RunOut"
+          }
+        },
+        "required": [
+          "run",
+          "output",
+          "created_at"
+        ],
+        "title": "SkillRun",
+        "type": "object"
+      },
+      "SkillRunIn": {
+        "additionalProperties": false,
+        "properties": {
+          "input": {
+            "$ref": "#/components/schemas/SkillInput"
+          }
+        },
+        "title": "SkillRunIn",
+        "type": "object"
+      },
       "Swatches": {
         "additionalProperties": false,
         "properties": {
@@ -3244,6 +3343,147 @@
           }
         },
         "summary": "Settings Test",
+        "tags": [
+          "assistant"
+        ]
+      }
+    },
+    "/api/v1/assistant/skills": {
+      "get": {
+        "operationId": "assistant_skills_list",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/SkillInfo"
+                  },
+                  "title": "Response Assistant Skills List",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "summary": "Skills List",
+        "tags": [
+          "assistant"
+        ]
+      }
+    },
+    "/api/v1/assistant/skills/{skill_id}/runs": {
+      "post": {
+        "description": "Run a skill as the caller with exactly its tools; returns its text or structured output.",
+        "operationId": "assistant_skills_run",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "skill_id",
+            "required": true,
+            "schema": {
+              "title": "Skill Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SkillRunIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SkillRun"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "409": {
+            "description": "Conflict"
+          },
+          "422": {
+            "description": "Unprocessable Content"
+          }
+        },
+        "summary": "Skills Run",
+        "tags": [
+          "assistant"
+        ]
+      }
+    },
+    "/api/v1/assistant/skills/{skill_id}/runs/latest": {
+      "get": {
+        "description": "The caller's last successful run of this skill.",
+        "operationId": "assistant_skills_latest",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "skill_id",
+            "required": true,
+            "schema": {
+              "title": "Skill Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SkillRun"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Skills Latest",
         "tags": [
           "assistant"
         ]

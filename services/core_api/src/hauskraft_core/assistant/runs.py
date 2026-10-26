@@ -25,6 +25,7 @@ from pydantic_ai import (
     ModelMessagesTypeAdapter,
     ModelRetry,
     RunContext,
+    StructuredDict,
     Tool,
     ToolDenied,
     UsageLimits,
@@ -46,6 +47,7 @@ from hauskraft_core.assistant.endpoint import chat_model, model_settings, requir
 from hauskraft_core.assistant.prompt import PromptContext, prompt_version, render
 from hauskraft_core.assistant.registry import RegisteredTool, ToolRegistry, tools_hash
 from hauskraft_core.assistant.settings import AssistantConfig, read_config
+from hauskraft_core.assistant.skills import Skill
 from hauskraft_core.db.models import (
     AssistantAction,
     AssistantMessage,
@@ -192,7 +194,9 @@ def _usage(response: ModelResponse, user: User, run: AssistantRun, kind: str) ->
     )
 
 
-def _error_code(exc: BaseException) -> str:
+def _error_code(exc: BaseException, *, structured: bool = False) -> str:
+    if structured and isinstance(exc, UnexpectedModelBehavior):
+        return "invalid_output"
     if isinstance(exc, UsageLimitExceeded):
         return "run_limit"
     if isinstance(exc, (RunTimedOut, asyncio.TimeoutError, TimeoutError)):
@@ -210,10 +214,17 @@ class Harness:
     settings: Any
     registry: ToolRegistry
     disabled_plugins: set[str]
+    skills: dict[str, Skill] = field(default_factory=dict)
 
     @classmethod
     def of(cls, state: Any) -> Harness:
-        return cls(state.sessionmaker, state.settings, state.tool_registry, state.disabled_plugins)
+        return cls(
+            state.sessionmaker,
+            state.settings,
+            state.tool_registry,
+            state.disabled_plugins,
+            getattr(state, "skills", {}),
+        )
 
     # ------------------------------------------------------------------ helpers
     async def _prompt(
@@ -287,7 +298,7 @@ class Harness:
             except (ModelAPIError, UnexpectedModelBehavior, UsageLimitExceeded, RunTimedOut, TimeoutError) as exc:
                 _log.info("assistant.run_failed", run_id=str(run.id), error=type(exc).__name__)
                 made = [m for m in captured[len(history) :] if isinstance(m, ModelResponse)]
-                return None, history, recorder, made, _error_code(exc)
+                return None, history, recorder, made, _error_code(exc, structured=output_type is not None)
         new = [m for m in result.new_messages() if isinstance(m, ModelResponse)]
         return result.output, _trim(list(result.all_messages())), recorder, new, None
 
@@ -489,3 +500,59 @@ class Harness:
             await session.flush()
             await session.refresh(row)
         return row
+
+    # ------------------------------------------------------------------ skills (M2S-E05-02)
+    def skill(self, skill_id: str) -> Skill:
+        found = self.skills.get(skill_id)
+        if found is None or found.plugin_id in self.disabled_plugins:
+            raise NotFoundError("No such skill.")
+        return found
+
+    async def run_skill(self, user: User, skill_id: str, text: str | None) -> RunResultData:
+        """Run a skill as the caller with exactly its tools; the run has no chat (schedules can trigger it later)."""
+        skill = self.skill(skill_id)
+        async with self.sessionmaker() as session, session.begin():
+            config = await read_config(session, self.settings)
+            require_configured(config.chat)
+            tools = self.select(user, config, skill_tools=skill.tools)
+            run = AssistantRun(
+                user_id=user.id,
+                kind="skill",
+                skill_id=skill.id,
+                status="running",
+                model=config.chat.model,
+                prompt_version=prompt_version(),
+                tools_hash=tools_hash(tools),
+            )
+            session.add(run)
+            instructions = await self._prompt(
+                session, user, tools, skill_id=skill.id, skill_instructions=skill.instructions
+            )
+            await session.flush()
+        output_type: Any = StructuredDict(skill.output, name="final_result") if isinstance(skill.output, dict) else str
+        outcome = await self._execute(
+            run=run,
+            user=user,
+            config=config,
+            tools=tools,
+            instructions=instructions,
+            prompt=text or "Run the skill now.",
+            history=[],
+            output_type=output_type,
+        )
+        return await self._persist(run, user, tools, outcome, kind="skill", conversation_id=None)
+
+    async def latest_skill_run(self, user: User, skill_id: str) -> AssistantRun:
+        self.skill(skill_id)
+        async with self.sessionmaker() as session:
+            run: AssistantRun | None = await session.scalar(
+                select(AssistantRun)
+                .where(
+                    AssistantRun.user_id == user.id, AssistantRun.skill_id == skill_id, AssistantRun.status == "done"
+                )
+                .order_by(AssistantRun.created_at.desc(), AssistantRun.id.desc())
+                .limit(1)
+            )
+        if run is None:
+            raise NotFoundError("No run of this skill yet.")
+        return run

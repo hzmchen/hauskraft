@@ -319,3 +319,35 @@ class Usage(BaseModel):
     group_by: Literal["day", "user", "model", "kind"]
     totals: UsageTotals
     groups: list[UsageGroup]
+
+
+# ---------------------------------------------------------------- skills (M2S-E05)
+class SkillInfo(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    id: str
+    plugin_id: str
+    name: str
+    description: str
+    tools: list[str]
+    output: Literal["text", "json"]
+
+
+class SkillInput(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    text: Annotated[str, StringConstraints(max_length=20_000, pattern=NO_NUL)] | None = None
+
+
+class SkillRunIn(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    input: SkillInput = Field(default_factory=SkillInput)
+
+
+class SkillRun(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    run: RunOut
+    output: Any
+    created_at: dt.datetime

@@ -1098,6 +1098,68 @@ export type SetupStatus = {
 };
 
 /**
+ * SkillInfo
+ */
+export type SkillInfo = {
+    /**
+     * Description
+     */
+    description: string;
+    /**
+     * Id
+     */
+    id: string;
+    /**
+     * Name
+     */
+    name: string;
+    /**
+     * Output
+     */
+    output: 'text' | 'json';
+    /**
+     * Plugin Id
+     */
+    plugin_id: string;
+    /**
+     * Tools
+     */
+    tools: Array<string>;
+};
+
+/**
+ * SkillInput
+ */
+export type SkillInput = {
+    /**
+     * Text
+     */
+    text?: string | null;
+};
+
+/**
+ * SkillRun
+ */
+export type SkillRun = {
+    /**
+     * Created At
+     */
+    created_at: string;
+    /**
+     * Output
+     */
+    output: unknown;
+    run: RunOut;
+};
+
+/**
+ * SkillRunIn
+ */
+export type SkillRunIn = {
+    input?: SkillInput;
+};
+
+/**
  * Swatches
  */
 export type Swatches = {
@@ -1985,6 +2047,121 @@ export type AssistantSettingsTestResponses = {
 };
 
 export type AssistantSettingsTestResponse = AssistantSettingsTestResponses[keyof AssistantSettingsTestResponses];
+
+export type AssistantSkillsListData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/v1/assistant/skills';
+};
+
+export type AssistantSkillsListErrors = {
+    /**
+     * Unauthorized
+     */
+    401: unknown;
+    /**
+     * Forbidden
+     */
+    403: unknown;
+};
+
+export type AssistantSkillsListResponses = {
+    /**
+     * Response Assistant Skills List
+     *
+     * Successful Response
+     */
+    200: Array<SkillInfo>;
+};
+
+export type AssistantSkillsListResponse = AssistantSkillsListResponses[keyof AssistantSkillsListResponses];
+
+export type AssistantSkillsRunData = {
+    body: SkillRunIn;
+    path: {
+        /**
+         * Skill Id
+         */
+        skill_id: string;
+    };
+    query?: never;
+    url: '/api/v1/assistant/skills/{skill_id}/runs';
+};
+
+export type AssistantSkillsRunErrors = {
+    /**
+     * Unauthorized
+     */
+    401: unknown;
+    /**
+     * Forbidden
+     */
+    403: unknown;
+    /**
+     * Not Found
+     */
+    404: unknown;
+    /**
+     * Conflict
+     */
+    409: unknown;
+    /**
+     * Unprocessable Content
+     */
+    422: unknown;
+};
+
+export type AssistantSkillsRunResponses = {
+    /**
+     * Successful Response
+     */
+    200: SkillRun;
+};
+
+export type AssistantSkillsRunResponse = AssistantSkillsRunResponses[keyof AssistantSkillsRunResponses];
+
+export type AssistantSkillsLatestData = {
+    body?: never;
+    path: {
+        /**
+         * Skill Id
+         */
+        skill_id: string;
+    };
+    query?: never;
+    url: '/api/v1/assistant/skills/{skill_id}/runs/latest';
+};
+
+export type AssistantSkillsLatestErrors = {
+    /**
+     * Unauthorized
+     */
+    401: unknown;
+    /**
+     * Forbidden
+     */
+    403: unknown;
+    /**
+     * Not Found
+     */
+    404: unknown;
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type AssistantSkillsLatestError = AssistantSkillsLatestErrors[keyof AssistantSkillsLatestErrors];
+
+export type AssistantSkillsLatestResponses = {
+    /**
+     * Successful Response
+     */
+    200: SkillRun;
+};
+
+export type AssistantSkillsLatestResponse = AssistantSkillsLatestResponses[keyof AssistantSkillsLatestResponses];
 
 export type AssistantStatusData = {
     body?: never;
