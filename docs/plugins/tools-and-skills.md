@@ -31,6 +31,7 @@ A tool lives in two places that core checks against each other at startup; a mis
 ```python
 from hauskraft_sdk.tools import RecordRef, ToolAnnotations, ToolOutcome, ToolSpec, UndoCall
 
+
 async def create_handler(ctx, actor, args: CreateArgs) -> ToolOutcome:
     task = await service.create_task(ctx, actor, TaskCreate(title=args.title, due_on=args.due_on))
     return ToolOutcome(
@@ -40,9 +41,17 @@ async def create_handler(ctx, actor, args: CreateArgs) -> ToolOutcome:
         undo=UndoCall(tool="tasks.delete", args={"task_id": str(task.id)}),
     )
 
-TOOLS = [ToolSpec(name="tasks.create", description="…", input_model=CreateArgs, handler=create_handler,
-                  permission="task.create",
-                  annotations=ToolAnnotations(read_only=False, destructive=False, idempotent=False, open_world=False))]
+
+TOOLS = [
+    ToolSpec(
+        name="tasks.create",
+        description="…",
+        input_model=CreateArgs,
+        handler=create_handler,
+        permission="task.create",
+        annotations=ToolAnnotations(read_only=False, destructive=False, idempotent=False, open_world=False),
+    )
+]
 ```
 
 - **Names** are `<plugin>.<verb>` in lower case. Models see `tasks_create`, because function names can't contain dots.
