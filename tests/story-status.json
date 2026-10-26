@@ -414,7 +414,7 @@
       "acceptance": "suite"
     },
     "M2S-E03-02": {
-      "status": "red",
+      "status": "green",
       "acceptance": "suite"
     },
     "M2S-E03-03": {
