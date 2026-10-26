@@ -40,7 +40,8 @@ def test_builtin_themes_are_declarative_plugins(demo: Api, theme: str) -> None:
 def test_contributions_are_exposed(demo: Api) -> None:
     tasks = _plugins(demo)["dev.hauskraft.tasks"]
     assert {"id", "name", "version", "kind", "type", "enabled", "contributes", "load_error"} <= set(tasks)
-    assert [w["id"] for w in tasks["contributes"]["widgets"]] == ["tasks.list"]
+    # M2S-E06-06 adds the Weekly overview widget (approved spec-owned change, 2026-10-26).
+    assert [w["id"] for w in tasks["contributes"]["widgets"]] == ["tasks.list", "tasks.overview"]
     assert [p["id"] for p in tasks["contributes"]["pages"]] == ["tasks"]
 
 

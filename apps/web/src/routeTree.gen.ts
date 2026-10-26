@@ -21,6 +21,7 @@ import { Route as AppPPageIdRouteImport } from './routes/_app/p.$pageId'
 import { Route as AppSettingsIndexRouteImport } from './routes/_app/settings.index'
 import { Route as AppSettingsAccountRouteImport } from './routes/_app/settings.account'
 import { Route as AppSettingsAppearanceRouteImport } from './routes/_app/settings.appearance'
+import { Route as AppSettingsAssistantRouteImport } from './routes/_app/settings.assistant'
 import { Route as AppSettingsHouseholdRouteImport } from './routes/_app/settings.household'
 import { Route as AppSettingsMembersRouteImport } from './routes/_app/settings.members'
 
@@ -83,6 +84,11 @@ const AppSettingsAppearanceRoute = AppSettingsAppearanceRouteImport.update({
   path: '/appearance',
   getParentRoute: () => AppSettingsRoute,
 } as any)
+const AppSettingsAssistantRoute = AppSettingsAssistantRouteImport.update({
+  id: '/assistant',
+  path: '/assistant',
+  getParentRoute: () => AppSettingsRoute,
+} as any)
 const AppSettingsHouseholdRoute = AppSettingsHouseholdRouteImport.update({
   id: '/household',
   path: '/household',
@@ -105,6 +111,7 @@ export interface FileRoutesByFullPath {
   '/p/$pageId': typeof AppPPageIdRoute
   '/settings/account': typeof AppSettingsAccountRoute
   '/settings/appearance': typeof AppSettingsAppearanceRoute
+  '/settings/assistant': typeof AppSettingsAssistantRoute
   '/settings/household': typeof AppSettingsHouseholdRoute
   '/settings/members': typeof AppSettingsMembersRoute
   '/settings/': typeof AppSettingsIndexRoute
@@ -119,6 +126,7 @@ export interface FileRoutesByTo {
   '/p/$pageId': typeof AppPPageIdRoute
   '/settings/account': typeof AppSettingsAccountRoute
   '/settings/appearance': typeof AppSettingsAppearanceRoute
+  '/settings/assistant': typeof AppSettingsAssistantRoute
   '/settings/household': typeof AppSettingsHouseholdRoute
   '/settings/members': typeof AppSettingsMembersRoute
   '/settings': typeof AppSettingsIndexRoute
@@ -136,6 +144,7 @@ export interface FileRoutesById {
   '/_app/p/$pageId': typeof AppPPageIdRoute
   '/_app/settings/account': typeof AppSettingsAccountRoute
   '/_app/settings/appearance': typeof AppSettingsAppearanceRoute
+  '/_app/settings/assistant': typeof AppSettingsAssistantRoute
   '/_app/settings/household': typeof AppSettingsHouseholdRoute
   '/_app/settings/members': typeof AppSettingsMembersRoute
   '/_app/settings/': typeof AppSettingsIndexRoute
@@ -153,6 +162,7 @@ export interface FileRouteTypes {
     | '/p/$pageId'
     | '/settings/account'
     | '/settings/appearance'
+    | '/settings/assistant'
     | '/settings/household'
     | '/settings/members'
     | '/settings/'
@@ -167,6 +177,7 @@ export interface FileRouteTypes {
     | '/p/$pageId'
     | '/settings/account'
     | '/settings/appearance'
+    | '/settings/assistant'
     | '/settings/household'
     | '/settings/members'
     | '/settings'
@@ -183,6 +194,7 @@ export interface FileRouteTypes {
     | '/_app/p/$pageId'
     | '/_app/settings/account'
     | '/_app/settings/appearance'
+    | '/_app/settings/assistant'
     | '/_app/settings/household'
     | '/_app/settings/members'
     | '/_app/settings/'
@@ -282,6 +294,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppSettingsAppearanceRouteImport
       parentRoute: typeof AppSettingsRoute
     }
+    '/_app/settings/assistant': {
+      id: '/_app/settings/assistant'
+      path: '/assistant'
+      fullPath: '/settings/assistant'
+      preLoaderRoute: typeof AppSettingsAssistantRouteImport
+      parentRoute: typeof AppSettingsRoute
+    }
     '/_app/settings/household': {
       id: '/_app/settings/household'
       path: '/household'
@@ -302,6 +321,7 @@ declare module '@tanstack/react-router' {
 interface AppSettingsRouteChildren {
   AppSettingsAccountRoute: typeof AppSettingsAccountRoute
   AppSettingsAppearanceRoute: typeof AppSettingsAppearanceRoute
+  AppSettingsAssistantRoute: typeof AppSettingsAssistantRoute
   AppSettingsHouseholdRoute: typeof AppSettingsHouseholdRoute
   AppSettingsMembersRoute: typeof AppSettingsMembersRoute
   AppSettingsIndexRoute: typeof AppSettingsIndexRoute
@@ -310,6 +330,7 @@ interface AppSettingsRouteChildren {
 const AppSettingsRouteChildren: AppSettingsRouteChildren = {
   AppSettingsAccountRoute: AppSettingsAccountRoute,
   AppSettingsAppearanceRoute: AppSettingsAppearanceRoute,
+  AppSettingsAssistantRoute: AppSettingsAssistantRoute,
   AppSettingsHouseholdRoute: AppSettingsHouseholdRoute,
   AppSettingsMembersRoute: AppSettingsMembersRoute,
   AppSettingsIndexRoute: AppSettingsIndexRoute,

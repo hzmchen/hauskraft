@@ -34,9 +34,9 @@ async function sections(): Promise<string[]> {
 afterEach(() => vi.unstubAllGlobals());
 
 describe("settings layout (M1S-E08-01)", () => {
-  it("shows owners four sections, each with its own level-1 heading", async () => {
+  it("shows owners five sections, each with its own level-1 heading", async () => {
     start("/settings/appearance", OWNER_SESSION);
-    expect(await sections()).toEqual(["Appearance", "Account", "Household", "Members"]);
+    expect(await sections()).toEqual(["Appearance", "Account", "Household", "Members", "Assistant"]);
     for (const name of ["Account", "Household", "Members", "Appearance"]) {
       const nav = screen.getByRole("navigation", { name: "Settings" });
       await userEvent.click(within(nav).getByRole("link", { name }));
@@ -54,7 +54,7 @@ describe("settings layout (M1S-E08-01)", () => {
 
   it("translates the section names", async () => {
     start("/settings/appearance", { ...OWNER_SESSION, user: { ...OWNER_SESSION.user, locale: "de" } }, "de");
-    expect(await sections()).toEqual(["Darstellung", "Konto", "Haushalt", "Mitglieder"]);
+    expect(await sections()).toEqual(["Darstellung", "Konto", "Haushalt", "Mitglieder", "Assistent"]);
   });
 
   it("keeps /settings opening Appearance", async () => {

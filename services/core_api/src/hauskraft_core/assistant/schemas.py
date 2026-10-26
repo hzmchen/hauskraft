@@ -5,7 +5,7 @@ from __future__ import annotations
 
 import datetime as dt
 import uuid
-from typing import Annotated, Literal, Self
+from typing import Annotated, Any, Literal, Self
 
 from pydantic import BaseModel, ConfigDict, Field, StringConstraints, model_validator
 
@@ -186,6 +186,56 @@ def action_out(action: AssistantAction) -> ActionOut:
     )
 
 
+class RunOut(BaseModel):
+    model_config = ConfigDict(extra="forbid", from_attributes=True)
+
+    id: uuid.UUID
+    kind: Literal["chat", "skill", "test"]
+    status: Literal["running", "awaiting_confirmation", "done", "failed"]
+    error_code: str | None
+    channel: Literal["text", "voice"]
+
+
+class ConfirmationOut(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    id: str = Field(description="The tool call's id; answer it in POST /assistant/runs/{run_id}/confirmations.")
+    run_id: uuid.UUID
+    tool: str
+    args: dict[str, Any]
+    summary_key: str | None
+    record: RecordRef | None
+
+
+class RunResult(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    run: RunOut
+    messages: list[MessageOut]
+    actions: list[ActionOut]
+    confirmations: list[ConfirmationOut]
+
+
+class MessageIn(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    text: Annotated[str, StringConstraints(min_length=1, max_length=4000, pattern=NO_NUL)]
+    channel: Literal["text"] = "text"
+
+
+class Decision(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    id: str
+    approve: bool
+
+
+class ConfirmationAnswer(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    decisions: Annotated[list[Decision], Field(min_length=1, max_length=20)]
+
+
 class ConversationDetail(Conversation):
     messages: list[MessageOut]
     actions: list[ActionOut]
@@ -230,3 +280,74 @@ class ConnectionTest(BaseModel):
     checks: ConnectionChecks
     latency_ms: int
     error_code: Literal["unreachable", "auth_failed", "model_not_found", "tool_calls_unsupported", "model_error"] | None
+
+
+# ---------------------------------------------------------------- usage (M2S-E08-02)
+class Cost(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    amount: float
+    currency: Literal["EUR"] = "EUR"
+
+
+class UsageTotals(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    requests: int
+    input_tokens: int
+    output_tokens: int
+    unknown_requests: int = Field(description="Requests whose token counts the server didn't report.")
+    cost: Cost | None
+
+
+class UsageGroup(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    key: str
+    label: str
+    requests: int
+    input_tokens: int
+    output_tokens: int
+    unknown_requests: int
+
+
+class Usage(BaseModel):
+    model_config = ConfigDict(extra="forbid", populate_by_name=True)
+
+    from_: dt.date = Field(alias="from")
+    to: dt.date
+    group_by: Literal["day", "user", "model", "kind"]
+    totals: UsageTotals
+    groups: list[UsageGroup]
+
+
+# ---------------------------------------------------------------- skills (M2S-E05)
+class SkillInfo(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    id: str
+    plugin_id: str
+    name: str
+    description: str
+    tools: list[str]
+    output: Literal["text", "json"]
+
+
+class SkillInput(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    text: Annotated[str, StringConstraints(max_length=20_000, pattern=NO_NUL)] | None = None
+
+
+class SkillRunIn(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    input: SkillInput = Field(default_factory=SkillInput)
+
+
+class SkillRun(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    run: RunOut
+    output: Any
+    created_at: dt.datetime

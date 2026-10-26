@@ -15,6 +15,7 @@ from fastapi.routing import APIRoute
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 
 from hauskraft_core.assistant.registry import ToolRegistry
+from hauskraft_core.assistant.skills import load_skills
 from hauskraft_core.auth.providers import provider_from_settings
 from hauskraft_core.auth.ratelimit import LoginRateLimiter
 from hauskraft_core.errors import install_error_handlers
@@ -129,5 +130,6 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.include_router(build_api_router(), prefix=API_PREFIX)
     load_plugins(app, settings.plugin_paths, settings.theme_paths)
     app.state.tool_registry = ToolRegistry.from_plugins(app.state.plugins)
+    app.state.skills = load_skills(app.state.plugins, app.state.tool_registry.names(), app.state.plugin_load_errors)
     install_themes(app)
     return app

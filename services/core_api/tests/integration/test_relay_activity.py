@@ -65,7 +65,8 @@ def test_activity_newest_first_with_actor_and_pagination(client: TestClient, mak
     mine = [i for i in items if i["subject"] == f"task/{task['id']}"]
     assert [i["type"] for i in mine] == ["hauskraft.task.completed", "hauskraft.task.created"]
     entry = mine[-1]
-    assert set(entry) == {"id", "type", "time", "actor", "subject", "summary_key", "data"}
+    assert set(entry) == {"id", "type", "time", "actor", "subject", "summary_key", "data", "agentrunid"}
+    assert entry["agentrunid"] is None  # a manual change, not an assistant run (M2S-E04-07)
     assert entry["actor"]["display_name"] == "Activity Adult"
     assert entry["summary_key"] == "activity.task.created"
     assert entry["data"]["task"]["title"] == title

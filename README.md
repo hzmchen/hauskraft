@@ -2,7 +2,7 @@
 
 A Home Assistant–centred, plugin-first household cockpit: one themeable dashboard for a busy family, with governed AI help that prepares and drafts while people approve anything consequential. Self-hosted, local-first, open source.
 
-> **Status: M1\* "Household basics" is built; M2\* "Agentic harness" is planned.** M0\* (61 stories) delivered the scaffolding MVP; M1\* (35 stories) makes Hauskraft usable by a real household: first-run setup in the browser, owner and adult roles, members, accounts and household settings. M2\* (38 stories, spec v0.4, [backlog](docs/backlog/m2-star/README.md)) adds an assistant that works with your tasks on your behalf. See [CHANGELOG.md](CHANGELOG.md). Hauskraft was called HearthOS until October 2026 (ADR 0015).
+> **Status: M2\* "Agentic harness" is built; M1\* "Household basics" is done.** M0\* (61 stories) delivered the scaffolding MVP; M1\* (35 stories) makes Hauskraft usable by a real household: first-run setup in the browser, owner and adult roles, members, accounts and household settings. M2\* (38 stories, spec v0.4, [backlog](docs/backlog/m2-star/README.md)) adds an assistant that works with your tasks on your behalf. See [CHANGELOG.md](CHANGELOG.md). Hauskraft was called HearthOS until October 2026 (ADR 0015).
 
 ## Quick start
 
@@ -60,6 +60,13 @@ The next milestone climbs the capability ladder; the candidates are in the Linea
 ## What M0\* gives you
 
 `docker compose up`, log in as `demo`, and use a shared household task list on a Today dashboard, built as the first native plugin. Switch the whole household between three built-in themes (Default, Paper, Hackspace) without any function moving, while each device keeps its own light or dark mode. German and English UI.
+
+## What M2\* adds
+
+An assistant: open the **Assistant** panel on any page and ask in plain language to add, find, complete or delete
+tasks. It acts with your permissions, asks before deleting, offers Undo, and everything it does shows in Activity.
+Owners connect any OpenAI-compatible model (cloud or local) and see token usage. See
+[docs/assistant.md](docs/assistant.md).
 
 ## What M1\* adds
 

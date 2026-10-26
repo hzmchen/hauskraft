@@ -1,29 +1,46 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
-"""``/assistant`` (M2*): settings for owners, availability for every member."""
+"""``/assistant`` (M2*): settings for owners; availability, chats, runs and Undo for every member."""
 
 from __future__ import annotations
 
+import datetime as dt
 import uuid
+from typing import Annotated
 
-from fastapi import APIRouter, Request, Response
+from fastapi import APIRouter, Query, Request, Response
 
 from hauskraft_core.assistant import conversations
 from hauskraft_core.assistant.endpoint import check_connection
+from hauskraft_core.assistant.runs import Harness, RunResultData
 from hauskraft_core.assistant.schemas import (
+    ActionOut,
     AssistantSettings,
     AssistantSettingsPatch,
     AssistantStatus,
+    ConfirmationAnswer,
+    ConfirmationOut,
     ConnectionTest,
     Conversation,
     ConversationDetail,
+    MessageIn,
     MessageOut,
+    RunOut,
+    RunResult,
+    SkillInfo,
+    SkillRun,
+    SkillRunIn,
     ToolInfo,
+    Usage,
+    UsageGroup,
+    UsageTotals,
     action_out,
 )
 from hauskraft_core.assistant.settings import read_config, remove_chat_endpoint, update_settings
+from hauskraft_core.assistant.usage import GroupBy, report
 from hauskraft_core.auth.deps import CurrentSession, actor_for
-from hauskraft_core.db.models import User
+from hauskraft_core.db.models import AssistantUsage, User
 from hauskraft_core.db.session import DbSession
+from hauskraft_core.household.service import read_household
 from hauskraft_core.policy import Decision
 from hauskraft_core.uow import UnitOfWork
 from hauskraft_sdk import DataClass, ResourceRef
@@ -79,9 +96,25 @@ async def settings_update(
 
 @router.post("/settings/test", responses={401: {}, 403: {}, 409: {}})
 async def settings_test(request: Request, db: DbSession, resolved: CurrentSession) -> ConnectionTest:
-    """Check the endpoint with one minimal request: reachable, key accepted, model found, tools accepted."""
+    """Check the endpoint with one minimal request: reachable, key accepted, model found, tools accepted.
+
+    Its model requests count in the usage overview as kind ``test`` (M2S-E08-01).
+    """
     await require(request, resolved[1], "assistant.configure")
-    result = await check_connection((await read_config(db, request.app.state.settings)).chat)
+    chat = (await read_config(db, request.app.state.settings)).chat
+    result = await check_connection(chat)
+    async with _uow(request) as uow:
+        for input_tokens, output_tokens in result.requests:
+            uow.session.add(
+                AssistantUsage(
+                    user_id=resolved[1].id,
+                    kind="test",
+                    model=chat.model,
+                    input_tokens=input_tokens,
+                    output_tokens=output_tokens,
+                    status="ok" if result.ok else "error",
+                )
+            )
     return ConnectionTest.model_validate(result, from_attributes=True)
 
 
@@ -152,3 +185,112 @@ async def tools_list(request: Request, db: DbSession, resolved: CurrentSession) 
         for t in request.app.state.tool_registry.all()
         if t.plugin_id not in request.app.state.disabled_plugins
     ]
+
+
+# ---------------------------------------------------------------- runs (M2S-E04-02, -04, -06)
+def run_result(data: RunResultData) -> RunResult:
+    return RunResult(
+        run=RunOut.model_validate(data.run),
+        messages=[MessageOut.model_validate(m) for m in data.messages],
+        actions=[action_out(a) for a in data.actions],
+        confirmations=[ConfirmationOut.model_validate(c) for c in data.confirmations],
+    )
+
+
+@router.post("/conversations/{conversation_id}/messages", responses={401: {}, 403: {}, 404: {}, 409: {}, 422: {}})
+async def conversations_message(
+    conversation_id: uuid.UUID, body: MessageIn, request: Request, resolved: CurrentSession
+) -> RunResult:
+    """Send a message: the assistant runs with the caller's permissions and answers, acts or asks to confirm.
+
+    A run that fails because of the model endpoint still answers 200, with ``run.status`` failed and an error code.
+    """
+    await require(request, resolved[1], "assistant.use")
+    data = await Harness.of(request.app.state).chat(resolved[1], conversation_id, body.text, body.channel)
+    return run_result(data)
+
+
+@router.post("/runs/{run_id}/confirmations", responses={401: {}, 403: {}, 404: {}, 409: {}, 422: {}})
+async def runs_confirm(
+    run_id: uuid.UUID, body: ConfirmationAnswer, request: Request, resolved: CurrentSession
+) -> RunResult:
+    """Approve or deny each pending call of a run that waits for confirmation; the run then continues."""
+    await require(request, resolved[1], "assistant.use")
+    decisions = {d.id: d.approve for d in body.decisions}
+    return run_result(await Harness.of(request.app.state).answer(resolved[1], run_id, decisions))
+
+
+@router.post("/actions/{action_id}/undo", responses={401: {}, 403: {}, 404: {}, 409: {}})
+async def actions_undo(action_id: uuid.UUID, request: Request, resolved: CurrentSession) -> ActionOut:
+    """Reverse an action the assistant took for the caller, where its tool declared how."""
+    await require(request, resolved[1], "assistant.use")
+    return action_out(await Harness.of(request.app.state).undo(resolved[1], action_id))
+
+
+# ---------------------------------------------------------------- usage (M2S-E08-02)
+@router.get("/usage", responses={401: {}, 403: {}, 422: {}}, response_model_by_alias=True)
+async def usage_read(
+    request: Request,
+    db: DbSession,
+    resolved: CurrentSession,
+    group_by: GroupBy = "day",
+    from_: Annotated[dt.date | None, Query(alias="from")] = None,
+    to: dt.date | None = None,
+) -> Usage:
+    """Requests and tokens per day, member, model or kind (owners only). Dates are inclusive, household time."""
+    await require(request, resolved[1], "assistant.usage.read")
+    settings = request.app.state.settings
+    config = await read_config(db, settings)
+    household = await read_household(db, settings)
+    data = await report(db, household.timezone, group_by, from_, to, config.prices)
+    t = data.totals
+    return Usage.model_validate(
+        {
+            "from": data.start,
+            "to": data.end,
+            "group_by": data.group_by,
+            "totals": UsageTotals(
+                requests=t.requests,
+                input_tokens=t.input_tokens,
+                output_tokens=t.output_tokens,
+                unknown_requests=t.unknown_requests,
+                cost={"amount": data.cost, "currency": "EUR"} if data.cost is not None else None,  # type: ignore[arg-type]
+            ),
+            "groups": [UsageGroup(**vars(g)) for g in data.groups],
+        }
+    )
+
+
+# ---------------------------------------------------------------- skills (M2S-E05-01, -02)
+@router.get("/skills", responses={401: {}, 403: {}})
+async def skills_list(request: Request, resolved: CurrentSession) -> list[SkillInfo]:
+    await require(request, resolved[1], "assistant.use")
+    harness = Harness.of(request.app.state)
+    return [
+        SkillInfo(
+            id=s.id,
+            plugin_id=s.plugin_id,
+            name=s.name,
+            description=s.description,
+            tools=list(s.tools),
+            output="text" if s.output_kind == "text" else "json",
+        )
+        for s in sorted(harness.skills.values(), key=lambda s: s.id)
+        if s.plugin_id not in harness.disabled_plugins
+    ]
+
+
+@router.post("/skills/{skill_id}/runs", responses={401: {}, 403: {}, 404: {}, 409: {}, 422: {}})
+async def skills_run(skill_id: str, body: SkillRunIn, request: Request, resolved: CurrentSession) -> SkillRun:
+    """Run a skill as the caller with exactly its tools; returns its text or structured output."""
+    await require(request, resolved[1], "assistant.use")
+    data = await Harness.of(request.app.state).run_skill(resolved[1], skill_id, body.input.text)
+    return SkillRun(run=RunOut.model_validate(data.run), output=data.output, created_at=data.run.created_at)
+
+
+@router.get("/skills/{skill_id}/runs/latest", responses={401: {}, 403: {}, 404: {}})
+async def skills_latest(skill_id: str, request: Request, resolved: CurrentSession) -> SkillRun:
+    """The caller's last successful run of this skill."""
+    await require(request, resolved[1], "assistant.use")
+    run = await Harness.of(request.app.state).latest_skill_run(resolved[1], skill_id)
+    return SkillRun(run=RunOut.model_validate(run), output=run.output, created_at=run.created_at)

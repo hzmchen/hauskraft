@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hauskraft.dev/schema/skill/v1.json",
+  "$comment": "SPDX-License-Identifier: MIT",
+  "title": "SKILL.md frontmatter",
+  "description": "A skill contributed by a plugin (ADR 0023): Agent Skills' name and description, plus the allowed registry tools, the output and an optional eval dataset. The Markdown body holds the instructions.",
+  "type": "object",
+  "required": ["name", "description", "tools", "output"],
+  "additionalProperties": false,
+  "properties": {
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 80
+    },
+    "description": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 300
+    },
+    "tools": {
+      "description": "Registry tool names the skill may use; empty for skills that read untrusted text.",
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z][a-z0-9_]*\\.[a-z][a-z0-9_]*$"
+      }
+    },
+    "output": {
+      "oneOf": [
+        {
+          "const": "text"
+        },
+        {
+          "type": "object",
+          "required": ["schema"],
+          "additionalProperties": false,
+          "properties": {
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      ]
+    },
+    "evals": {
+      "description": "Relative path to the skill's eval dataset (ADR 0022).",
+      "type": "string",
+      "pattern": "^(?!/)(?!.*(^|/)\\.\\.(/|$)).+\\.ya?ml$"
+    }
+  }
+}

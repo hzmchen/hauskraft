@@ -23,12 +23,14 @@ HAUSKRAFT_API_VERSION = "0.1.0"
 
 @dataclass(frozen=True, slots=True)
 class Actor:
-    """Who is acting: a signed-in user now, an agent on a user's behalf from M1."""
+    """Who is acting: a signed-in user, or a person through an assistant run (``via``, M2*)."""
 
     id: str
     role: str
     display_name: str = ""
     kind: Literal["user", "agent", "system"] = "user"
+    via: str | None = None
+    """The assistant run acting for this person (M2*, ADR 0020); events it causes carry ``agentrunid``."""
 
 
 @dataclass(frozen=True, slots=True)

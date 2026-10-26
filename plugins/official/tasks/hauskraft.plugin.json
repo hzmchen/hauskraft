@@ -44,6 +44,20 @@
           "w": 3,
           "h": 4
         }
+      },
+      {
+        "id": "tasks.overview",
+        "title": "i18n:tasks:overview.title",
+        "component": "OverviewWidget",
+        "default_layout": false,
+        "default_size": {
+          "w": 4,
+          "h": 4
+        },
+        "min_size": {
+          "w": 3,
+          "h": 3
+        }
       }
     ],
     "pages": [
@@ -116,7 +130,17 @@
     "settings": [],
     "commands": [],
     "themes": [],
-    "agent_guidance": "Tasks are the household's shared to-do list. Due dates are calendar dates in the household time zone (the context block's 'Today:' line); 'tomorrow' is that date plus one day. Find a task's id with tasks.list before changing it; never guess ids."
+    "agent_guidance": "Tasks are the household's shared to-do list. Due dates are calendar dates in the household time zone (the context block's 'Today:' line); 'tomorrow' is that date plus one day. Find a task's id with tasks.list before changing it; never guess ids.",
+    "skills": [
+      {
+        "id": "add-from-text",
+        "path": "skills/add-from-text/SKILL.md"
+      },
+      {
+        "id": "weekly-overview",
+        "path": "skills/weekly-overview/SKILL.md"
+      }
+    ]
   },
   "subscribes": []
 }

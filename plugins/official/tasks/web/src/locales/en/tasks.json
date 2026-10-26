@@ -74,7 +74,29 @@
     },
     "delete": {
       "done": "Deleted task '{{label}}'",
-      "confirm": "Delete task '{{label}}'?"
+      "confirm": "Delete task '{{label}}'?",
+      "approve": "Delete"
     }
+  },
+  "from_text": {
+    "button": "Add from text",
+    "title": "Add tasks from text",
+    "description": "Paste a note; the assistant suggests tasks and you pick which to add.",
+    "text": "Text",
+    "suggest": "Suggest tasks",
+    "suggested": "Suggested tasks",
+    "add_one": "Add {{count}} task",
+    "add_other": "Add {{count}} tasks",
+    "cancel": "Cancel",
+    "nothing": "No tasks found in this text.",
+    "failed": "The assistant couldn't suggest tasks. Try again."
+  },
+  "overview": {
+    "title": "Weekly overview",
+    "create": "Create now",
+    "created": "Created {{when}}",
+    "empty": "No overview yet.",
+    "unavailable": "The assistant isn't set up.",
+    "failed": "The overview couldn't be created. Try again."
   }
 }

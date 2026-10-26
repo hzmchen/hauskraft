@@ -31,10 +31,15 @@ async def stored_layout(session: AsyncSession, user_id: uuid.UUID, dashboard_id:
 
 
 def default_layout(widgets: Iterable[tuple[str, dict[str, Any]]]) -> list[DashboardCell]:
-    """Place each contributed widget at its default size, left to right, wrapping at 12 columns."""
+    """Place each contributed widget at its default size, left to right, wrapping at 12 columns.
+
+    Widgets with ``"default_layout": false`` are left out; members add them with Edit layout (M2S-E06-06).
+    """
     cells: list[DashboardCell] = []
     x = y = row_height = 0
     for plugin_id, widget in widgets:
+        if widget.get("default_layout") is False:
+            continue
         size = widget.get("default_size") or {}
         w = max(1, min(COLUMNS, int(size.get("w", 4))))
         h = max(1, int(size.get("h", 4)))

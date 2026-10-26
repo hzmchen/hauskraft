@@ -7,6 +7,8 @@ import { Outlet, createFileRoute, redirect } from "@tanstack/react-router";
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
+import { AssistantButton, AssistantPanel } from "../assistant/Panel";
+import { AssistantProvider, usePanel } from "../assistant/state";
 import { hasDeviceLanguage, isLanguage } from "../i18n";
 import { loadPluginModule } from "../plugins/load";
 import { pluginRegistry } from "../plugins/registry.gen";
@@ -51,11 +53,20 @@ export const Route = createFileRoute("/_app")({
 });
 
 function AppLayout() {
+  return (
+    <AssistantProvider>
+      <AppShell />
+    </AssistantProvider>
+  );
+}
+
+function AppShell() {
   const { t } = useTranslation();
   const { plugins } = useWebPlugins();
   const items = useMemo(() => buildNavModel(plugins), [plugins]);
   const layout = useThemeLayout();
   const style = useNavStyle(layout.navigation);
+  const { headerRef } = usePanel();
   return (
     <div className="flex min-h-svh">
       <a
@@ -66,13 +77,19 @@ function AppLayout() {
       </a>
       {style === "sidebar" ? <NavRenderer style={style} items={items} /> : null}
       <div className="flex min-w-0 flex-1 flex-col">
-        <header className="flex items-center justify-between gap-density border-b bg-nav px-density py-2 text-nav-foreground">
+        <header
+          ref={headerRef}
+          className="flex items-center justify-between gap-density border-b bg-nav px-density py-2 text-nav-foreground"
+        >
           <div className="flex min-w-0 items-center gap-density">
             {style === "drawer" ? <NavRenderer style={style} items={items} /> : null}
             <span className="font-heading text-lg font-bold">{t("app.name")}</span>
             {style === "topbar" ? <NavRenderer style={style} items={items} /> : null}
           </div>
-          <AccountMenu />
+          <div className="flex items-center gap-2">
+            <AssistantButton />
+            <AccountMenu />
+          </div>
         </header>
         <main
           id="content"
@@ -90,6 +107,7 @@ function AppLayout() {
         <DocumentTitle />
         {style === "bottom-tabs" ? <NavRenderer style={style} items={items} /> : null}
       </div>
+      <AssistantPanel />
     </div>
   );
 }

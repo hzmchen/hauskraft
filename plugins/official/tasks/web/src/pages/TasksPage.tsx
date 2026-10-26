@@ -7,6 +7,7 @@ import { useId } from "react";
 import { useTranslation } from "react-i18next";
 
 import { useTaskList, type Status } from "../api";
+import { AddFromText } from "../components/AddFromTextDialog";
 import { DeleteTaskDialog } from "../components/DeleteTaskDialog";
 import { DueDatePicker } from "../components/DueDatePicker";
 import { TaskRow } from "../components/TaskRow";
@@ -37,7 +38,10 @@ export function TasksPage({ pluginId }: PageProps) {
 
   return (
     <div data-plugin={pluginId} className="flex flex-col gap-density">
-      <h1 className="text-2xl font-bold">{t("page_heading")}</h1>
+      <div className="flex flex-wrap items-center justify-between gap-density">
+        <h1 className="text-2xl font-bold">{t("page_heading")}</h1>
+        <AddFromText />
+      </div>
       <Tabs value={status} onValueChange={(value) => host.setSearch({ status: value, page: undefined })}>
         <div className="flex flex-wrap items-center justify-between gap-density">
           <TabsList>

@@ -2,7 +2,7 @@
 
 import type { Client, ClientMeta, Options as Options2, RequestResult, TDataShape } from './client';
 import { client } from './client.gen';
-import type { ActivityListData, ActivityListErrors, ActivityListResponses, AssistantConversationsCreateData, AssistantConversationsCreateErrors, AssistantConversationsCreateResponses, AssistantConversationsDeleteData, AssistantConversationsDeleteErrors, AssistantConversationsDeleteResponses, AssistantConversationsListData, AssistantConversationsListErrors, AssistantConversationsListResponses, AssistantConversationsReadData, AssistantConversationsReadErrors, AssistantConversationsReadResponses, AssistantSettingsReadData, AssistantSettingsReadErrors, AssistantSettingsReadResponses, AssistantSettingsRemoveChatData, AssistantSettingsRemoveChatErrors, AssistantSettingsRemoveChatResponses, AssistantSettingsTestData, AssistantSettingsTestErrors, AssistantSettingsTestResponses, AssistantSettingsUpdateData, AssistantSettingsUpdateErrors, AssistantSettingsUpdateResponses, AssistantStatusData, AssistantStatusErrors, AssistantStatusResponses, AssistantToolsListData, AssistantToolsListErrors, AssistantToolsListResponses, AuthLoginData, AuthLoginErrors, AuthLoginResponses, AuthLogoutData, AuthLogoutErrors, AuthLogoutEverywhereData, AuthLogoutEverywhereErrors, AuthLogoutEverywhereResponses, AuthLogoutResponses, AuthSessionData, AuthSessionErrors, AuthSessionResponses, DashboardGetData, DashboardGetErrors, DashboardGetResponses, DashboardPutData, DashboardPutErrors, DashboardPutResponses, HealthHealthzData, HealthHealthzResponses, HealthReadyzData, HealthReadyzErrors, HealthReadyzResponses, HouseholdReadData, HouseholdReadErrors, HouseholdReadResponses, HouseholdUpdateData, HouseholdUpdateErrors, HouseholdUpdateResponses, PluginsListData, PluginsListErrors, PluginsListResponses, PluginsUpdateData, PluginsUpdateErrors, PluginsUpdateResponses, SettingsThemeSetData, SettingsThemeSetErrors, SettingsThemeSetResponses, SetupCompleteData, SetupCompleteErrors, SetupCompleteResponses, SetupStatusData, SetupStatusResponses, TasksCreateData, TasksCreateErrors, TasksCreateResponses, TasksDeleteData, TasksDeleteErrors, TasksDeleteResponses, TasksGetData, TasksGetErrors, TasksGetResponses, TasksListData, TasksListErrors, TasksListResponses, TasksUpdateData, TasksUpdateErrors, TasksUpdateResponses, ThemesActiveCssData, ThemesActiveCssErrors, ThemesActiveCssResponses, ThemesActiveData, ThemesActiveErrors, ThemesActiveResponses, ThemesAssetData, ThemesAssetErrors, ThemesAssetResponses, ThemesListData, ThemesListErrors, ThemesListResponses, UsersMeGetData, UsersMeGetErrors, UsersMeGetResponses, UsersMePasswordData, UsersMePasswordErrors, UsersMePasswordResponses, UsersMeSessionEndData, UsersMeSessionEndErrors, UsersMeSessionEndResponses, UsersMeSessionsData, UsersMeSessionsErrors, UsersMeSessionsResponses, UsersMeUpdateData, UsersMeUpdateErrors, UsersMeUpdateResponses, UsersUsersCreateData, UsersUsersCreateErrors, UsersUsersCreateResponses, UsersUsersDeactivateData, UsersUsersDeactivateErrors, UsersUsersDeactivateResponses, UsersUsersGetData, UsersUsersGetErrors, UsersUsersGetResponses, UsersUsersListData, UsersUsersListErrors, UsersUsersListResponses, UsersUsersReactivateData, UsersUsersReactivateErrors, UsersUsersReactivateResponses, UsersUsersResetPasswordData, UsersUsersResetPasswordErrors, UsersUsersResetPasswordResponses, UsersUsersUpdateData, UsersUsersUpdateErrors, UsersUsersUpdateResponses } from './types.gen';
+import type { ActivityListData, ActivityListErrors, ActivityListResponses, AssistantActionsUndoData, AssistantActionsUndoErrors, AssistantActionsUndoResponses, AssistantConversationsCreateData, AssistantConversationsCreateErrors, AssistantConversationsCreateResponses, AssistantConversationsDeleteData, AssistantConversationsDeleteErrors, AssistantConversationsDeleteResponses, AssistantConversationsListData, AssistantConversationsListErrors, AssistantConversationsListResponses, AssistantConversationsMessageData, AssistantConversationsMessageErrors, AssistantConversationsMessageResponses, AssistantConversationsReadData, AssistantConversationsReadErrors, AssistantConversationsReadResponses, AssistantRunsConfirmData, AssistantRunsConfirmErrors, AssistantRunsConfirmResponses, AssistantSettingsReadData, AssistantSettingsReadErrors, AssistantSettingsReadResponses, AssistantSettingsRemoveChatData, AssistantSettingsRemoveChatErrors, AssistantSettingsRemoveChatResponses, AssistantSettingsTestData, AssistantSettingsTestErrors, AssistantSettingsTestResponses, AssistantSettingsUpdateData, AssistantSettingsUpdateErrors, AssistantSettingsUpdateResponses, AssistantSkillsLatestData, AssistantSkillsLatestErrors, AssistantSkillsLatestResponses, AssistantSkillsListData, AssistantSkillsListErrors, AssistantSkillsListResponses, AssistantSkillsRunData, AssistantSkillsRunErrors, AssistantSkillsRunResponses, AssistantStatusData, AssistantStatusErrors, AssistantStatusResponses, AssistantToolsListData, AssistantToolsListErrors, AssistantToolsListResponses, AssistantUsageReadData, AssistantUsageReadErrors, AssistantUsageReadResponses, AuthLoginData, AuthLoginErrors, AuthLoginResponses, AuthLogoutData, AuthLogoutErrors, AuthLogoutEverywhereData, AuthLogoutEverywhereErrors, AuthLogoutEverywhereResponses, AuthLogoutResponses, AuthSessionData, AuthSessionErrors, AuthSessionResponses, DashboardGetData, DashboardGetErrors, DashboardGetResponses, DashboardPutData, DashboardPutErrors, DashboardPutResponses, HealthHealthzData, HealthHealthzResponses, HealthReadyzData, HealthReadyzErrors, HealthReadyzResponses, HouseholdReadData, HouseholdReadErrors, HouseholdReadResponses, HouseholdUpdateData, HouseholdUpdateErrors, HouseholdUpdateResponses, PluginsListData, PluginsListErrors, PluginsListResponses, PluginsUpdateData, PluginsUpdateErrors, PluginsUpdateResponses, SettingsThemeSetData, SettingsThemeSetErrors, SettingsThemeSetResponses, SetupCompleteData, SetupCompleteErrors, SetupCompleteResponses, SetupStatusData, SetupStatusResponses, TasksCreateData, TasksCreateErrors, TasksCreateResponses, TasksDeleteData, TasksDeleteErrors, TasksDeleteResponses, TasksGetData, TasksGetErrors, TasksGetResponses, TasksListData, TasksListErrors, TasksListResponses, TasksUpdateData, TasksUpdateErrors, TasksUpdateResponses, ThemesActiveCssData, ThemesActiveCssErrors, ThemesActiveCssResponses, ThemesActiveData, ThemesActiveErrors, ThemesActiveResponses, ThemesAssetData, ThemesAssetErrors, ThemesAssetResponses, ThemesListData, ThemesListErrors, ThemesListResponses, UsersMeGetData, UsersMeGetErrors, UsersMeGetResponses, UsersMePasswordData, UsersMePasswordErrors, UsersMePasswordResponses, UsersMeSessionEndData, UsersMeSessionEndErrors, UsersMeSessionEndResponses, UsersMeSessionsData, UsersMeSessionsErrors, UsersMeSessionsResponses, UsersMeUpdateData, UsersMeUpdateErrors, UsersMeUpdateResponses, UsersUsersCreateData, UsersUsersCreateErrors, UsersUsersCreateResponses, UsersUsersDeactivateData, UsersUsersDeactivateErrors, UsersUsersDeactivateResponses, UsersUsersGetData, UsersUsersGetErrors, UsersUsersGetResponses, UsersUsersListData, UsersUsersListErrors, UsersUsersListResponses, UsersUsersReactivateData, UsersUsersReactivateErrors, UsersUsersReactivateResponses, UsersUsersResetPasswordData, UsersUsersResetPasswordErrors, UsersUsersResetPasswordResponses, UsersUsersUpdateData, UsersUsersUpdateErrors, UsersUsersUpdateResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean, TResponse = unknown> = Options2<TData, ThrowOnError, TResponse> & {
     /**
@@ -22,6 +22,13 @@ export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends 
  * List
  */
 export const activityList = <ThrowOnError extends boolean = false>(options?: Options<ActivityListData, ThrowOnError>): RequestResult<ActivityListResponses, ActivityListErrors, ThrowOnError> => (options?.client ?? client).get<ActivityListResponses, ActivityListErrors, ThrowOnError>({ url: '/api/v1/activity', ...options });
+
+/**
+ * Actions Undo
+ *
+ * Reverse an action the assistant took for the caller, where its tool declared how.
+ */
+export const assistantActionsUndo = <ThrowOnError extends boolean = false>(options: Options<AssistantActionsUndoData, ThrowOnError>): RequestResult<AssistantActionsUndoResponses, AssistantActionsUndoErrors, ThrowOnError> => (options.client ?? client).post<AssistantActionsUndoResponses, AssistantActionsUndoErrors, ThrowOnError>({ url: '/api/v1/assistant/actions/{action_id}/undo', ...options });
 
 /**
  * Conversations List
@@ -46,6 +53,36 @@ export const assistantConversationsDelete = <ThrowOnError extends boolean = fals
  * Conversations Read
  */
 export const assistantConversationsRead = <ThrowOnError extends boolean = false>(options: Options<AssistantConversationsReadData, ThrowOnError>): RequestResult<AssistantConversationsReadResponses, AssistantConversationsReadErrors, ThrowOnError> => (options.client ?? client).get<AssistantConversationsReadResponses, AssistantConversationsReadErrors, ThrowOnError>({ url: '/api/v1/assistant/conversations/{conversation_id}', ...options });
+
+/**
+ * Conversations Message
+ *
+ * Send a message: the assistant runs with the caller's permissions and answers, acts or asks to confirm.
+ *
+ * A run that fails because of the model endpoint still answers 200, with ``run.status`` failed and an error code.
+ */
+export const assistantConversationsMessage = <ThrowOnError extends boolean = false>(options: Options<AssistantConversationsMessageData, ThrowOnError>): RequestResult<AssistantConversationsMessageResponses, AssistantConversationsMessageErrors, ThrowOnError> => (options.client ?? client).post<AssistantConversationsMessageResponses, AssistantConversationsMessageErrors, ThrowOnError>({
+    url: '/api/v1/assistant/conversations/{conversation_id}/messages',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Runs Confirm
+ *
+ * Approve or deny each pending call of a run that waits for confirmation; the run then continues.
+ */
+export const assistantRunsConfirm = <ThrowOnError extends boolean = false>(options: Options<AssistantRunsConfirmData, ThrowOnError>): RequestResult<AssistantRunsConfirmResponses, AssistantRunsConfirmErrors, ThrowOnError> => (options.client ?? client).post<AssistantRunsConfirmResponses, AssistantRunsConfirmErrors, ThrowOnError>({
+    url: '/api/v1/assistant/runs/{run_id}/confirmations',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
 
 /**
  * Settings Read
@@ -79,8 +116,36 @@ export const assistantSettingsRemoveChat = <ThrowOnError extends boolean = false
  * Settings Test
  *
  * Check the endpoint with one minimal request: reachable, key accepted, model found, tools accepted.
+ *
+ * Its model requests count in the usage overview as kind ``test`` (M2S-E08-01).
  */
 export const assistantSettingsTest = <ThrowOnError extends boolean = false>(options?: Options<AssistantSettingsTestData, ThrowOnError>): RequestResult<AssistantSettingsTestResponses, AssistantSettingsTestErrors, ThrowOnError> => (options?.client ?? client).post<AssistantSettingsTestResponses, AssistantSettingsTestErrors, ThrowOnError>({ url: '/api/v1/assistant/settings/test', ...options });
+
+/**
+ * Skills List
+ */
+export const assistantSkillsList = <ThrowOnError extends boolean = false>(options?: Options<AssistantSkillsListData, ThrowOnError>): RequestResult<AssistantSkillsListResponses, AssistantSkillsListErrors, ThrowOnError> => (options?.client ?? client).get<AssistantSkillsListResponses, AssistantSkillsListErrors, ThrowOnError>({ url: '/api/v1/assistant/skills', ...options });
+
+/**
+ * Skills Run
+ *
+ * Run a skill as the caller with exactly its tools; returns its text or structured output.
+ */
+export const assistantSkillsRun = <ThrowOnError extends boolean = false>(options: Options<AssistantSkillsRunData, ThrowOnError>): RequestResult<AssistantSkillsRunResponses, AssistantSkillsRunErrors, ThrowOnError> => (options.client ?? client).post<AssistantSkillsRunResponses, AssistantSkillsRunErrors, ThrowOnError>({
+    url: '/api/v1/assistant/skills/{skill_id}/runs',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Skills Latest
+ *
+ * The caller's last successful run of this skill.
+ */
+export const assistantSkillsLatest = <ThrowOnError extends boolean = false>(options: Options<AssistantSkillsLatestData, ThrowOnError>): RequestResult<AssistantSkillsLatestResponses, AssistantSkillsLatestErrors, ThrowOnError> => (options.client ?? client).get<AssistantSkillsLatestResponses, AssistantSkillsLatestErrors, ThrowOnError>({ url: '/api/v1/assistant/skills/{skill_id}/runs/latest', ...options });
 
 /**
  * Status
@@ -95,6 +160,13 @@ export const assistantStatus = <ThrowOnError extends boolean = false>(options?: 
  * Every agent tool of the enabled plugins, with whether the owner switched it off (owners only).
  */
 export const assistantToolsList = <ThrowOnError extends boolean = false>(options?: Options<AssistantToolsListData, ThrowOnError>): RequestResult<AssistantToolsListResponses, AssistantToolsListErrors, ThrowOnError> => (options?.client ?? client).get<AssistantToolsListResponses, AssistantToolsListErrors, ThrowOnError>({ url: '/api/v1/assistant/tools', ...options });
+
+/**
+ * Usage Read
+ *
+ * Requests and tokens per day, member, model or kind (owners only). Dates are inclusive, household time.
+ */
+export const assistantUsageRead = <ThrowOnError extends boolean = false>(options?: Options<AssistantUsageReadData, ThrowOnError>): RequestResult<AssistantUsageReadResponses, AssistantUsageReadErrors, ThrowOnError> => (options?.client ?? client).get<AssistantUsageReadResponses, AssistantUsageReadErrors, ThrowOnError>({ url: '/api/v1/assistant/usage', ...options });
 
 /**
  * Login

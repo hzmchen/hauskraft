@@ -86,6 +86,10 @@ export type ActivityActor = {
 export type ActivityItem = {
     actor: ActivityActor | null;
     /**
+     * Agentrunid
+     */
+    agentrunid?: string | null;
+    /**
      * Data
      */
     data: unknown;
@@ -279,6 +283,47 @@ export type Components = {
 };
 
 /**
+ * ConfirmationAnswer
+ */
+export type ConfirmationAnswer = {
+    /**
+     * Decisions
+     */
+    decisions: Array<Decision>;
+};
+
+/**
+ * ConfirmationOut
+ */
+export type ConfirmationOut = {
+    /**
+     * Args
+     */
+    args: {
+        [key: string]: unknown;
+    };
+    /**
+     * Id
+     *
+     * The tool call's id; answer it in POST /assistant/runs/{run_id}/confirmations.
+     */
+    id: string;
+    record: RecordRef | null;
+    /**
+     * Run Id
+     */
+    run_id: string;
+    /**
+     * Summary Key
+     */
+    summary_key: string | null;
+    /**
+     * Tool
+     */
+    tool: string;
+};
+
+/**
  * ConnectionChecks
  */
 export type ConnectionChecks = {
@@ -376,6 +421,20 @@ export type ConversationDetail = {
 };
 
 /**
+ * Cost
+ */
+export type Cost = {
+    /**
+     * Amount
+     */
+    amount: number;
+    /**
+     * Currency
+     */
+    currency?: 'EUR';
+};
+
+/**
  * Dashboard
  */
 export type Dashboard = {
@@ -429,6 +488,20 @@ export type DashboardCell = {
  * Ordered from least to most sensitive. ``max()`` of inputs gives the propagated taint.
  */
 export type DataClass = 'public' | 'household' | 'personal' | 'financial' | 'tenant' | 'child' | 'health' | 'secret';
+
+/**
+ * Decision
+ */
+export type Decision = {
+    /**
+     * Approve
+     */
+    approve: boolean;
+    /**
+     * Id
+     */
+    id: string;
+};
 
 /**
  * HTTPValidationError
@@ -632,6 +705,20 @@ export type MemberPatch = {
      */
     display_name?: string | null;
     role?: UserRole | null;
+};
+
+/**
+ * MessageIn
+ */
+export type MessageIn = {
+    /**
+     * Channel
+     */
+    channel?: 'text';
+    /**
+     * Text
+     */
+    text: string;
 };
 
 /**
@@ -861,6 +948,51 @@ export type RecordRef = {
 };
 
 /**
+ * RunOut
+ */
+export type RunOut = {
+    /**
+     * Channel
+     */
+    channel: 'text' | 'voice';
+    /**
+     * Error Code
+     */
+    error_code: string | null;
+    /**
+     * Id
+     */
+    id: string;
+    /**
+     * Kind
+     */
+    kind: 'chat' | 'skill' | 'test';
+    /**
+     * Status
+     */
+    status: 'running' | 'awaiting_confirmation' | 'done' | 'failed';
+};
+
+/**
+ * RunResult
+ */
+export type RunResult = {
+    /**
+     * Actions
+     */
+    actions: Array<ActionOut>;
+    /**
+     * Confirmations
+     */
+    confirmations: Array<ConfirmationOut>;
+    /**
+     * Messages
+     */
+    messages: Array<MessageOut>;
+    run: RunOut;
+};
+
+/**
  * SessionInfo
  *
  * One of the member's signed-in sessions (M1S-E05-02). Never the token, its hash or the IP address.
@@ -963,6 +1095,68 @@ export type SetupStatus = {
      * True while there is no account yet.
      */
     required: boolean;
+};
+
+/**
+ * SkillInfo
+ */
+export type SkillInfo = {
+    /**
+     * Description
+     */
+    description: string;
+    /**
+     * Id
+     */
+    id: string;
+    /**
+     * Name
+     */
+    name: string;
+    /**
+     * Output
+     */
+    output: 'text' | 'json';
+    /**
+     * Plugin Id
+     */
+    plugin_id: string;
+    /**
+     * Tools
+     */
+    tools: Array<string>;
+};
+
+/**
+ * SkillInput
+ */
+export type SkillInput = {
+    /**
+     * Text
+     */
+    text?: string | null;
+};
+
+/**
+ * SkillRun
+ */
+export type SkillRun = {
+    /**
+     * Created At
+     */
+    created_at: string;
+    /**
+     * Output
+     */
+    output: unknown;
+    run: RunOut;
+};
+
+/**
+ * SkillRunIn
+ */
+export type SkillRunIn = {
+    input?: SkillInput;
 };
 
 /**
@@ -1229,6 +1423,84 @@ export type ToolInfo = {
 };
 
 /**
+ * Usage
+ */
+export type Usage = {
+    /**
+     * From
+     */
+    from: string;
+    /**
+     * Group By
+     */
+    group_by: 'day' | 'user' | 'model' | 'kind';
+    /**
+     * Groups
+     */
+    groups: Array<UsageGroup>;
+    /**
+     * To
+     */
+    to: string;
+    totals: UsageTotals;
+};
+
+/**
+ * UsageGroup
+ */
+export type UsageGroup = {
+    /**
+     * Input Tokens
+     */
+    input_tokens: number;
+    /**
+     * Key
+     */
+    key: string;
+    /**
+     * Label
+     */
+    label: string;
+    /**
+     * Output Tokens
+     */
+    output_tokens: number;
+    /**
+     * Requests
+     */
+    requests: number;
+    /**
+     * Unknown Requests
+     */
+    unknown_requests: number;
+};
+
+/**
+ * UsageTotals
+ */
+export type UsageTotals = {
+    cost: Cost | null;
+    /**
+     * Input Tokens
+     */
+    input_tokens: number;
+    /**
+     * Output Tokens
+     */
+    output_tokens: number;
+    /**
+     * Requests
+     */
+    requests: number;
+    /**
+     * Unknown Requests
+     *
+     * Requests whose token counts the server didn't report.
+     */
+    unknown_requests: number;
+};
+
+/**
  * UserCreate
  */
 export type UserCreate = {
@@ -1386,6 +1658,52 @@ export type ActivityListResponses = {
 
 export type ActivityListResponse = ActivityListResponses[keyof ActivityListResponses];
 
+export type AssistantActionsUndoData = {
+    body?: never;
+    path: {
+        /**
+         * Action Id
+         */
+        action_id: string;
+    };
+    query?: never;
+    url: '/api/v1/assistant/actions/{action_id}/undo';
+};
+
+export type AssistantActionsUndoErrors = {
+    /**
+     * Unauthorized
+     */
+    401: unknown;
+    /**
+     * Forbidden
+     */
+    403: unknown;
+    /**
+     * Not Found
+     */
+    404: unknown;
+    /**
+     * Conflict
+     */
+    409: unknown;
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type AssistantActionsUndoError = AssistantActionsUndoErrors[keyof AssistantActionsUndoErrors];
+
+export type AssistantActionsUndoResponses = {
+    /**
+     * Successful Response
+     */
+    200: ActionOut;
+};
+
+export type AssistantActionsUndoResponse = AssistantActionsUndoResponses[keyof AssistantActionsUndoResponses];
+
 export type AssistantConversationsListData = {
     body?: never;
     path?: never;
@@ -1526,6 +1844,94 @@ export type AssistantConversationsReadResponses = {
 
 export type AssistantConversationsReadResponse = AssistantConversationsReadResponses[keyof AssistantConversationsReadResponses];
 
+export type AssistantConversationsMessageData = {
+    body: MessageIn;
+    path: {
+        /**
+         * Conversation Id
+         */
+        conversation_id: string;
+    };
+    query?: never;
+    url: '/api/v1/assistant/conversations/{conversation_id}/messages';
+};
+
+export type AssistantConversationsMessageErrors = {
+    /**
+     * Unauthorized
+     */
+    401: unknown;
+    /**
+     * Forbidden
+     */
+    403: unknown;
+    /**
+     * Not Found
+     */
+    404: unknown;
+    /**
+     * Conflict
+     */
+    409: unknown;
+    /**
+     * Unprocessable Content
+     */
+    422: unknown;
+};
+
+export type AssistantConversationsMessageResponses = {
+    /**
+     * Successful Response
+     */
+    200: RunResult;
+};
+
+export type AssistantConversationsMessageResponse = AssistantConversationsMessageResponses[keyof AssistantConversationsMessageResponses];
+
+export type AssistantRunsConfirmData = {
+    body: ConfirmationAnswer;
+    path: {
+        /**
+         * Run Id
+         */
+        run_id: string;
+    };
+    query?: never;
+    url: '/api/v1/assistant/runs/{run_id}/confirmations';
+};
+
+export type AssistantRunsConfirmErrors = {
+    /**
+     * Unauthorized
+     */
+    401: unknown;
+    /**
+     * Forbidden
+     */
+    403: unknown;
+    /**
+     * Not Found
+     */
+    404: unknown;
+    /**
+     * Conflict
+     */
+    409: unknown;
+    /**
+     * Unprocessable Content
+     */
+    422: unknown;
+};
+
+export type AssistantRunsConfirmResponses = {
+    /**
+     * Successful Response
+     */
+    200: RunResult;
+};
+
+export type AssistantRunsConfirmResponse = AssistantRunsConfirmResponses[keyof AssistantRunsConfirmResponses];
+
 export type AssistantSettingsReadData = {
     body?: never;
     path?: never;
@@ -1642,6 +2048,121 @@ export type AssistantSettingsTestResponses = {
 
 export type AssistantSettingsTestResponse = AssistantSettingsTestResponses[keyof AssistantSettingsTestResponses];
 
+export type AssistantSkillsListData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/v1/assistant/skills';
+};
+
+export type AssistantSkillsListErrors = {
+    /**
+     * Unauthorized
+     */
+    401: unknown;
+    /**
+     * Forbidden
+     */
+    403: unknown;
+};
+
+export type AssistantSkillsListResponses = {
+    /**
+     * Response Assistant Skills List
+     *
+     * Successful Response
+     */
+    200: Array<SkillInfo>;
+};
+
+export type AssistantSkillsListResponse = AssistantSkillsListResponses[keyof AssistantSkillsListResponses];
+
+export type AssistantSkillsRunData = {
+    body: SkillRunIn;
+    path: {
+        /**
+         * Skill Id
+         */
+        skill_id: string;
+    };
+    query?: never;
+    url: '/api/v1/assistant/skills/{skill_id}/runs';
+};
+
+export type AssistantSkillsRunErrors = {
+    /**
+     * Unauthorized
+     */
+    401: unknown;
+    /**
+     * Forbidden
+     */
+    403: unknown;
+    /**
+     * Not Found
+     */
+    404: unknown;
+    /**
+     * Conflict
+     */
+    409: unknown;
+    /**
+     * Unprocessable Content
+     */
+    422: unknown;
+};
+
+export type AssistantSkillsRunResponses = {
+    /**
+     * Successful Response
+     */
+    200: SkillRun;
+};
+
+export type AssistantSkillsRunResponse = AssistantSkillsRunResponses[keyof AssistantSkillsRunResponses];
+
+export type AssistantSkillsLatestData = {
+    body?: never;
+    path: {
+        /**
+         * Skill Id
+         */
+        skill_id: string;
+    };
+    query?: never;
+    url: '/api/v1/assistant/skills/{skill_id}/runs/latest';
+};
+
+export type AssistantSkillsLatestErrors = {
+    /**
+     * Unauthorized
+     */
+    401: unknown;
+    /**
+     * Forbidden
+     */
+    403: unknown;
+    /**
+     * Not Found
+     */
+    404: unknown;
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type AssistantSkillsLatestError = AssistantSkillsLatestErrors[keyof AssistantSkillsLatestErrors];
+
+export type AssistantSkillsLatestResponses = {
+    /**
+     * Successful Response
+     */
+    200: SkillRun;
+};
+
+export type AssistantSkillsLatestResponse = AssistantSkillsLatestResponses[keyof AssistantSkillsLatestResponses];
+
 export type AssistantStatusData = {
     body?: never;
     path?: never;
@@ -1697,6 +2218,50 @@ export type AssistantToolsListResponses = {
 };
 
 export type AssistantToolsListResponse = AssistantToolsListResponses[keyof AssistantToolsListResponses];
+
+export type AssistantUsageReadData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Group By
+         */
+        group_by?: 'day' | 'user' | 'model' | 'kind';
+        /**
+         * From
+         */
+        from?: string | null;
+        /**
+         * To
+         */
+        to?: string | null;
+    };
+    url: '/api/v1/assistant/usage';
+};
+
+export type AssistantUsageReadErrors = {
+    /**
+     * Unauthorized
+     */
+    401: unknown;
+    /**
+     * Forbidden
+     */
+    403: unknown;
+    /**
+     * Unprocessable Content
+     */
+    422: unknown;
+};
+
+export type AssistantUsageReadResponses = {
+    /**
+     * Successful Response
+     */
+    200: Usage;
+};
+
+export type AssistantUsageReadResponse = AssistantUsageReadResponses[keyof AssistantUsageReadResponses];
 
 export type AuthLoginData = {
     body: LoginIn;

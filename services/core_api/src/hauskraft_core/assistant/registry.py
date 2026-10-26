@@ -32,7 +32,8 @@ class RegisteredTool:
 
 
 class ToolRegistry:
-    def __init__(self, tools: Iterable[RegisteredTool]) -> None:
+    def __init__(self, tools: Iterable[RegisteredTool], guidance: dict[str, str] | None = None) -> None:
+        self.guidance = dict(guidance or {})  # plugin id -> contributes.agent_guidance
         agent_tools = [t for t in tools if t.spec.agent]
         self._tools = sorted(agent_tools, key=lambda t: (t.plugin_id, t.spec.name))
         self._by_wire = {t.spec.wire_name: t for t in self._tools}
@@ -41,11 +42,16 @@ class ToolRegistry:
     @classmethod
     def from_plugins(cls, plugins: dict[str, Any]) -> ToolRegistry:
         """Build from the loader's ``app.state.plugins``."""
+        loaded = [p for p in plugins.values() if p.registration is not None]
         return cls(
-            RegisteredTool(spec, plugin.id, plugin.context)
-            for plugin in plugins.values()
-            if plugin.registration is not None
-            for spec in plugin.registration.tools
+            (
+                RegisteredTool(spec, plugin.id, plugin.context)
+                for plugin in loaded
+                for spec in plugin.registration.tools
+            ),
+            guidance={
+                p.id: text for p in loaded if (text := (p.manifest.get("contributes") or {}).get("agent_guidance"))
+            },
         )
 
     def all(self) -> list[RegisteredTool]:

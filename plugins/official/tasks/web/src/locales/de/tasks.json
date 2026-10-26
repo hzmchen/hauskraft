@@ -74,7 +74,29 @@
     },
     "delete": {
       "done": "Aufgabe „{{label}}“ gelöscht",
-      "confirm": "Aufgabe „{{label}}“ löschen?"
+      "confirm": "Aufgabe „{{label}}“ löschen?",
+      "approve": "Löschen"
     }
+  },
+  "from_text": {
+    "button": "Aus Text hinzufügen",
+    "title": "Aufgaben aus Text hinzufügen",
+    "description": "Füge eine Notiz ein; der Assistent schlägt Aufgaben vor und du wählst aus.",
+    "text": "Text",
+    "suggest": "Aufgaben vorschlagen",
+    "suggested": "Vorgeschlagene Aufgaben",
+    "add_one": "{{count}} Aufgabe hinzufügen",
+    "add_other": "{{count}} Aufgaben hinzufügen",
+    "cancel": "Abbrechen",
+    "nothing": "In diesem Text stehen keine Aufgaben.",
+    "failed": "Der Assistent konnte keine Aufgaben vorschlagen. Versuch es noch einmal."
+  },
+  "overview": {
+    "title": "Wochenüberblick",
+    "create": "Jetzt erstellen",
+    "created": "Erstellt {{when}}",
+    "empty": "Noch kein Überblick.",
+    "unavailable": "Der Assistent ist nicht eingerichtet.",
+    "failed": "Der Überblick konnte nicht erstellt werden. Versuch es noch einmal."
   }
 }
