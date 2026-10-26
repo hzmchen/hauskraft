@@ -514,7 +514,7 @@
       "acceptance": "suite"
     },
     "M2S-E09-01": {
-      "status": "red",
+      "status": "green",
       "acceptance": "suite"
     },
     "M2S-E09-02": {
