@@ -106,6 +106,15 @@ fresh-up:
 fake-llm-reset:
     curl -fsS -X POST http://localhost:8090/_reset
 
+# Real-model evals of the assistant against HAUSKRAFT_EVAL_* (costs money; evals/README.md, M2S-E09-01).
+# `just eval [dataset…] [--repeat N]`; `just eval --check` validates the datasets without calling a model.
+eval *args:
+    PYTHONPATH=evals uv run python -m hauskraft_evals run {{ args }}
+
+# Compare an eval report with a baseline: pass rates and tokens (M2S-E09-01)
+eval-compare report baseline:
+    PYTHONPATH=evals uv run python -m hauskraft_evals compare {{ report }} {{ baseline }}
+
 # Empty the fresh stack: remove its containers and database volume, then start it again
 fresh-reset:
     docker compose -p hauskraft-fresh -f compose.yaml -f deploy/compose/compose.fresh.yaml down -v
