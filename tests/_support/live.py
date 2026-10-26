@@ -176,7 +176,7 @@ def reset_fresh_stack() -> None:
 
 
 # ---------------------------------------------------------------- M2*: the fake model (tests/fixtures/fake-llm/)
-def fake_requests(contains: str = "", limit: int = 100) -> list[dict[str, Any]]:
+def fake_requests(contains: str = "", limit: int = 100_000) -> list[dict[str, Any]]:
     """Requests the fake model received whose messages contain ``contains``, oldest first."""
     try:
         r = httpx.get(f"{FAKE_LLM_ADMIN_URL}/_requests", params={"contains": contains, "limit": limit}, timeout=5)
