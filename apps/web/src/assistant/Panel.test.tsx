@@ -108,6 +108,31 @@ describe("assistant panel (M2S-E06)", () => {
     expect(document.activeElement).toBe(button);
   });
 
+  it("appears only with its chat list loaded, so it never shows an empty list first", async () => {
+    let release = () => {};
+    const loaded = new Promise<void>((resolve) => (release = resolve));
+    const chat = { id: CHAT, title: "Groceries", created_at: now, updated_at: now };
+    start({
+      "GET /api/v1/assistant/conversations": async () => {
+        await loaded;
+        return json([chat]);
+      },
+    });
+    await userEvent.click(await screen.findByRole("button", { name: "Assistant" }));
+    expect(screen.queryByRole("complementary", { name: "Assistant" })).toBeNull();
+    release();
+    const chats = within(await screen.findByRole("complementary", { name: "Assistant" })).getByRole("list", {
+      name: "Chats",
+    });
+    expect(within(chats).getByRole("button", { name: "Groceries" })).toBeDefined();
+  });
+
+  it("still opens when the chat list can't be read", async () => {
+    start({ "GET /api/v1/assistant/conversations": () => problem(500, "internal") });
+    await userEvent.click(await screen.findByRole("button", { name: "Assistant" }));
+    expect(await screen.findByRole("complementary", { name: "Assistant" })).toBeDefined();
+  });
+
   it("sends a message and shows the answer and an action card with Undo", async () => {
     const sent = start();
     await userEvent.click(await screen.findByRole("button", { name: "Assistant" }));
