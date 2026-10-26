@@ -71,7 +71,9 @@ export function AssistantPanel() {
   const { open, setOpen, buttonRef, headerRef } = usePanel();
   const available = useAssistantAvailable();
   const headerBottom = useBottomEdge(headerRef);
-  if (!available || !open) return null;
+  // The panel appears with its chat list loaded, never with an empty list first (an error still opens it).
+  const chats = useQuery({ ...assistantConversationsListOptions(), enabled: available && open });
+  if (!available || !open || !chats.isFetched) return null;
   function close() {
     setOpen(false);
     buttonRef.current?.focus();
