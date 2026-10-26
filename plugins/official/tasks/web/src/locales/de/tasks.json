@@ -74,7 +74,8 @@
     },
     "delete": {
       "done": "Aufgabe „{{label}}“ gelöscht",
-      "confirm": "Aufgabe „{{label}}“ löschen?"
+      "confirm": "Aufgabe „{{label}}“ löschen?",
+      "approve": "Löschen"
     }
   }
 }

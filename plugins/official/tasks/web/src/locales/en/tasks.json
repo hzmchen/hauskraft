@@ -74,7 +74,8 @@
     },
     "delete": {
       "done": "Deleted task '{{label}}'",
-      "confirm": "Delete task '{{label}}'?"
+      "confirm": "Delete task '{{label}}'?",
+      "approve": "Delete"
     }
   }
 }
