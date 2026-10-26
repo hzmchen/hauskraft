@@ -28,6 +28,7 @@ dev = [
     "types-jsonschema~=4.26",
     "schemathesis~=4.32",  # API fuzzing in the contract job (M0S-E03-05)
     "types-defusedxml~=0.7.0",
+    "pydantic-evals~=2.61",  # on-demand real-model evals of the assistant (M2S-E09-01, ADR 0022)
 ]
 
 # ---------------------------------------------------------------- ruff (M0S-E01-02)
