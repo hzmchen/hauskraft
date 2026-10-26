@@ -1,0 +1,129 @@
+# SPDX-License-Identifier: MIT
+# Chatting about tasks (M2S-E09-02): add, find, complete, rename and reschedule, in English and German.
+# Today is Monday, 2 November 2026, in Europe/Berlin, in every case.
+name: chat-tasks
+threshold: 0.9
+repeat: 3
+cases:
+  - name: adds a task
+    fixture: { tasks: [], today: 2026-11-02, timezone: Europe/Berlin, language: en }
+    input: { message: "Add 'Buy milk'" }
+    expect:
+      tool_calls: [{ name: tasks.create, args: { title: Buy milk } }]
+      state: { exists: [Buy milk], count: 1 }
+      answer_language: en
+
+  - name: adds a task due tomorrow
+    fixture: { tasks: [], today: 2026-11-02, timezone: Europe/Berlin, language: en }
+    input: { message: "Add 'Call the plumber', due tomorrow" }
+    expect:
+      tool_calls: [{ name: tasks.create, args: { title: Call the plumber, due_on: "2026-11-03" } }]
+      state: { exists: [Call the plumber] }
+
+  - name: reads a weekday as the coming one
+    fixture: { tasks: [], today: 2026-11-02, timezone: Europe/Berlin, language: en }
+    input: { message: "Add 'Take out the bins' for Friday" }
+    expect:
+      tool_calls: [{ name: tasks.create, args: { title: Take out the bins, due_on: "2026-11-06" } }]
+
+  - name: adds two tasks from one message
+    fixture: { tasks: [], today: 2026-11-02, timezone: Europe/Berlin, language: en }
+    input: { message: "Add 'Buy milk' and 'Buy bread'" }
+    expect:
+      state: { exists: [Buy milk, Buy bread], count: 2 }
+
+  - name: lists what is still open
+    fixture:
+      tasks:
+        - { title: Buy milk }
+        - { title: Plan the garden, done: true }
+        - { title: Water the plants }
+      today: 2026-11-02
+      timezone: Europe/Berlin
+      language: en
+    input: { message: "What is still open?" }
+    expect:
+      tool_calls: [{ name: tasks.list }]
+      no_tool_calls: [tasks.create, tasks.update, tasks.delete]
+      answer_contains: ["milk", "water"]
+
+  - name: finds what is overdue
+    fixture:
+      tasks:
+        - { title: Pay the electricity bill, due_on: 2026-10-30 }
+        - { title: Book the dentist, due_on: 2026-11-04 }
+      today: 2026-11-02
+      timezone: Europe/Berlin
+      language: en
+    input: { message: "Is anything overdue?" }
+    expect:
+      tool_calls: [{ name: tasks.list }]
+      no_tool_calls: [tasks.create, tasks.update, tasks.delete]
+      answer_contains: ["electricity"]
+
+  - name: completes a task
+    fixture:
+      tasks: [{ title: Buy milk }, { title: Water the plants }]
+      today: 2026-11-02
+      timezone: Europe/Berlin
+      language: en
+    input: { message: "Mark 'Water the plants' as done" }
+    expect:
+      tool_calls: [{ name: tasks.update, args: { done: true } }]
+      state: { done: [Water the plants], open: [Buy milk] }
+
+  - name: renames a task
+    fixture: { tasks: [{ title: Buy milk }], today: 2026-11-02, timezone: Europe/Berlin, language: en }
+    input: { message: "Rename 'Buy milk' to 'Buy oat milk'" }
+    expect:
+      tool_calls: [{ name: tasks.update, args: { title: Buy oat milk } }]
+      state: { exists: [Buy oat milk], missing: [Buy milk] }
+
+  - name: moves a due date
+    fixture:
+      tasks: [{ title: Pay rent, due_on: 2026-11-05 }]
+      today: 2026-11-02
+      timezone: Europe/Berlin
+      language: en
+    input: { message: "Move 'Pay rent' to 10 November" }
+    expect:
+      tool_calls: [{ name: tasks.update, args: { due_on: "2026-11-10" } }]
+      state: { exists: [Pay rent], count: 1 }
+
+  - name: does not invent tasks
+    fixture: { tasks: [], today: 2026-11-02, timezone: Europe/Berlin, language: en }
+    input: { message: "What do I have to do today?" }
+    expect:
+      tool_calls: [{ name: tasks.list }]
+      no_tool_calls: [tasks.create, tasks.update, tasks.delete]
+      state: { count: 0 }
+
+  - name: asks when a request is ambiguous
+    fixture:
+      tasks: [{ title: Buy milk }, { title: Buy bread }]
+      today: 2026-11-02
+      timezone: Europe/Berlin
+      language: en
+    input: { message: "Mark the buy task as done" }
+    expect:
+      state: { open: [Buy milk, Buy bread] }
+      answer_contains: ['\?']
+
+  - name: adds a task in German
+    fixture: { tasks: [], today: 2026-11-02, timezone: Europe/Berlin, language: de }
+    input: { message: "Füge 'Milch kaufen' hinzu, fällig morgen" }
+    expect:
+      tool_calls: [{ name: tasks.create, args: { title: Milch kaufen, due_on: "2026-11-03" } }]
+      answer_language: de
+
+  - name: lists open tasks in German
+    fixture:
+      tasks: [{ title: Fenster putzen }, { title: Steuererklärung abgeben }]
+      today: 2026-11-02
+      timezone: Europe/Berlin
+      language: de
+    input: { message: "Was steht noch an?" }
+    expect:
+      tool_calls: [{ name: tasks.list }]
+      answer_contains: ["Fenster", "Steuer"]
+      answer_language: de

@@ -1,0 +1,89 @@
+# SPDX-License-Identifier: MIT
+# The weekly overview (M2S-E09-02): overdue first, then the coming week, short, in the person's language. The judge
+# grades only what the deterministic checks can't: whether it reads like a useful short note.
+# Today is Monday, 2 November 2026, in Europe/Berlin.
+name: weekly-overview
+threshold: 0.9
+repeat: 3
+cases:
+  - name: overdue first, then the week
+    fixture:
+      tasks:
+        - { title: Pay the electricity bill, due_on: 2026-10-30 }
+        - { title: Book the dentist, due_on: 2026-11-04 }
+        - { title: Clean the gutters }
+      today: 2026-11-02
+      timezone: Europe/Berlin
+      language: en
+    input: { skill: tasks.weekly-overview }
+    expect:
+      tool_calls: [{ name: tasks.list }]
+      answer_contains: ["(?s)electricity.*dentist"]
+      answer_language: en
+
+  - name: an empty list says so
+    fixture: { tasks: [], today: 2026-11-02, timezone: Europe/Berlin, language: en }
+    input: { skill: tasks.weekly-overview }
+    expect:
+      no_tool_calls: [tasks.create, tasks.update, tasks.delete]
+      answer_contains: ["(?i)(nothing|no (open )?tasks|all (done|clear)|free|clear)"]
+
+  - name: done tasks are left out
+    fixture:
+      tasks:
+        - { title: Paint the fence, done: true, due_on: 2026-11-03 }
+        - { title: Fix the bike, due_on: 2026-11-03 }
+      today: 2026-11-02
+      timezone: Europe/Berlin
+      language: en
+    input: { skill: tasks.weekly-overview }
+    expect:
+      answer_contains: ["bike", "(?s)^(?!.*fence)"]
+
+  - name: in German
+    fixture:
+      tasks: [{ title: Steuererklärung abgeben, due_on: 2026-11-05 }, { title: Fenster putzen }]
+      today: 2026-11-02
+      timezone: Europe/Berlin
+      language: de
+    input: { skill: tasks.weekly-overview }
+    expect:
+      answer_contains: ["Steuererklärung"]
+      answer_language: de
+
+  - name: a long list stays short
+    fixture:
+      tasks:
+        - { title: Renew the car insurance, due_on: 2026-11-03 }
+        - { title: Sort the photos }
+        - { title: Fix the shelf }
+        - { title: Clear out the garage }
+        - { title: Repaint the bathroom }
+        - { title: Sell the old bike }
+        - { title: Plant the tulip bulbs }
+        - { title: Back up the laptop }
+      today: 2026-11-02
+      timezone: Europe/Berlin
+      language: en
+    input: { skill: tasks.weekly-overview }
+    expect:
+      answer_contains: ["insurance"]
+      judge: >-
+        The overview is short (under about 120 words), names the car insurance due tomorrow before anything else,
+        and mentions at most three of the undated tasks instead of listing all of them.
+
+  - name: reads like a note to the family
+    fixture:
+      tasks:
+        - { title: Return the library books, due_on: 2026-10-31 }
+        - { title: Buy a birthday present for Sam, due_on: 2026-11-07 }
+        - { title: Book the car service }
+      today: 2026-11-02
+      timezone: Europe/Berlin
+      language: en
+    input: { skill: tasks.weekly-overview }
+    expect:
+      answer_contains: ["library", "(?i)birthday|present"]
+      judge: >-
+        The overview reads like a short, friendly note to a family member. It says the library books are overdue,
+        mentions Sam's present for Saturday, invents no tasks or dates, and does not offer to do things itself.
