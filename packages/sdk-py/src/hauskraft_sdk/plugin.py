@@ -4,16 +4,19 @@
 from __future__ import annotations
 
 import logging
-from collections.abc import Awaitable, Callable, Mapping
+from collections.abc import Awaitable, Callable, Mapping, Sequence
 from contextlib import AbstractAsyncContextManager
 from dataclasses import dataclass, field
-from typing import Any, Literal, Protocol, runtime_checkable
+from typing import TYPE_CHECKING, Any, Literal, Protocol, runtime_checkable
 
 from fastapi import APIRouter
 from sqlalchemy import MetaData
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from hauskraft_sdk.data_classes import DataClass
+
+if TYPE_CHECKING:
+    from hauskraft_sdk.tools import ToolSpec
 
 HAUSKRAFT_API_VERSION = "0.1.0"
 
@@ -82,6 +85,8 @@ class PluginRegistration:
     metadata: MetaData | None = None
     seed: SeedFunction | None = None
     extra: Mapping[str, Any] = field(default_factory=dict)
+    tools: Sequence[ToolSpec] = ()
+    """Agent tools (M2*, ADR 0019); each must also be listed in the manifest's ``contributes.tools``."""
 
 
 @runtime_checkable

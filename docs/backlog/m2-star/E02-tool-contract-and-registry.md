@@ -23,12 +23,12 @@ permitted set of tools (spec §5.3, §8.0, ADR 0019).
 `contributes.skills[]` items are `{id, path}` (`id` matches `^[a-z][a-z0-9-]*$`; `path` is relative, ends in
 `SKILL.md`, no `..`). `contributes.agent_guidance` is a string of at most 600 characters.
 
-**Code:** `hauskraft_sdk.tools.ToolSpec(name, description, input_model, output_model, handler, annotations, data_class,
-permission, agent=True, undo=None, preview=None)`, returned in `PluginRegistration.tools`. The handler is
-`async (ctx, actor, args) -> output` and calls the plugin's service functions. An output may carry
-`record = {type, id, label}` and `summary_key` (an i18n key of the plugin, e.g. `tasks:tool.create.done`) for
-action cards. `undo` (optional) builds the inverse call from the output;
-`preview` (optional) resolves a record for confirmation cards.
+**Code:** `hauskraft_sdk.tools.ToolSpec(name, description, input_model, handler, permission, data_class, annotations,
+agent=True, preview=None)`, returned in `PluginRegistration.tools`. The handler is `async (ctx, actor, args) ->
+ToolOutcome` and calls the plugin's service functions. `ToolOutcome(output, record, summary_key, undo)`: `output` goes
+back to the model; `record = RecordRef(type, id, label)` and `summary_key` (an i18n key of the plugin, e.g.
+`tasks:tool.create.done`) feed action cards; `undo = UndoCall(tool, args)` is the inverse call, built by the handler,
+which knows the previous values. `preview` (optional) resolves a record for confirmation cards.
 
 **Wire format:** the tool is sent to models as a Chat Completions function named with `_` instead of `.`
 (`tasks_create`); its `parameters` are the input model's JSON schema, flat (the arguments object is the input model).

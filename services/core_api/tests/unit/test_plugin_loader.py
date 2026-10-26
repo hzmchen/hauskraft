@@ -197,7 +197,7 @@ plugin = _Plugin()
 """
 ECHO = (
     'ToolSpec(name="{{short}}.echo", description="Echo the text.", input_model=Args, handler=handle, '
-    'annotations=ToolAnnotations(read_only=True, destructive=False, idempotent=True, open_world=False), '
+    "annotations=ToolAnnotations(read_only=True, destructive=False, idempotent=True, open_world=False), "
     'permission="task.read", data_class="household")'
 )
 ECHO_MANIFEST = {
@@ -209,8 +209,11 @@ ECHO_MANIFEST = {
 
 
 def test_tools_matching_the_manifest_are_registered(tmp_path: Path, plugin_dir: Callable[..., str]) -> None:
-    pid = plugin_dir(prefix="/echo", code=TOOL_CODE.replace("{tools}", ECHO), contributes={
-        "widgets": [], "pages": [], "tools": [{"name": "SHORT.echo", **ECHO_MANIFEST}]})
+    pid = plugin_dir(
+        prefix="/echo",
+        code=TOOL_CODE.replace("{tools}", ECHO),
+        contributes={"widgets": [], "pages": [], "tools": [{"name": "SHORT.echo", **ECHO_MANIFEST}]},
+    )
     _fix_short_names(tmp_path, pid)
     app = _app(tmp_path)
     loaded = app.state.plugins[pid]
@@ -228,16 +231,20 @@ def test_a_tool_missing_from_the_manifest_is_a_load_error(tmp_path: Path, plugin
 
 
 def test_annotations_must_agree(tmp_path: Path, plugin_dir: Callable[..., str]) -> None:
-    pid = plugin_dir(prefix="/echo3", code=TOOL_CODE.replace("{tools}", ECHO), contributes={
-        "widgets": [], "pages": [], "tools": [{"name": "SHORT.echo", **ECHO_MANIFEST, "annotations": {}}]})
+    pid = plugin_dir(
+        prefix="/echo3",
+        code=TOOL_CODE.replace("{tools}", ECHO),
+        contributes={"widgets": [], "pages": [], "tools": [{"name": "SHORT.echo", **ECHO_MANIFEST, "annotations": {}}]},
+    )
     _fix_short_names(tmp_path, pid)
     app = _app(tmp_path)
     assert "annotations" in (app.state.plugins[pid].load_error or "")
 
 
 def test_hidden_manifest_tools_need_no_code(tmp_path: Path, plugin_dir: Callable[..., str]) -> None:
-    pid = plugin_dir(prefix="/echo4", contributes={
-        "widgets": [], "pages": [], "tools": [{"name": "SHORT.reindex", "agent": False}]})
+    pid = plugin_dir(
+        prefix="/echo4", contributes={"widgets": [], "pages": [], "tools": [{"name": "SHORT.reindex", "agent": False}]}
+    )
     _fix_short_names(tmp_path, pid)
     assert _app(tmp_path).state.plugins[pid].load_error is None
 
