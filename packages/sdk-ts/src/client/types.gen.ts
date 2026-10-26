@@ -75,6 +75,126 @@ export type ActivityItem = {
 };
 
 /**
+ * AssistantChatPatch
+ */
+export type AssistantChatPatch = {
+    /**
+     * Api Key
+     *
+     * Write-only.
+     */
+    api_key?: string | null;
+    /**
+     * Base Url
+     */
+    base_url?: string | null;
+    /**
+     * Locality
+     */
+    locality?: 'cloud' | 'local' | null;
+    max_data_class?: DataClass | null;
+    /**
+     * Max Tokens
+     */
+    max_tokens?: number | null;
+    /**
+     * Model
+     */
+    model?: string | null;
+    /**
+     * Parallel Tool Calls
+     */
+    parallel_tool_calls?: boolean | null;
+    /**
+     * Temperature
+     */
+    temperature?: number | null;
+};
+
+/**
+ * AssistantChatSettings
+ */
+export type AssistantChatSettings = {
+    /**
+     * Api Key Hint
+     *
+     * The saved key's last four characters; the key itself is never returned.
+     */
+    api_key_hint: string | null;
+    /**
+     * Api Key Set
+     */
+    api_key_set: boolean;
+    /**
+     * Api Key Status
+     */
+    api_key_status: 'ok' | 'missing' | 'needs_reentry';
+    /**
+     * Base Url
+     */
+    base_url: string | null;
+    /**
+     * Locality
+     */
+    locality: 'cloud' | 'local';
+    max_data_class: DataClass;
+    /**
+     * Max Tokens
+     */
+    max_tokens: number | null;
+    /**
+     * Model
+     */
+    model: string | null;
+    /**
+     * Parallel Tool Calls
+     */
+    parallel_tool_calls: boolean | null;
+    /**
+     * Temperature
+     */
+    temperature: number | null;
+};
+
+/**
+ * AssistantSettings
+ */
+export type AssistantSettings = {
+    chat: AssistantChatSettings;
+    /**
+     * Configured
+     */
+    configured: boolean;
+    prices: Prices;
+    /**
+     * Tools Disabled
+     */
+    tools_disabled: Array<string>;
+};
+
+/**
+ * AssistantSettingsPatch
+ */
+export type AssistantSettingsPatch = {
+    chat?: AssistantChatPatch | null;
+    prices?: PricesPatch | null;
+    /**
+     * Tools Disabled
+     */
+    tools_disabled?: Array<string> | null;
+};
+
+/**
+ * AssistantStatus
+ */
+export type AssistantStatus = {
+    /**
+     * Available
+     */
+    available: boolean;
+};
+
+/**
  * ButtonVariants
  */
 export type ButtonVariants = {
@@ -168,6 +288,13 @@ export type DashboardCell = {
      */
     y: number;
 };
+
+/**
+ * DataClass
+ *
+ * Ordered from least to most sensitive. ``max()`` of inputs gives the propagated taint.
+ */
+export type DataClass = 'public' | 'household' | 'personal' | 'financial' | 'tenant' | 'child' | 'health' | 'secret';
 
 /**
  * HTTPValidationError
@@ -507,6 +634,38 @@ export type PluginToggled = {
      * Version
      */
     version: string;
+};
+
+/**
+ * Prices
+ */
+export type Prices = {
+    /**
+     * Currency
+     */
+    currency?: 'EUR';
+    /**
+     * Input Per Million
+     */
+    input_per_million: number | null;
+    /**
+     * Output Per Million
+     */
+    output_per_million: number | null;
+};
+
+/**
+ * PricesPatch
+ */
+export type PricesPatch = {
+    /**
+     * Input Per Million
+     */
+    input_per_million?: number | null;
+    /**
+     * Output Per Million
+     */
+    output_per_million?: number | null;
 };
 
 /**
@@ -990,6 +1149,118 @@ export type ActivityListResponses = {
 };
 
 export type ActivityListResponse = ActivityListResponses[keyof ActivityListResponses];
+
+export type AssistantSettingsReadData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/v1/assistant/settings';
+};
+
+export type AssistantSettingsReadErrors = {
+    /**
+     * Unauthorized
+     */
+    401: unknown;
+    /**
+     * Forbidden
+     */
+    403: unknown;
+};
+
+export type AssistantSettingsReadResponses = {
+    /**
+     * Successful Response
+     */
+    200: AssistantSettings;
+};
+
+export type AssistantSettingsReadResponse = AssistantSettingsReadResponses[keyof AssistantSettingsReadResponses];
+
+export type AssistantSettingsUpdateData = {
+    body: AssistantSettingsPatch;
+    path?: never;
+    query?: never;
+    url: '/api/v1/assistant/settings';
+};
+
+export type AssistantSettingsUpdateErrors = {
+    /**
+     * Unauthorized
+     */
+    401: unknown;
+    /**
+     * Forbidden
+     */
+    403: unknown;
+    /**
+     * Unprocessable Content
+     */
+    422: unknown;
+};
+
+export type AssistantSettingsUpdateResponses = {
+    /**
+     * Successful Response
+     */
+    200: AssistantSettings;
+};
+
+export type AssistantSettingsUpdateResponse = AssistantSettingsUpdateResponses[keyof AssistantSettingsUpdateResponses];
+
+export type AssistantSettingsRemoveChatData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/v1/assistant/settings/chat';
+};
+
+export type AssistantSettingsRemoveChatErrors = {
+    /**
+     * Unauthorized
+     */
+    401: unknown;
+    /**
+     * Forbidden
+     */
+    403: unknown;
+};
+
+export type AssistantSettingsRemoveChatResponses = {
+    /**
+     * Successful Response
+     */
+    204: void;
+};
+
+export type AssistantSettingsRemoveChatResponse = AssistantSettingsRemoveChatResponses[keyof AssistantSettingsRemoveChatResponses];
+
+export type AssistantStatusData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/v1/assistant/status';
+};
+
+export type AssistantStatusErrors = {
+    /**
+     * Unauthorized
+     */
+    401: unknown;
+    /**
+     * Forbidden
+     */
+    403: unknown;
+};
+
+export type AssistantStatusResponses = {
+    /**
+     * Successful Response
+     */
+    200: AssistantStatus;
+};
+
+export type AssistantStatusResponse = AssistantStatusResponses[keyof AssistantStatusResponses];
 
 export type AuthLoginData = {
     body: LoginIn;

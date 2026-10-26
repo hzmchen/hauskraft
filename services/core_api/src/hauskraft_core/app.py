@@ -80,6 +80,7 @@ def build_api_router() -> APIRouter:
     """Core routers; later stories add auth, users, plugins, themes, activity and dashboards."""
     from hauskraft_core import health
     from hauskraft_core.activity import router as activity
+    from hauskraft_core.assistant import router as assistant
     from hauskraft_core.auth import router as auth
     from hauskraft_core.dashboard import router as dashboard
     from hauskraft_core.household import router as household
@@ -98,6 +99,7 @@ def build_api_router() -> APIRouter:
     router.include_router(dashboard.router)
     router.include_router(household.router)
     router.include_router(setup.router)
+    router.include_router(assistant.router)
     return router
 
 

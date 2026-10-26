@@ -162,6 +162,15 @@ class HouseholdChangedData(_Strict):
     changes: HouseholdChanges
 
 
+SettingPath = Annotated[str, StringConstraints(pattern=r"^[a-z_]+(\.[a-z_]+)*$")]
+
+
+class AssistantChangedData(_Strict):
+    """Data of hauskraft.settings.assistant_changed (M2S-E03-02): changed field paths, never values (ADR 0021)."""
+
+    changed: Annotated[list[SettingPath], Field(min_length=1)]
+
+
 DATA_MODELS: dict[str, type[BaseModel]] = {
     "hauskraft.task.created": TaskCreatedData,
     "hauskraft.task.updated": TaskUpdatedData,
@@ -176,6 +185,7 @@ DATA_MODELS: dict[str, type[BaseModel]] = {
     "hauskraft.user.password_reset": UserData,
     "hauskraft.user.password_changed": UserData,
     "hauskraft.settings.household_changed": HouseholdChangedData,
+    "hauskraft.settings.assistant_changed": AssistantChangedData,
 }
 
 DATA_SCHEMA_URL = "https://hauskraft.dev/schema/events/{suffix}/v1.json"
