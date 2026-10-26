@@ -44,11 +44,13 @@ export const DEMO_SESSION = {
   csrf_token: "csrf-123",
   expires_at: "2099-01-01T00:00:00Z",
   permissions: [
+    "assistant.use",
     "dashboard.layout.set",
     "session.create",
     "session.revoke",
     "task.create",
     "task.delete",
+    "task.read",
     "task.update",
     "user.change_password",
     "user.update_self",
@@ -61,6 +63,8 @@ export const OWNER_SESSION = {
   user: { ...DEMO_SESSION.user, role: "owner" },
   permissions: [
     ...DEMO_SESSION.permissions,
+    "assistant.configure",
+    "assistant.usage.read",
     "plugin.toggle",
     "settings.household.set",
     "settings.theme.set",
