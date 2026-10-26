@@ -173,8 +173,13 @@
         "skills": {
           "type": "array",
           "items": {
-            "type": "object"
+            "$ref": "#/$defs/skill"
           }
+        },
+        "agent_guidance": {
+          "description": "Short English guidance for models, included in the system prompt while the plugin's tools are offered (spec §5.3).",
+          "type": "string",
+          "maxLength": 600
         },
         "workflows": {
           "type": "array",
@@ -406,15 +411,25 @@
       }
     },
     "tool": {
+      "description": "An agent tool (spec §5.3, ADR 0019). The plugin registers the same tool in code (hauskraft_sdk.tools.ToolSpec); it is sent to models as name with '_' for '.'.",
       "type": "object",
       "required": ["name"],
+      "additionalProperties": false,
       "properties": {
         "name": {
           "type": "string",
-          "minLength": 1
+          "pattern": "^[a-z][a-z0-9_]*\\.[a-z][a-z0-9_]*$"
+        },
+        "description": {
+          "description": "English, written for models.",
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 400
         },
         "annotations": {
+          "description": "Missing values count as read_only=false, idempotent=false, destructive=true, open_world=true.",
           "type": "object",
+          "additionalProperties": false,
           "properties": {
             "read_only": {
               "type": "boolean"
@@ -430,8 +445,48 @@
             }
           }
         },
+        "data_class": {
+          "$ref": "https://hauskraft.dev/schema/common/1.0.json#/$defs/dataClass"
+        },
+        "permission": {
+          "description": "The action in the permission table (ADR 0016), e.g. task.create.",
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]*(\\.[a-z][a-z0-9_]*)+$"
+        },
+        "agent": {
+          "description": "false keeps the tool away from agents.",
+          "type": "boolean",
+          "default": true
+        },
         "verify": {
           "type": "object"
+        }
+      },
+      "if": {
+        "required": ["agent"],
+        "properties": {
+          "agent": {
+            "const": false
+          }
+        }
+      },
+      "else": {
+        "required": ["description"]
+      }
+    },
+    "skill": {
+      "description": "A SKILL.md bundle (ADR 0023).",
+      "type": "object",
+      "required": ["id", "path"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9-]*$"
+        },
+        "path": {
+          "type": "string",
+          "pattern": "^(?!/)(?!.*(^|/)\\.\\.(/|$)).*SKILL\\.md$"
         }
       }
     },

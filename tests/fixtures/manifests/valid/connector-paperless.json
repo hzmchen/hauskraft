@@ -64,6 +64,7 @@
     "tools": [
       {
         "name": "paperless.search",
+        "description": "Search the household's documents by text, tag or correspondent.",
         "annotations": {
           "read_only": true,
           "open_world": false
@@ -71,6 +72,7 @@
       },
       {
         "name": "paperless.tag_document",
+        "description": "Add a tag to a document.",
         "annotations": {
           "read_only": false,
           "destructive": false,

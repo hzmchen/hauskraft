@@ -9,3 +9,19 @@ services:
     volumes:
       # Relative to the project directory (the repository root), where `-f` overlays resolve paths.
       - ./tests/fixtures/themes:/fixtures/themes:ro
+
+  # The fake OpenAI-compatible model for assistant tests (M2S-E01-01, ADR 0022): standard library only, answers from
+  # tests/fixtures/fake-llm/scenarios.json and records requests. The API reaches it as http://fake-llm:8090/v1; the
+  # tests read recorded requests on http://localhost:8090.
+  fake-llm:
+    image: python:3.13-slim
+    command: ["python", "/fake-llm/server.py", "--port", "8090"]
+    volumes:
+      - ./tests/fixtures/fake-llm:/fake-llm:ro
+    ports:
+      - "127.0.0.1:8090:8090"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8090/healthz')"]
+      interval: 5s
+      timeout: 3s
+      retries: 10

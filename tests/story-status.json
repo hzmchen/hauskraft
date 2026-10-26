@@ -386,15 +386,15 @@
       "acceptance": "suite"
     },
     "M2S-E01-01": {
-      "status": "red",
+      "status": "green",
       "acceptance": "suite"
     },
     "M2S-E01-02": {
-      "status": "red",
+      "status": "green",
       "acceptance": "suite"
     },
     "M2S-E02-01": {
-      "status": "red",
+      "status": "green",
       "acceptance": "suite"
     },
     "M2S-E02-02": {
@@ -410,7 +410,7 @@
       "acceptance": "suite"
     },
     "M2S-E03-01": {
-      "status": "red",
+      "status": "green",
       "acceptance": "suite"
     },
     "M2S-E03-02": {
@@ -418,7 +418,7 @@
       "acceptance": "suite"
     },
     "M2S-E03-03": {
-      "status": "red",
+      "status": "green",
       "acceptance": "in-story"
     },
     "M2S-E03-04": {

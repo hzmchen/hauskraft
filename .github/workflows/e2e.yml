@@ -20,6 +20,10 @@ permissions:
 
 env:
   HAUSKRAFT_BASE_URL: http://localhost:8080
+  # The fake model of the test stack (M2S-E01-01): the URL the API container uses, and the one the tests use to read
+  # recorded requests. No real provider and no secret in everyday CI (ADR 0022).
+  HAUSKRAFT_FAKE_LLM_URL: http://fake-llm:8090/v1
+  HAUSKRAFT_FAKE_LLM_ADMIN_URL: http://localhost:8090
   COMPOSE: docker compose -f compose.yaml -f deploy/compose/compose.test.yaml
 
 jobs:
