@@ -111,4 +111,4 @@ Write a short overview of the household's week for the person. …
 Add an eval dataset next to your skill and reference it in `evals:`. `just eval` discovers it. Write cases that check
 facts: which tools were called with which arguments, what the database looks like afterwards, whether a destructive
 call paused, and the answer's language. Add prompt-injection cases for every skill that reads untrusted text. Run
-them against the models households use before you release ([evals/README.md](../../evals/README.md)).
+them against the models households use before you release ([evals backlog](../backlog/m2-star/E09-evals.md)).

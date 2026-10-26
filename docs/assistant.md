@@ -18,7 +18,7 @@ The assistant talks to any OpenAI-compatible **Chat Completions** endpoint that 
   usage so far.
 - **A local server** on your network (Ollama, llama.cpp, vLLM, LM Studio, a LiteLLM proxy). Nothing leaves your home.
   Small local models often struggle with tool calls; check one with the evals before relying on it
-  ([evals/README.md](../evals/README.md)).
+  ([evals backlog](backlog/m2-star/E09-evals.md)).
 
 What the model sees: the system prompt (household name, today's date and time zone, your name, role and language),
 your messages, and the results of the tools it uses (for tasks: titles, due dates, done or open). It never sees
