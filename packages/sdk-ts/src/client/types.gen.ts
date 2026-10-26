@@ -1130,6 +1130,64 @@ export type ThemeSummary = {
 };
 
 /**
+ * ToolAnnotationsOut
+ */
+export type ToolAnnotationsOut = {
+    /**
+     * Destructive
+     */
+    destructive: boolean;
+    /**
+     * Idempotent
+     */
+    idempotent: boolean;
+    /**
+     * Open World
+     */
+    open_world: boolean;
+    /**
+     * Read Only
+     */
+    read_only: boolean;
+};
+
+/**
+ * ToolInfo
+ */
+export type ToolInfo = {
+    annotations: ToolAnnotationsOut;
+    data_class: DataClass;
+    /**
+     * Description
+     */
+    description: string;
+    /**
+     * Enabled
+     *
+     * False when an owner switched the tool off.
+     */
+    enabled: boolean;
+    /**
+     * Name
+     */
+    name: string;
+    /**
+     * Permission
+     */
+    permission: string;
+    /**
+     * Plugin Id
+     */
+    plugin_id: string;
+    /**
+     * Wire Name
+     *
+     * The function name models see: the name with '_' for '.'.
+     */
+    wire_name: string;
+};
+
+/**
  * UserCreate
  */
 export type UserCreate = {
@@ -1538,6 +1596,35 @@ export type AssistantStatusResponses = {
 };
 
 export type AssistantStatusResponse = AssistantStatusResponses[keyof AssistantStatusResponses];
+
+export type AssistantToolsListData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/v1/assistant/tools';
+};
+
+export type AssistantToolsListErrors = {
+    /**
+     * Unauthorized
+     */
+    401: unknown;
+    /**
+     * Forbidden
+     */
+    403: unknown;
+};
+
+export type AssistantToolsListResponses = {
+    /**
+     * Response Assistant Tools List
+     *
+     * Successful Response
+     */
+    200: Array<ToolInfo>;
+};
+
+export type AssistantToolsListResponse = AssistantToolsListResponses[keyof AssistantToolsListResponses];
 
 export type AuthLoginData = {
     body: LoginIn;

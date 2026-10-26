@@ -24,7 +24,7 @@ from hauskraft_core.db.models import User
 from hauskraft_core.db.session import DbSession
 from hauskraft_core.policy import Decision
 from hauskraft_core.uow import UnitOfWork
-from hauskraft_sdk import ResourceRef
+from hauskraft_sdk import DataClass, ResourceRef
 from hauskraft_sdk.errors import PolicyDeniedError
 
 router = APIRouter(prefix="/assistant", tags=["assistant"])
@@ -135,7 +135,7 @@ async def tools_list(request: Request, db: DbSession, resolved: CurrentSession) 
             plugin_id=t.plugin_id,
             description=t.spec.description,
             annotations=t.spec.annotations.as_dict(),
-            data_class=str(t.spec.data_class),
+            data_class=DataClass(t.spec.data_class),
             permission=t.spec.permission,
             enabled=t.spec.name not in off,
         )

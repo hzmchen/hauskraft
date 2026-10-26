@@ -2029,6 +2029,84 @@
         "title": "ThemeSummary",
         "type": "object"
       },
+      "ToolAnnotationsOut": {
+        "additionalProperties": false,
+        "properties": {
+          "destructive": {
+            "title": "Destructive",
+            "type": "boolean"
+          },
+          "idempotent": {
+            "title": "Idempotent",
+            "type": "boolean"
+          },
+          "open_world": {
+            "title": "Open World",
+            "type": "boolean"
+          },
+          "read_only": {
+            "title": "Read Only",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "read_only",
+          "destructive",
+          "idempotent",
+          "open_world"
+        ],
+        "title": "ToolAnnotationsOut",
+        "type": "object"
+      },
+      "ToolInfo": {
+        "additionalProperties": false,
+        "properties": {
+          "annotations": {
+            "$ref": "#/components/schemas/ToolAnnotationsOut"
+          },
+          "data_class": {
+            "$ref": "#/components/schemas/DataClass"
+          },
+          "description": {
+            "title": "Description",
+            "type": "string"
+          },
+          "enabled": {
+            "description": "False when an owner switched the tool off.",
+            "title": "Enabled",
+            "type": "boolean"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "permission": {
+            "title": "Permission",
+            "type": "string"
+          },
+          "plugin_id": {
+            "title": "Plugin Id",
+            "type": "string"
+          },
+          "wire_name": {
+            "description": "The function name models see: the name with '_' for '.'.",
+            "title": "Wire Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "wire_name",
+          "plugin_id",
+          "description",
+          "annotations",
+          "data_class",
+          "permission",
+          "enabled"
+        ],
+        "title": "ToolInfo",
+        "type": "object"
+      },
       "UserCreate": {
         "additionalProperties": false,
         "properties": {
@@ -2553,6 +2631,38 @@
           }
         },
         "summary": "Status",
+        "tags": [
+          "assistant"
+        ]
+      }
+    },
+    "/api/v1/assistant/tools": {
+      "get": {
+        "description": "Every agent tool of the enabled plugins, with whether the owner switched it off (owners only).",
+        "operationId": "assistant_tools_list",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/ToolInfo"
+                  },
+                  "title": "Response Assistant Tools List",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "summary": "Tools List",
         "tags": [
           "assistant"
         ]

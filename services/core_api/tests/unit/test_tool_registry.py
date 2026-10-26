@@ -20,17 +20,27 @@ async def handle(ctx: PluginContext, actor: Actor, args: BaseModel) -> ToolOutco
 
 
 def tool(name: str, permission: str, data_class: str = "household", agent: bool = True) -> ToolSpec:
-    return ToolSpec(name=name, description=f"{name} tool", input_model=Args, handler=handle, permission=permission,
-                    data_class=data_class, annotations=ToolAnnotations(), agent=agent)
+    return ToolSpec(
+        name=name,
+        description=f"{name} tool",
+        input_model=Args,
+        handler=handle,
+        permission=permission,
+        data_class=data_class,
+        annotations=ToolAnnotations(),
+        agent=agent,
+    )
 
 
-REGISTRY = ToolRegistry([
-    RegisteredTool(tool("tasks.list", "task.read"), "dev.hauskraft.tasks", None),
-    RegisteredTool(tool("tasks.delete", "task.delete"), "dev.hauskraft.tasks", None),
-    RegisteredTool(tool("money.pay", "money.pay", data_class="financial"), "org.example.money", None),
-    RegisteredTool(tool("members.add", "user.create"), "org.example.members", None),
-    RegisteredTool(tool("tasks.reindex", "task.update", agent=False), "dev.hauskraft.tasks", None),
-])
+REGISTRY = ToolRegistry(
+    [
+        RegisteredTool(tool("tasks.list", "task.read"), "dev.hauskraft.tasks", None),
+        RegisteredTool(tool("tasks.delete", "task.delete"), "dev.hauskraft.tasks", None),
+        RegisteredTool(tool("money.pay", "money.pay", data_class="financial"), "org.example.money", None),
+        RegisteredTool(tool("members.add", "user.create"), "org.example.members", None),
+        RegisteredTool(tool("tasks.reindex", "task.update", agent=False), "dev.hauskraft.tasks", None),
+    ]
+)
 
 
 def names(tools: list[RegisteredTool]) -> list[str]:

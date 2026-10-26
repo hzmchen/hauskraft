@@ -28,8 +28,7 @@ class RegisteredTool:
 
     def wire(self) -> dict[str, Any]:
         """The Chat Completions function definition sent to models."""
-        return {"name": self.spec.wire_name, "description": self.spec.description,
-                "parameters": self.spec.parameters()}
+        return {"name": self.spec.wire_name, "description": self.spec.description, "parameters": self.spec.parameters()}
 
 
 class ToolRegistry:

@@ -14,11 +14,11 @@ from fastapi import APIRouter, FastAPI
 from fastapi.routing import APIRoute
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 
+from hauskraft_core.assistant.registry import ToolRegistry
 from hauskraft_core.auth.providers import provider_from_settings
 from hauskraft_core.auth.ratelimit import LoginRateLimiter
 from hauskraft_core.errors import install_error_handlers
 from hauskraft_core.events.relay import run_relay
-from hauskraft_core.assistant.registry import ToolRegistry
 from hauskraft_core.health import install_core_checks
 from hauskraft_core.logging import RequestContextMiddleware, configure_logging, get_logger
 from hauskraft_core.plugins.loader import load_plugins
