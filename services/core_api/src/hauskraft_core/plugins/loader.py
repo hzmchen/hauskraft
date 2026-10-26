@@ -30,6 +30,7 @@ from hauskraft_core.logging import get_logger
 from hauskraft_core.plugins.context import CorePluginContext
 from hauskraft_core.plugins.manifests import DiscoveredManifest, discover
 from hauskraft_sdk import HAUSKRAFT_API_VERSION, Plugin, PluginRegistration
+from hauskraft_sdk.tools import ToolAnnotations
 
 if TYPE_CHECKING:
     from fastapi import FastAPI
@@ -49,6 +50,9 @@ CORE_PREFIXES = frozenset(
         "/healthz",
         "/readyz",
         "/dashboard",
+        "/household",
+        "/setup",
+        "/assistant",
     }
 )
 
@@ -66,6 +70,7 @@ class LoadedPlugin:
     enabled: bool = True
     load_error: str | None = None
     registration: PluginRegistration | None = field(default=None, repr=False)
+    context: CorePluginContext | None = field(default=None, repr=False)
 
     @property
     def is_theme(self) -> bool:
@@ -87,6 +92,53 @@ def _check_manifest(found: DiscoveredManifest) -> str | None:
             return f"hauskraft_api {found.manifest['hauskraft_api']!r} does not include {HAUSKRAFT_API_VERSION}"
     except ValueError as exc:
         return f"hauskraft_api is not a valid range: {exc}"
+    return None
+
+
+def _manifest_tool(entry: dict[str, Any]) -> dict[str, Any]:
+    """A manifest tool with the cautious defaults filled in (spec §5.3), comparable with a ``ToolSpec``."""
+    given = entry.get("annotations") or {}
+    return {
+        "annotations": ToolAnnotations(
+            read_only=given.get("read_only", False),
+            destructive=given.get("destructive", True),
+            idempotent=given.get("idempotent", False),
+            open_world=given.get("open_world", True),
+        ),
+        "permission": entry.get("permission"),
+        "data_class": entry.get("data_class"),
+    }
+
+
+def check_tools(
+    manifest: dict[str, Any], registration: PluginRegistration, owners: dict[str, str], plugin_id: str
+) -> str | None:
+    """The agent tools in the manifest and in code must be the same tools with the same contract (M2S-E02-02)."""
+    listed = {
+        str(entry["name"]): _manifest_tool(entry)
+        for entry in (manifest.get("contributes") or {}).get("tools") or []
+        if entry.get("agent", True)
+    }
+    coded = {tool.name: tool for tool in registration.tools if tool.agent}
+    if set(listed) != set(coded):
+        only_code = sorted(set(coded) - set(listed))
+        only_manifest = sorted(set(listed) - set(coded))
+        return (
+            "tools differ from the manifest: "
+            + (f"not in the manifest: {', '.join(only_code)}" if only_code else "")
+            + ("; " if only_code and only_manifest else "")
+            + (f"not registered in code: {', '.join(only_manifest)}" if only_manifest else "")
+        )
+    for name, tool in coded.items():
+        entry = listed[name]
+        if entry["annotations"] != tool.annotations:
+            return f"tool {name}: annotations differ between the manifest and the code"
+        if entry["permission"] not in (None, tool.permission):
+            return f"tool {name}: permission differs between the manifest and the code"
+        if entry["data_class"] not in (None, str(tool.data_class)):
+            return f"tool {name}: data_class differs between the manifest and the code"
+        if tool.wire_name in owners:
+            return f"tool {name} collides with a tool of plugin {owners[tool.wire_name]}"
     return None
 
 
@@ -140,12 +192,21 @@ def _load_one(found: DiscoveredManifest, app: FastAPI, prefixes_in_use: dict[str
         return loaded
     try:
         plugin = _import_entrypoint(str(runtime.get("entrypoint", "")))
-        registration = plugin.register(CorePluginContext(loaded.id, manifest, app))
+        context = CorePluginContext(loaded.id, manifest, app)
+        registration = plugin.register(context)
     except Exception as exc:  # a broken plugin must not take core down
         loaded.load_error = f"{type(exc).__name__}: {exc}"
         _log.exception("plugin.load_failed", plugin_id=loaded.id)
         return loaded
+    tool_problem = check_tools(manifest, registration, app.state.tool_owners, loaded.id)
+    if tool_problem:
+        loaded.load_error = tool_problem
+        return loaded
     loaded.registration = registration
+    loaded.context = context
+    for tool in registration.tools:
+        app.state.tool_owners[tool.wire_name] = loaded.id
+        app.state.tool_names.add(tool.name)
     prefixes_in_use[first_segment] = loaded.id
     mounted = APIRouter(dependencies=[_enabled_guard(loaded.id)])
     mounted.include_router(registration.router, prefix=prefix, tags=[short_name(loaded.id)])
@@ -156,6 +217,8 @@ def _load_one(found: DiscoveredManifest, app: FastAPI, prefixes_in_use: dict[str
 
 def load_plugins(app: FastAPI, plugin_paths: Iterable[Path], theme_paths: Iterable[Path]) -> None:
     app.state.plugins = {}
+    app.state.tool_owners = {}  # wire name -> plugin id (M2S-E02-02)
+    app.state.tool_names = set()
     app.state.theme_manifests = []
     app.state.disabled_plugins = set()
     prefixes: dict[str, str] = {}

@@ -101,7 +101,8 @@
     },
     "settings": {
       "theme_changed": "{{actor}} hat das Design auf {{theme}} umgestellt",
-      "household_changed": "{{actor}} hat die Haushaltseinstellungen geändert"
+      "household_changed": "{{actor}} hat die Haushaltseinstellungen geändert",
+      "assistant_changed": "{{actor}} hat die Assistent-Einstellungen geändert"
     },
     "plugin": {
       "toggled_on": "{{actor}} hat {{plugin}} eingeschaltet",

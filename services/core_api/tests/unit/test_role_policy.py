@@ -13,6 +13,7 @@ ADULT = Actor(id="0199f390-1111-7aaa-8bbb-000000000002", role="adult", display_n
 SYSTEM = Actor(id="system", role="owner", display_name="System", kind="system")
 
 BOTH = [
+    "task.read",
     "task.create",
     "task.update",
     "task.delete",

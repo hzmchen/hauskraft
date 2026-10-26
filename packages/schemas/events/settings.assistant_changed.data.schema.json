@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hauskraft.dev/schema/events/settings.assistant_changed/v1.json",
+  "$comment": "SPDX-License-Identifier: MIT",
+  "title": "hauskraft.settings.assistant_changed data",
+  "description": "Emitted by dev.hauskraft.core when an owner changes the assistant settings (M2S-E03-02). Lists the changed field paths only; values, and above all the API key, never appear (ADR 0021).",
+  "type": "object",
+  "required": ["changed"],
+  "additionalProperties": false,
+  "properties": {
+    "changed": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z_]+(\\.[a-z_]+)*$"
+      }
+    }
+  }
+}

@@ -1,6 +1,84 @@
 {
   "components": {
     "schemas": {
+      "ActionOut": {
+        "additionalProperties": false,
+        "properties": {
+          "error_code": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error Code"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "record": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/RecordRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "run_id": {
+            "format": "uuid",
+            "title": "Run Id",
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "done",
+              "failed",
+              "denied",
+              "undone"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "summary_key": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "An i18n key of the tool's plugin, rendered with record.label.",
+            "title": "Summary Key"
+          },
+          "tool": {
+            "title": "Tool",
+            "type": "string"
+          },
+          "undo_available": {
+            "title": "Undo Available",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "id",
+          "run_id",
+          "tool",
+          "status",
+          "summary_key",
+          "record",
+          "undo_available",
+          "error_code"
+        ],
+        "title": "ActionOut",
+        "type": "object"
+      },
       "ActiveTheme": {
         "additionalProperties": false,
         "properties": {
@@ -125,6 +203,315 @@
         "title": "ActivityItem",
         "type": "object"
       },
+      "AssistantChatPatch": {
+        "additionalProperties": false,
+        "properties": {
+          "api_key": {
+            "anyOf": [
+              {
+                "maxLength": 500,
+                "minLength": 1,
+                "pattern": "^[^\\x00]*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Write-only.",
+            "title": "Api Key"
+          },
+          "base_url": {
+            "anyOf": [
+              {
+                "maxLength": 500,
+                "minLength": 1,
+                "pattern": "^[^\\x00]*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Base Url"
+          },
+          "locality": {
+            "anyOf": [
+              {
+                "enum": [
+                  "cloud",
+                  "local"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Locality"
+          },
+          "max_data_class": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/DataClass"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "max_tokens": {
+            "anyOf": [
+              {
+                "maximum": 200000.0,
+                "minimum": 1.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Max Tokens"
+          },
+          "model": {
+            "anyOf": [
+              {
+                "maxLength": 200,
+                "minLength": 1,
+                "pattern": "^[^\\x00]*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Model"
+          },
+          "parallel_tool_calls": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Parallel Tool Calls"
+          },
+          "temperature": {
+            "anyOf": [
+              {
+                "maximum": 2.0,
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Temperature"
+          }
+        },
+        "title": "AssistantChatPatch",
+        "type": "object"
+      },
+      "AssistantChatSettings": {
+        "additionalProperties": false,
+        "properties": {
+          "api_key_hint": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "The saved key's last four characters; the key itself is never returned.",
+            "title": "Api Key Hint"
+          },
+          "api_key_set": {
+            "title": "Api Key Set",
+            "type": "boolean"
+          },
+          "api_key_status": {
+            "enum": [
+              "ok",
+              "missing",
+              "needs_reentry"
+            ],
+            "title": "Api Key Status",
+            "type": "string"
+          },
+          "base_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Base Url"
+          },
+          "locality": {
+            "enum": [
+              "cloud",
+              "local"
+            ],
+            "title": "Locality",
+            "type": "string"
+          },
+          "max_data_class": {
+            "$ref": "#/components/schemas/DataClass"
+          },
+          "max_tokens": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Max Tokens"
+          },
+          "model": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Model"
+          },
+          "parallel_tool_calls": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Parallel Tool Calls"
+          },
+          "temperature": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Temperature"
+          }
+        },
+        "required": [
+          "base_url",
+          "model",
+          "api_key_set",
+          "api_key_hint",
+          "api_key_status",
+          "locality",
+          "max_data_class",
+          "temperature",
+          "max_tokens",
+          "parallel_tool_calls"
+        ],
+        "title": "AssistantChatSettings",
+        "type": "object"
+      },
+      "AssistantSettings": {
+        "additionalProperties": false,
+        "properties": {
+          "chat": {
+            "$ref": "#/components/schemas/AssistantChatSettings"
+          },
+          "configured": {
+            "title": "Configured",
+            "type": "boolean"
+          },
+          "prices": {
+            "$ref": "#/components/schemas/Prices"
+          },
+          "tools_disabled": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Tools Disabled",
+            "type": "array"
+          }
+        },
+        "required": [
+          "configured",
+          "chat",
+          "tools_disabled",
+          "prices"
+        ],
+        "title": "AssistantSettings",
+        "type": "object"
+      },
+      "AssistantSettingsPatch": {
+        "additionalProperties": false,
+        "properties": {
+          "chat": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/AssistantChatPatch"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "prices": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PricesPatch"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "tools_disabled": {
+            "anyOf": [
+              {
+                "items": {
+                  "pattern": "^[a-z][a-z0-9_]*\\.[a-z][a-z0-9_]*$",
+                  "type": "string"
+                },
+                "maxItems": 500,
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tools Disabled"
+          }
+        },
+        "title": "AssistantSettingsPatch",
+        "type": "object"
+      },
+      "AssistantStatus": {
+        "additionalProperties": false,
+        "properties": {
+          "available": {
+            "title": "Available",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "available"
+        ],
+        "title": "AssistantStatus",
+        "type": "object"
+      },
       "ButtonVariants": {
         "additionalProperties": false,
         "properties": {
@@ -195,6 +582,173 @@
           "checkbox"
         ],
         "title": "Components",
+        "type": "object"
+      },
+      "ConnectionChecks": {
+        "additionalProperties": false,
+        "properties": {
+          "auth": {
+            "title": "Auth",
+            "type": "boolean"
+          },
+          "model": {
+            "title": "Model",
+            "type": "boolean"
+          },
+          "reachable": {
+            "title": "Reachable",
+            "type": "boolean"
+          },
+          "tool_calls": {
+            "title": "Tool Calls",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "reachable",
+          "auth",
+          "model",
+          "tool_calls"
+        ],
+        "title": "ConnectionChecks",
+        "type": "object"
+      },
+      "ConnectionTest": {
+        "additionalProperties": false,
+        "properties": {
+          "checks": {
+            "$ref": "#/components/schemas/ConnectionChecks"
+          },
+          "error_code": {
+            "anyOf": [
+              {
+                "enum": [
+                  "unreachable",
+                  "auth_failed",
+                  "model_not_found",
+                  "tool_calls_unsupported",
+                  "model_error"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error Code"
+          },
+          "latency_ms": {
+            "title": "Latency Ms",
+            "type": "integer"
+          },
+          "ok": {
+            "title": "Ok",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "ok",
+          "checks",
+          "latency_ms",
+          "error_code"
+        ],
+        "title": "ConnectionTest",
+        "type": "object"
+      },
+      "Conversation": {
+        "additionalProperties": false,
+        "properties": {
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "The first message, cut to 80 characters; null before it.",
+            "title": "Title"
+          },
+          "updated_at": {
+            "format": "date-time",
+            "title": "Updated At",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "Conversation",
+        "type": "object"
+      },
+      "ConversationDetail": {
+        "additionalProperties": false,
+        "properties": {
+          "actions": {
+            "items": {
+              "$ref": "#/components/schemas/ActionOut"
+            },
+            "title": "Actions",
+            "type": "array"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "messages": {
+            "items": {
+              "$ref": "#/components/schemas/MessageOut"
+            },
+            "title": "Messages",
+            "type": "array"
+          },
+          "title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "The first message, cut to 80 characters; null before it.",
+            "title": "Title"
+          },
+          "updated_at": {
+            "format": "date-time",
+            "title": "Updated At",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "created_at",
+          "updated_at",
+          "messages",
+          "actions"
+        ],
+        "title": "ConversationDetail",
         "type": "object"
       },
       "Dashboard": {
@@ -278,6 +832,21 @@
         ],
         "title": "DashboardCell",
         "type": "object"
+      },
+      "DataClass": {
+        "description": "Ordered from least to most sensitive. ``max()`` of inputs gives the propagated taint.",
+        "enum": [
+          "public",
+          "household",
+          "personal",
+          "financial",
+          "tenant",
+          "child",
+          "health",
+          "secret"
+        ],
+        "title": "DataClass",
+        "type": "string"
       },
       "HTTPValidationError": {
         "properties": {
@@ -640,6 +1209,54 @@
         "title": "MemberPatch",
         "type": "object"
       },
+      "MessageOut": {
+        "additionalProperties": false,
+        "properties": {
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "role": {
+            "enum": [
+              "user",
+              "assistant"
+            ],
+            "title": "Role",
+            "type": "string"
+          },
+          "run_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Run Id"
+          },
+          "text": {
+            "title": "Text",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "role",
+          "text",
+          "run_id",
+          "created_at"
+        ],
+        "title": "MessageOut",
+        "type": "object"
+      },
       "Navigation": {
         "additionalProperties": false,
         "properties": {
@@ -838,6 +1455,76 @@
         "title": "PluginToggled",
         "type": "object"
       },
+      "Prices": {
+        "additionalProperties": false,
+        "properties": {
+          "currency": {
+            "const": "EUR",
+            "default": "EUR",
+            "title": "Currency",
+            "type": "string"
+          },
+          "input_per_million": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Input Per Million"
+          },
+          "output_per_million": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Output Per Million"
+          }
+        },
+        "required": [
+          "input_per_million",
+          "output_per_million"
+        ],
+        "title": "Prices",
+        "type": "object"
+      },
+      "PricesPatch": {
+        "additionalProperties": false,
+        "properties": {
+          "input_per_million": {
+            "anyOf": [
+              {
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Input Per Million"
+          },
+          "output_per_million": {
+            "anyOf": [
+              {
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Output Per Million"
+          }
+        },
+        "title": "PricesPatch",
+        "type": "object"
+      },
       "Readiness": {
         "properties": {
           "checks": {
@@ -857,6 +1544,30 @@
           "checks"
         ],
         "title": "Readiness",
+        "type": "object"
+      },
+      "RecordRef": {
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "type": {
+            "title": "Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "type",
+          "id",
+          "label"
+        ],
+        "title": "RecordRef",
         "type": "object"
       },
       "SessionInfo": {
@@ -1389,6 +2100,84 @@
         "title": "ThemeSummary",
         "type": "object"
       },
+      "ToolAnnotationsOut": {
+        "additionalProperties": false,
+        "properties": {
+          "destructive": {
+            "title": "Destructive",
+            "type": "boolean"
+          },
+          "idempotent": {
+            "title": "Idempotent",
+            "type": "boolean"
+          },
+          "open_world": {
+            "title": "Open World",
+            "type": "boolean"
+          },
+          "read_only": {
+            "title": "Read Only",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "read_only",
+          "destructive",
+          "idempotent",
+          "open_world"
+        ],
+        "title": "ToolAnnotationsOut",
+        "type": "object"
+      },
+      "ToolInfo": {
+        "additionalProperties": false,
+        "properties": {
+          "annotations": {
+            "$ref": "#/components/schemas/ToolAnnotationsOut"
+          },
+          "data_class": {
+            "$ref": "#/components/schemas/DataClass"
+          },
+          "description": {
+            "title": "Description",
+            "type": "string"
+          },
+          "enabled": {
+            "description": "False when an owner switched the tool off.",
+            "title": "Enabled",
+            "type": "boolean"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "permission": {
+            "title": "Permission",
+            "type": "string"
+          },
+          "plugin_id": {
+            "title": "Plugin Id",
+            "type": "string"
+          },
+          "wire_name": {
+            "description": "The function name models see: the name with '_' for '.'.",
+            "title": "Wire Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "wire_name",
+          "plugin_id",
+          "description",
+          "annotations",
+          "data_class",
+          "permission",
+          "enabled"
+        ],
+        "title": "ToolInfo",
+        "type": "object"
+      },
       "UserCreate": {
         "additionalProperties": false,
         "properties": {
@@ -1646,6 +2435,338 @@
         "summary": "List ",
         "tags": [
           "activity"
+        ]
+      }
+    },
+    "/api/v1/assistant/conversations": {
+      "get": {
+        "description": "The caller's own chats, newest first. Nobody else's, owners included.",
+        "operationId": "assistant_conversations_list",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/Conversation"
+                  },
+                  "title": "Response Assistant Conversations List",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "summary": "Conversations List",
+        "tags": [
+          "assistant"
+        ]
+      },
+      "post": {
+        "operationId": "assistant_conversations_create",
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Conversation"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "summary": "Conversations Create",
+        "tags": [
+          "assistant"
+        ]
+      }
+    },
+    "/api/v1/assistant/conversations/{conversation_id}": {
+      "delete": {
+        "description": "Delete a chat with its messages, runs and actions; its usage stays counted.",
+        "operationId": "assistant_conversations_delete",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "conversation_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Conversation Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Conversations Delete",
+        "tags": [
+          "assistant"
+        ]
+      },
+      "get": {
+        "operationId": "assistant_conversations_read",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "conversation_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Conversation Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConversationDetail"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Conversations Read",
+        "tags": [
+          "assistant"
+        ]
+      }
+    },
+    "/api/v1/assistant/settings": {
+      "get": {
+        "description": "The assistant settings; the API key appears only as its last four characters (owners only).",
+        "operationId": "assistant_settings_read",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AssistantSettings"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "summary": "Settings Read",
+        "tags": [
+          "assistant"
+        ]
+      },
+      "patch": {
+        "description": "Change any subset of the assistant settings; ``null`` clears an optional value (owners only).",
+        "operationId": "assistant_settings_update",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AssistantSettingsPatch"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AssistantSettings"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "422": {
+            "description": "Unprocessable Content"
+          }
+        },
+        "summary": "Settings Update",
+        "tags": [
+          "assistant"
+        ]
+      }
+    },
+    "/api/v1/assistant/settings/chat": {
+      "delete": {
+        "description": "Remove the endpoint's base URL, model and key (owners only).",
+        "operationId": "assistant_settings_remove_chat",
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "summary": "Settings Remove Chat",
+        "tags": [
+          "assistant"
+        ]
+      }
+    },
+    "/api/v1/assistant/settings/test": {
+      "post": {
+        "description": "Check the endpoint with one minimal request: reachable, key accepted, model found, tools accepted.",
+        "operationId": "assistant_settings_test",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConnectionTest"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "409": {
+            "description": "Conflict"
+          }
+        },
+        "summary": "Settings Test",
+        "tags": [
+          "assistant"
+        ]
+      }
+    },
+    "/api/v1/assistant/status": {
+      "get": {
+        "description": "Whether the assistant can be used: an endpoint with a readable key is set (M2S-E03-02).",
+        "operationId": "assistant_status",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AssistantStatus"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "summary": "Status",
+        "tags": [
+          "assistant"
+        ]
+      }
+    },
+    "/api/v1/assistant/tools": {
+      "get": {
+        "description": "Every agent tool of the enabled plugins, with whether the owner switched it off (owners only).",
+        "operationId": "assistant_tools_list",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/ToolInfo"
+                  },
+                  "title": "Response Assistant Tools List",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "summary": "Tools List",
+        "tags": [
+          "assistant"
         ]
       }
     },

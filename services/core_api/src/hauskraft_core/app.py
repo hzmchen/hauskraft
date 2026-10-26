@@ -14,6 +14,7 @@ from fastapi import APIRouter, FastAPI
 from fastapi.routing import APIRoute
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 
+from hauskraft_core.assistant.registry import ToolRegistry
 from hauskraft_core.auth.providers import provider_from_settings
 from hauskraft_core.auth.ratelimit import LoginRateLimiter
 from hauskraft_core.errors import install_error_handlers
@@ -80,6 +81,7 @@ def build_api_router() -> APIRouter:
     """Core routers; later stories add auth, users, plugins, themes, activity and dashboards."""
     from hauskraft_core import health
     from hauskraft_core.activity import router as activity
+    from hauskraft_core.assistant import router as assistant
     from hauskraft_core.auth import router as auth
     from hauskraft_core.dashboard import router as dashboard
     from hauskraft_core.household import router as household
@@ -98,6 +100,7 @@ def build_api_router() -> APIRouter:
     router.include_router(dashboard.router)
     router.include_router(household.router)
     router.include_router(setup.router)
+    router.include_router(assistant.router)
     return router
 
 
@@ -125,5 +128,6 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.add_middleware(RequestContextMiddleware)
     app.include_router(build_api_router(), prefix=API_PREFIX)
     load_plugins(app, settings.plugin_paths, settings.theme_paths)
+    app.state.tool_registry = ToolRegistry.from_plugins(app.state.plugins)
     install_themes(app)
     return app

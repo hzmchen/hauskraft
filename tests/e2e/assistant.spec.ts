@@ -54,6 +54,9 @@ test.describe("the side panel", () => {
     } finally {
       await api.configureAssistant();
     }
+    // …and with an endpoint it is there, so this test can't pass before the panel exists.
+    await page.reload();
+    await expect(assistant.button(page)).toBeVisible();
   });
 
   test("it opens beside the page and stays open on this device", story("M2S-E06-01"), async ({ page }) => {

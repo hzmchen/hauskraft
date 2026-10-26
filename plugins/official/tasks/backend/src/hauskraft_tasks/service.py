@@ -140,8 +140,12 @@ class Page:
     total: int
 
 
-async def list_tasks(session: AsyncSession, status: Status, sort: Sort, limit: int, offset: int) -> Page:
+async def list_tasks(
+    session: AsyncSession, status: Status, sort: Sort, limit: int, offset: int, *, due_before: dt.date | None = None
+) -> Page:
     query = select(Task)
+    if due_before is not None:
+        query = query.where(Task.due_on < due_before)
     if status == "open":
         query = query.where(Task.done.is_(False))
     elif status == "done":

@@ -5,6 +5,43 @@ export type ClientOptions = {
 };
 
 /**
+ * ActionOut
+ */
+export type ActionOut = {
+    /**
+     * Error Code
+     */
+    error_code: string | null;
+    /**
+     * Id
+     */
+    id: string;
+    record: RecordRef | null;
+    /**
+     * Run Id
+     */
+    run_id: string;
+    /**
+     * Status
+     */
+    status: 'done' | 'failed' | 'denied' | 'undone';
+    /**
+     * Summary Key
+     *
+     * An i18n key of the tool's plugin, rendered with record.label.
+     */
+    summary_key: string | null;
+    /**
+     * Tool
+     */
+    tool: string;
+    /**
+     * Undo Available
+     */
+    undo_available: boolean;
+};
+
+/**
  * ActiveTheme
  */
 export type ActiveTheme = {
@@ -75,6 +112,126 @@ export type ActivityItem = {
 };
 
 /**
+ * AssistantChatPatch
+ */
+export type AssistantChatPatch = {
+    /**
+     * Api Key
+     *
+     * Write-only.
+     */
+    api_key?: string | null;
+    /**
+     * Base Url
+     */
+    base_url?: string | null;
+    /**
+     * Locality
+     */
+    locality?: 'cloud' | 'local' | null;
+    max_data_class?: DataClass | null;
+    /**
+     * Max Tokens
+     */
+    max_tokens?: number | null;
+    /**
+     * Model
+     */
+    model?: string | null;
+    /**
+     * Parallel Tool Calls
+     */
+    parallel_tool_calls?: boolean | null;
+    /**
+     * Temperature
+     */
+    temperature?: number | null;
+};
+
+/**
+ * AssistantChatSettings
+ */
+export type AssistantChatSettings = {
+    /**
+     * Api Key Hint
+     *
+     * The saved key's last four characters; the key itself is never returned.
+     */
+    api_key_hint: string | null;
+    /**
+     * Api Key Set
+     */
+    api_key_set: boolean;
+    /**
+     * Api Key Status
+     */
+    api_key_status: 'ok' | 'missing' | 'needs_reentry';
+    /**
+     * Base Url
+     */
+    base_url: string | null;
+    /**
+     * Locality
+     */
+    locality: 'cloud' | 'local';
+    max_data_class: DataClass;
+    /**
+     * Max Tokens
+     */
+    max_tokens: number | null;
+    /**
+     * Model
+     */
+    model: string | null;
+    /**
+     * Parallel Tool Calls
+     */
+    parallel_tool_calls: boolean | null;
+    /**
+     * Temperature
+     */
+    temperature: number | null;
+};
+
+/**
+ * AssistantSettings
+ */
+export type AssistantSettings = {
+    chat: AssistantChatSettings;
+    /**
+     * Configured
+     */
+    configured: boolean;
+    prices: Prices;
+    /**
+     * Tools Disabled
+     */
+    tools_disabled: Array<string>;
+};
+
+/**
+ * AssistantSettingsPatch
+ */
+export type AssistantSettingsPatch = {
+    chat?: AssistantChatPatch | null;
+    prices?: PricesPatch | null;
+    /**
+     * Tools Disabled
+     */
+    tools_disabled?: Array<string> | null;
+};
+
+/**
+ * AssistantStatus
+ */
+export type AssistantStatus = {
+    /**
+     * Available
+     */
+    available: boolean;
+};
+
+/**
  * ButtonVariants
  */
 export type ButtonVariants = {
@@ -119,6 +276,103 @@ export type Components = {
     button: ButtonVariants;
     checkbox: CheckboxVariants;
     widget: WidgetVariants;
+};
+
+/**
+ * ConnectionChecks
+ */
+export type ConnectionChecks = {
+    /**
+     * Auth
+     */
+    auth: boolean;
+    /**
+     * Model
+     */
+    model: boolean;
+    /**
+     * Reachable
+     */
+    reachable: boolean;
+    /**
+     * Tool Calls
+     */
+    tool_calls: boolean;
+};
+
+/**
+ * ConnectionTest
+ */
+export type ConnectionTest = {
+    checks: ConnectionChecks;
+    /**
+     * Error Code
+     */
+    error_code: 'unreachable' | 'auth_failed' | 'model_not_found' | 'tool_calls_unsupported' | 'model_error' | null;
+    /**
+     * Latency Ms
+     */
+    latency_ms: number;
+    /**
+     * Ok
+     */
+    ok: boolean;
+};
+
+/**
+ * Conversation
+ */
+export type Conversation = {
+    /**
+     * Created At
+     */
+    created_at: string;
+    /**
+     * Id
+     */
+    id: string;
+    /**
+     * Title
+     *
+     * The first message, cut to 80 characters; null before it.
+     */
+    title: string | null;
+    /**
+     * Updated At
+     */
+    updated_at: string;
+};
+
+/**
+ * ConversationDetail
+ */
+export type ConversationDetail = {
+    /**
+     * Actions
+     */
+    actions: Array<ActionOut>;
+    /**
+     * Created At
+     */
+    created_at: string;
+    /**
+     * Id
+     */
+    id: string;
+    /**
+     * Messages
+     */
+    messages: Array<MessageOut>;
+    /**
+     * Title
+     *
+     * The first message, cut to 80 characters; null before it.
+     */
+    title: string | null;
+    /**
+     * Updated At
+     */
+    updated_at: string;
 };
 
 /**
@@ -168,6 +422,13 @@ export type DashboardCell = {
      */
     y: number;
 };
+
+/**
+ * DataClass
+ *
+ * Ordered from least to most sensitive. ``max()`` of inputs gives the propagated taint.
+ */
+export type DataClass = 'public' | 'household' | 'personal' | 'financial' | 'tenant' | 'child' | 'health' | 'secret';
 
 /**
  * HTTPValidationError
@@ -374,6 +635,32 @@ export type MemberPatch = {
 };
 
 /**
+ * MessageOut
+ */
+export type MessageOut = {
+    /**
+     * Created At
+     */
+    created_at: string;
+    /**
+     * Id
+     */
+    id: string;
+    /**
+     * Role
+     */
+    role: 'user' | 'assistant';
+    /**
+     * Run Id
+     */
+    run_id: string | null;
+    /**
+     * Text
+     */
+    text: string;
+};
+
+/**
  * Navigation
  */
 export type Navigation = {
@@ -510,6 +797,38 @@ export type PluginToggled = {
 };
 
 /**
+ * Prices
+ */
+export type Prices = {
+    /**
+     * Currency
+     */
+    currency?: 'EUR';
+    /**
+     * Input Per Million
+     */
+    input_per_million: number | null;
+    /**
+     * Output Per Million
+     */
+    output_per_million: number | null;
+};
+
+/**
+ * PricesPatch
+ */
+export type PricesPatch = {
+    /**
+     * Input Per Million
+     */
+    input_per_million?: number | null;
+    /**
+     * Output Per Million
+     */
+    output_per_million?: number | null;
+};
+
+/**
  * Readiness
  */
 export type Readiness = {
@@ -521,6 +840,24 @@ export type Readiness = {
      * Status
      */
     status: string;
+};
+
+/**
+ * RecordRef
+ */
+export type RecordRef = {
+    /**
+     * Id
+     */
+    id: string;
+    /**
+     * Label
+     */
+    label: string;
+    /**
+     * Type
+     */
+    type: string;
 };
 
 /**
@@ -834,6 +1171,64 @@ export type ThemeSummary = {
 };
 
 /**
+ * ToolAnnotationsOut
+ */
+export type ToolAnnotationsOut = {
+    /**
+     * Destructive
+     */
+    destructive: boolean;
+    /**
+     * Idempotent
+     */
+    idempotent: boolean;
+    /**
+     * Open World
+     */
+    open_world: boolean;
+    /**
+     * Read Only
+     */
+    read_only: boolean;
+};
+
+/**
+ * ToolInfo
+ */
+export type ToolInfo = {
+    annotations: ToolAnnotationsOut;
+    data_class: DataClass;
+    /**
+     * Description
+     */
+    description: string;
+    /**
+     * Enabled
+     *
+     * False when an owner switched the tool off.
+     */
+    enabled: boolean;
+    /**
+     * Name
+     */
+    name: string;
+    /**
+     * Permission
+     */
+    permission: string;
+    /**
+     * Plugin Id
+     */
+    plugin_id: string;
+    /**
+     * Wire Name
+     *
+     * The function name models see: the name with '_' for '.'.
+     */
+    wire_name: string;
+};
+
+/**
  * UserCreate
  */
 export type UserCreate = {
@@ -990,6 +1385,318 @@ export type ActivityListResponses = {
 };
 
 export type ActivityListResponse = ActivityListResponses[keyof ActivityListResponses];
+
+export type AssistantConversationsListData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/v1/assistant/conversations';
+};
+
+export type AssistantConversationsListErrors = {
+    /**
+     * Unauthorized
+     */
+    401: unknown;
+    /**
+     * Forbidden
+     */
+    403: unknown;
+};
+
+export type AssistantConversationsListResponses = {
+    /**
+     * Response Assistant Conversations List
+     *
+     * Successful Response
+     */
+    200: Array<Conversation>;
+};
+
+export type AssistantConversationsListResponse = AssistantConversationsListResponses[keyof AssistantConversationsListResponses];
+
+export type AssistantConversationsCreateData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/v1/assistant/conversations';
+};
+
+export type AssistantConversationsCreateErrors = {
+    /**
+     * Unauthorized
+     */
+    401: unknown;
+    /**
+     * Forbidden
+     */
+    403: unknown;
+};
+
+export type AssistantConversationsCreateResponses = {
+    /**
+     * Successful Response
+     */
+    201: Conversation;
+};
+
+export type AssistantConversationsCreateResponse = AssistantConversationsCreateResponses[keyof AssistantConversationsCreateResponses];
+
+export type AssistantConversationsDeleteData = {
+    body?: never;
+    path: {
+        /**
+         * Conversation Id
+         */
+        conversation_id: string;
+    };
+    query?: never;
+    url: '/api/v1/assistant/conversations/{conversation_id}';
+};
+
+export type AssistantConversationsDeleteErrors = {
+    /**
+     * Unauthorized
+     */
+    401: unknown;
+    /**
+     * Forbidden
+     */
+    403: unknown;
+    /**
+     * Not Found
+     */
+    404: unknown;
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type AssistantConversationsDeleteError = AssistantConversationsDeleteErrors[keyof AssistantConversationsDeleteErrors];
+
+export type AssistantConversationsDeleteResponses = {
+    /**
+     * Successful Response
+     */
+    204: void;
+};
+
+export type AssistantConversationsDeleteResponse = AssistantConversationsDeleteResponses[keyof AssistantConversationsDeleteResponses];
+
+export type AssistantConversationsReadData = {
+    body?: never;
+    path: {
+        /**
+         * Conversation Id
+         */
+        conversation_id: string;
+    };
+    query?: never;
+    url: '/api/v1/assistant/conversations/{conversation_id}';
+};
+
+export type AssistantConversationsReadErrors = {
+    /**
+     * Unauthorized
+     */
+    401: unknown;
+    /**
+     * Forbidden
+     */
+    403: unknown;
+    /**
+     * Not Found
+     */
+    404: unknown;
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type AssistantConversationsReadError = AssistantConversationsReadErrors[keyof AssistantConversationsReadErrors];
+
+export type AssistantConversationsReadResponses = {
+    /**
+     * Successful Response
+     */
+    200: ConversationDetail;
+};
+
+export type AssistantConversationsReadResponse = AssistantConversationsReadResponses[keyof AssistantConversationsReadResponses];
+
+export type AssistantSettingsReadData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/v1/assistant/settings';
+};
+
+export type AssistantSettingsReadErrors = {
+    /**
+     * Unauthorized
+     */
+    401: unknown;
+    /**
+     * Forbidden
+     */
+    403: unknown;
+};
+
+export type AssistantSettingsReadResponses = {
+    /**
+     * Successful Response
+     */
+    200: AssistantSettings;
+};
+
+export type AssistantSettingsReadResponse = AssistantSettingsReadResponses[keyof AssistantSettingsReadResponses];
+
+export type AssistantSettingsUpdateData = {
+    body: AssistantSettingsPatch;
+    path?: never;
+    query?: never;
+    url: '/api/v1/assistant/settings';
+};
+
+export type AssistantSettingsUpdateErrors = {
+    /**
+     * Unauthorized
+     */
+    401: unknown;
+    /**
+     * Forbidden
+     */
+    403: unknown;
+    /**
+     * Unprocessable Content
+     */
+    422: unknown;
+};
+
+export type AssistantSettingsUpdateResponses = {
+    /**
+     * Successful Response
+     */
+    200: AssistantSettings;
+};
+
+export type AssistantSettingsUpdateResponse = AssistantSettingsUpdateResponses[keyof AssistantSettingsUpdateResponses];
+
+export type AssistantSettingsRemoveChatData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/v1/assistant/settings/chat';
+};
+
+export type AssistantSettingsRemoveChatErrors = {
+    /**
+     * Unauthorized
+     */
+    401: unknown;
+    /**
+     * Forbidden
+     */
+    403: unknown;
+};
+
+export type AssistantSettingsRemoveChatResponses = {
+    /**
+     * Successful Response
+     */
+    204: void;
+};
+
+export type AssistantSettingsRemoveChatResponse = AssistantSettingsRemoveChatResponses[keyof AssistantSettingsRemoveChatResponses];
+
+export type AssistantSettingsTestData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/v1/assistant/settings/test';
+};
+
+export type AssistantSettingsTestErrors = {
+    /**
+     * Unauthorized
+     */
+    401: unknown;
+    /**
+     * Forbidden
+     */
+    403: unknown;
+    /**
+     * Conflict
+     */
+    409: unknown;
+};
+
+export type AssistantSettingsTestResponses = {
+    /**
+     * Successful Response
+     */
+    200: ConnectionTest;
+};
+
+export type AssistantSettingsTestResponse = AssistantSettingsTestResponses[keyof AssistantSettingsTestResponses];
+
+export type AssistantStatusData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/v1/assistant/status';
+};
+
+export type AssistantStatusErrors = {
+    /**
+     * Unauthorized
+     */
+    401: unknown;
+    /**
+     * Forbidden
+     */
+    403: unknown;
+};
+
+export type AssistantStatusResponses = {
+    /**
+     * Successful Response
+     */
+    200: AssistantStatus;
+};
+
+export type AssistantStatusResponse = AssistantStatusResponses[keyof AssistantStatusResponses];
+
+export type AssistantToolsListData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/v1/assistant/tools';
+};
+
+export type AssistantToolsListErrors = {
+    /**
+     * Unauthorized
+     */
+    401: unknown;
+    /**
+     * Forbidden
+     */
+    403: unknown;
+};
+
+export type AssistantToolsListResponses = {
+    /**
+     * Response Assistant Tools List
+     *
+     * Successful Response
+     */
+    200: Array<ToolInfo>;
+};
+
+export type AssistantToolsListResponse = AssistantToolsListResponses[keyof AssistantToolsListResponses];
 
 export type AuthLoginData = {
     body: LoginIn;
