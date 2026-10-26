@@ -23,6 +23,7 @@ dependencies = [
     "coloraide~=8.13",
     "defusedxml~=0.7.1",
     "cryptography~=50.0",
+    "pydantic-ai-slim[openai]~=2.61",
 ]
 
 [project.scripts]
