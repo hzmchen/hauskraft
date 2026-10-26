@@ -16,10 +16,11 @@ output:
           required: [title, due_on]
           additionalProperties: false
           properties:
-            title: {type: string, minLength: 1, maxLength: 200}
-            due_on: {type: ["string", "null"], description: "YYYY-MM-DD in the household time zone, or null"}
+            title: { type: string, minLength: 1, maxLength: 200 }
+            due_on: { type: ["string", "null"], description: "YYYY-MM-DD in the household time zone, or null" }
 evals: evals/add-from-text.yaml
 ---
+
 The person's message is a pasted note: a shopping list, an email, meeting notes. Suggest one task per thing the
 household has to do.
 
