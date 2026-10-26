@@ -421,6 +421,20 @@ export type ConversationDetail = {
 };
 
 /**
+ * Cost
+ */
+export type Cost = {
+    /**
+     * Amount
+     */
+    amount: number;
+    /**
+     * Currency
+     */
+    currency?: 'EUR';
+};
+
+/**
  * Dashboard
  */
 export type Dashboard = {
@@ -1347,6 +1361,84 @@ export type ToolInfo = {
 };
 
 /**
+ * Usage
+ */
+export type Usage = {
+    /**
+     * From
+     */
+    from: string;
+    /**
+     * Group By
+     */
+    group_by: 'day' | 'user' | 'model' | 'kind';
+    /**
+     * Groups
+     */
+    groups: Array<UsageGroup>;
+    /**
+     * To
+     */
+    to: string;
+    totals: UsageTotals;
+};
+
+/**
+ * UsageGroup
+ */
+export type UsageGroup = {
+    /**
+     * Input Tokens
+     */
+    input_tokens: number;
+    /**
+     * Key
+     */
+    key: string;
+    /**
+     * Label
+     */
+    label: string;
+    /**
+     * Output Tokens
+     */
+    output_tokens: number;
+    /**
+     * Requests
+     */
+    requests: number;
+    /**
+     * Unknown Requests
+     */
+    unknown_requests: number;
+};
+
+/**
+ * UsageTotals
+ */
+export type UsageTotals = {
+    cost: Cost | null;
+    /**
+     * Input Tokens
+     */
+    input_tokens: number;
+    /**
+     * Output Tokens
+     */
+    output_tokens: number;
+    /**
+     * Requests
+     */
+    requests: number;
+    /**
+     * Unknown Requests
+     *
+     * Requests whose token counts the server didn't report.
+     */
+    unknown_requests: number;
+};
+
+/**
  * UserCreate
  */
 export type UserCreate = {
@@ -1949,6 +2041,50 @@ export type AssistantToolsListResponses = {
 };
 
 export type AssistantToolsListResponse = AssistantToolsListResponses[keyof AssistantToolsListResponses];
+
+export type AssistantUsageReadData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Group By
+         */
+        group_by?: 'day' | 'user' | 'model' | 'kind';
+        /**
+         * From
+         */
+        from?: string | null;
+        /**
+         * To
+         */
+        to?: string | null;
+    };
+    url: '/api/v1/assistant/usage';
+};
+
+export type AssistantUsageReadErrors = {
+    /**
+     * Unauthorized
+     */
+    401: unknown;
+    /**
+     * Forbidden
+     */
+    403: unknown;
+    /**
+     * Unprocessable Content
+     */
+    422: unknown;
+};
+
+export type AssistantUsageReadResponses = {
+    /**
+     * Successful Response
+     */
+    200: Usage;
+};
+
+export type AssistantUsageReadResponse = AssistantUsageReadResponses[keyof AssistantUsageReadResponses];
 
 export type AuthLoginData = {
     body: LoginIn;

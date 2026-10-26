@@ -3,9 +3,11 @@
 
 from __future__ import annotations
 
+import datetime as dt
 import uuid
+from typing import Annotated
 
-from fastapi import APIRouter, Request, Response
+from fastapi import APIRouter, Query, Request, Response
 
 from hauskraft_core.assistant import conversations
 from hauskraft_core.assistant.endpoint import check_connection
@@ -25,12 +27,17 @@ from hauskraft_core.assistant.schemas import (
     RunOut,
     RunResult,
     ToolInfo,
+    Usage,
+    UsageGroup,
+    UsageTotals,
     action_out,
 )
 from hauskraft_core.assistant.settings import read_config, remove_chat_endpoint, update_settings
+from hauskraft_core.assistant.usage import GroupBy, report
 from hauskraft_core.auth.deps import CurrentSession, actor_for
-from hauskraft_core.db.models import User
+from hauskraft_core.db.models import AssistantUsage, User
 from hauskraft_core.db.session import DbSession
+from hauskraft_core.household.service import read_household
 from hauskraft_core.policy import Decision
 from hauskraft_core.uow import UnitOfWork
 from hauskraft_sdk import DataClass, ResourceRef
@@ -86,9 +93,25 @@ async def settings_update(
 
 @router.post("/settings/test", responses={401: {}, 403: {}, 409: {}})
 async def settings_test(request: Request, db: DbSession, resolved: CurrentSession) -> ConnectionTest:
-    """Check the endpoint with one minimal request: reachable, key accepted, model found, tools accepted."""
+    """Check the endpoint with one minimal request: reachable, key accepted, model found, tools accepted.
+
+    Its model requests count in the usage overview as kind ``test`` (M2S-E08-01).
+    """
     await require(request, resolved[1], "assistant.configure")
-    result = await check_connection((await read_config(db, request.app.state.settings)).chat)
+    chat = (await read_config(db, request.app.state.settings)).chat
+    result = await check_connection(chat)
+    async with _uow(request) as uow:
+        for input_tokens, output_tokens in result.requests:
+            uow.session.add(
+                AssistantUsage(
+                    user_id=resolved[1].id,
+                    kind="test",
+                    model=chat.model,
+                    input_tokens=input_tokens,
+                    output_tokens=output_tokens,
+                    status="ok" if result.ok else "error",
+                )
+            )
     return ConnectionTest.model_validate(result, from_attributes=True)
 
 
@@ -199,3 +222,37 @@ async def actions_undo(action_id: uuid.UUID, request: Request, resolved: Current
     """Reverse an action the assistant took for the caller, where its tool declared how."""
     await require(request, resolved[1], "assistant.use")
     return action_out(await Harness.of(request.app.state).undo(resolved[1], action_id))
+
+
+# ---------------------------------------------------------------- usage (M2S-E08-02)
+@router.get("/usage", responses={401: {}, 403: {}, 422: {}}, response_model_by_alias=True)
+async def usage_read(
+    request: Request,
+    db: DbSession,
+    resolved: CurrentSession,
+    group_by: GroupBy = "day",
+    from_: Annotated[dt.date | None, Query(alias="from")] = None,
+    to: dt.date | None = None,
+) -> Usage:
+    """Requests and tokens per day, member, model or kind (owners only). Dates are inclusive, household time."""
+    await require(request, resolved[1], "assistant.usage.read")
+    settings = request.app.state.settings
+    config = await read_config(db, settings)
+    household = await read_household(db, settings)
+    data = await report(db, household.timezone, group_by, from_, to, config.prices)
+    t = data.totals
+    return Usage.model_validate(
+        {
+            "from": data.start,
+            "to": data.end,
+            "group_by": data.group_by,
+            "totals": UsageTotals(
+                requests=t.requests,
+                input_tokens=t.input_tokens,
+                output_tokens=t.output_tokens,
+                unknown_requests=t.unknown_requests,
+                cost={"amount": data.cost, "currency": "EUR"} if data.cost is not None else None,  # type: ignore[arg-type]
+            ),
+            "groups": [UsageGroup(**vars(g)) for g in data.groups],
+        }
+    )

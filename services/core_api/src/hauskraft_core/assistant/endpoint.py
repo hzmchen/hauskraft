@@ -69,6 +69,7 @@ class ConnectionResult:
     )
     latency_ms: int = 0
     error_code: str | None = None
+    requests: list[tuple[int | None, int | None]] = field(default_factory=list)  # (input, output) tokens each
 
 
 async def check_connection(chat: ChatEndpoint) -> ConnectionResult:
@@ -83,7 +84,8 @@ async def check_connection(chat: ChatEndpoint) -> ConnectionResult:
         "max_tokens": 16,
     }
     try:
-        await client.chat.completions.create(**request, tools=[PING_TOOL])  # type: ignore[call-overload]
+        response = await client.chat.completions.create(**request, tools=[PING_TOOL])  # type: ignore[call-overload]
+        result.requests.append(_tokens(response))
         result.checks = dict.fromkeys(result.checks, True)
         result.ok = True
     except (openai.APIConnectionError, openai.APITimeoutError):
@@ -96,8 +98,10 @@ async def check_connection(chat: ChatEndpoint) -> ConnectionResult:
         result.error_code = "model_not_found"
     except openai.BadRequestError:
         result.checks.update(reachable=True, auth=True)
+        result.requests.append((None, None))
         try:
-            await client.chat.completions.create(**request)  # type: ignore[call-overload]
+            response = await client.chat.completions.create(**request)  # type: ignore[call-overload]
+            result.requests.append(_tokens(response))
             result.checks["model"] = True
             result.error_code = "tool_calls_unsupported"
         except openai.APIError:
@@ -107,4 +111,13 @@ async def check_connection(chat: ChatEndpoint) -> ConnectionResult:
         result.error_code = "model_error"
     finally:
         result.latency_ms = int((time.monotonic() - started) * 1000)
+        if not result.requests:
+            result.requests.append((None, None))
     return result
+
+
+def _tokens(response: object) -> tuple[int | None, int | None]:
+    usage = getattr(response, "usage", None)
+    if usage is None:
+        return None, None
+    return getattr(usage, "prompt_tokens", None), getattr(usage, "completion_tokens", None)

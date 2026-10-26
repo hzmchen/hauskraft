@@ -836,6 +836,26 @@
         "title": "ConversationDetail",
         "type": "object"
       },
+      "Cost": {
+        "additionalProperties": false,
+        "properties": {
+          "amount": {
+            "title": "Amount",
+            "type": "number"
+          },
+          "currency": {
+            "const": "EUR",
+            "default": "EUR",
+            "title": "Currency",
+            "type": "string"
+          }
+        },
+        "required": [
+          "amount"
+        ],
+        "title": "Cost",
+        "type": "object"
+      },
       "Dashboard": {
         "properties": {
           "dashboard_id": {
@@ -2399,6 +2419,130 @@
         "title": "ToolInfo",
         "type": "object"
       },
+      "Usage": {
+        "additionalProperties": false,
+        "properties": {
+          "from": {
+            "format": "date",
+            "title": "From",
+            "type": "string"
+          },
+          "group_by": {
+            "enum": [
+              "day",
+              "user",
+              "model",
+              "kind"
+            ],
+            "title": "Group By",
+            "type": "string"
+          },
+          "groups": {
+            "items": {
+              "$ref": "#/components/schemas/UsageGroup"
+            },
+            "title": "Groups",
+            "type": "array"
+          },
+          "to": {
+            "format": "date",
+            "title": "To",
+            "type": "string"
+          },
+          "totals": {
+            "$ref": "#/components/schemas/UsageTotals"
+          }
+        },
+        "required": [
+          "from",
+          "to",
+          "group_by",
+          "totals",
+          "groups"
+        ],
+        "title": "Usage",
+        "type": "object"
+      },
+      "UsageGroup": {
+        "additionalProperties": false,
+        "properties": {
+          "input_tokens": {
+            "title": "Input Tokens",
+            "type": "integer"
+          },
+          "key": {
+            "title": "Key",
+            "type": "string"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "output_tokens": {
+            "title": "Output Tokens",
+            "type": "integer"
+          },
+          "requests": {
+            "title": "Requests",
+            "type": "integer"
+          },
+          "unknown_requests": {
+            "title": "Unknown Requests",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "key",
+          "label",
+          "requests",
+          "input_tokens",
+          "output_tokens",
+          "unknown_requests"
+        ],
+        "title": "UsageGroup",
+        "type": "object"
+      },
+      "UsageTotals": {
+        "additionalProperties": false,
+        "properties": {
+          "cost": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Cost"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "input_tokens": {
+            "title": "Input Tokens",
+            "type": "integer"
+          },
+          "output_tokens": {
+            "title": "Output Tokens",
+            "type": "integer"
+          },
+          "requests": {
+            "title": "Requests",
+            "type": "integer"
+          },
+          "unknown_requests": {
+            "description": "Requests whose token counts the server didn't report.",
+            "title": "Unknown Requests",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "requests",
+          "input_tokens",
+          "output_tokens",
+          "unknown_requests",
+          "cost"
+        ],
+        "title": "UsageTotals",
+        "type": "object"
+      },
       "UserCreate": {
         "additionalProperties": false,
         "properties": {
@@ -3076,7 +3220,7 @@
     },
     "/api/v1/assistant/settings/test": {
       "post": {
-        "description": "Check the endpoint with one minimal request: reachable, key accepted, model found, tools accepted.",
+        "description": "Check the endpoint with one minimal request: reachable, key accepted, model found, tools accepted.\n\nIts model requests count in the usage overview as kind ``test`` (M2S-E08-01).",
         "operationId": "assistant_settings_test",
         "responses": {
           "200": {
@@ -3160,6 +3304,89 @@
           }
         },
         "summary": "Tools List",
+        "tags": [
+          "assistant"
+        ]
+      }
+    },
+    "/api/v1/assistant/usage": {
+      "get": {
+        "description": "Requests and tokens per day, member, model or kind (owners only). Dates are inclusive, household time.",
+        "operationId": "assistant_usage_read",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "group_by",
+            "required": false,
+            "schema": {
+              "default": "day",
+              "enum": [
+                "day",
+                "user",
+                "model",
+                "kind"
+              ],
+              "title": "Group By",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "from",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "date",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "From"
+            }
+          },
+          {
+            "in": "query",
+            "name": "to",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "date",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "To"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Usage"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "422": {
+            "description": "Unprocessable Content"
+          }
+        },
+        "summary": "Usage Read",
         "tags": [
           "assistant"
         ]

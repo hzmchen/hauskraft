@@ -280,3 +280,42 @@ class ConnectionTest(BaseModel):
     checks: ConnectionChecks
     latency_ms: int
     error_code: Literal["unreachable", "auth_failed", "model_not_found", "tool_calls_unsupported", "model_error"] | None
+
+
+# ---------------------------------------------------------------- usage (M2S-E08-02)
+class Cost(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    amount: float
+    currency: Literal["EUR"] = "EUR"
+
+
+class UsageTotals(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    requests: int
+    input_tokens: int
+    output_tokens: int
+    unknown_requests: int = Field(description="Requests whose token counts the server didn't report.")
+    cost: Cost | None
+
+
+class UsageGroup(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    key: str
+    label: str
+    requests: int
+    input_tokens: int
+    output_tokens: int
+    unknown_requests: int
+
+
+class Usage(BaseModel):
+    model_config = ConfigDict(extra="forbid", populate_by_name=True)
+
+    from_: dt.date = Field(alias="from")
+    to: dt.date
+    group_by: Literal["day", "user", "model", "kind"]
+    totals: UsageTotals
+    groups: list[UsageGroup]
