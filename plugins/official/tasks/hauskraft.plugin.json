@@ -49,6 +49,7 @@
         "id": "tasks.overview",
         "title": "i18n:tasks:overview.title",
         "component": "OverviewWidget",
+        "default_layout": false,
         "default_size": {
           "w": 4,
           "h": 4

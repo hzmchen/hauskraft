@@ -370,6 +370,11 @@
         "min_size": {
           "$ref": "#/$defs/size"
         },
+        "default_layout": {
+          "description": "Whether the widget is part of the default Today layout (default true). Set false for widgets members add themselves with Edit layout (M2*).",
+          "type": "boolean",
+          "default": true
+        },
         "roles": {
           "type": "array",
           "items": {

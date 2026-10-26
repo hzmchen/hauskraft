@@ -88,6 +88,7 @@ Names, roles and German names are in `docs/testing/ui-contract.md` § "M2* addit
   - Without an available assistant the widget says "The assistant isn't set up." and has no button.
   - The widget is not part of any seeded or default layout: members add it with Edit layout.
   - The widget is function-invariant across themes like every widget.
-- **Tech:** the tasks plugin's web module and manifest.
+- **Tech:** the tasks plugin's web module and manifest; the manifest widget field `default_layout: false` keeps it out
+  of the default layout.
 - **Tests:** E2E: `tests/e2e/agentic.spec.ts` step 9. Vitest: states.
 - **Deps:** E05-04 · **Est:** S · **Labels:** area:tasks, area:web
