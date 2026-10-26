@@ -5,7 +5,7 @@ from __future__ import annotations
 
 import datetime as dt
 import uuid
-from typing import Annotated, Literal, Self
+from typing import Annotated, Any, Literal, Self
 
 from pydantic import BaseModel, ConfigDict, Field, StringConstraints, model_validator
 
@@ -184,6 +184,56 @@ def action_out(action: AssistantAction) -> ActionOut:
             "error_code": action.error_code,
         }
     )
+
+
+class RunOut(BaseModel):
+    model_config = ConfigDict(extra="forbid", from_attributes=True)
+
+    id: uuid.UUID
+    kind: Literal["chat", "skill", "test"]
+    status: Literal["running", "awaiting_confirmation", "done", "failed"]
+    error_code: str | None
+    channel: Literal["text", "voice"]
+
+
+class ConfirmationOut(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    id: str = Field(description="The tool call's id; answer it in POST /assistant/runs/{run_id}/confirmations.")
+    run_id: uuid.UUID
+    tool: str
+    args: dict[str, Any]
+    summary_key: str | None
+    record: RecordRef | None
+
+
+class RunResult(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    run: RunOut
+    messages: list[MessageOut]
+    actions: list[ActionOut]
+    confirmations: list[ConfirmationOut]
+
+
+class MessageIn(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    text: Annotated[str, StringConstraints(min_length=1, max_length=4000, pattern=NO_NUL)]
+    channel: Literal["text"] = "text"
+
+
+class Decision(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    id: str
+    approve: bool
+
+
+class ConfirmationAnswer(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    decisions: Annotated[list[Decision], Field(min_length=1, max_length=20)]
 
 
 class ConversationDetail(Conversation):

@@ -210,11 +210,30 @@ class AssistantAction(Base):
     created_at: Mapped[dt.datetime] = mapped_column(TIMESTAMPTZ, server_default=func.now())
 
 
+class AssistantUsage(Base):
+    """One model request (M2S-E08-01). Kept when its chat is deleted; tokens are NULL when the server reported none."""
+
+    __tablename__ = "assistant_usage"
+    __table_args__ = (Index("ix_assistant_usage_time", "created_at"),)
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=new_id)
+    user_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("users.id", ondelete="SET NULL"))
+    run_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("assistant_runs.id", ondelete="SET NULL"))
+    kind: Mapped[str] = mapped_column(Text)
+    model: Mapped[str | None] = mapped_column(Text)
+    input_tokens: Mapped[int | None] = mapped_column()
+    output_tokens: Mapped[int | None] = mapped_column()
+    cached_tokens: Mapped[int | None] = mapped_column()
+    status: Mapped[str] = mapped_column(Text, default="ok", server_default="ok")
+    created_at: Mapped[dt.datetime] = mapped_column(TIMESTAMPTZ, server_default=func.now())
+
+
 __all__ = [
     "AssistantAction",
     "AssistantConversation",
     "AssistantMessage",
     "AssistantRun",
+    "AssistantUsage",
     "DashboardLayout",
     "DeploymentSetting",
     "OutboxEvent",

@@ -25,7 +25,7 @@ def test_context_block_ends_the_prompt_in_order() -> None:
         "Today: 2026-11-02 (Monday), 10:05 in Europe/Berlin",
         "Household: Familie Müller",
         "Person: Mia (owner)",
-        "Language: German – answer in this language",
+        "Language: German – answer in this language",  # noqa: RUF001 - the contract uses an en dash
     ]
 
 
@@ -64,6 +64,8 @@ def test_prompt_version_is_a_stable_hash_of_the_templates() -> None:
 
 
 def test_english_people_get_english() -> None:
-    assert render(PromptContext(**{**CTX.__dict__, "locale": "en"})).rstrip().endswith(
-        "Language: English – answer in this language"
+    assert (
+        render(PromptContext(**{**CTX.__dict__, "locale": "en"}))
+        .rstrip()
+        .endswith("Language: English – answer in this language")  # noqa: RUF001
     )

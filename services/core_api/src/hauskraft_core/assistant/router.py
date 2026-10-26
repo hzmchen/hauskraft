@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
-"""``/assistant`` (M2*): settings for owners, availability for every member."""
+"""``/assistant`` (M2*): settings for owners; availability, chats, runs and Undo for every member."""
 
 from __future__ import annotations
 
@@ -9,14 +9,21 @@ from fastapi import APIRouter, Request, Response
 
 from hauskraft_core.assistant import conversations
 from hauskraft_core.assistant.endpoint import check_connection
+from hauskraft_core.assistant.runs import Harness, RunResultData
 from hauskraft_core.assistant.schemas import (
+    ActionOut,
     AssistantSettings,
     AssistantSettingsPatch,
     AssistantStatus,
+    ConfirmationAnswer,
+    ConfirmationOut,
     ConnectionTest,
     Conversation,
     ConversationDetail,
+    MessageIn,
     MessageOut,
+    RunOut,
+    RunResult,
     ToolInfo,
     action_out,
 )
@@ -152,3 +159,43 @@ async def tools_list(request: Request, db: DbSession, resolved: CurrentSession) 
         for t in request.app.state.tool_registry.all()
         if t.plugin_id not in request.app.state.disabled_plugins
     ]
+
+
+# ---------------------------------------------------------------- runs (M2S-E04-02, -04, -06)
+def run_result(data: RunResultData) -> RunResult:
+    return RunResult(
+        run=RunOut.model_validate(data.run),
+        messages=[MessageOut.model_validate(m) for m in data.messages],
+        actions=[action_out(a) for a in data.actions],
+        confirmations=[ConfirmationOut.model_validate(c) for c in data.confirmations],
+    )
+
+
+@router.post("/conversations/{conversation_id}/messages", responses={401: {}, 403: {}, 404: {}, 409: {}, 422: {}})
+async def conversations_message(
+    conversation_id: uuid.UUID, body: MessageIn, request: Request, resolved: CurrentSession
+) -> RunResult:
+    """Send a message: the assistant runs with the caller's permissions and answers, acts or asks to confirm.
+
+    A run that fails because of the model endpoint still answers 200, with ``run.status`` failed and an error code.
+    """
+    await require(request, resolved[1], "assistant.use")
+    data = await Harness.of(request.app.state).chat(resolved[1], conversation_id, body.text, body.channel)
+    return run_result(data)
+
+
+@router.post("/runs/{run_id}/confirmations", responses={401: {}, 403: {}, 404: {}, 409: {}, 422: {}})
+async def runs_confirm(
+    run_id: uuid.UUID, body: ConfirmationAnswer, request: Request, resolved: CurrentSession
+) -> RunResult:
+    """Approve or deny each pending call of a run that waits for confirmation; the run then continues."""
+    await require(request, resolved[1], "assistant.use")
+    decisions = {d.id: d.approve for d in body.decisions}
+    return run_result(await Harness.of(request.app.state).answer(resolved[1], run_id, decisions))
+
+
+@router.post("/actions/{action_id}/undo", responses={401: {}, 403: {}, 404: {}, 409: {}})
+async def actions_undo(action_id: uuid.UUID, request: Request, resolved: CurrentSession) -> ActionOut:
+    """Reverse an action the assistant took for the caller, where its tool declared how."""
+    await require(request, resolved[1], "assistant.use")
+    return action_out(await Harness.of(request.app.state).undo(resolved[1], action_id))
