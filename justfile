@@ -112,8 +112,9 @@ eval *args:
     PYTHONPATH=evals uv run python -m hauskraft_evals run {{ args }}
 
 # Compare an eval report with a baseline: pass rates and tokens (M2S-E09-01)
-eval-compare report baseline:
-    PYTHONPATH=evals uv run python -m hauskraft_evals compare {{ report }} {{ baseline }}
+eval-compare report="" baseline="":
+    @if [ -z {{ quote(report) }} ] || [ -z {{ quote(baseline) }} ]; then echo "usage: just eval-compare <report> <baseline>" >&2; exit 2; fi
+    PYTHONPATH=evals uv run python -m hauskraft_evals compare {{ quote(report) }} {{ quote(baseline) }}
 
 # Empty the fresh stack: remove its containers and database volume, then start it again
 fresh-reset:
