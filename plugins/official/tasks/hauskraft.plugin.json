@@ -63,10 +63,60 @@
       }
     ],
     "icons": [],
-    "tools": [],
+    "tools": [
+      {
+        "name": "tasks.list",
+        "description": "List the household's tasks, newest first: id, title, done, due date. Use it to find a task's id.",
+        "annotations": {
+          "read_only": true,
+          "destructive": false,
+          "idempotent": true,
+          "open_world": false
+        },
+        "data_class": "household",
+        "permission": "task.read"
+      },
+      {
+        "name": "tasks.create",
+        "description": "Add a task to the household's shared list, optionally with a due date.",
+        "annotations": {
+          "read_only": false,
+          "destructive": false,
+          "idempotent": false,
+          "open_world": false
+        },
+        "data_class": "household",
+        "permission": "task.create"
+      },
+      {
+        "name": "tasks.update",
+        "description": "Change a task: rename it, mark it done or open again, or set or clear its due date.",
+        "annotations": {
+          "read_only": false,
+          "destructive": false,
+          "idempotent": true,
+          "open_world": false
+        },
+        "data_class": "household",
+        "permission": "task.update"
+      },
+      {
+        "name": "tasks.delete",
+        "description": "Delete a task for good. The app asks the person before it runs.",
+        "annotations": {
+          "read_only": false,
+          "destructive": true,
+          "idempotent": true,
+          "open_world": false
+        },
+        "data_class": "household",
+        "permission": "task.delete"
+      }
+    ],
     "settings": [],
     "commands": [],
-    "themes": []
+    "themes": [],
+    "agent_guidance": "Tasks are the household's shared to-do list. Due dates are calendar dates in the household time zone (the context block's 'Today:' line); 'tomorrow' is that date plus one day. Find a task's id with tasks.list before changing it; never guess ids."
   },
   "subscribes": []
 }

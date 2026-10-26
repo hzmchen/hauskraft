@@ -7,13 +7,14 @@ from hauskraft_sdk import PluginContext, PluginRegistration
 from hauskraft_tasks.models import metadata
 from hauskraft_tasks.router import build_router
 from hauskraft_tasks.seed import seed
+from hauskraft_tasks.tools import TOOLS
 
 
 class TasksPlugin:
     id = "dev.hauskraft.tasks"
 
     def register(self, ctx: PluginContext) -> PluginRegistration:
-        return PluginRegistration(router=build_router(ctx), metadata=metadata, seed=seed)
+        return PluginRegistration(router=build_router(ctx), metadata=metadata, seed=seed, tools=TOOLS)
 
 
 plugin = TasksPlugin()

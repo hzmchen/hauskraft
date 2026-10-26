@@ -61,5 +61,20 @@
     "status": "Page {{page}} of {{pages}}"
   },
   "open_count_one": "{{count}} open",
-  "open_count_other": "{{count}} open"
+  "open_count_other": "{{count}} open",
+  "tool": {
+    "create": {
+      "done": "Added task '{{label}}'"
+    },
+    "update": {
+      "done": "Updated task '{{label}}'"
+    },
+    "complete": {
+      "done": "Completed task '{{label}}'"
+    },
+    "delete": {
+      "done": "Deleted task '{{label}}'",
+      "confirm": "Delete task '{{label}}'?"
+    }
+  }
 }
