@@ -86,6 +86,56 @@ describe("Activity", () => {
     );
   });
 
+  it("says when the assistant acted for someone, in en and de (M2S-E04-07)", async () => {
+    const via = (n: number, type: string, data: unknown) => ({ ...item(n, type, data), agentrunid: "run-1" });
+    const events = [
+      via(1, "hauskraft.task.created", task("Buy milk")),
+      via(2, "hauskraft.task.updated", {
+        ...task("Oat milk"),
+        changes: { title: { from: "Buy milk", to: "Oat milk" } },
+      }),
+      via(3, "hauskraft.task.completed", { ...task("Oat milk"), completed_at: "2026-10-13T10:00:00Z" }),
+      via(4, "hauskraft.task.deleted", task("Oat milk")),
+      item(5, "hauskraft.task.created", task("By hand")),
+      via(6, "hauskraft.settings.assistant_changed", { changed: ["chat.model"] }),
+    ];
+    const expected = {
+      en: [
+        "Demo Adult via assistant added 'Buy milk'",
+        "Demo Adult via assistant updated 'Oat milk'",
+        "Demo Adult via assistant completed 'Oat milk'",
+        "Demo Adult via assistant deleted 'Oat milk'",
+        "Demo Adult added 'By hand'",
+        "Demo Adult changed the assistant settings",
+      ],
+      de: [
+        "Demo Adult hat über den Assistenten 'Buy milk' hinzugefügt",
+        "Demo Adult hat über den Assistenten 'Oat milk' geändert",
+        "Demo Adult hat über den Assistenten 'Oat milk' erledigt",
+        "Demo Adult hat über den Assistenten 'Oat milk' gelöscht",
+        "Demo Adult hat 'By hand' hinzugefügt",
+        "Demo Adult hat die Assistent-Einstellungen geändert",
+      ],
+    };
+    for (const lng of ["en", "de"] as const) {
+      fakeApi({ "GET /api/v1/activity": () => json(events), "GET /api/v1/themes": () => json([]) });
+      const view = render(
+        <I18nextProvider i18n={createI18n({ lng })}>
+          <QueryClientProvider client={new QueryClient({ defaultOptions: { queries: { retry: false } } })}>
+            <ActivityFeed />
+          </QueryClientProvider>
+        </I18nextProvider>,
+      );
+      const feed = await screen.findByRole("list", { name: lng === "en" ? "Activity" : "Aktivität" });
+      await vi.waitFor(() => expect(within(feed).getAllByRole("listitem")).toHaveLength(6));
+      const texts = within(feed)
+        .getAllByRole("listitem")
+        .map((li) => li.firstElementChild?.textContent);
+      expect(texts).toEqual(expected[lng]);
+      view.unmount();
+    }
+  });
+
   it("summarises account and household changes in en and de (M1S-E09-02)", async () => {
     const alex = {
       user: { id: "0199f391-3333-7aaa-8bbb-dddddddddddd", username: "alex", display_name: "Alex", role: "adult" },
