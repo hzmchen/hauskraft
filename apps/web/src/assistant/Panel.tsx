@@ -26,7 +26,7 @@ import { problemCode } from "../forms/fields";
 import { useIsWide } from "../shell/nav/NavRenderer";
 import { ActionCard, ConfirmationCard } from "./Cards";
 import { Markdown } from "./Markdown";
-import { useAssistantAvailable, usePanel } from "./state";
+import { useAssistantAvailable, useBottomEdge, usePanel } from "./state";
 
 const CURRENT = "hauskraft.assistant.chat";
 
@@ -68,8 +68,9 @@ export function AssistantButton() {
 export function AssistantPanel() {
   const { t } = useTranslation();
   const wide = useIsWide();
-  const { open, setOpen, buttonRef } = usePanel();
+  const { open, setOpen, buttonRef, headerRef } = usePanel();
   const available = useAssistantAvailable();
+  const headerBottom = useBottomEdge(headerRef);
   if (!available || !open) return null;
   function close() {
     setOpen(false);
@@ -80,8 +81,9 @@ export function AssistantPanel() {
       aria-label={t("assistant.panel")}
       className={cn(
         "flex flex-col gap-density bg-background p-density",
-        wide ? "sticky top-0 h-svh w-96 shrink-0 border-l" : "fixed inset-0 z-40",
+        wide ? "sticky top-0 h-svh w-96 shrink-0 border-l" : "fixed inset-x-0 bottom-0 z-40",
       )}
+      style={wide ? undefined : { top: headerBottom }}
     >
       <div className="flex items-center justify-between gap-2">
         <h2 className="text-lg font-bold">{t("assistant.panel")}</h2>
@@ -105,15 +107,16 @@ function Chat() {
   const [deleting, setDeleting] = useState<{ id: string; title: string } | null>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const { data: chats = [] } = useQuery(assistantConversationsListOptions());
-  const { data: detail } = useQuery({
+  const { data: detail, isError: detailError } = useQuery({
     ...assistantConversationsReadOptions({ path: { conversation_id: current ?? "" } }),
     enabled: current !== null,
     retry: false,
   });
 
+  // A chat deleted elsewhere (another tab) can't be read any more: start a new one.
   useEffect(() => {
-    if (current && chats.length && !chats.some((c) => c.id === current)) select(null);
-  }, [chats, current]);
+    if (current && detailError) select(null);
+  }, [current, detailError]);
 
   function select(id: string | null) {
     setCurrent(id);
@@ -312,7 +315,10 @@ function Log({
   const actions = detail?.actions ?? [];
   const endRef = useRef<HTMLDivElement>(null);
   useEffect(
-    () => endRef.current?.scrollIntoView?.({ block: "end" }),
+    // Braces matter: Chrome's scrollIntoView returns a promise, which React would take for a cleanup function.
+    () => {
+      endRef.current?.scrollIntoView?.({ block: "end" });
+    },
     [messages.length, actions.length, pending.length],
   );
   // Cards follow the last message of their run, so a chat reads in order.

@@ -8,7 +8,7 @@ import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
 import { AssistantButton, AssistantPanel } from "../assistant/Panel";
-import { AssistantProvider } from "../assistant/state";
+import { AssistantProvider, usePanel } from "../assistant/state";
 import { hasDeviceLanguage, isLanguage } from "../i18n";
 import { loadPluginModule } from "../plugins/load";
 import { pluginRegistry } from "../plugins/registry.gen";
@@ -53,51 +53,61 @@ export const Route = createFileRoute("/_app")({
 });
 
 function AppLayout() {
+  return (
+    <AssistantProvider>
+      <AppShell />
+    </AssistantProvider>
+  );
+}
+
+function AppShell() {
   const { t } = useTranslation();
   const { plugins } = useWebPlugins();
   const items = useMemo(() => buildNavModel(plugins), [plugins]);
   const layout = useThemeLayout();
   const style = useNavStyle(layout.navigation);
+  const { headerRef } = usePanel();
   return (
-    <AssistantProvider>
-      <div className="flex min-h-svh">
-        <a
-          href="#content"
-          className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:rounded-md focus:bg-background focus:p-2"
+    <div className="flex min-h-svh">
+      <a
+        href="#content"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:rounded-md focus:bg-background focus:p-2"
+      >
+        {t("nav.skip_to_content")}
+      </a>
+      {style === "sidebar" ? <NavRenderer style={style} items={items} /> : null}
+      <div className="flex min-w-0 flex-1 flex-col">
+        <header
+          ref={headerRef}
+          className="flex items-center justify-between gap-density border-b bg-nav px-density py-2 text-nav-foreground"
         >
-          {t("nav.skip_to_content")}
-        </a>
-        {style === "sidebar" ? <NavRenderer style={style} items={items} /> : null}
-        <div className="flex min-w-0 flex-1 flex-col">
-          <header className="flex items-center justify-between gap-density border-b bg-nav px-density py-2 text-nav-foreground">
-            <div className="flex min-w-0 items-center gap-density">
-              {style === "drawer" ? <NavRenderer style={style} items={items} /> : null}
-              <span className="font-heading text-lg font-bold">{t("app.name")}</span>
-              {style === "topbar" ? <NavRenderer style={style} items={items} /> : null}
-            </div>
-            <div className="flex items-center gap-2">
-              <AssistantButton />
-              <AccountMenu />
-            </div>
-          </header>
-          <main
-            id="content"
-            tabIndex={-1}
-            className={cn(
-              "w-full flex-1 p-density outline-none",
-              layout.content_width === "contained" && "mx-auto max-w-content",
-              style === "bottom-tabs" && "pb-20",
-            )}
-          >
-            <RouterHost>
-              <Outlet />
-            </RouterHost>
-          </main>
-          <DocumentTitle />
-          {style === "bottom-tabs" ? <NavRenderer style={style} items={items} /> : null}
-        </div>
-        <AssistantPanel />
+          <div className="flex min-w-0 items-center gap-density">
+            {style === "drawer" ? <NavRenderer style={style} items={items} /> : null}
+            <span className="font-heading text-lg font-bold">{t("app.name")}</span>
+            {style === "topbar" ? <NavRenderer style={style} items={items} /> : null}
+          </div>
+          <div className="flex items-center gap-2">
+            <AssistantButton />
+            <AccountMenu />
+          </div>
+        </header>
+        <main
+          id="content"
+          tabIndex={-1}
+          className={cn(
+            "w-full flex-1 p-density outline-none",
+            layout.content_width === "contained" && "mx-auto max-w-content",
+            style === "bottom-tabs" && "pb-20",
+          )}
+        >
+          <RouterHost>
+            <Outlet />
+          </RouterHost>
+        </main>
+        <DocumentTitle />
+        {style === "bottom-tabs" ? <NavRenderer style={style} items={items} /> : null}
       </div>
-    </AssistantProvider>
+      <AssistantPanel />
+    </div>
   );
 }
