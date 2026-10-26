@@ -46,6 +46,8 @@ export function summarise(item: ActivityItem, t: TFunction, themeName: (id: stri
     plugin: data.plugin_id ?? "",
     name: data.user?.display_name ?? "",
     ...(item.type === "hauskraft.plugin.toggled" ? { context: data.enabled ? "on" : "off" } : {}),
+    // The assistant acted for the person (M2S-E04-07): "<actor> via assistant added …"; other lines stay as they are.
+    ...(item.agentrunid && item.type !== "hauskraft.plugin.toggled" ? { context: "assistant" } : {}),
     defaultValue: t("activity.unknown", { actor, type: item.type }),
   });
 }

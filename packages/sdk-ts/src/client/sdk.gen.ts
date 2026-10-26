@@ -2,7 +2,7 @@
 
 import type { Client, ClientMeta, Options as Options2, RequestResult, TDataShape } from './client';
 import { client } from './client.gen';
-import type { ActivityListData, ActivityListErrors, ActivityListResponses, AssistantConversationsCreateData, AssistantConversationsCreateErrors, AssistantConversationsCreateResponses, AssistantConversationsDeleteData, AssistantConversationsDeleteErrors, AssistantConversationsDeleteResponses, AssistantConversationsListData, AssistantConversationsListErrors, AssistantConversationsListResponses, AssistantConversationsReadData, AssistantConversationsReadErrors, AssistantConversationsReadResponses, AssistantSettingsReadData, AssistantSettingsReadErrors, AssistantSettingsReadResponses, AssistantSettingsRemoveChatData, AssistantSettingsRemoveChatErrors, AssistantSettingsRemoveChatResponses, AssistantSettingsTestData, AssistantSettingsTestErrors, AssistantSettingsTestResponses, AssistantSettingsUpdateData, AssistantSettingsUpdateErrors, AssistantSettingsUpdateResponses, AssistantStatusData, AssistantStatusErrors, AssistantStatusResponses, AssistantToolsListData, AssistantToolsListErrors, AssistantToolsListResponses, AuthLoginData, AuthLoginErrors, AuthLoginResponses, AuthLogoutData, AuthLogoutErrors, AuthLogoutEverywhereData, AuthLogoutEverywhereErrors, AuthLogoutEverywhereResponses, AuthLogoutResponses, AuthSessionData, AuthSessionErrors, AuthSessionResponses, DashboardGetData, DashboardGetErrors, DashboardGetResponses, DashboardPutData, DashboardPutErrors, DashboardPutResponses, HealthHealthzData, HealthHealthzResponses, HealthReadyzData, HealthReadyzErrors, HealthReadyzResponses, HouseholdReadData, HouseholdReadErrors, HouseholdReadResponses, HouseholdUpdateData, HouseholdUpdateErrors, HouseholdUpdateResponses, PluginsListData, PluginsListErrors, PluginsListResponses, PluginsUpdateData, PluginsUpdateErrors, PluginsUpdateResponses, SettingsThemeSetData, SettingsThemeSetErrors, SettingsThemeSetResponses, SetupCompleteData, SetupCompleteErrors, SetupCompleteResponses, SetupStatusData, SetupStatusResponses, TasksCreateData, TasksCreateErrors, TasksCreateResponses, TasksDeleteData, TasksDeleteErrors, TasksDeleteResponses, TasksGetData, TasksGetErrors, TasksGetResponses, TasksListData, TasksListErrors, TasksListResponses, TasksUpdateData, TasksUpdateErrors, TasksUpdateResponses, ThemesActiveCssData, ThemesActiveCssErrors, ThemesActiveCssResponses, ThemesActiveData, ThemesActiveErrors, ThemesActiveResponses, ThemesAssetData, ThemesAssetErrors, ThemesAssetResponses, ThemesListData, ThemesListErrors, ThemesListResponses, UsersMeGetData, UsersMeGetErrors, UsersMeGetResponses, UsersMePasswordData, UsersMePasswordErrors, UsersMePasswordResponses, UsersMeSessionEndData, UsersMeSessionEndErrors, UsersMeSessionEndResponses, UsersMeSessionsData, UsersMeSessionsErrors, UsersMeSessionsResponses, UsersMeUpdateData, UsersMeUpdateErrors, UsersMeUpdateResponses, UsersUsersCreateData, UsersUsersCreateErrors, UsersUsersCreateResponses, UsersUsersDeactivateData, UsersUsersDeactivateErrors, UsersUsersDeactivateResponses, UsersUsersGetData, UsersUsersGetErrors, UsersUsersGetResponses, UsersUsersListData, UsersUsersListErrors, UsersUsersListResponses, UsersUsersReactivateData, UsersUsersReactivateErrors, UsersUsersReactivateResponses, UsersUsersResetPasswordData, UsersUsersResetPasswordErrors, UsersUsersResetPasswordResponses, UsersUsersUpdateData, UsersUsersUpdateErrors, UsersUsersUpdateResponses } from './types.gen';
+import type { ActivityListData, ActivityListErrors, ActivityListResponses, AssistantActionsUndoData, AssistantActionsUndoErrors, AssistantActionsUndoResponses, AssistantConversationsCreateData, AssistantConversationsCreateErrors, AssistantConversationsCreateResponses, AssistantConversationsDeleteData, AssistantConversationsDeleteErrors, AssistantConversationsDeleteResponses, AssistantConversationsListData, AssistantConversationsListErrors, AssistantConversationsListResponses, AssistantConversationsMessageData, AssistantConversationsMessageErrors, AssistantConversationsMessageResponses, AssistantConversationsReadData, AssistantConversationsReadErrors, AssistantConversationsReadResponses, AssistantRunsConfirmData, AssistantRunsConfirmErrors, AssistantRunsConfirmResponses, AssistantSettingsReadData, AssistantSettingsReadErrors, AssistantSettingsReadResponses, AssistantSettingsRemoveChatData, AssistantSettingsRemoveChatErrors, AssistantSettingsRemoveChatResponses, AssistantSettingsTestData, AssistantSettingsTestErrors, AssistantSettingsTestResponses, AssistantSettingsUpdateData, AssistantSettingsUpdateErrors, AssistantSettingsUpdateResponses, AssistantStatusData, AssistantStatusErrors, AssistantStatusResponses, AssistantToolsListData, AssistantToolsListErrors, AssistantToolsListResponses, AuthLoginData, AuthLoginErrors, AuthLoginResponses, AuthLogoutData, AuthLogoutErrors, AuthLogoutEverywhereData, AuthLogoutEverywhereErrors, AuthLogoutEverywhereResponses, AuthLogoutResponses, AuthSessionData, AuthSessionErrors, AuthSessionResponses, DashboardGetData, DashboardGetErrors, DashboardGetResponses, DashboardPutData, DashboardPutErrors, DashboardPutResponses, HealthHealthzData, HealthHealthzResponses, HealthReadyzData, HealthReadyzErrors, HealthReadyzResponses, HouseholdReadData, HouseholdReadErrors, HouseholdReadResponses, HouseholdUpdateData, HouseholdUpdateErrors, HouseholdUpdateResponses, PluginsListData, PluginsListErrors, PluginsListResponses, PluginsUpdateData, PluginsUpdateErrors, PluginsUpdateResponses, SettingsThemeSetData, SettingsThemeSetErrors, SettingsThemeSetResponses, SetupCompleteData, SetupCompleteErrors, SetupCompleteResponses, SetupStatusData, SetupStatusResponses, TasksCreateData, TasksCreateErrors, TasksCreateResponses, TasksDeleteData, TasksDeleteErrors, TasksDeleteResponses, TasksGetData, TasksGetErrors, TasksGetResponses, TasksListData, TasksListErrors, TasksListResponses, TasksUpdateData, TasksUpdateErrors, TasksUpdateResponses, ThemesActiveCssData, ThemesActiveCssErrors, ThemesActiveCssResponses, ThemesActiveData, ThemesActiveErrors, ThemesActiveResponses, ThemesAssetData, ThemesAssetErrors, ThemesAssetResponses, ThemesListData, ThemesListErrors, ThemesListResponses, UsersMeGetData, UsersMeGetErrors, UsersMeGetResponses, UsersMePasswordData, UsersMePasswordErrors, UsersMePasswordResponses, UsersMeSessionEndData, UsersMeSessionEndErrors, UsersMeSessionEndResponses, UsersMeSessionsData, UsersMeSessionsErrors, UsersMeSessionsResponses, UsersMeUpdateData, UsersMeUpdateErrors, UsersMeUpdateResponses, UsersUsersCreateData, UsersUsersCreateErrors, UsersUsersCreateResponses, UsersUsersDeactivateData, UsersUsersDeactivateErrors, UsersUsersDeactivateResponses, UsersUsersGetData, UsersUsersGetErrors, UsersUsersGetResponses, UsersUsersListData, UsersUsersListErrors, UsersUsersListResponses, UsersUsersReactivateData, UsersUsersReactivateErrors, UsersUsersReactivateResponses, UsersUsersResetPasswordData, UsersUsersResetPasswordErrors, UsersUsersResetPasswordResponses, UsersUsersUpdateData, UsersUsersUpdateErrors, UsersUsersUpdateResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean, TResponse = unknown> = Options2<TData, ThrowOnError, TResponse> & {
     /**
@@ -22,6 +22,13 @@ export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends 
  * List
  */
 export const activityList = <ThrowOnError extends boolean = false>(options?: Options<ActivityListData, ThrowOnError>): RequestResult<ActivityListResponses, ActivityListErrors, ThrowOnError> => (options?.client ?? client).get<ActivityListResponses, ActivityListErrors, ThrowOnError>({ url: '/api/v1/activity', ...options });
+
+/**
+ * Actions Undo
+ *
+ * Reverse an action the assistant took for the caller, where its tool declared how.
+ */
+export const assistantActionsUndo = <ThrowOnError extends boolean = false>(options: Options<AssistantActionsUndoData, ThrowOnError>): RequestResult<AssistantActionsUndoResponses, AssistantActionsUndoErrors, ThrowOnError> => (options.client ?? client).post<AssistantActionsUndoResponses, AssistantActionsUndoErrors, ThrowOnError>({ url: '/api/v1/assistant/actions/{action_id}/undo', ...options });
 
 /**
  * Conversations List
@@ -46,6 +53,36 @@ export const assistantConversationsDelete = <ThrowOnError extends boolean = fals
  * Conversations Read
  */
 export const assistantConversationsRead = <ThrowOnError extends boolean = false>(options: Options<AssistantConversationsReadData, ThrowOnError>): RequestResult<AssistantConversationsReadResponses, AssistantConversationsReadErrors, ThrowOnError> => (options.client ?? client).get<AssistantConversationsReadResponses, AssistantConversationsReadErrors, ThrowOnError>({ url: '/api/v1/assistant/conversations/{conversation_id}', ...options });
+
+/**
+ * Conversations Message
+ *
+ * Send a message: the assistant runs with the caller's permissions and answers, acts or asks to confirm.
+ *
+ * A run that fails because of the model endpoint still answers 200, with ``run.status`` failed and an error code.
+ */
+export const assistantConversationsMessage = <ThrowOnError extends boolean = false>(options: Options<AssistantConversationsMessageData, ThrowOnError>): RequestResult<AssistantConversationsMessageResponses, AssistantConversationsMessageErrors, ThrowOnError> => (options.client ?? client).post<AssistantConversationsMessageResponses, AssistantConversationsMessageErrors, ThrowOnError>({
+    url: '/api/v1/assistant/conversations/{conversation_id}/messages',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Runs Confirm
+ *
+ * Approve or deny each pending call of a run that waits for confirmation; the run then continues.
+ */
+export const assistantRunsConfirm = <ThrowOnError extends boolean = false>(options: Options<AssistantRunsConfirmData, ThrowOnError>): RequestResult<AssistantRunsConfirmResponses, AssistantRunsConfirmErrors, ThrowOnError> => (options.client ?? client).post<AssistantRunsConfirmResponses, AssistantRunsConfirmErrors, ThrowOnError>({
+    url: '/api/v1/assistant/runs/{run_id}/confirmations',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
 
 /**
  * Settings Read

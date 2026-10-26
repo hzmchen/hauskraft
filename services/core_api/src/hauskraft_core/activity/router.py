@@ -31,6 +31,7 @@ class ActivityItem(BaseModel):
     subject: str | None
     summary_key: str
     data: Any
+    agentrunid: str | None = None  # the assistant run that acted for the actor (M2S-E04-07)
 
 
 def summary_key(event_type: str) -> str:
@@ -62,6 +63,7 @@ async def list_(
             subject=event.subject,
             summary_key=summary_key(event.type),
             data=event.envelope.get("data"),
+            agentrunid=event.envelope.get("agentrunid"),
             actor=ActivityActor(id=event.actor_id, display_name=name) if event.actor_id else None,
         )
         for event, name in rows

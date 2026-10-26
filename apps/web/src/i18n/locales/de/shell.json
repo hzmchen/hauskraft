@@ -97,7 +97,11 @@
       "created": "{{actor}} hat '{{title}}' hinzugefügt",
       "updated": "{{actor}} hat '{{title}}' geändert",
       "completed": "{{actor}} hat '{{title}}' erledigt",
-      "deleted": "{{actor}} hat '{{title}}' gelöscht"
+      "deleted": "{{actor}} hat '{{title}}' gelöscht",
+      "created_assistant": "{{actor}} hat über den Assistenten '{{title}}' hinzugefügt",
+      "updated_assistant": "{{actor}} hat über den Assistenten '{{title}}' geändert",
+      "completed_assistant": "{{actor}} hat über den Assistenten '{{title}}' erledigt",
+      "deleted_assistant": "{{actor}} hat über den Assistenten '{{title}}' gelöscht"
     },
     "settings": {
       "theme_changed": "{{actor}} hat das Design auf {{theme}} umgestellt",

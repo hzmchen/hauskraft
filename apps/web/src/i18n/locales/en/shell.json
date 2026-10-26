@@ -97,7 +97,11 @@
       "created": "{{actor}} added '{{title}}'",
       "updated": "{{actor}} updated '{{title}}'",
       "completed": "{{actor}} completed '{{title}}'",
-      "deleted": "{{actor}} deleted '{{title}}'"
+      "deleted": "{{actor}} deleted '{{title}}'",
+      "created_assistant": "{{actor}} via assistant added '{{title}}'",
+      "updated_assistant": "{{actor}} via assistant updated '{{title}}'",
+      "completed_assistant": "{{actor}} via assistant completed '{{title}}'",
+      "deleted_assistant": "{{actor}} via assistant deleted '{{title}}'"
     },
     "settings": {
       "theme_changed": "{{actor}} switched the theme to {{theme}}",

@@ -3,8 +3,8 @@
 import { type DefaultError, type InfiniteData, infiniteQueryOptions, queryOptions, type UseMutationOptions } from '@tanstack/react-query';
 
 import { client } from '../client.gen';
-import { activityList, assistantConversationsCreate, assistantConversationsDelete, assistantConversationsList, assistantConversationsRead, assistantSettingsRead, assistantSettingsRemoveChat, assistantSettingsTest, assistantSettingsUpdate, assistantStatus, assistantToolsList, authLogin, authLogout, authLogoutEverywhere, authSession, dashboardGet, dashboardPut, healthHealthz, healthReadyz, householdRead, householdUpdate, type Options, pluginsList, pluginsUpdate, settingsThemeSet, setupComplete, setupStatus, tasksCreate, tasksDelete, tasksGet, tasksList, tasksUpdate, themesActive, themesActiveCss, themesAsset, themesList, usersMeGet, usersMePassword, usersMeSessionEnd, usersMeSessions, usersMeUpdate, usersUsersCreate, usersUsersDeactivate, usersUsersGet, usersUsersList, usersUsersReactivate, usersUsersResetPassword, usersUsersUpdate } from '../sdk.gen';
-import type { ActivityListData, ActivityListResponse, AssistantConversationsCreateData, AssistantConversationsCreateResponse, AssistantConversationsDeleteData, AssistantConversationsDeleteError, AssistantConversationsDeleteResponse, AssistantConversationsListData, AssistantConversationsListResponse, AssistantConversationsReadData, AssistantConversationsReadError, AssistantConversationsReadResponse, AssistantSettingsReadData, AssistantSettingsReadResponse, AssistantSettingsRemoveChatData, AssistantSettingsRemoveChatResponse, AssistantSettingsTestData, AssistantSettingsTestResponse, AssistantSettingsUpdateData, AssistantSettingsUpdateResponse, AssistantStatusData, AssistantStatusResponse, AssistantToolsListData, AssistantToolsListResponse, AuthLoginData, AuthLoginError, AuthLoginResponse, AuthLogoutData, AuthLogoutEverywhereData, AuthLogoutEverywhereResponse, AuthLogoutResponse, AuthSessionData, AuthSessionResponse, DashboardGetData, DashboardGetResponse, DashboardPutData, DashboardPutResponse, HealthHealthzData, HealthHealthzResponse, HealthReadyzData, HealthReadyzError, HealthReadyzResponse, HouseholdReadData, HouseholdReadResponse, HouseholdUpdateData, HouseholdUpdateResponse, PluginsListData, PluginsListResponse, PluginsUpdateData, PluginsUpdateResponse, SettingsThemeSetData, SettingsThemeSetResponse, SetupCompleteData, SetupCompleteResponse, SetupStatusData, SetupStatusResponse, TasksCreateData, TasksCreateResponse, TasksDeleteData, TasksDeleteResponse, TasksGetData, TasksGetResponse, TasksListData, TasksListResponse, TasksUpdateData, TasksUpdateResponse, ThemesActiveCssData, ThemesActiveCssError, ThemesActiveCssResponse, ThemesActiveData, ThemesActiveResponse, ThemesAssetData, ThemesAssetError, ThemesListData, ThemesListResponse, UsersMeGetData, UsersMeGetResponse, UsersMePasswordData, UsersMePasswordResponse, UsersMeSessionEndData, UsersMeSessionEndError, UsersMeSessionEndResponse, UsersMeSessionsData, UsersMeSessionsResponse, UsersMeUpdateData, UsersMeUpdateResponse, UsersUsersCreateData, UsersUsersCreateResponse, UsersUsersDeactivateData, UsersUsersDeactivateError, UsersUsersDeactivateResponse, UsersUsersGetData, UsersUsersGetError, UsersUsersGetResponse, UsersUsersListData, UsersUsersListResponse, UsersUsersReactivateData, UsersUsersReactivateError, UsersUsersReactivateResponse, UsersUsersResetPasswordData, UsersUsersResetPasswordResponse, UsersUsersUpdateData, UsersUsersUpdateResponse } from '../types.gen';
+import { activityList, assistantActionsUndo, assistantConversationsCreate, assistantConversationsDelete, assistantConversationsList, assistantConversationsMessage, assistantConversationsRead, assistantRunsConfirm, assistantSettingsRead, assistantSettingsRemoveChat, assistantSettingsTest, assistantSettingsUpdate, assistantStatus, assistantToolsList, authLogin, authLogout, authLogoutEverywhere, authSession, dashboardGet, dashboardPut, healthHealthz, healthReadyz, householdRead, householdUpdate, type Options, pluginsList, pluginsUpdate, settingsThemeSet, setupComplete, setupStatus, tasksCreate, tasksDelete, tasksGet, tasksList, tasksUpdate, themesActive, themesActiveCss, themesAsset, themesList, usersMeGet, usersMePassword, usersMeSessionEnd, usersMeSessions, usersMeUpdate, usersUsersCreate, usersUsersDeactivate, usersUsersGet, usersUsersList, usersUsersReactivate, usersUsersResetPassword, usersUsersUpdate } from '../sdk.gen';
+import type { ActivityListData, ActivityListResponse, AssistantActionsUndoData, AssistantActionsUndoError, AssistantActionsUndoResponse, AssistantConversationsCreateData, AssistantConversationsCreateResponse, AssistantConversationsDeleteData, AssistantConversationsDeleteError, AssistantConversationsDeleteResponse, AssistantConversationsListData, AssistantConversationsListResponse, AssistantConversationsMessageData, AssistantConversationsMessageResponse, AssistantConversationsReadData, AssistantConversationsReadError, AssistantConversationsReadResponse, AssistantRunsConfirmData, AssistantRunsConfirmResponse, AssistantSettingsReadData, AssistantSettingsReadResponse, AssistantSettingsRemoveChatData, AssistantSettingsRemoveChatResponse, AssistantSettingsTestData, AssistantSettingsTestResponse, AssistantSettingsUpdateData, AssistantSettingsUpdateResponse, AssistantStatusData, AssistantStatusResponse, AssistantToolsListData, AssistantToolsListResponse, AuthLoginData, AuthLoginError, AuthLoginResponse, AuthLogoutData, AuthLogoutEverywhereData, AuthLogoutEverywhereResponse, AuthLogoutResponse, AuthSessionData, AuthSessionResponse, DashboardGetData, DashboardGetResponse, DashboardPutData, DashboardPutResponse, HealthHealthzData, HealthHealthzResponse, HealthReadyzData, HealthReadyzError, HealthReadyzResponse, HouseholdReadData, HouseholdReadResponse, HouseholdUpdateData, HouseholdUpdateResponse, PluginsListData, PluginsListResponse, PluginsUpdateData, PluginsUpdateResponse, SettingsThemeSetData, SettingsThemeSetResponse, SetupCompleteData, SetupCompleteResponse, SetupStatusData, SetupStatusResponse, TasksCreateData, TasksCreateResponse, TasksDeleteData, TasksDeleteResponse, TasksGetData, TasksGetResponse, TasksListData, TasksListResponse, TasksUpdateData, TasksUpdateResponse, ThemesActiveCssData, ThemesActiveCssError, ThemesActiveCssResponse, ThemesActiveData, ThemesActiveResponse, ThemesAssetData, ThemesAssetError, ThemesListData, ThemesListResponse, UsersMeGetData, UsersMeGetResponse, UsersMePasswordData, UsersMePasswordResponse, UsersMeSessionEndData, UsersMeSessionEndError, UsersMeSessionEndResponse, UsersMeSessionsData, UsersMeSessionsResponse, UsersMeUpdateData, UsersMeUpdateResponse, UsersUsersCreateData, UsersUsersCreateResponse, UsersUsersDeactivateData, UsersUsersDeactivateError, UsersUsersDeactivateResponse, UsersUsersGetData, UsersUsersGetError, UsersUsersGetResponse, UsersUsersListData, UsersUsersListResponse, UsersUsersReactivateData, UsersUsersReactivateError, UsersUsersReactivateResponse, UsersUsersResetPasswordData, UsersUsersResetPasswordResponse, UsersUsersUpdateData, UsersUsersUpdateResponse } from '../types.gen';
 
 export type QueryKey<TOptions extends Options> = [
     Pick<TOptions, 'baseUrl' | 'body' | 'headers' | 'path' | 'query'> & {
@@ -116,6 +116,25 @@ export const activityListInfiniteOptions = (options?: Options<ActivityListData>)
     return opts as Omit<typeof opts, 'initialData'>;
 };
 
+/**
+ * Actions Undo
+ *
+ * Reverse an action the assistant took for the caller, where its tool declared how.
+ */
+export const assistantActionsUndoMutation = (options?: Partial<Options<AssistantActionsUndoData>>): UseMutationOptions<AssistantActionsUndoResponse, AssistantActionsUndoError, Options<AssistantActionsUndoData>> => {
+    const mutationOptions: UseMutationOptions<AssistantActionsUndoResponse, AssistantActionsUndoError, Options<AssistantActionsUndoData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await assistantActionsUndo({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
 export const assistantConversationsListQueryKey = (options?: Options<AssistantConversationsListData>) => createQueryKey('assistantConversationsList', options);
 
 /**
@@ -189,6 +208,46 @@ export const assistantConversationsReadOptions = (options: Options<AssistantConv
     },
     queryKey: assistantConversationsReadQueryKey(options)
 });
+
+/**
+ * Conversations Message
+ *
+ * Send a message: the assistant runs with the caller's permissions and answers, acts or asks to confirm.
+ *
+ * A run that fails because of the model endpoint still answers 200, with ``run.status`` failed and an error code.
+ */
+export const assistantConversationsMessageMutation = (options?: Partial<Options<AssistantConversationsMessageData>>): UseMutationOptions<AssistantConversationsMessageResponse, DefaultError, Options<AssistantConversationsMessageData>> => {
+    const mutationOptions: UseMutationOptions<AssistantConversationsMessageResponse, DefaultError, Options<AssistantConversationsMessageData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await assistantConversationsMessage({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
+ * Runs Confirm
+ *
+ * Approve or deny each pending call of a run that waits for confirmation; the run then continues.
+ */
+export const assistantRunsConfirmMutation = (options?: Partial<Options<AssistantRunsConfirmData>>): UseMutationOptions<AssistantRunsConfirmResponse, DefaultError, Options<AssistantRunsConfirmData>> => {
+    const mutationOptions: UseMutationOptions<AssistantRunsConfirmResponse, DefaultError, Options<AssistantRunsConfirmData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await assistantRunsConfirm({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
 
 export const assistantSettingsReadQueryKey = (options?: Options<AssistantSettingsReadData>) => createQueryKey('assistantSettingsRead', options);
 
