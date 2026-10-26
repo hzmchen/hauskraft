@@ -20,6 +20,7 @@ Story: **M0S-Exx-yy** · <title> (<link to the epic file>)
 - [ ] Green: story tests, my unit/integration tests and `python -m pytest tests --strict-status` pass
 - [ ] Story flipped to `green` in `tests/story-status.json`; `python scripts/backlog_tools.py coverage --write` and `check` run
 - [ ] No file under `tests/acceptance/`, `tests/e2e/` or `tests/fixtures/` was changed to get to green
+- [ ] Changes a system prompt, a tool or a skill: evals run (`just eval …`, report attached) or why not (ADR 0022)
 
 ## UI changes only
 
