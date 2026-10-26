@@ -47,7 +47,8 @@ test.describe("sections follow the role", () => {
       await api.setLocale("de");
       await login(page, "demo");
       await page.goto("/settings/appearance");
-      expect(await settingsSections(page)).toEqual(["Darstellung", "Konto", "Haushalt", "Mitglieder"]);
+      // M2S-E07-01 adds "Assistent" for owners (approved spec-owned change, 2026-10-26).
+      expect(await settingsSections(page)).toEqual(["Darstellung", "Konto", "Haushalt", "Mitglieder", "Assistent"]);
     } finally {
       await api.setLocale("en");
       await api.dispose();
