@@ -279,6 +279,47 @@ export type Components = {
 };
 
 /**
+ * ConnectionChecks
+ */
+export type ConnectionChecks = {
+    /**
+     * Auth
+     */
+    auth: boolean;
+    /**
+     * Model
+     */
+    model: boolean;
+    /**
+     * Reachable
+     */
+    reachable: boolean;
+    /**
+     * Tool Calls
+     */
+    tool_calls: boolean;
+};
+
+/**
+ * ConnectionTest
+ */
+export type ConnectionTest = {
+    checks: ConnectionChecks;
+    /**
+     * Error Code
+     */
+    error_code: 'unreachable' | 'auth_failed' | 'model_not_found' | 'tool_calls_unsupported' | 'model_error' | null;
+    /**
+     * Latency Ms
+     */
+    latency_ms: number;
+    /**
+     * Ok
+     */
+    ok: boolean;
+};
+
+/**
  * Conversation
  */
 export type Conversation = {
@@ -1569,6 +1610,37 @@ export type AssistantSettingsRemoveChatResponses = {
 };
 
 export type AssistantSettingsRemoveChatResponse = AssistantSettingsRemoveChatResponses[keyof AssistantSettingsRemoveChatResponses];
+
+export type AssistantSettingsTestData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/v1/assistant/settings/test';
+};
+
+export type AssistantSettingsTestErrors = {
+    /**
+     * Unauthorized
+     */
+    401: unknown;
+    /**
+     * Forbidden
+     */
+    403: unknown;
+    /**
+     * Conflict
+     */
+    409: unknown;
+};
+
+export type AssistantSettingsTestResponses = {
+    /**
+     * Successful Response
+     */
+    200: ConnectionTest;
+};
+
+export type AssistantSettingsTestResponse = AssistantSettingsTestResponses[keyof AssistantSettingsTestResponses];
 
 export type AssistantStatusData = {
     body?: never;

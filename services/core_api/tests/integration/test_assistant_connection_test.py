@@ -67,14 +67,18 @@ def test_passes_and_sends_the_key(owner: TestClient, fake_llm: tuple[str, Any]) 
     assert module._records[-1]["tools"], "the test offers one tool"
 
 
-@pytest.mark.parametrize(("chat", "failed", "code"), [
-    ({"model": "fake-tools", "api_key": "wrong-key"}, "auth", "auth_failed"),
-    ({"model": "fake-no-tools", "api_key": KEY}, "tool_calls", "tool_calls_unsupported"),
-    ({"model": "no-such-model", "api_key": KEY}, "model", "model_not_found"),
-    ({"model": "fake-broken", "api_key": KEY}, "model", "model_error"),
-])
-def test_names_the_failing_check(owner: TestClient, fake_llm: tuple[str, Any], chat: dict, failed: str,
-                                 code: str) -> None:
+@pytest.mark.parametrize(
+    ("chat", "failed", "code"),
+    [
+        ({"model": "fake-tools", "api_key": "wrong-key"}, "auth", "auth_failed"),
+        ({"model": "fake-no-tools", "api_key": KEY}, "tool_calls", "tool_calls_unsupported"),
+        ({"model": "no-such-model", "api_key": KEY}, "model", "model_not_found"),
+        ({"model": "fake-broken", "api_key": KEY}, "model", "model_error"),
+    ],
+)
+def test_names_the_failing_check(
+    owner: TestClient, fake_llm: tuple[str, Any], chat: dict, failed: str, code: str
+) -> None:
     configure(owner, base_url=fake_llm[0], **chat)
     body = owner.post("/api/v1/assistant/settings/test").json()
     assert body["ok"] is False

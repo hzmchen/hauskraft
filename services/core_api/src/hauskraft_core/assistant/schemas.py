@@ -212,3 +212,21 @@ class ToolInfo(BaseModel):
     data_class: DataClass
     permission: str
     enabled: bool = Field(description="False when an owner switched the tool off.")
+
+
+class ConnectionChecks(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    reachable: bool
+    auth: bool
+    model: bool
+    tool_calls: bool
+
+
+class ConnectionTest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    ok: bool
+    checks: ConnectionChecks
+    latency_ms: int
+    error_code: Literal["unreachable", "auth_failed", "model_not_found", "tool_calls_unsupported", "model_error"] | None

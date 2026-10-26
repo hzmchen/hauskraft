@@ -584,6 +584,77 @@
         "title": "Components",
         "type": "object"
       },
+      "ConnectionChecks": {
+        "additionalProperties": false,
+        "properties": {
+          "auth": {
+            "title": "Auth",
+            "type": "boolean"
+          },
+          "model": {
+            "title": "Model",
+            "type": "boolean"
+          },
+          "reachable": {
+            "title": "Reachable",
+            "type": "boolean"
+          },
+          "tool_calls": {
+            "title": "Tool Calls",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "reachable",
+          "auth",
+          "model",
+          "tool_calls"
+        ],
+        "title": "ConnectionChecks",
+        "type": "object"
+      },
+      "ConnectionTest": {
+        "additionalProperties": false,
+        "properties": {
+          "checks": {
+            "$ref": "#/components/schemas/ConnectionChecks"
+          },
+          "error_code": {
+            "anyOf": [
+              {
+                "enum": [
+                  "unreachable",
+                  "auth_failed",
+                  "model_not_found",
+                  "tool_calls_unsupported",
+                  "model_error"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error Code"
+          },
+          "latency_ms": {
+            "title": "Latency Ms",
+            "type": "integer"
+          },
+          "ok": {
+            "title": "Ok",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "ok",
+          "checks",
+          "latency_ms",
+          "error_code"
+        ],
+        "title": "ConnectionTest",
+        "type": "object"
+      },
       "Conversation": {
         "additionalProperties": false,
         "properties": {
@@ -2603,6 +2674,37 @@
           }
         },
         "summary": "Settings Remove Chat",
+        "tags": [
+          "assistant"
+        ]
+      }
+    },
+    "/api/v1/assistant/settings/test": {
+      "post": {
+        "description": "Check the endpoint with one minimal request: reachable, key accepted, model found, tools accepted.",
+        "operationId": "assistant_settings_test",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConnectionTest"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "409": {
+            "description": "Conflict"
+          }
+        },
+        "summary": "Settings Test",
         "tags": [
           "assistant"
         ]

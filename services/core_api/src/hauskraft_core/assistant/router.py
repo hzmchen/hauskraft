@@ -8,10 +8,12 @@ import uuid
 from fastapi import APIRouter, Request, Response
 
 from hauskraft_core.assistant import conversations
+from hauskraft_core.assistant.endpoint import check_connection
 from hauskraft_core.assistant.schemas import (
     AssistantSettings,
     AssistantSettingsPatch,
     AssistantStatus,
+    ConnectionTest,
     Conversation,
     ConversationDetail,
     MessageOut,
@@ -73,6 +75,14 @@ async def settings_update(
             known_tools=request.app.state.tool_registry.names(),
         )
     return AssistantSettings.of(config)
+
+
+@router.post("/settings/test", responses={401: {}, 403: {}, 409: {}})
+async def settings_test(request: Request, db: DbSession, resolved: CurrentSession) -> ConnectionTest:
+    """Check the endpoint with one minimal request: reachable, key accepted, model found, tools accepted."""
+    await require(request, resolved[1], "assistant.configure")
+    result = await check_connection((await read_config(db, request.app.state.settings)).chat)
+    return ConnectionTest.model_validate(result, from_attributes=True)
 
 
 @router.delete("/settings/chat", status_code=204, responses={401: {}, 403: {}})
