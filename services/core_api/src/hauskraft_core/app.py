@@ -18,6 +18,7 @@ from hauskraft_core.auth.providers import provider_from_settings
 from hauskraft_core.auth.ratelimit import LoginRateLimiter
 from hauskraft_core.errors import install_error_handlers
 from hauskraft_core.events.relay import run_relay
+from hauskraft_core.assistant.registry import ToolRegistry
 from hauskraft_core.health import install_core_checks
 from hauskraft_core.logging import RequestContextMiddleware, configure_logging, get_logger
 from hauskraft_core.plugins.loader import load_plugins
@@ -127,5 +128,6 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.add_middleware(RequestContextMiddleware)
     app.include_router(build_api_router(), prefix=API_PREFIX)
     load_plugins(app, settings.plugin_paths, settings.theme_paths)
+    app.state.tool_registry = ToolRegistry.from_plugins(app.state.plugins)
     install_themes(app)
     return app

@@ -70,6 +70,7 @@ class LoadedPlugin:
     enabled: bool = True
     load_error: str | None = None
     registration: PluginRegistration | None = field(default=None, repr=False)
+    context: CorePluginContext | None = field(default=None, repr=False)
 
     @property
     def is_theme(self) -> bool:
@@ -191,7 +192,8 @@ def _load_one(found: DiscoveredManifest, app: FastAPI, prefixes_in_use: dict[str
         return loaded
     try:
         plugin = _import_entrypoint(str(runtime.get("entrypoint", "")))
-        registration = plugin.register(CorePluginContext(loaded.id, manifest, app))
+        context = CorePluginContext(loaded.id, manifest, app)
+        registration = plugin.register(context)
     except Exception as exc:  # a broken plugin must not take core down
         loaded.load_error = f"{type(exc).__name__}: {exc}"
         _log.exception("plugin.load_failed", plugin_id=loaded.id)
@@ -201,6 +203,7 @@ def _load_one(found: DiscoveredManifest, app: FastAPI, prefixes_in_use: dict[str
         loaded.load_error = tool_problem
         return loaded
     loaded.registration = registration
+    loaded.context = context
     for tool in registration.tools:
         app.state.tool_owners[tool.wire_name] = loaded.id
         app.state.tool_names.add(tool.name)

@@ -48,6 +48,7 @@ _BOTH = frozenset({"owner", "adult"})
 _OWNER = frozenset({"owner"})
 
 PERMISSIONS: Mapping[str, frozenset[str]] = {
+    "task.read": _BOTH,
     "task.create": _BOTH,
     "task.update": _BOTH,
     "task.delete": _BOTH,

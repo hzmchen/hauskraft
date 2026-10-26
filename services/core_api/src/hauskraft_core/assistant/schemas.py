@@ -189,3 +189,26 @@ def action_out(action: AssistantAction) -> ActionOut:
 class ConversationDetail(Conversation):
     messages: list[MessageOut]
     actions: list[ActionOut]
+
+
+# ---------------------------------------------------------------- tools (M2S-E02-03)
+class ToolAnnotationsOut(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    read_only: bool
+    destructive: bool
+    idempotent: bool
+    open_world: bool
+
+
+class ToolInfo(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    name: str
+    wire_name: str = Field(description="The function name models see: the name with '_' for '.'.")
+    plugin_id: str
+    description: str
+    annotations: ToolAnnotationsOut
+    data_class: DataClass
+    permission: str
+    enabled: bool = Field(description="False when an owner switched the tool off.")

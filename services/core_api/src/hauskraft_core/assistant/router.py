@@ -15,6 +15,7 @@ from hauskraft_core.assistant.schemas import (
     Conversation,
     ConversationDetail,
     MessageOut,
+    ToolInfo,
     action_out,
 )
 from hauskraft_core.assistant.settings import read_config, remove_chat_endpoint, update_settings
@@ -69,8 +70,7 @@ async def settings_update(
             chat=body.chat.sent() if body.chat else None,
             tools_disabled=body.tools_disabled,
             prices=body.prices.sent() if body.prices else None,
-            # Unknown names are refused once any plugin registers tools (until then, any <plugin>.<verb> name).
-            known_tools=getattr(request.app.state, "tool_names", None) or None,
+            known_tools=request.app.state.tool_registry.names(),
         )
     return AssistantSettings.of(config)
 
@@ -120,3 +120,25 @@ async def conversations_delete(conversation_id: uuid.UUID, request: Request, res
     async with _uow(request) as uow:
         await conversations.delete_own(uow.session, resolved[1].id, conversation_id)
     return Response(status_code=204)
+
+
+# ---------------------------------------------------------------- tools (M2S-E02-03)
+@router.get("/tools", responses={401: {}, 403: {}})
+async def tools_list(request: Request, db: DbSession, resolved: CurrentSession) -> list[ToolInfo]:
+    """Every agent tool of the enabled plugins, with whether the owner switched it off (owners only)."""
+    await require(request, resolved[1], "assistant.configure")
+    off = set((await read_config(db, request.app.state.settings)).tools_disabled)
+    return [
+        ToolInfo(
+            name=t.spec.name,
+            wire_name=t.spec.wire_name,
+            plugin_id=t.plugin_id,
+            description=t.spec.description,
+            annotations=t.spec.annotations.as_dict(),
+            data_class=str(t.spec.data_class),
+            permission=t.spec.permission,
+            enabled=t.spec.name not in off,
+        )
+        for t in request.app.state.tool_registry.all()
+        if t.plugin_id not in request.app.state.disabled_plugins
+    ]
