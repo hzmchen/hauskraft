@@ -82,9 +82,14 @@ function edit(queryClient: QueryClient, change: (page: TaskPage, query: Query) =
   }
 }
 
+/** Refetch every task list (after tasks were created elsewhere, e.g. from "Add from text"). */
+export function invalidateTaskLists(queryClient: QueryClient) {
+  return queryClient.invalidateQueries({ predicate: isTaskList });
+}
+
 function useInvalidate() {
   const queryClient = useQueryClient();
-  return () => queryClient.invalidateQueries({ predicate: isTaskList });
+  return () => invalidateTaskLists(queryClient);
 }
 
 function useSaveFailed() {
