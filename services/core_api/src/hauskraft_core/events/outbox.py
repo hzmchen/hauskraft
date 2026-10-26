@@ -94,6 +94,8 @@ async def emit(
     time = dt.datetime.now(dt.UTC)
     actor_id = uow.actor.id if uow.actor is not None else None
     envelope = build_envelope(event_id, event_type, subject, data, data_class, source, actor_id, time)
+    if uow.actor is not None and uow.actor.via:
+        envelope["agentrunid"] = uow.actor.via  # the assistant run acting for the person (ADR 0020)
     if uow.settings.validate_events:
         validate(envelope)
     uow.session.add(

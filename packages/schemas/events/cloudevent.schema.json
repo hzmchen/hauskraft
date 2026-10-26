@@ -3,7 +3,7 @@
   "$id": "https://hauskraft.dev/schema/events/cloudevent/1.0.json",
   "$comment": "SPDX-License-Identifier: MIT",
   "title": "Hauskraft CloudEvent envelope",
-  "description": "CloudEvents 1.0.2 structured JSON with the Hauskraft extension attributes dataclass and actorid (spec §3.2, ADR-0007, decision D1). Attribute names may contain only lower-case letters and digits, so JSON bodies keep data_class but the envelope says dataclass.",
+  "description": "CloudEvents 1.0.2 structured JSON with the Hauskraft extension attributes dataclass, actorid and, from M2*, agentrunid (spec §3.2, ADR-0007, ADR 0020, decision D1). Attribute names may contain only lower-case letters and digits, so JSON bodies keep data_class but the envelope says dataclass.",
   "type": "object",
   "required": ["specversion", "id", "source", "type", "dataclass"],
   "propertyNames": {
@@ -46,6 +46,11 @@
     },
     "actorid": {
       "description": "Acting user or agent id.",
+      "type": "string",
+      "minLength": 1
+    },
+    "agentrunid": {
+      "description": "The assistant run that caused the event, acting for the person in actorid (M2*, ADR 0020).",
       "type": "string",
       "minLength": 1
     },
