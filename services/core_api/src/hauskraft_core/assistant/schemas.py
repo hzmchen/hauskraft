@@ -3,11 +3,14 @@
 
 from __future__ import annotations
 
+import datetime as dt
+import uuid
 from typing import Annotated, Literal, Self
 
 from pydantic import BaseModel, ConfigDict, Field, StringConstraints, model_validator
 
 from hauskraft_core.assistant.settings import AssistantConfig
+from hauskraft_core.db.models import AssistantAction
 from hauskraft_sdk.data_classes import DataClass
 
 NO_NUL = r"^[^\x00]*$"
@@ -124,3 +127,65 @@ class AssistantStatus(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     available: bool
+
+
+# ---------------------------------------------------------------- conversations and runs (M2S-E04)
+class Conversation(BaseModel):
+    model_config = ConfigDict(extra="forbid", from_attributes=True)
+
+    id: uuid.UUID
+    title: str | None = Field(description="The first message, cut to 80 characters; null before it.")
+    created_at: dt.datetime
+    updated_at: dt.datetime
+
+
+class MessageOut(BaseModel):
+    model_config = ConfigDict(extra="forbid", from_attributes=True)
+
+    id: uuid.UUID
+    role: Literal["user", "assistant"]
+    text: str
+    run_id: uuid.UUID | None
+    created_at: dt.datetime
+
+
+class RecordRef(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    type: str
+    id: str
+    label: str
+
+
+class ActionOut(BaseModel):
+    model_config = ConfigDict(extra="forbid", from_attributes=True)
+
+    id: uuid.UUID
+    run_id: uuid.UUID
+    tool: str
+    status: Literal["done", "failed", "denied", "undone"]
+    summary_key: str | None = Field(description="An i18n key of the tool's plugin, rendered with record.label.")
+    record: RecordRef | None
+    undo_available: bool
+    error_code: str | None
+
+
+def action_out(action: AssistantAction) -> ActionOut:
+    """An action row as the API shows it; Undo is offered while a done action keeps its inverse."""
+    return ActionOut.model_validate(
+        {
+            "id": action.id,
+            "run_id": action.run_id,
+            "tool": action.tool,
+            "status": action.status,
+            "summary_key": action.summary_key,
+            "record": action.record,
+            "undo_available": action.status == "done" and action.undo is not None,
+            "error_code": action.error_code,
+        }
+    )
+
+
+class ConversationDetail(Conversation):
+    messages: list[MessageOut]
+    actions: list[ActionOut]

@@ -126,4 +126,100 @@ class OutboxEvent(Base):
     attempts: Mapped[int] = mapped_column(default=0, server_default=text("0"))
 
 
-__all__ = ["DashboardLayout", "DeploymentSetting", "OutboxEvent", "PluginRecord", "Session", "User", "UserRole"]
+class AssistantConversation(Base):
+    """A member's chat with the assistant (M2S-E04-01). Private to its user; kept until deleted."""
+
+    __tablename__ = "assistant_conversations"
+    __table_args__ = (Index("ix_assistant_conversations_user", "user_id", text("updated_at DESC")),)
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=new_id)
+    user_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"))
+    title: Mapped[str | None] = mapped_column(Text)
+    created_at: Mapped[dt.datetime] = mapped_column(TIMESTAMPTZ, server_default=func.now())
+    updated_at: Mapped[dt.datetime] = mapped_column(TIMESTAMPTZ, server_default=func.now())
+
+
+class AssistantRun(Base):
+    """One agent execution (spec §8.0): a chat turn, a skill run or a connection test. Runs without a conversation
+    (skills now, schedules later) have ``conversation_id`` NULL."""
+
+    __tablename__ = "assistant_runs"
+    __table_args__ = (
+        CheckConstraint("kind IN ('chat', 'skill', 'test')", name="kind_known"),
+        CheckConstraint("status IN ('running', 'awaiting_confirmation', 'done', 'failed')", name="status_known"),
+        Index("ix_assistant_runs_user_skill", "user_id", "skill_id", text("created_at DESC")),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=new_id)
+    user_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"))
+    conversation_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("assistant_conversations.id", ondelete="CASCADE")
+    )
+    kind: Mapped[str] = mapped_column(Text)
+    run_kind: Mapped[str] = mapped_column(Text, default="interactive", server_default="interactive")
+    channel: Mapped[str] = mapped_column(Text, default="text", server_default="text")
+    status: Mapped[str] = mapped_column(Text, default="running", server_default="running")
+    skill_id: Mapped[str | None] = mapped_column(Text)
+    model: Mapped[str | None] = mapped_column(Text)
+    prompt_version: Mapped[str | None] = mapped_column(Text)
+    tools_hash: Mapped[str | None] = mapped_column(Text)
+    error_code: Mapped[str | None] = mapped_column(Text)
+    history: Mapped[list[Any]] = mapped_column(JSONB, default=list, server_default=text("'[]'::jsonb"))
+    pending: Mapped[list[Any]] = mapped_column(JSONB, default=list, server_default=text("'[]'::jsonb"))
+    decisions: Mapped[list[Any]] = mapped_column(JSONB, default=list, server_default=text("'[]'::jsonb"))
+    output: Mapped[Any] = mapped_column(JSONB, nullable=True)
+    created_at: Mapped[dt.datetime] = mapped_column(TIMESTAMPTZ, server_default=func.now())
+    finished_at: Mapped[dt.datetime | None] = mapped_column(TIMESTAMPTZ)
+
+
+class AssistantMessage(Base):
+    """A visible chat message: the member's text or the assistant's answer."""
+
+    __tablename__ = "assistant_messages"
+    __table_args__ = (
+        CheckConstraint("role IN ('user', 'assistant')", name="role_known"),
+        Index("ix_assistant_messages_conversation", "conversation_id", "created_at"),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=new_id)
+    conversation_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("assistant_conversations.id", ondelete="CASCADE"))
+    run_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("assistant_runs.id", ondelete="CASCADE"))
+    role: Mapped[str] = mapped_column(Text)
+    text: Mapped[str] = mapped_column(Text)
+    created_at: Mapped[dt.datetime] = mapped_column(TIMESTAMPTZ, server_default=func.now())
+
+
+class AssistantAction(Base):
+    """A call of a tool that is not read-only, with its outcome and, where the tool declares one, its inverse."""
+
+    __tablename__ = "assistant_actions"
+    __table_args__ = (
+        CheckConstraint("status IN ('done', 'failed', 'denied', 'undone')", name="status_known"),
+        Index("ix_assistant_actions_run", "run_id", "created_at"),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=new_id)
+    run_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("assistant_runs.id", ondelete="CASCADE"))
+    user_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"))
+    tool: Mapped[str] = mapped_column(Text)
+    status: Mapped[str] = mapped_column(Text)
+    summary_key: Mapped[str | None] = mapped_column(Text)
+    record: Mapped[dict[str, Any] | None] = mapped_column(JSONB)
+    undo: Mapped[dict[str, Any] | None] = mapped_column(JSONB)
+    error_code: Mapped[str | None] = mapped_column(Text)
+    created_at: Mapped[dt.datetime] = mapped_column(TIMESTAMPTZ, server_default=func.now())
+
+
+__all__ = [
+    "AssistantAction",
+    "AssistantConversation",
+    "AssistantMessage",
+    "AssistantRun",
+    "DashboardLayout",
+    "DeploymentSetting",
+    "OutboxEvent",
+    "PluginRecord",
+    "Session",
+    "User",
+    "UserRole",
+]

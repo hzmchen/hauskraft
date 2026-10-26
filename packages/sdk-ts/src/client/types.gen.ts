@@ -5,6 +5,43 @@ export type ClientOptions = {
 };
 
 /**
+ * ActionOut
+ */
+export type ActionOut = {
+    /**
+     * Error Code
+     */
+    error_code: string | null;
+    /**
+     * Id
+     */
+    id: string;
+    record: RecordRef | null;
+    /**
+     * Run Id
+     */
+    run_id: string;
+    /**
+     * Status
+     */
+    status: 'done' | 'failed' | 'denied' | 'undone';
+    /**
+     * Summary Key
+     *
+     * An i18n key of the tool's plugin, rendered with record.label.
+     */
+    summary_key: string | null;
+    /**
+     * Tool
+     */
+    tool: string;
+    /**
+     * Undo Available
+     */
+    undo_available: boolean;
+};
+
+/**
  * ActiveTheme
  */
 export type ActiveTheme = {
@@ -239,6 +276,62 @@ export type Components = {
     button: ButtonVariants;
     checkbox: CheckboxVariants;
     widget: WidgetVariants;
+};
+
+/**
+ * Conversation
+ */
+export type Conversation = {
+    /**
+     * Created At
+     */
+    created_at: string;
+    /**
+     * Id
+     */
+    id: string;
+    /**
+     * Title
+     *
+     * The first message, cut to 80 characters; null before it.
+     */
+    title: string | null;
+    /**
+     * Updated At
+     */
+    updated_at: string;
+};
+
+/**
+ * ConversationDetail
+ */
+export type ConversationDetail = {
+    /**
+     * Actions
+     */
+    actions: Array<ActionOut>;
+    /**
+     * Created At
+     */
+    created_at: string;
+    /**
+     * Id
+     */
+    id: string;
+    /**
+     * Messages
+     */
+    messages: Array<MessageOut>;
+    /**
+     * Title
+     *
+     * The first message, cut to 80 characters; null before it.
+     */
+    title: string | null;
+    /**
+     * Updated At
+     */
+    updated_at: string;
 };
 
 /**
@@ -501,6 +594,32 @@ export type MemberPatch = {
 };
 
 /**
+ * MessageOut
+ */
+export type MessageOut = {
+    /**
+     * Created At
+     */
+    created_at: string;
+    /**
+     * Id
+     */
+    id: string;
+    /**
+     * Role
+     */
+    role: 'user' | 'assistant';
+    /**
+     * Run Id
+     */
+    run_id: string | null;
+    /**
+     * Text
+     */
+    text: string;
+};
+
+/**
  * Navigation
  */
 export type Navigation = {
@@ -680,6 +799,24 @@ export type Readiness = {
      * Status
      */
     status: string;
+};
+
+/**
+ * RecordRef
+ */
+export type RecordRef = {
+    /**
+     * Id
+     */
+    id: string;
+    /**
+     * Label
+     */
+    label: string;
+    /**
+     * Type
+     */
+    type: string;
 };
 
 /**
@@ -1149,6 +1286,146 @@ export type ActivityListResponses = {
 };
 
 export type ActivityListResponse = ActivityListResponses[keyof ActivityListResponses];
+
+export type AssistantConversationsListData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/v1/assistant/conversations';
+};
+
+export type AssistantConversationsListErrors = {
+    /**
+     * Unauthorized
+     */
+    401: unknown;
+    /**
+     * Forbidden
+     */
+    403: unknown;
+};
+
+export type AssistantConversationsListResponses = {
+    /**
+     * Response Assistant Conversations List
+     *
+     * Successful Response
+     */
+    200: Array<Conversation>;
+};
+
+export type AssistantConversationsListResponse = AssistantConversationsListResponses[keyof AssistantConversationsListResponses];
+
+export type AssistantConversationsCreateData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/v1/assistant/conversations';
+};
+
+export type AssistantConversationsCreateErrors = {
+    /**
+     * Unauthorized
+     */
+    401: unknown;
+    /**
+     * Forbidden
+     */
+    403: unknown;
+};
+
+export type AssistantConversationsCreateResponses = {
+    /**
+     * Successful Response
+     */
+    201: Conversation;
+};
+
+export type AssistantConversationsCreateResponse = AssistantConversationsCreateResponses[keyof AssistantConversationsCreateResponses];
+
+export type AssistantConversationsDeleteData = {
+    body?: never;
+    path: {
+        /**
+         * Conversation Id
+         */
+        conversation_id: string;
+    };
+    query?: never;
+    url: '/api/v1/assistant/conversations/{conversation_id}';
+};
+
+export type AssistantConversationsDeleteErrors = {
+    /**
+     * Unauthorized
+     */
+    401: unknown;
+    /**
+     * Forbidden
+     */
+    403: unknown;
+    /**
+     * Not Found
+     */
+    404: unknown;
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type AssistantConversationsDeleteError = AssistantConversationsDeleteErrors[keyof AssistantConversationsDeleteErrors];
+
+export type AssistantConversationsDeleteResponses = {
+    /**
+     * Successful Response
+     */
+    204: void;
+};
+
+export type AssistantConversationsDeleteResponse = AssistantConversationsDeleteResponses[keyof AssistantConversationsDeleteResponses];
+
+export type AssistantConversationsReadData = {
+    body?: never;
+    path: {
+        /**
+         * Conversation Id
+         */
+        conversation_id: string;
+    };
+    query?: never;
+    url: '/api/v1/assistant/conversations/{conversation_id}';
+};
+
+export type AssistantConversationsReadErrors = {
+    /**
+     * Unauthorized
+     */
+    401: unknown;
+    /**
+     * Forbidden
+     */
+    403: unknown;
+    /**
+     * Not Found
+     */
+    404: unknown;
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type AssistantConversationsReadError = AssistantConversationsReadErrors[keyof AssistantConversationsReadErrors];
+
+export type AssistantConversationsReadResponses = {
+    /**
+     * Successful Response
+     */
+    200: ConversationDetail;
+};
+
+export type AssistantConversationsReadResponse = AssistantConversationsReadResponses[keyof AssistantConversationsReadResponses];
 
 export type AssistantSettingsReadData = {
     body?: never;

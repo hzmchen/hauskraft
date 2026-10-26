@@ -3,9 +3,20 @@
 
 from __future__ import annotations
 
+import uuid
+
 from fastapi import APIRouter, Request, Response
 
-from hauskraft_core.assistant.schemas import AssistantSettings, AssistantSettingsPatch, AssistantStatus
+from hauskraft_core.assistant import conversations
+from hauskraft_core.assistant.schemas import (
+    AssistantSettings,
+    AssistantSettingsPatch,
+    AssistantStatus,
+    Conversation,
+    ConversationDetail,
+    MessageOut,
+    action_out,
+)
 from hauskraft_core.assistant.settings import read_config, remove_chat_endpoint, update_settings
 from hauskraft_core.auth.deps import CurrentSession, actor_for
 from hauskraft_core.db.models import User
@@ -68,4 +79,43 @@ async def settings_remove_chat(request: Request, resolved: CurrentSession) -> Re
     """Remove the endpoint's base URL, model and key (owners only)."""
     async with _uow(request) as uow:
         await remove_chat_endpoint(uow, actor_for(resolved[1]))
+    return Response(status_code=204)
+
+
+# ---------------------------------------------------------------- conversations (M2S-E04-01)
+@router.get("/conversations", responses={401: {}, 403: {}})
+async def conversations_list(request: Request, db: DbSession, resolved: CurrentSession) -> list[Conversation]:
+    """The caller's own chats, newest first. Nobody else's, owners included."""
+    await require(request, resolved[1], "assistant.use")
+    return [Conversation.model_validate(c) for c in await conversations.list_for(db, resolved[1].id)]
+
+
+@router.post("/conversations", status_code=201, responses={401: {}, 403: {}})
+async def conversations_create(request: Request, resolved: CurrentSession) -> Conversation:
+    await require(request, resolved[1], "assistant.use")
+    async with _uow(request) as uow:
+        created = await conversations.create(uow.session, resolved[1].id)
+        out = Conversation.model_validate(created)
+    return out
+
+
+@router.get("/conversations/{conversation_id}", responses={401: {}, 403: {}, 404: {}})
+async def conversations_read(
+    conversation_id: uuid.UUID, request: Request, db: DbSession, resolved: CurrentSession
+) -> ConversationDetail:
+    await require(request, resolved[1], "assistant.use")
+    found = await conversations.get_own(db, resolved[1].id, conversation_id)
+    return ConversationDetail(
+        **Conversation.model_validate(found).model_dump(),
+        messages=[MessageOut.model_validate(m) for m in await conversations.messages(db, found.id)],
+        actions=[action_out(a) for a in await conversations.actions(db, found.id)],
+    )
+
+
+@router.delete("/conversations/{conversation_id}", status_code=204, responses={401: {}, 403: {}, 404: {}})
+async def conversations_delete(conversation_id: uuid.UUID, request: Request, resolved: CurrentSession) -> Response:
+    """Delete a chat with its messages, runs and actions; its usage stays counted."""
+    await require(request, resolved[1], "assistant.use")
+    async with _uow(request) as uow:
+        await conversations.delete_own(uow.session, resolved[1].id, conversation_id)
     return Response(status_code=204)
