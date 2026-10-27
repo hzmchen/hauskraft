@@ -19,6 +19,7 @@ def markdown(data: dict[str, Any]) -> str:
         f"# Eval report: {data['model']}",
         "",
         f"- Started: {data['started_at']}",
+        f"- Judge: `{data.get('judge_model') or 'none'}`",
         f"- prompt_version: `{data['prompt_version']}` · tools_hash: `{data['tools_hash']}`",
         "- Skills: " + (", ".join(f"`{k}` {v}" for k, v in data["skills"].items()) or "none"),
         f"- Tokens: {data['tokens']['input']:,} input, {data['tokens']['output']:,} output"

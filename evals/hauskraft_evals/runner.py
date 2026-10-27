@@ -143,6 +143,7 @@ def run_datasets(datasets: Sequence[EvalDataset], household: Household, config: 
     tools = household.app.state.tool_registry.select(role="owner")
     data: dict[str, object] = {
         "model": config.model,
+        "judge_model": config.judge_model.model_name if config.judge_model else None,
         "prompt_version": prompt_version(),
         "tools_hash": tools_hash(tools),
         "skills": _skill_versions(household),
