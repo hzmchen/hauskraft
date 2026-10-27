@@ -70,10 +70,10 @@ task, with `-` for no date.
 
 ## Read a report
 
-Each run writes `evals/reports/<time>-<model>.json` and `.md` (git-ignored). The report names the model, the
-`prompt_version` (a hash of the prompt files), the `tools_hash` and the skill versions, so two reports are comparable
-only when you know what changed. It lists the pass rate per dataset against its threshold, the passes per case, the
-reasons for every failed run, tokens, the estimated cost and the latency per run (p50, p95).
+Each run writes `evals/reports/<time>-<model>.json` and `.md` (git-ignored). The report names the model, the judge
+model, the `prompt_version` (a hash of the prompt files), the `tools_hash` and the skill versions, so two reports are
+comparable only when you know what changed. It lists the pass rate per dataset against its threshold, the passes per
+case, the reasons for every failed run, tokens, the estimated cost and the latency per run (p50, p95).
 `just eval` exits 1 when a dataset misses its threshold.
 
 ```bash
@@ -96,13 +96,13 @@ model judging its own answers is a weak judge.
 
 The first real-model run that met every threshold (M2S-E09-02): 27 October 2026, the evals workflow on `main` at
 `70d0a25` ([run 40515729992](https://github.com/hzmchen/hauskraft/actions/runs/40515729992)), every dataset, each
-case 3 times. The model was `z-ai/glm-5.3-flash`, a small, inexpensive model behind an OpenAI-compatible endpoint; it
-also judged the rubric cases.
+case 3 times. The model was `z-ai/glm-5.3-flash`, a small, inexpensive model behind an OpenAI-compatible endpoint, and
+the larger `qwen/qwen3.8-2.4t-a95b` graded the two rubric cases (`HAUSKRAFT_EVAL_JUDGE_MODEL`).
 
 - `prompt_version` `78f907179cf4`, `tools_hash` `1a95924090abcbbf`, skills `tasks.add-from-text` `a33a4339579a`
   and `tasks.weekly-overview` `9eb572428dfb`.
-- 121 of 123 runs passed. Tokens: 216,871 input and 27,816 output, about $0.06 at the provider's prices. Latency per
-  run: p50 3.2 s, p95 10.8 s.
+- 121 of 123 runs passed. Tokens: 216,871 input and 27,816 output, about $0.06 at the provider's prices, plus the
+  judge's calls. Latency per run: p50 3.2 s, p95 10.8 s.
 
 | Dataset               | Pass rate | Threshold |
 | --------------------- | --------- | --------- |
@@ -121,7 +121,8 @@ The two failed runs:
   insurance as "Tuesday, 3 Nov"; the judge wanted it named first and as "tomorrow". The rubric is stricter here than
   the skill, which puts overdue tasks first.
 
-It took three runs with the same model, and each fix went into a PR before the next run:
+It took three runs with the same model, and each fix went into a PR before the next run. In the first, the model
+judged its own answers; the judge variable came with #104.
 
 1. add-from-text 67%, safety 88%, weekly-overview 89%. The runner counted a skill's typed result (Pydantic AI's
    `final_result` output tool) as a tool call, which failed every "no tool calls" check. The overview rubric asked for
@@ -131,4 +132,5 @@ It took three runs with the same model, and each fix went into a PR before the n
 3. Every threshold met, as above.
 
 The report counts the tokens of the harness's own model requests, not the judge's, so the provider's bill is a little
-higher: for the first run the report said 216K input and 26K output tokens, and the provider billed 219K and 37K.
+higher: for the first run, judged by the same model, the report said 216K input and 26K output tokens, and the provider
+billed 219K and 37K. Reports now name their judge model too.
