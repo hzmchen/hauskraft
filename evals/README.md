@@ -86,4 +86,7 @@ Commit a report to `evals/baselines/` when it should be the reference for a mode
 
 Run the evals before merging a change to the system prompt (`services/core_api/src/hauskraft_core/assistant/prompts/`),
 a tool's definition (any plugin's `tools.py`), a skill (`skills/`) or a dataset, and say in the PR what you ran. CI
-comments "Eval recommended" on such PRs. Maintainers can also run them from GitHub: Actions → Evals → Run workflow.
+comments "Eval recommended" on such PRs. Maintainers can also run them from GitHub: Actions → evals → Run workflow. The workflow reads
+`HAUSKRAFT_EVAL_BASE_URL` and `HAUSKRAFT_EVAL_MODEL` from the repository variables (Settings → Secrets and variables →
+Actions → Variables) and `HAUSKRAFT_EVAL_API_KEY` from the repository secrets; for a full run, enter `600000` as
+max_tokens.
