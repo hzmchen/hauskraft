@@ -20,7 +20,7 @@ dev = [
     "httpx==0.28.1",
     "PyYAML==6.0.3",
     # Python tooling (M0S-E01-02)
-    "ruff==0.17.1",
+    "ruff==0.17.2",
     "mypy==2.4.0",
     "pytest-asyncio==1.4.0",
     "pydantic>=2.12",  # loaded by the pydantic.mypy plugin
