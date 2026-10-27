@@ -88,6 +88,43 @@ jobs:
         run: uv run python scripts/backlog_tools.py check
       - name: Spec-owned acceptance suite (red stories report as xfail)
         run: uv run python -m pytest tests --strict-status -ra
+      - name: Eval datasets are valid (no model is called, M2S-E09-01)
+        run: PYTHONPATH=evals uv run python -m hauskraft_evals run --check
+
+  # M2S-E09-03: real-model evals cost money and run on demand (evals.yml). This job only points out PRs that change
+  # what they measure: assistant/prompts, any plugin's tools.py or skills/, and evals/datasets. It needs no secrets
+  # and never fails the PR; forked PRs can't comment, so the hint is also in the job summary.
+  eval-recommended:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    continue-on-error: true
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          fetch-depth: 0
+      - name: Eval recommended?
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BASE: ${{ github.event.pull_request.base.sha }}
+          PR: ${{ github.event.pull_request.number }}
+        run: |
+          watched='^services/core_api/src/hauskraft_core/assistant/prompts/|(^|/)tools\.py$|(^|/)skills/|^evals/datasets/'
+          changed=$(git diff --name-only "$BASE"...HEAD | grep -E "$watched" || true)
+          if [ -z "$changed" ]; then echo "No prompt, tool, skill or eval dataset changes."; exit 0; fi
+          body="**Eval recommended**: this PR changes what the assistant evals measure. Run \`just eval\` (or Actions → evals) and say in the PR what you ran (evals/README.md).
+
+          $(echo "$changed" | sed 's/^/- `/; s/$/`/')"
+          echo "$body" >> "$GITHUB_STEP_SUMMARY"
+          echo "::notice title=Eval recommended::This PR changes prompts, tools, skills or eval datasets."
+          if gh pr view "$PR" --json comments --jq '.comments[].body' | grep -q '^\*\*Eval recommended\*\*'; then
+            echo "Already commented."
+          else
+            gh pr comment "$PR" --body "$body" || echo "Could not comment (forked PRs get a read-only token)."
+          fi
 
   links:
     runs-on: ubuntu-latest

@@ -28,6 +28,7 @@ dev = [
     "types-jsonschema~=4.26",
     "schemathesis~=4.32",  # API fuzzing in the contract job (M0S-E03-05)
     "types-defusedxml~=0.7.0",
+    "pydantic-evals~=2.61",  # on-demand real-model evals of the assistant (M2S-E09-01, ADR 0022)
 ]
 
 # ---------------------------------------------------------------- ruff (M0S-E01-02)
@@ -45,7 +46,7 @@ extend-exclude = [
 select = ["E", "F", "I", "UP", "B", "S", "ASYNC", "PT", "RUF", "TID"]
 
 [tool.ruff.lint.isort]
-known-first-party = ["hauskraft_core", "hauskraft_sdk", "hauskraft_tasks"]
+known-first-party = ["hauskraft_core", "hauskraft_sdk", "hauskraft_tasks", "hauskraft_evals"]
 
 [tool.ruff.lint.flake8-tidy-imports.banned-api]
 # Licence boundary (spec §4.2): plugins import only hauskraft_sdk, never core internals.
@@ -62,8 +63,8 @@ known-first-party = ["hauskraft_core", "hauskraft_sdk", "hauskraft_tasks"]
 python_version = "3.13"
 strict = true
 plugins = ["pydantic.mypy"]
-mypy_path = ["services/core_api/src", "packages/sdk-py/src", "plugins/official/tasks/backend/src"]
-files = ["services/core_api/src", "packages/sdk-py/src", "plugins/official/tasks/backend/src"]
+mypy_path = ["services/core_api/src", "packages/sdk-py/src", "plugins/official/tasks/backend/src", "evals"]
+files = ["services/core_api/src", "packages/sdk-py/src", "plugins/official/tasks/backend/src", "evals/hauskraft_evals"]
 
 [[tool.mypy.overrides]]
 module = ["semantic_version"]
@@ -79,7 +80,9 @@ warn_required_dynamic_aliases = true
 # run separately from the spec-owned suite in tests/, whose conftest requires story markers.
 [tool.pytest.ini_options]
 # `uv run pytest` without arguments runs the package tests; the spec-owned suite runs as `pytest tests`.
-testpaths = ["services", "packages", "plugins"]
+testpaths = ["services", "packages", "plugins", "evals"]
+# The eval runner (M2S-E09-01) is a plain package next to its datasets, not a workspace member.
+pythonpath = ["evals"]
 asyncio_mode = "auto"
 asyncio_default_fixture_loop_scope = "function"
 markers = [

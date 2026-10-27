@@ -4,7 +4,7 @@
 set shell := ["bash", "-euo", "pipefail", "-c"]
 
 # Python test roots next to their code (the spec-owned suite in tests/ runs via `just acceptance`).
-py_tests := "services/core_api/tests packages/sdk-py/tests plugins/official/tasks/backend/tests"
+py_tests := "services/core_api/tests packages/sdk-py/tests plugins/official/tasks/backend/tests evals/tests"
 
 # List recipes
 default:
@@ -105,6 +105,16 @@ fresh-up:
 # Forget the fake model's recorded requests (the test stack's fake-llm service, M2S-E01-01)
 fake-llm-reset:
     curl -fsS -X POST http://localhost:8090/_reset
+
+# Real-model evals of the assistant against HAUSKRAFT_EVAL_* (costs money; evals/README.md, M2S-E09-01).
+# `just eval [dataset…] [--repeat N]`; `just eval --check` validates the datasets without calling a model.
+eval *args:
+    PYTHONPATH=evals uv run python -m hauskraft_evals run {{ args }}
+
+# Compare an eval report with a baseline: pass rates and tokens (M2S-E09-01)
+eval-compare report="" baseline="":
+    @if [ -z {{ quote(report) }} ] || [ -z {{ quote(baseline) }} ]; then echo "usage: just eval-compare <report> <baseline>" >&2; exit 2; fi
+    PYTHONPATH=evals uv run python -m hauskraft_evals compare {{ quote(report) }} {{ quote(baseline) }}
 
 # Empty the fresh stack: remove its containers and database volume, then start it again
 fresh-reset:

@@ -12,7 +12,7 @@ from __future__ import annotations
 import asyncio
 import datetime as dt
 import uuid
-from collections.abc import Sequence
+from collections.abc import Callable, Sequence
 from dataclasses import dataclass, field
 from typing import Any
 
@@ -39,6 +39,7 @@ from pydantic_ai.exceptions import (
     UsageLimitExceeded,
 )
 from pydantic_ai.messages import ModelMessage, ModelRequest, ModelResponse, UserPromptPart
+from pydantic_ai.models import Model
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -206,15 +207,25 @@ def _error_code(exc: BaseException, *, structured: bool = False) -> str:
     return "model_unavailable"
 
 
+def _utcnow() -> dt.datetime:
+    return dt.datetime.now(dt.UTC)
+
+
 @dataclass
 class Harness:
-    """Everything a run needs from the app: database, settings, registry, disabled plugins."""
+    """Everything a run needs from the app: database, settings, registry, disabled plugins.
+
+    ``clock`` (the prompt's "Today") and ``model`` (instead of the configured endpoint) are seams for the evals
+    (M2S-E09-01); the app sets neither, so runs use the real time and the owner's endpoint.
+    """
 
     sessionmaker: Any
     settings: Any
     registry: ToolRegistry
     disabled_plugins: set[str]
     skills: dict[str, Skill] = field(default_factory=dict)
+    clock: Callable[[], dt.datetime] = _utcnow
+    model: Model | None = None
 
     @classmethod
     def of(cls, state: Any) -> Harness:
@@ -224,6 +235,8 @@ class Harness:
             state.tool_registry,
             state.disabled_plugins,
             getattr(state, "skills", {}),
+            getattr(state, "assistant_clock", None) or _utcnow,
+            getattr(state, "assistant_model", None),
         )
 
     # ------------------------------------------------------------------ helpers
@@ -239,7 +252,7 @@ class Harness:
     ) -> str:
         household = await read_household(session, self.settings)
         ctx = PromptContext(
-            now=dt.datetime.now(dt.UTC),
+            now=self.clock(),
             timezone=household.timezone,
             household=household.name,
             person=user.display_name,
@@ -279,7 +292,7 @@ class Harness:
         actor = actor_for_run(user, run.id)
         gate_ctx = gate.GateContext(offered=frozenset(t.spec.name for t in tools), channel=run.channel)  # type: ignore[arg-type]
         agent: Agent[None, Any] = Agent(
-            chat_model(config.chat),
+            self.model or chat_model(config.chat),
             output_type=output_type or [str, DeferredToolRequests],
             tools=[_wrap(t, actor, recorder, gate_ctx, run.id) for t in tools],
             retries=TOOL_RETRIES,

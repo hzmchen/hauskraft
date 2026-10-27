@@ -1,0 +1,57 @@
+# SPDX-License-Identifier: MIT
+# Real-model evals of the assistant (M2S-E09-03, ADR 0022). On demand only, because every run costs money:
+# Actions → evals → Run workflow. Needs the repository secrets HAUSKRAFT_EVAL_BASE_URL, HAUSKRAFT_EVAL_API_KEY and
+# HAUSKRAFT_EVAL_MODEL (an endpoint with zero data retention and a key with a spend limit, evals/README.md).
+name: evals
+
+on:
+  workflow_dispatch:
+    inputs:
+      datasets:
+        description: "Dataset names, separated by spaces (empty: all)"
+        required: false
+        default: ""
+      repeat:
+        description: "Runs per case (empty: each dataset's repeat)"
+        required: false
+        default: ""
+      max_tokens:
+        description: "Token cap for the run (empty: 200,000; a full run needs about 600,000)"
+        required: false
+        default: ""
+
+permissions:
+  contents: read
+
+jobs:
+  evals:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: ./.github/actions/setup
+        with:
+          node: "false"
+      - name: Run the evals (Testcontainers Postgres, the real harness, the endpoint from the secrets)
+        shell: bash
+        env:
+          HAUSKRAFT_EVAL_BASE_URL: ${{ secrets.HAUSKRAFT_EVAL_BASE_URL }}
+          HAUSKRAFT_EVAL_API_KEY: ${{ secrets.HAUSKRAFT_EVAL_API_KEY }}
+          HAUSKRAFT_EVAL_MODEL: ${{ secrets.HAUSKRAFT_EVAL_MODEL }}
+          DATASETS: ${{ inputs.datasets }}
+          REPEAT: ${{ inputs.repeat }}
+          HAUSKRAFT_EVAL_MAX_TOKENS: ${{ inputs.max_tokens }}
+        run: |
+          set -f  # dataset names are words, never globs
+          args=()
+          if [ -n "$REPEAT" ]; then args+=(--repeat "$REPEAT"); fi
+          # shellcheck disable=SC2086 # split the dataset names into arguments
+          PYTHONPATH=evals uv run python -m hauskraft_evals run $DATASETS "${args[@]}" | tee -a "$GITHUB_STEP_SUMMARY"
+      - name: Upload the report
+        if: always()
+        uses: actions/upload-artifact@v7.0.2
+        with:
+          name: eval-report
+          path: evals/reports/
+          if-no-files-found: ignore
+          retention-days: 30

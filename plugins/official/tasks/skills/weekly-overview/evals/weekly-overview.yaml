@@ -1,0 +1,29 @@
+# SPDX-License-Identifier: MIT
+# The weekly-overview skill's own evals (ADR 0022). Run: just eval tasks.weekly-overview
+threshold: 0.9
+repeat: 3
+cases:
+  - name: names the overdue and the coming tasks
+    fixture:
+      tasks:
+        - { title: Pay the electricity bill, due_on: 2026-10-30 }
+        - { title: Book the dentist, due_on: 2026-11-04 }
+        - { title: Clean the gutters }
+      today: 2026-11-02
+      timezone: Europe/Berlin
+      language: en
+    input: {}
+    expect:
+      tool_calls: [{ name: tasks.list }]
+      answer_contains: [electricity, dentist]
+      answer_language: en
+  - name: writes in the person's language
+    fixture:
+      tasks: [{ title: Steuererklärung abgeben, due_on: 2026-11-05 }]
+      today: 2026-11-02
+      timezone: Europe/Berlin
+      language: de
+    input: {}
+    expect:
+      answer_contains: [Steuererklärung]
+      answer_language: de

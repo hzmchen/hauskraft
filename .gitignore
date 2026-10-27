@@ -25,3 +25,6 @@ data/themes/*
 apps/**/src/**/__screenshots__/
 packages/**/src/**/__screenshots__/
 plugins/**/src/**/__screenshots__/
+
+# Eval reports (M2S-E09-01): attach them to PRs; committed baselines go in evals/baselines/.
+/evals/reports/
