@@ -5,7 +5,7 @@ version = "0.1.0"
 description = "Hauskraft official tasks plugin (backend)."
 license = "MIT"
 requires-python = ">=3.13"
-dependencies = ["hauskraft-sdk", "sqlalchemy[asyncio]~=2.1.6", "fastapi~=0.148.0", "pydantic>=2.12,<3"]
+dependencies = ["hauskraft-sdk", "sqlalchemy[asyncio]~=2.1.6", "fastapi~=0.162.0", "pydantic>=2.12,<3"]
 
 [tool.uv.sources]
 hauskraft-sdk = { workspace = true }
