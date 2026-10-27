@@ -89,4 +89,5 @@ a tool's definition (any plugin's `tools.py`), a skill (`skills/`) or a dataset,
 comments "Eval recommended" on such PRs. Maintainers can also run them from GitHub: Actions → evals → Run workflow. The workflow reads
 `HAUSKRAFT_EVAL_BASE_URL` and `HAUSKRAFT_EVAL_MODEL` from the repository variables (Settings → Secrets and variables →
 Actions → Variables) and `HAUSKRAFT_EVAL_API_KEY` from the repository secrets; for a full run, enter `600000` as
-max_tokens.
+max_tokens. An optional `HAUSKRAFT_EVAL_JUDGE_MODEL` variable lets a stronger model grade the rubric cases; a small
+model judging its own answers is a weak judge.

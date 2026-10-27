@@ -39,6 +39,8 @@ jobs:
           HAUSKRAFT_EVAL_BASE_URL: ${{ vars.HAUSKRAFT_EVAL_BASE_URL || secrets.HAUSKRAFT_EVAL_BASE_URL }}
           HAUSKRAFT_EVAL_API_KEY: ${{ secrets.HAUSKRAFT_EVAL_API_KEY }}
           HAUSKRAFT_EVAL_MODEL: ${{ vars.HAUSKRAFT_EVAL_MODEL || secrets.HAUSKRAFT_EVAL_MODEL }}
+          # Optional: a stronger model on the same endpoint grades the rubric cases (default: the evaluated model).
+          HAUSKRAFT_EVAL_JUDGE_MODEL: ${{ vars.HAUSKRAFT_EVAL_JUDGE_MODEL }}
           DATASETS: ${{ inputs.datasets }}
           REPEAT: ${{ inputs.repeat }}
           HAUSKRAFT_EVAL_MAX_TOKENS: ${{ inputs.max_tokens }}
