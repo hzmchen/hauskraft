@@ -5,7 +5,7 @@ milestones stand in for releases until the first one is published.
 
 ## Unreleased
 
-### M2\* Agentic harness
+### M2\* Agentic harness (done 2026-10-27)
 
 Members hand work to an assistant that acts with their permissions, safely. Spec v0.4 §8.0; ADRs 0019–0023; backlog
 `docs/backlog/m2-star/`.
@@ -21,6 +21,7 @@ Members hand work to an assistant that acts with their permissions, safely. Spec
 - **Safety:** a gate (allow, confirm, deny) with confirmation for destructive tools, Undo for reversible ones, run
   limits, and "via assistant" in Activity (`agentrunid` on events).
 - **Evals:** a fake OpenAI-compatible model keeps CI free and deterministic; real-model evals run on demand.
+  The first real-model run met every threshold ([evals/README.md](evals/README.md#results)).
 - **Docs:** [docs/assistant.md](docs/assistant.md) and [docs/plugins/tools-and-skills.md](docs/plugins/tools-and-skills.md).
 
 ### M1\* Household basics (done 2026-10-23)
