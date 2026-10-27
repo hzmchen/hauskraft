@@ -1,7 +1,8 @@
 # SPDX-License-Identifier: MIT
 # Real-model evals of the assistant (M2S-E09-03, ADR 0022). On demand only, because every run costs money:
-# Actions → evals → Run workflow. Needs the repository secrets HAUSKRAFT_EVAL_BASE_URL, HAUSKRAFT_EVAL_API_KEY and
-# HAUSKRAFT_EVAL_MODEL (an endpoint with zero data retention and a key with a spend limit, evals/README.md).
+# Actions → evals → Run workflow. Needs the repository secret HAUSKRAFT_EVAL_API_KEY (a key with a spend limit for an
+# endpoint with zero data retention, evals/README.md) and HAUSKRAFT_EVAL_BASE_URL and HAUSKRAFT_EVAL_MODEL, as
+# repository variables (they aren't secret) or secrets.
 name: evals
 
 on:
@@ -35,9 +36,9 @@ jobs:
       - name: Run the evals (Testcontainers Postgres, the real harness, the endpoint from the secrets)
         shell: bash
         env:
-          HAUSKRAFT_EVAL_BASE_URL: ${{ secrets.HAUSKRAFT_EVAL_BASE_URL }}
+          HAUSKRAFT_EVAL_BASE_URL: ${{ vars.HAUSKRAFT_EVAL_BASE_URL || secrets.HAUSKRAFT_EVAL_BASE_URL }}
           HAUSKRAFT_EVAL_API_KEY: ${{ secrets.HAUSKRAFT_EVAL_API_KEY }}
-          HAUSKRAFT_EVAL_MODEL: ${{ secrets.HAUSKRAFT_EVAL_MODEL }}
+          HAUSKRAFT_EVAL_MODEL: ${{ vars.HAUSKRAFT_EVAL_MODEL || secrets.HAUSKRAFT_EVAL_MODEL }}
           DATASETS: ${{ inputs.datasets }}
           REPEAT: ${{ inputs.repeat }}
           HAUSKRAFT_EVAL_MAX_TOKENS: ${{ inputs.max_tokens }}
