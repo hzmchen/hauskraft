@@ -65,6 +65,8 @@ REQUEST_LIMIT = 8
 RUN_TIMEOUT_S = 60.0
 HISTORY_CHAR_CAP = 24_000
 TOOL_RETRIES = 2
+# Pydantic AI returns typed skill output through this tool; it is the run's answer, not a household tool.
+OUTPUT_TOOL = "final_result"
 
 _log = get_logger("hauskraft.assistant")
 
@@ -542,7 +544,7 @@ class Harness:
                 session, user, tools, skill_id=skill.id, skill_instructions=skill.instructions
             )
             await session.flush()
-        output_type: Any = StructuredDict(skill.output, name="final_result") if isinstance(skill.output, dict) else str
+        output_type: Any = StructuredDict(skill.output, name=OUTPUT_TOOL) if isinstance(skill.output, dict) else str
         outcome = await self._execute(
             run=run,
             user=user,

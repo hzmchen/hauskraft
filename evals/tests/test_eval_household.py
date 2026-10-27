@@ -8,7 +8,6 @@ from pydantic_ai.messages import (
     ModelMessagesTypeAdapter,
     ModelRequest,
     ModelResponse,
-    RetryPromptPart,
     ToolCallPart,
     ToolReturnPart,
 )
@@ -28,7 +27,7 @@ def test_calls_are_named_and_marked_by_their_result() -> None:
         ModelResponse(parts=[ToolCallPart("tasks_list", {"status": "all"}, tool_call_id="a")]),
         ModelRequest(parts=[ToolReturnPart("tasks_list", {"items": []}, tool_call_id="a")]),
         ModelResponse(parts=[ToolCallPart("tasks_update", {"task_id": "x", "done": True}, tool_call_id="b")]),
-        ModelRequest(parts=[RetryPromptPart("task_not_found", tool_name="tasks_update", tool_call_id="b")]),
+        ModelRequest(parts=[ToolReturnPart("tasks_update", "task_not_found", tool_call_id="b", outcome="retried")]),
     )
     calls = tool_calls(history, lambda wire: wire.replace("_", ".", 1))
     assert [(c.name, c.args, c.ok) for c in calls] == [
