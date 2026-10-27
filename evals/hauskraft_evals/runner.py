@@ -92,7 +92,8 @@ def _dataset_summary(
         name = rc.source_case_name or rc.name
         failed = {k: r.reason or "failed" for k, r in rc.assertions.items() if not r.value}
         if failed:
-            reasons.setdefault(name, []).append("; ".join(f"{k}: {v}" for k, v in failed.items()))
+            why = "; ".join(f"{k}: {v}" for k, v in failed.items())
+            reasons.setdefault(name, []).append(f"{why} (answer: {rc.output.answer[:400]!r})")
         else:
             passes[name] += 1
     for failure in report.failures:

@@ -13,6 +13,7 @@ import datetime as dt
 import secrets
 import time
 import uuid
+from collections.abc import Callable
 from dataclasses import dataclass
 from types import TracebackType
 from typing import Any, Self
@@ -22,7 +23,6 @@ from fastapi.testclient import TestClient
 from pydantic_ai.messages import (
     ModelMessagesTypeAdapter,
     ModelResponse,
-    RetryPromptPart,
     ToolCallPart,
     ToolReturnPart,
 )
@@ -32,6 +32,7 @@ from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 from sqlalchemy.pool import NullPool
 
 from hauskraft_core.app import create_app
+from hauskraft_core.assistant.runs import OUTPUT_TOOL
 from hauskraft_core.db.models import AssistantRun, AssistantUsage
 from hauskraft_core.policy import NoOpPolicy
 from hauskraft_core.settings import Settings
@@ -188,20 +189,30 @@ class Household:
         finally:
             engine.dispose()
         registry = self.app.state.tool_registry
-        calls: dict[str, ToolCall] = {}
-        for message in ModelMessagesTypeAdapter.validate_python(history):
-            for part in message.parts:
-                if isinstance(part, ToolCallPart) and isinstance(message, ModelResponse):
-                    try:
-                        name = registry.by_wire_name(part.tool_name).spec.name
-                    except KeyError:
-                        name = part.tool_name  # a tool the run wasn't offered: the gate denied it
-                    calls[part.tool_call_id] = ToolCall(name, part.args_as_dict(), None)
-                elif isinstance(part, ToolReturnPart) and part.tool_call_id in calls:
-                    calls[part.tool_call_id].ok = True
-                elif isinstance(part, RetryPromptPart) and part.tool_call_id in calls:
-                    calls[part.tool_call_id].ok = False
-        return list(calls.values()), (int(used[0] or 0), int(used[1] or 0))
+
+        def name_of(wire_name: str) -> str:
+            try:
+                return str(registry.by_wire_name(wire_name).spec.name)
+            except KeyError:
+                return wire_name  # a tool the run wasn't offered: the gate denied it
+
+        return tool_calls(history, name_of), (int(used[0] or 0), int(used[1] or 0))
+
+
+def tool_calls(history: list[Any], name_of: Callable[[str], str]) -> list[ToolCall]:
+    """The household tools a run called, by name, with their arguments and whether they succeeded.
+
+    The harness's output tool (typed skill output) is the run's answer, not a household tool, so it isn't listed.
+    """
+    calls: dict[str, ToolCall] = {}
+    for message in ModelMessagesTypeAdapter.validate_python(history):
+        for part in message.parts:
+            if isinstance(part, ToolCallPart) and isinstance(message, ModelResponse):
+                if part.tool_name != OUTPUT_TOOL:
+                    calls[part.tool_call_id] = ToolCall(name_of(part.tool_name), part.args_as_dict(), None)
+            elif isinstance(part, ToolReturnPart) and part.tool_call_id in calls:
+                calls[part.tool_call_id].ok = part.outcome == "success"  # retried (an error), denied, failed
+    return list(calls.values())
 
 
 def _as_text(output: Any) -> str:

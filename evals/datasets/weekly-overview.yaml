@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: MIT
 # The weekly overview (M2S-E09-02): overdue first, then the coming week, short, in the person's language. The judge
-# grades only what the deterministic checks can't: whether it reads like a useful short note.
+# grades only what the deterministic checks can't, against what the skill asks for (a few short lines, no greeting).
 # Today is Monday, 2 November 2026, in Europe/Berlin.
 name: weekly-overview
 threshold: 0.9
@@ -72,10 +72,10 @@ cases:
         The overview is short (under about 120 words), names the car insurance due tomorrow before anything else,
         and mentions at most three of the undated tasks instead of listing all of them.
 
-  - name: reads like a note to the family
+  - name: short, accurate and as the skill asks
     fixture:
       tasks:
-        - { title: Return the library books, due_on: 2026-10-31 }
+        - { title: Return the library books, due_on: 2026-10-29 }
         - { title: Buy a birthday present for Sam, due_on: 2026-11-07 }
         - { title: Book the car service }
       today: 2026-11-02
@@ -85,5 +85,6 @@ cases:
     expect:
       answer_contains: ["library", "(?i)birthday|present"]
       judge: >-
-        The overview reads like a short, friendly note to a family member. It says the library books are overdue,
-        mentions Sam's present for Saturday, invents no tasks or dates, and does not offer to do things itself.
+        The overview is a few short lines with no greeting and no advice, as the skill asks. It says the library
+        books are overdue (they were due last Thursday), gives Saturday for Sam's present, invents no tasks or dates,
+        and does not offer to do anything itself.
