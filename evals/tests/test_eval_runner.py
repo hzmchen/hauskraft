@@ -113,6 +113,8 @@ def test_a_missed_threshold_fails_the_run(household: Household, tmp_path: Path) 
     assert report["datasets"]["demo"]["pass_rate"] == 0.5
     assert report["datasets"]["demo"]["passed"] is False
     assert result.exit_code == 1
+    # The answer is in the reasons, so a failed run can be understood from the report alone.
+    assert "answer: 'I added the task.'" in report["datasets"]["demo"]["failures"][0]["reasons"][0]
 
 
 def test_the_token_cap_stops_the_run(household: Household, tmp_path: Path) -> None:
