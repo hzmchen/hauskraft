@@ -16,6 +16,7 @@ from pydantic_ai.messages import (
     UserPromptPart,
 )
 from pydantic_ai.models.function import AgentInfo, FunctionModel
+from pydantic_ai.models.test import TestModel
 
 from hauskraft_core.settings import Settings
 from hauskraft_evals.datasets import EvalDataset
@@ -88,7 +89,9 @@ def household(db_settings: Settings) -> Household:
 
 
 def test_cases_run_against_the_real_harness_and_write_a_report(household: Household, tmp_path: Path) -> None:
-    config = EvalConfig(model="function-model", repeat=None, max_tokens=200_000, out_dir=tmp_path)
+    config = EvalConfig(
+        model="function-model", repeat=None, max_tokens=200_000, out_dir=tmp_path, judge_model=TestModel()
+    )
     result = run_datasets([dataset("demo", [ADD, DENIED, GERMAN])], household, config)
     report = json.loads(result.json_path.read_text(encoding="utf-8"))
     assert report["datasets"]["demo"]["cases"] == [
@@ -100,8 +103,10 @@ def test_cases_run_against_the_real_harness_and_write_a_report(household: Househ
     assert result.exit_code == 0
     assert {"model", "prompt_version", "tools_hash", "skills", "started_at", "tokens", "latency_ms"} <= set(report)
     assert report["model"] == "function-model"
+    assert report["judge_model"] == "test"
     assert report["tokens"]["input"] > 0
     assert "| demo | 100% |" in result.markdown_path.read_text(encoding="utf-8")
+    assert "- Judge: `test`" in result.markdown_path.read_text(encoding="utf-8")
 
 
 def test_a_missed_threshold_fails_the_run(household: Household, tmp_path: Path) -> None:
