@@ -15,20 +15,20 @@ dev = [
     "hauskraft-core",
     "hauskraft-sdk",
     "hauskraft-tasks",
-    "pytest==9.1.1",
+    "pytest==9.2.0",
     "jsonschema==4.26.0",
     "httpx==0.28.1",
     "PyYAML==6.0.3",
     # Python tooling (M0S-E01-02)
-    "ruff==0.17.2",
-    "mypy==2.4.0",
-    "pytest-asyncio==1.4.0",
-    "pydantic>=2.12",  # loaded by the pydantic.mypy plugin
+    "ruff==0.17.3",
+    "mypy==2.4.1",
+    "pytest-asyncio==1.4.1",
+    "pydantic>=2.14.2",  # loaded by the pydantic.mypy plugin
     "testcontainers[postgres]~=4.15",  # integration tests (M0S-E04-01, M0S-E04-04)
     "types-jsonschema~=4.26",
     "schemathesis~=4.32",  # API fuzzing in the contract job (M0S-E03-05)
     "types-defusedxml~=0.7.0",
-    "pydantic-evals~=2.61",  # on-demand real-model evals of the assistant (M2S-E09-01, ADR 0022)
+    "pydantic-evals~=2.63",  # on-demand real-model evals of the assistant (M2S-E09-01, ADR 0022)
 ]
 
 # ---------------------------------------------------------------- ruff (M0S-E01-02)
