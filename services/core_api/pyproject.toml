@@ -9,7 +9,7 @@ dependencies = [
     "hauskraft-sdk",
     "fastapi~=0.162.0",
     "uvicorn[standard]~=0.54.0",
-    "pydantic>=2.12,<3",
+    "pydantic>=2.14.2,<3",
     "pydantic-settings~=2.15",
     "sqlalchemy[asyncio]~=2.1.6",
     "psycopg[binary]~=3.3",
