@@ -187,11 +187,11 @@ jobs:
     timeout-minutes: 8
     steps:
       - uses: actions/checkout@v7.0.1
-      - uses: astral-sh/setup-uv@v10.3.2
+      - uses: astral-sh/setup-uv@v10.3.3
       - run: uv lock --check
       - uses: actions/setup-node@v7.1.0
         with:
           node-version-file: .node-version
       - run: node scripts/check-denylist.mjs pnpm-lock.yaml
-      - uses: pnpm/action-setup@v6.1.0
+      - uses: pnpm/action-setup@v6.1.1
       - run: pnpm audit --prod --audit-level high
