@@ -14,7 +14,7 @@ services:
   # tests/fixtures/fake-llm/scenarios.json and records requests. The API reaches it as http://fake-llm:8090/v1; the
   # tests read recorded requests on http://localhost:8090.
   fake-llm:
-    image: python:3.13-slim
+    image: python:3.15-slim
     command: ["python", "/fake-llm/server.py", "--port", "8090"]
     volumes:
       - ./tests/fixtures/fake-llm:/fake-llm:ro
